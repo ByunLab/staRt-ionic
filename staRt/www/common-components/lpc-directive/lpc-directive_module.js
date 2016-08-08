@@ -18,7 +18,8 @@ lpcDirective.directive( 'lpcDirective', function()
 		scope:
 		{
 			slider: '=',
-			f3: '='
+			reset: '=',
+			rate: '='
 		},
 		templateUrl: 'common-components/lpc-directive/lpc-directive_template.html'
 	};

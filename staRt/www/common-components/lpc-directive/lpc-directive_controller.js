@@ -40,13 +40,15 @@ lpcDirective.controller( 'LpcDirectiveController', function( $rootScope, $scope,
 		}
 	};
 
-	var containerDiv;
-	for (var i=0; i<element.children().length; i++) {
-		var e = element.children()[i];
-		if (e.nodeName === "DIV" && e.classList.contains("lpc-container"))
-			containerDiv = e;
-	}
-	var firstElt;
+	// var containerDiv;
+	// for (var i=0; i<element.children().length; i++) {
+	// 	var e = element.children()[i];
+	// 	if (e.nodeName === "DIV" && e.classList.contains("slider-and-canvas"))
+	// 		containerDiv = e;
+	// }
+	var containerDiv = angular.element(element[0].querySelector('.slider-and-canvas'))[0];
+
+	var firstElt = null;
 	if (containerDiv.children.length > 0)
 		firstElt = containerDiv.children[0];
 

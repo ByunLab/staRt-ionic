@@ -12,10 +12,10 @@
 		console.log('WordsController here!');
 
 		var uploadURLs = [
-			"https://byunlab.com/start/session/ratings",
-			"https://byunlab.com/start/session/metadata",
-			"https://byunlab.com/start/session/lpc",
-			"https://byunlab.com/start/session/audio"
+		"https://byunlab.com/start/session/ratings",
+		"https://byunlab.com/start/session/metadata",
+		"https://byunlab.com/start/session/lpc",
+		"https://byunlab.com/start/session/audio"
 		];
 
 		// var uploadURLs = [
@@ -37,20 +37,20 @@
 		};
 
 		function parseCSV(str) {
-		    var arr = [];
-		    var quote = false;
-				var row=0, col=0, c=0;
-		    for (; c < str.length; c++) {
-		        var cc = str[c], nc = str[c+1];
-		        arr[row] = arr[row] || [];
-		        arr[row][col] = arr[row][col] || '';
-		        if (cc == '"' && quote && nc == '"') { arr[row][col] += cc; ++c; continue; }
-		        if (cc == '"') { quote = !quote; continue; }
-		        if (cc == ',' && !quote) { ++col; continue; }
-		        if (cc == '\n' && !quote) { ++row; col = 0; continue; }
-		        arr[row][col] += cc;
-		    }
-		    return arr;
+			var arr = [];
+			var quote = false;
+			var row=0, col=0, c=0;
+			for (; c < str.length; c++) {
+				var cc = str[c], nc = str[c+1];
+				arr[row] = arr[row] || [];
+				arr[row][col] = arr[row][col] || '';
+				if (cc == '"' && quote && nc == '"') { arr[row][col] += cc; ++c; continue; }
+				if (cc == '"') { quote = !quote; continue; }
+				if (cc == ',' && !quote) { ++col; continue; }
+				if (cc == '\n' && !quote) { ++row; col = 0; continue; }
+				arr[row][col] += cc;
+			}
+			return arr;
 		}
 
 		$scope.active = false;
@@ -108,17 +108,17 @@
 		function uploadFile(absolutePath, destURL, mimeType, sessionID, progressCb, completeCb) 
 		{
 			var win = function (r) {
-			    console.log("Code = " + r.responseCode);
-			    console.log("Response = " + r.response);
-			    console.log("Sent = " + r.bytesSent);
-			    if (completeCb)
-			    	completeCb(r);
+				console.log("Code = " + r.responseCode);
+				console.log("Response = " + r.response);
+				console.log("Sent = " + r.bytesSent);
+				if (completeCb)
+					completeCb(r);
 			}
 
 			var fail = function (error) {
-			    alert("An error has occurred: Code = " + error.code);
-			    console.log("upload error source " + error.source);
-			    console.log("upload error target " + error.target);
+				alert("An error has occurred: Code = " + error.code);
+				console.log("upload error source " + error.source);
+				console.log("upload error target " + error.target);
 			}
 			
 			resolveLocalFileSystemURL("file://" + absolutePath, function(fileEntry) {
@@ -156,7 +156,7 @@
 		function createFile(dirEntry, fileName, dataObj, successCb) {
 		    // Creates a new file or returns the file if it already exists.
 		    dirEntry.getFile(fileName, {create: true, exclusive: false}, function(fileEntry) {
-		        writeFile(fileEntry, dataObj, successCb);
+		    	writeFile(fileEntry, dataObj, successCb);
 		    });
 
 		}
@@ -165,16 +165,16 @@
 		    // Create a FileWriter object for our FileEntry (log.txt).
 		    fileEntry.createWriter(function (fileWriter) {
 
-		        fileWriter.onwriteend = function() {
-		            console.log("Successful file read...");
-		            successCb();
-		        };
+		    	fileWriter.onwriteend = function() {
+		    		console.log("Successful file read...");
+		    		successCb();
+		    	};
 
-		        fileWriter.onerror = function (e) {
-		            console.log("Failed file read: " + e.toString());
-		        };
+		    	fileWriter.onerror = function (e) {
+		    		console.log("Failed file read: " + e.toString());
+		    	};
 
-		        fileWriter.write(dataObj);
+		    	fileWriter.write(dataObj);
 		    });
 		}
 
@@ -217,7 +217,7 @@
 					session.id,
 					uploadCallbackForSession(session, i),
 					completeCallbackForSession(session, i)
-				);
+					);
 			}
 			$scope.isUploading = true;
 		}
@@ -288,9 +288,9 @@
 							navigator.notification.alert("Can't start word practice -- create a profile first", null, "No profile");
 					} 
 				}, function (err) {
-						if (navigator.notification)
-							navigator.notification.alert("Can't start work practice: " + err, null, "Error");
-					}
+					if (navigator.notification)
+						navigator.notification.alert("Can't start work practice: " + err, null, "Error");
+				}
 				);
 		};
 

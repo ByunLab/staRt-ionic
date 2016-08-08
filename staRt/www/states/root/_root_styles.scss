@@ -13,7 +13,7 @@
 .bar-header
 {
   background-color: $light-blue;
-  height: 110px;
+  height: 14vh !important;
   display: flex;
   align-items: center;
   padding-left: 120px;
@@ -28,6 +28,7 @@
   font-weight: bold;
   font-size: $header-type;
   text-align: left;
+  overflow: visible;
 }
 
 #nav-and-content-container
@@ -54,6 +55,11 @@
 
 }
 
+.text-content
+{
+    padding: 3rem;
+}
+
 canvas {
   background-color: #000000;
 }
@@ -62,12 +68,12 @@ canvas {
   display: -webkit-flex;
   -webkit-flex: 1;
   font-size: 1rem;
+  padding: 3rem;
 }
 
 .text-and-lpc__text
 {
-  font-size: 20pt;
-  font-weight: bold;
+  font-size: 14pt;
 }
 
 .pane

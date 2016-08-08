@@ -26,7 +26,7 @@ input[type=range] {
   background-color: #C5F3FF;
   box-shadow: inset 2px 2px 2px rgba(77, 77, 77, 0.25);
   width: 560px;
-  margin: 15px;
+  margin: 23px;
   border: 0px solid orange;
   overflow: visible;
   background-size: 0; }
@@ -56,7 +56,7 @@ input[type=range]::-webkit-slider-thumb {
 
 .bar-header {
   background-color: #c5f3ff;
-  height: 110px;
+  height: 14vh !important;
   display: flex;
   align-items: center;
   padding-left: 120px; }
@@ -68,7 +68,8 @@ input[type=range]::-webkit-slider-thumb {
   color: #53c8e9;
   font-weight: bold;
   font-size: 50px;
-  text-align: left; }
+  text-align: left;
+  overflow: visible; }
 
 #nav-and-content-container {
   display: flex;
@@ -89,17 +90,20 @@ input[type=range]::-webkit-slider-thumb {
   width: 90vw;
   margin-top: 110px; }
 
+.text-content {
+  padding: 3rem; }
+
 canvas {
   background-color: #000000; }
 
 .text-and-lpc {
   display: -webkit-flex;
   -webkit-flex: 1;
-  font-size: 1rem; }
+  font-size: 1rem;
+  padding: 3rem; }
 
 .text-and-lpc__text {
-  font-size: 20pt;
-  font-weight: bold; }
+  font-size: 14pt; }
 
 .pane {
   flex-flow: column; }
@@ -160,13 +164,15 @@ canvas {
 .range-container {
   display: flex;
   flex-flow: row nowrap;
-  justify-content: center; }
+  justify-content: center;
+  align-items: flex-end; }
 
 .range-label {
   font-weight: bold;
   width: 40px;
   white-space: pre-line;
-  padding: 1em 0; }
+  padding: 1em 0;
+  font-size: 0.9rem; }
   .range-label:first-child {
     padding-left: 0; }
 
@@ -174,12 +180,13 @@ canvas {
   display: block;
   color: #53c8e9; }
 
+.resources p {
+  margin: 0; }
+
 lpc-directive {
   display: -webkit-flex;
   -webkit-flex: 1;
   margin: auto;
-  position: absolute;
-  bottom: 0;
   flex-flow: column; }
 
 #lpc-canvas {
@@ -191,9 +198,70 @@ lpc-directive {
 .lpc-container {
   position: relative;
   width: 800px;
-  height: 400px; }
+  height: 400px;
+  margin: 0;
+  padding: 0;
+  border-radius: 4px;
+  display: block;
+  background-color: #F0F9FC;
+  border: 15px solid #F0F9FC;
+  border-bottom: 25px solid #F0F9FC;
+  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.15); }
 
-.lpc-container .lpc-range {
+.slider-and-canvas {
+  display: inline-block;
+  width: 88%;
+  position: absolute;
+  left: 0; }
+  .slider-and-canvas.full-width {
+    width: 100%; }
+
+.lpc-buttons {
+  display: inline-block;
+  position: absolute;
+  width: 12%;
+  right: 0; }
+
+.reset-button {
+  height: 65px;
+  background-color: #FFECCB;
+  color: #e79b4c;
+  float: right;
+  border: 0px solid red;
+  position: relative;
+  height: 65px;
+  width: 80px;
+  margin: 0px;
+  padding: 5px;
+  font-size: 0.90em;
+  font-family: 'Quicksand', 'Helvetica Neue', sans-serif;
+  font-weight: 800;
+  text-align: center;
+  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.15);
+  z-index: 99;
+  border: 0;
+  display: block; }
+
+.rate-box button {
+  float: right;
+  height: 75px;
+  width: 75px;
+  padding: 10px;
+  border-radius: 75px;
+  margin-bottom: 20px;
+  border: 0px solid red;
+  position: relative;
+  font-size: 0.90em;
+  font-weight: bold;
+  text-align: center;
+  color: #fff;
+  background-color: #53C8E9;
+  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.15);
+  z-index: 99;
+  border: 0;
+  display: block; }
+
+.lpc-range {
   height: 400px;
   background-color: transparent;
   position: absolute;
@@ -202,7 +270,7 @@ lpc-directive {
   left: 0;
   height: 100%;
   width: 100%; }
-  .lpc-container .lpc-range input {
+  .lpc-range input {
     background: transparent; }
 
 .lpc-container input[type='range'] {
@@ -212,7 +280,8 @@ lpc-directive {
   position: absolute;
   bottom: 72px;
   left: 0;
-  width: 100%; }
+  width: 100%;
+  z-index: 3; }
   .lpc-container input[type='range']::-webkit-slider-thumb {
     height: 400px;
     display: block;
@@ -235,11 +304,12 @@ lpc-directive {
   border-radius: 3px;
   color: #4d4d4d;
   font-size: .8em;
+  font-weight: bold;
   line-height: 24px;
   text-align: center; }
   .lpc-container output:after {
     content: '';
-    height: 500px;
+    height: 350px;
     width: 2px;
     background-color: white;
     display: block;
@@ -248,3 +318,12 @@ lpc-directive {
     position: absolute;
     top: -30px;
     z-index: -1; }
+
+#sand {
+  height: 60px;
+  display: block;
+  position: absolute;
+  left: -1px;
+  bottom: 0px;
+  width: 100.3%;
+  background-color: #ffeccb; }

@@ -37,6 +37,7 @@
 			{
 				ProfileService.getCurrentProfile().then( function(res) {
 					if (res && res.lpcOrder) {
+						$scope.currentProfileName = res.name;
 						$scope.lpcOrder = res.lpcOrder;
 						AudioPlugin.setLPCOrder($scope.lpcOrder, $scope.logPluginLPCOrder);
 					} else {

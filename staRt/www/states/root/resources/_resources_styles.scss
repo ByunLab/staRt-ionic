@@ -3,6 +3,7 @@
 	display: flex;
 	flex-flow: row nowrap;
 	justify-content: center;
+	align-items: flex-end;
 }
 
 .range-label
@@ -11,6 +12,7 @@
 	width: 40px;
 	white-space: pre-line;
 	padding: 1em 0;
+	font-size: 0.9rem;
 
 	&:first-child
 	{
@@ -22,4 +24,9 @@
 {
 	display: block;
 	color: $blue;
+}
+
+.resources p
+{
+	margin: 0;
 }
