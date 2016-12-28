@@ -294,6 +294,7 @@ lpcDirective.controller( 'LpcDirectiveController', function( $rootScope, $scope,
 			$scope.getLPCCoefficients($scope.lpcCoefficientCallback);
 			window.requestAnimFrame($scope.animate);
 			renderer.render(scene, camera);
+			$scope.updateTarget();
 		}
 	};
 
@@ -422,7 +423,7 @@ lpcDirective.controller( 'LpcDirectiveController', function( $rootScope, $scope,
 	$scope.$watch('targetF3', function()
 	{
 		console.log('target changed to: ', $scope.targetF3);
-		$scope.updateTarget();
+		//$scope.updateTarget();
 	});
 
 } );

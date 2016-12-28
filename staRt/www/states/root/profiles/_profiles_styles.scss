@@ -1,14 +1,20 @@
-.profiles
-{
-	flex-flow: row nowrap;
+// parent ele for all the profiles content
+.profiles-contentBox {  
+	//border: 1px solid violet;
+	// this needs to be a flexbox
 }
 
-.profiles__list
-{
-	flex: 1 0 0%;
-}
+	.profiles
+	{
+		flex-flow: row nowrap;
+	}
 
-.profiles__info
-{
-	flex: 1 0 0%;
-}
+	.profiles__list
+	{
+		flex: 1 0 0%;
+	}
+
+	.profiles__info
+	{
+		flex: 1 0 0%;
+	}

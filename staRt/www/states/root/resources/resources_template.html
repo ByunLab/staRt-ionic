@@ -1,26 +1,30 @@
-<ion-view view-title="SLP Resources" class="text-and-lpc">
-	<div class="text-and-lpc__text resources">
-		<p>
-			Use the slider to manually adjust the LPC filter order. <strong>In general, the filter order should be between 35 and 45.</strong>
-		</p>
+<ion-view view-title="SLP Resources" class="state-contentBox">
+	<div class="resources-contentBox">
 
-		<div class="range-container">
-			<div class="range-label">
-				min. 25
+		<div class="text-and-lpc__text resources">
+			<p>
+				Use the slider to manually adjust the LPC filter order. <strong>In general, the filter order should be between 35 and 45.</strong>
+			</p>
+
+			<div class="range-container">
+				<div class="range-label">
+					min. 25
+				</div>
+				
+				<input type="range" min="25" max="45" ng-model="lpcOrder" ng-change="updatePluginLPCOrder()"/>
+				
+				<div class="range-label">
+					max. 45
+				</div>
 			</div>
 			
-			<input type="range" min="25" max="45" ng-model="lpcOrder" ng-change="updatePluginLPCOrder()"/>
 			
-			<div class="range-label">
-				max. 45
-			</div>
+			<p>
+				The filter order is now <em>{{lpcOrder}}</em>
+			</p>
+
 		</div>
-		
-		
-		<p>
-			The filter order is now <em>{{lpcOrder}}</em>
-		</p>
+		<lpc-directive></lpc-directive>
 
-	</div>
-	<lpc-directive></lpc-directive>
+	</div> <!-- end resources-contentBox-->
 </ion-view>

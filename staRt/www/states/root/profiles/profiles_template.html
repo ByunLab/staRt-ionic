@@ -1,158 +1,161 @@
-<ion-view view-title="Profiles" class="text-and-lpc">
+<ion-view view-title="Profiles" class="state-contentBox">
+	<div class="profiles-contentBox">
 
-	<ion-pane class="profiles">
+		<ion-pane class="profiles">
 
-	<ion-list class="list profiles__list">
+		<ion-list class="list profiles__list">
 
-		<h2>
-			Registered Participants
-		</h2>
+			<h2>
+				Registered Participants
+			</h2>
 
-		<ion-radio
-			name="name"
-			ng-model="data.currentProfileUUID"
-			ng-repeat="profile in data.profiles"
-			ng-value="profile.uuid"
-			ng-change="updateCurrentProfile(profile)">
-				{{ (profile.name === undefined) ? 'New Profile' : profile.name }}
-		</ion-radio>
+			<ion-radio
+				name="name"
+				ng-model="data.currentProfileUUID"
+				ng-repeat="profile in data.profiles"
+				ng-value="profile.uuid"
+				ng-change="updateCurrentProfile(profile)">
+					{{ (profile.name === undefined) ? 'New Profile' : profile.name }}
+			</ion-radio>
 
-		<button
-			class="button button-calm"
-			ng-click="createProfile()"
-			ng-disabled="isEditing"
-			ng-hide="isEditing">
-			<i class="icon ion-person-add"></i>
-			Create New Profile
-		</button>
-		<button
-			class="button button-stable"
-			ng-click="deleteAllProfiles()"
-			ng-disabled="isEditing"
-			ng-hide="isEditing || !data.currentProfile">
-			<i class="icon ion-trash-b"></i>
-			Delete All Profiles
-		</button>
+			<button
+				class="button button-calm"
+				ng-click="createProfile()"
+				ng-disabled="isEditing"
+				ng-hide="isEditing">
+				<i class="icon ion-person-add"></i>
+				Create New Profile
+			</button>
+			<button
+				class="button button-stable"
+				ng-click="deleteAllProfiles()"
+				ng-disabled="isEditing"
+				ng-hide="isEditing || !data.currentProfile">
+				<i class="icon ion-trash-b"></i>
+				Delete All Profiles
+			</button>
 
-	</ion-list>
+		</ion-list>
 
-	<div
-		class="profiles__info"
-		ng-hide="!data.currentProfile">
-				<label class="item item-input">
-					<span class="input-label">
-						Name
-					</span>
-					<input
-						type="text"
-						name="name"
-						class="profiles"
-						ng-model="data.currentProfile.name"
-						placeholder="Name"
-						ng-class="editing"
-						ng-disabled="!isEditing">
-				</label>
-				<label class="item item-input">
-					<span class="input-label">
-						Age
-					</span>
-					<input
-						type="number"
-						name="age"
-						class="profiles"
-						min="1"
-						max="99"
-						ng-model="data.currentProfile.age"
-						placeholder="Age"
-						ng-class="editing"
-						ng-disabled="!isEditing">
-				</label>
-				<label class="item item-input">
-					<span class="input-label">
-						Height (Feet)
-					</span>
-					<input
-						type="number"
-						name="heightFeet"
-						class="profiles"
-						min="0"
-						max="8"
-						ng-model="data.currentProfile.heightFeet"
-						placeholder="Feet"
-						ng-class="editing"
-						ng-disabled="!isEditing">
-				</label>
-				<label class="item item-input">
-					<span class="input-label">
-						Inches
-					</span>
-					<input
-						type="number"
-						name="heightInches"
-						class="profiles"
-						min="0"
-						max="11"
-						ng-model="data.currentProfile.heightInches"
-						placeholder="Inches"
-						ng-class="editing"
-						ng-disabled="!isEditing">
-				</label>
-				<label class="input item-input">
-					<div class="input-label">
-						Sex
-					</div>
-					<ion-radio
-						name="sex"
-						ng-model="data.currentProfile.gender"
-						ng-value="'Female'"
-						ng-class="editing"
-						ng-disabled="!isEditing">
-						Female
-					</ion-radio>
-					<ion-radio
-						name="sex"
-						ng-model="data.currentProfile.gender"
-						ng-value="'Male'"
-						ng-class="editing"
-						ng-disabled="!isEditing">
-						Male
-					</ion-radio>
-				</label>
-				<button
-					type="button"
-					class="button button-balanced profiles"
-					ng-click="setIsEditing(true)"
-					ng-hide="isEditing"
-					ng-disabled="!data.currentProfile"
-					ng-hide="!data.currentProfile">
-					<i class="icon ion-edit"></i>
-					Edit
-				</button>
-				<button
-					type="button"
-					class="button button-assertive profiles"
-					ng-click="deleteProfile(data.currentProfile)"
-					ng-show="!isEditing"
-					ng-disabled="!data.currentProfile">
-					<i class="icon ion-trash-b"></i>
-					Discard
-				</button>
-				<button 
-					type="button" 
-					class="button profiles" 
-					ng-click="saveProfile()" 
-					ng-hide="!isEditing">
-					Save
-				</button>
-				<button
-					type="button"
-					class="button profiles"
-					ng-click="cancelEdit()"
-					ng-hide="!isEditing">
-					Cancel
-				</button>
-	</div>
+		<div
+			class="profiles__info"
+			ng-hide="!data.currentProfile">
+					<label class="item item-input">
+						<span class="input-label">
+							Name
+						</span>
+						<input
+							type="text"
+							name="name"
+							class="profiles"
+							ng-model="data.currentProfile.name"
+							placeholder="Name"
+							ng-class="editing"
+							ng-disabled="!isEditing">
+					</label>
+					<label class="item item-input">
+						<span class="input-label">
+							Age
+						</span>
+						<input
+							type="number"
+							name="age"
+							class="profiles"
+							min="1"
+							max="99"
+							ng-model="data.currentProfile.age"
+							placeholder="Age"
+							ng-class="editing"
+							ng-disabled="!isEditing">
+					</label>
+					<label class="item item-input">
+						<span class="input-label">
+							Height (Feet)
+						</span>
+						<input
+							type="number"
+							name="heightFeet"
+							class="profiles"
+							min="0"
+							max="8"
+							ng-model="data.currentProfile.heightFeet"
+							placeholder="Feet"
+							ng-class="editing"
+							ng-disabled="!isEditing">
+					</label>
+					<label class="item item-input">
+						<span class="input-label">
+							Inches
+						</span>
+						<input
+							type="number"
+							name="heightInches"
+							class="profiles"
+							min="0"
+							max="11"
+							ng-model="data.currentProfile.heightInches"
+							placeholder="Inches"
+							ng-class="editing"
+							ng-disabled="!isEditing">
+					</label>
+					<label class="input item-input">
+						<div class="input-label">
+							Sex
+						</div>
+						<ion-radio
+							name="sex"
+							ng-model="data.currentProfile.gender"
+							ng-value="'Female'"
+							ng-class="editing"
+							ng-disabled="!isEditing">
+							Female
+						</ion-radio>
+						<ion-radio
+							name="sex"
+							ng-model="data.currentProfile.gender"
+							ng-value="'Male'"
+							ng-class="editing"
+							ng-disabled="!isEditing">
+							Male
+						</ion-radio>
+					</label>
+					<button
+						type="button"
+						class="button button-balanced profiles"
+						ng-click="setIsEditing(true)"
+						ng-hide="isEditing"
+						ng-disabled="!data.currentProfile"
+						ng-hide="!data.currentProfile">
+						<i class="icon ion-edit"></i>
+						Edit
+					</button>
+					<button
+						type="button"
+						class="button button-assertive profiles"
+						ng-click="deleteProfile(data.currentProfile)"
+						ng-show="!isEditing"
+						ng-disabled="!data.currentProfile">
+						<i class="icon ion-trash-b"></i>
+						Discard
+					</button>
+					<button 
+						type="button" 
+						class="button profiles" 
+						ng-click="saveProfile()" 
+						ng-hide="!isEditing">
+						Save
+					</button>
+					<button
+						type="button"
+						class="button profiles"
+						ng-click="cancelEdit()"
+						ng-hide="!isEditing">
+						Cancel
+					</button>
+		</div>
 
-	</ion-pane>
+		</ion-pane>
+
+	</div> <!-- end profiles-contentBox-->
 
 </ion-view>

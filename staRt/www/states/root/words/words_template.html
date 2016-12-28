@@ -1,24 +1,28 @@
-<ion-view view-title="Word Quest" class="text-content">
-	<button style="margin:40px;" ng-click="beginWordPractice()" ng-hide="isPracticing">
-		Start Word Practice
-	</button>
-	<button style="margin:40px;" ng-click="nextWord()" ng-hide="!isPracticing">
-		Next Word
-	</button>
-	<button
-		style="margin:40px;"
-		ng-click="endWordPractice()"
-		ng-hide="!isPracticing">
-		Stop Word Practice
-	</button>
-	<p
-		ng-hide="!isPracticing"
-		class="words-word">
-		{{currentWord}}
-	</p>
-	<p ng-hide="!isUploading">
-		Uploading {{uploadProgress * 100}}
-	</p>
-	
-	<lpc-directive slider="true" rate="isPracticing" reset="true" sand="true"></lpc-directive>
+<ion-view view-title="Word Quest" class="state-contentBox">
+	<div class="words-contentBox">
+
+		<button style="margin:40px;" ng-click="beginWordPractice()" ng-hide="isPracticing">
+			Start Word Practice
+		</button>
+		<button style="margin:40px;" ng-click="nextWord()" ng-hide="!isPracticing">
+			Next Word
+		</button>
+		<button
+			style="margin:40px;"
+			ng-click="endWordPractice()"
+			ng-hide="!isPracticing">
+			Stop Word Practice
+		</button>
+		<p
+			ng-hide="!isPracticing"
+			class="words-word">
+			{{currentWord}}
+		</p>
+		<p ng-hide="!isUploading">
+			Uploading {{uploadProgress * 100}}
+		</p>
+		
+		<lpc-directive slider="true" rate="isPracticing" reset="true" sand="true"></lpc-directive>
+
+	</div> <!-- end words-contentBox-->
 </ion-view>

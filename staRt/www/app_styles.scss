@@ -2,12 +2,17 @@
 @import 'common-styles/variables';
 @import 'common-styles/typography';
 @import 'common-styles/ui';
+@import 'common-styles/navAnimate';
 
 // State styles
 @import 'states/root/root_styles';
 @import 'states/root/profiles/profiles_styles';
-@import 'states/root/resources/resources_styles';
+@import 'states/root/tutorial/tutorial_styles';
+@import 'states/root/auto/auto_styles';
+@import 'states/root/free-play/free_styles';
+@import 'states/root/syllables/syllables_styles';
 @import 'states/root/words/words_styles';
+@import 'states/root/resources/resources_styles';
 
 // Directive styles
 @import 'common-components/lpc-directive/lpc-directive_styles';

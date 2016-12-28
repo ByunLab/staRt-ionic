@@ -1,5 +1,10 @@
-.words-word
-{
+// parent ele for all the words content
+.words-contentBox {  
+	//border: 1px solid violet;
+}
+
+
+.words-word {
 	font-size: 3rem;
 	font-weight: 700;
 	text-transform: uppercase;

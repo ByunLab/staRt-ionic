@@ -1,33 +1,44 @@
-<ion-view view-title="staRt" id="nav-and-content-container">
+<div id="statusBar-bg"></div>
 
-  <!-- Tabs -->
-  <div id="nav-container">
-    <list class="navTabs">
-      <item
-        ng-repeat="tab in tabData"
-        class="navTab"
-        ui-sref="{{ 'root.' + tab.sref }}"
-        ng-class="{ 'active': state.current.url === tab.sref }">
-        <div class="navTabText">
-          <img
-            ng-hide="state.current.url === tab.sref"
-            ng-src="{{ 'img/' + tab.sref + '.svg' }}"
-            class="nav-svg">
-          <img
-            ng-show="state.current.url === tab.sref"
-            ng-src="{{ 'img/' + tab.sref + '-b.svg' }}"
-            class="nav-svg">
-          {{tab.title}}
-        </div>
-      </item>
-    </list>
-  </div>
+<ion-view view-title="staRt" id="nav-and-content-container">
   
   <!-- Title Bar -->
   <ion-nav-bar></ion-nav-bar>
 
   <!-- Content -->
-  <ion-nav-view name="content-view" id="content-container">
-  </ion-nav-view>
-  
+  <ion-nav-view name="content-view" id="content-container"></ion-nav-view>
+
+  <!-- Tabs --> 
+  <div id="nav-container">
+    <list class="navTabs">
+
+      <item
+        ng-repeat="tab in tabData"
+        class="navTab"
+        ui-sref="{{ 'root.' + tab.sref }}"
+        ng-class="{ 'active': state.current.url === tab.sref }">
+        
+        <div class="navTabText">
+
+          <!-- defines img inactive state -->
+          <img
+            ng-if="state.current.url != tab.sref" 
+            ng-src="{{ 'img/nav/' + tab.sref + '.svg' }}"
+            class="nav-svg"
+          >
+          <!-- defines img active state -->
+          <img 
+            ng-if="state.current.url === tab.sref" 
+            ng-src="{{ 'img/nav/' + tab.sref + '-b.svg' }}"
+            class="nav-svg animated {{ tab.ani }}"
+          >
+          
+          {{tab.title}}
+
+        </div>
+
+      </item>
+    </list>
+  </div>
+   
 </ion-view>

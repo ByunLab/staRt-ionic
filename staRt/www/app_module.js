@@ -10,7 +10,7 @@ start.config(function($urlRouterProvider, $locationProvider, $ionicConfigProvide
 {
   $urlRouterProvider.otherwise('/profiles');
   
-  // $locationProvider.html5Mode(true);
+  //$locationProvider.html5Mode(true);
   $ionicConfigProvider.views.maxCache(0);
   $ionicConfigProvider.views.transition('none');
 });

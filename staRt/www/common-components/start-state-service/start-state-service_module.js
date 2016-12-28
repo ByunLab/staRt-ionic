@@ -13,31 +13,39 @@ startStateService.factory('StartUIState', function()
     tabData: [
       {
         title: "Profiles",
-        sref: "profiles"
+        sref: "profiles",
+        ani: "tada"
       },
       {
         title: "Tutorial",
-        sref: "tutorial" 
+        sref: "tutorial",
+        ani: "rotateIn" 
       },
       {
         title: "Auto",
-        sref: "auto"
+        sref: "auto",
+        ani: "flipInX"
       },
       {
         title: "Free Play",
-        sref: "free-play"
+        sref: "free-play",
+        ani: "bounce"
       },
       {
         title: "Syllables",
-        sref: "syllables"
+        sref: "syllables",
+        ani: "bounceIn"
       },
       {
         title: "Words",
-        sref: "words"
+        sref: "words",
+        ani: "bounceIn"
+
       },
       {
         title: "Resources",
-        sref: "resources"
+        sref: "resources",
+        ani: "flipInY"
       }
     ],
     content: [

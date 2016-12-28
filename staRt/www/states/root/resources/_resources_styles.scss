@@ -1,3 +1,9 @@
+// parent ele for all the resources content
+.resources-contentBox {  
+	//border: 1px solid violet;
+}
+
+
 .range-container
 {
 	display: flex;
@@ -23,7 +29,7 @@
 .resources strong
 {
 	display: block;
-	color: $blue;
+	color: $blue-main;
 }
 
 .resources p

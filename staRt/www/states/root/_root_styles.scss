@@ -1,148 +1,206 @@
-*
-{
+* {
+   margin: 0;
+  padding: 0;
+  outline: none;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
   font-family: 'Quicksand', 'Helvetica Neue', sans-serif !important;
-    -webkit-user-select: none;
+  -webkit-user-select: none;
 }
 
-#app-container {
-  display: -webkit-flex;
-  -webkit-flex-direction: row;
-  line-height: 1.7;
-  color: $grey;
+// KEYFRAME ANIMATION BASE  =================================================================
+  // for some reason everything breaks when I move this out of _root_styles. Sorry!
 
-}
-
-.bar-header
-{
-  background-color: $light-blue;
-  height: 14vh !important;
-  display: flex;
-  align-items: center;
-  padding-left: 120px;
-}
-
-.bar .title
-{
-  position: relative;
-  display: block;
-  text-transform: uppercase;
-  color: $blue;
-  font-weight: bold;
-  font-size: $header-type;
-  text-align: left;
-  overflow: visible;
-}
-
-#nav-and-content-container
-{
-  display: flex;
-  flex-flow: row nowrap;
-}
-
-#nav-container {
-  display: -webkit-flex;
-  -webkit-flex-direction: column;
-  width: 10vw;
-  z-index: 999;
-}
-
-#content-container {
-  text-align: center;
-  display: -webkit-flex;
-  -webkit-flex: 1;
-  -webkit-flex-direction: column;
-  height: 85vh;
-  width: 90vw;
-  margin-top: 110px;
-
-}
-
-.text-content
-{
-    padding: 3rem;
-}
-
-canvas {
-  background-color: #000000;
-}
-
-.text-and-lpc {
-  display: -webkit-flex;
-  -webkit-flex: 1;
-  font-size: 1rem;
-  padding: 3rem;
-}
-
-.text-and-lpc__text
-{
-  font-size: 14pt;
-}
-
-.pane
-{
-  flex-flow: column;
-}
-
-.nav-container
-{
-  z-index: 99;
-}
-
-.navTabs {
-  height: 100vh;
-  display: -webkit-flex;
-  -webkit-flex: 1;
-  -webkit-flex-direction: column;
-  color: $white;
-  text-transform: uppercase;
-  font-weight: bold;
-}
-
-.navTab {
-  background-color: $blue;
-  text-align: center;
-  display: -webkit-flex;
-  -webkit-flex: 1;
-  border-radius: 4px;
-  box-shadow: 1px 0px 2px #d3d3d3;
-  transition: width 0.5s ease-in-out;
-  width: 100px;
-  padding-top: 10%;
-  padding-bottom: 5%;
-  border-top-left-radius: 0px;
-  border-bottom-left-radius: 0px;
-
-  &.active
-  {
-    color: #53C8E9;
-    background-color: #F0F9FC;
-    box-shadow: 2px 1px 2px #d1d1d1;
-    z-index: 25;
-    width: 108px;
+  .animated {
+    -webkit-animation-duration: 1s;
+    animation-duration: 1s;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
   }
-}
 
-.navTabText {
-  margin: auto;
-}
+  /* 
+    These are here b/c I couldn't get the ng-show, ng-hide, & ng-if to trigger as soon as the class changed. They would stay in the DOM and display other eles and then get cleaned up after ~0.25s 
+  */
+  .animated.ng-enter, 
+  .animate-if.ng-leave {
+    transition: 0s;
+  }
 
-.bigtext {
-  font-size: 55pt;
-}
+  .animated.ng-enter,
+  .animated.ng-leave.ng-leave-active {
+    display: none;
+  }
 
-.testbutton {
-  background-color: lightblue;
-}
+  .animated.ng-leave,
+  .animated.ng-enter.ng-enter-active {
+    display: block;
+  }
 
-.testbutton:active {
-  background-color: darkblue;
-}
 
-.nav-svg
-{
-  height: 65px;
-  width: 65px;
-  display: block;
-  margin: 0 auto;
-  padding-bottom: 5px;
-}
+// LAYOUT  =================================================================
+  #app-container {
+    display: -webkit-flex;
+    -webkit-flex-direction: row;
+    line-height: 1.7;
+    height: $appH + $statusBarH;
+    width: $appW;
+    color: $grey-txtMain;
+    //border: 1px solid yellow; //#db
+  }
+
+  /* unfortunately, I think the correct way to update this is with native code:
+    https://developer.apple.com/reference/uikit/uiviewcontroller#//apple_ref/occ/instm/UIViewController/preferredStatusBarStyle  */
+  #statusBar-bg {
+    height: $statusBarH;
+    width: $appW;
+    background-color: $blue-main; //$blue-white; //$blue-main; //$grey-txtMain; //white; //$blue-dark;
+    border-bottom: 1px solid $blue-white;
+  }
+
+  #nav-and-content-container {
+    display: flex;
+    flex-flow: row nowrap;
+    margin-top: $statusBarH;
+    //border: 1px solid red; //#db
+  }
+
+// PAGE HEADER -------------------------------------
+  .bar-header {
+    background-color: $blue-light;
+    //height-min: 106px; //iOS cordova will overwrite this 
+    height: $rowH !important; //iOS cordova will overwrite this if not !important
+    display: flex;
+    align-items: center; // vertical align, but doesn't work w/ iOS cordova
+    //justify-content: space-between;
+    box-shadow: $itemShadow;
+    padding-left: $navW;
+    //border: 1px solid red; //#db
+  }
+
+  .bar .title {
+    position: relative;
+    display: block;
+    text-transform: uppercase;
+    color: $blue-main;
+    font-weight: bold;
+    font-size: $header-type;
+    line-height: 0; // this adjusts for weird iOS stuff
+    padding-top: 10px; // also adjusts for weird iOS styling
+    text-align: left;
+    overflow: visible;
+  }
+
+// CONTENT CONTAINER -------------------------------------
+
+  // IN ROOT TEMPLATE
+    #content-container { // this styles the view box in root_template.html -- tag = ion-nav-view
+      display: -webkit-flex;
+      -webkit-flex: 1;
+      -webkit-flex-direction: column;
+      justify-content: flex-start;
+      text-align: center;
+      height: $appH - $rowH;
+      width: $appW; // - $navW - $col-pad; //#hc this will need to be padding
+      margin-top: $rowH;
+      //border: 1px solid red; //#db
+    }
+
+    // IN STATE TEMPLATES
+      // ion-view.[state]_template.html should be the direct descendant of #content-container
+      // global styles for the state-level ion-view go here   (individual styles for each state should go in ion-view.state-contentBox's direct descendant and should be styled in the state's .scss file)
+    .state-contentBox {
+      padding: 0; // reset 
+      margin: 0; // reset
+
+      display: -webkit-flex;
+      -webkit-flex: 1;
+      margin-top: $rowHalf;
+      margin-left: $navW; 
+      height: auto;
+      width: $appW - $navW - $col-pad;
+      font-size: 1rem;
+      border: 1px solid $blue-light; //#db DEBUG LINES
+    }
+
+    .state-contentBox--wide {  // used in tutorial for full width graphics
+      @extend .state-contentBox;
+      margin-left: 0;
+      padding: 0; 
+      width: $appW;
+    }
+
+
+    .pane {  
+      // not entirely sure what this does. seems to be an ion-thing that groups content. 
+      //currently, used in Resources & Profiles. It should probably be moved to the individual state .scss files #hc
+      flex-flow: column;
+      //border: 1px solid yellow;
+    }
+
+    canvas {
+      background-color: $white;
+      // box-shadow
+      // rounded corners
+    }
+
+
+// NAV CONTAINER -------------------------------------
+  // All of the nav icon animations live in  'common-styles/_keyframeAni.scss' 
+
+  #nav-container {
+    display: -webkit-flex;
+    -webkit-flex-direction: column;
+    width: $nav-btnW; //10vw
+    height: $appH;
+    z-index: 999;
+  }
+
+  .nav-container {
+    z-index: 99;
+  }
+
+  .navTabs {
+    height: $appH; //100vh;
+    display: -webkit-flex;
+    -webkit-flex: 1;
+    -webkit-flex-direction: column;
+    color: $white;
+    text-transform: uppercase;
+    font-weight: bold;
+  }
+
+  .navTab {
+    display: -webkit-flex;
+    -webkit-flex: 1;
+    background-color: $blue-main;
+    text-align: center;
+    border-radius: $roundBorder;
+    box-shadow: $itemShadow; //1px 0px 2px #d3d3d3;
+    width: $nav-btnW; //100px;
+    padding-top: 10%;
+    padding-bottom: 5%;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+    transition: width 0.5s ease-in-out; // #hc animation
+
+    &.active {
+      color: #53C8E9;
+      background-color: $blue-white;
+      box-shadow: $itemShadow-select; //2px 1px 2px #d1d1d1;
+      z-index: 25;
+      width: $nav-btnW + 1; //~110px
+    }
+  }
+
+  .navTabText {
+    margin: auto;
+  }
+
+  .nav-svg {
+    height: 65px; //~61%
+    width: 65px; //~61%
+    display: block;
+    margin: 0 auto;
+    padding-bottom: 5px;
+    //border: 1px solid yellow;
+  }

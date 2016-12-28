@@ -1,5 +1,75 @@
-<ion-view view-title="Tutorial" class="text-content">
-	<div class="text-and-lpc__text">
-		A great big tutorial
-	</div>
+<ion-view view-title="Tutorial" class="state-contentBox--wide">
+	
+	<div class="tut-contentBox">
+
+		<!-- sand bar goes here -->
+		<div class="sandbarBox">
+
+			<img src="img/tutorial/sand.svg" class="sandbar-img">
+
+			<list class="sandbar-coinRow">
+				<item ng-repeat="coin in coinData" class="sandbar-coinBox"
+				>
+					<div class="sandbar-coinImgBox">
+					</div>
+					<div class="sandbar-coinTxt">
+						{{coin.txt}}
+					</div>
+				</item>
+
+			</list> <!-- end .coinList -->
+
+				<!-- 
+				<list class="navTabs">
+
+				      <item
+				        ng-repeat="tab in tabData"
+				        class="navTab"
+				        ui-sref="{{ 'root.' + tab.sref }}"
+				        ng-class="{ 'active': state.current.url === tab.sref }">
+				        
+				        <div class="navTabText">
+
+				          <!- defines img inactive state ->
+				          <img
+				            ng-if="state.current.url != tab.sref" 
+				            ng-src="{{ 'img/nav/' + tab.sref + '.svg' }}"
+				            class="nav-svg"
+				          >
+				          <!- defines img active state ->
+				          <img 
+				            ng-if="state.current.url === tab.sref" 
+				            ng-src="{{ 'img/nav/' + tab.sref + '-b.svg' }}"
+				            class="nav-svg animated {{ tab.ani }}"
+				          >
+				          
+				          {{tab.title}}
+
+				        </div>
+
+				      </item>
+				    </list>
+				 -->
+
+				<!-- the links to nested states using relative paths -->
+		  		<!-- adds active class if the state matches the ui-sref -->
+<!-- 				  <a ui-sref-active="active" ui-sref=".p01s1"><span>1</span>The Wave</a>
+				  <a ui-sref-active="active" ui-sref=".interests"><span>2</span> Full Image Template</a>
+				  <a ui-sref-active="active" ui-sref=".payment"><span>3</span> Wave2 Template</a> -->
+			</div><!-- end sandbar-coins -->
+
+
+		</div> <!-- end sandbarBox -->
+
+
+		<!-- scene content goes here -->
+		<div class="sceneBox">
+			
+
+
+
+		</div>
+	
+
+	</div> <!-- end tut-contentBox-->
 </ion-view>
