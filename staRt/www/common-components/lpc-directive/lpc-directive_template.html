@@ -2,10 +2,31 @@
 
 	<div
 		class="slider-and-canvas"
-		ng-class="{'full-width': !rate && !reset}"
-		on-touch="touched($event)"
-		on-drag="touched($event)">
+		ng-class="{'full-width': !rate && !reset}">
 		<!-- Renderer will be inserted here -->
+		
+		
+		<!-- Slider ->
+		<div
+			ng-if="slider"
+			class="lpc-range">
+		
+			<!- Starfish ->
+			<input
+				ng-if="slider"
+				type="range"
+				min="0"
+				max="4500"
+				ng-model="data.targetF3"
+				ng-change="updateTarget()"
+				data-thumbwidth="50"/>
+			
+			<!- Line + numbers ->
+			<output name="rangeVal"></output>
+			
+			<div id="sand"></div>
+		
+		</div> -->
 	</div>
 
 	<div class="lpc-buttons">
@@ -28,6 +49,5 @@
 			Reset Target
 		</button>
 	</div>
-
 
 </div>

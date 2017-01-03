@@ -1,20 +1,18 @@
-lpc-directive
-{
+lpc-directive {
 	display: -webkit-flex;
 	-webkit-flex: 1;
 	margin: auto;
 	flex-flow: column;
 }
 
-#lpc-canvas {
+#lpc-canvas { /* This is the THREEjs element*/
 	width: 100%;
 	height: 100%;
 	margin: auto;
 	z-index: 10;
 }
 
-.lpc-container
-{
+.lpc-container {  /* This is the light blue box*/
 	position: relative;
 	width: 800px;
 	height: 400px;
@@ -28,8 +26,7 @@ lpc-directive
 	box-shadow: 1px 1px 1px rgba(0,0,0,0.15);
 }
 
-.slider-and-canvas
-{
+.slider-and-canvas {
 	display: inline-block;
 	width: 88%;
 	position: absolute;
@@ -41,16 +38,14 @@ lpc-directive
 	}
 }
 
-.lpc-buttons
-{
+.lpc-buttons {
 	display: inline-block;
 	position: absolute;
 	width: 12%;
 	right: 0;
 }
 
-.reset-button
-{
+.reset-button {
 	height: 65px;
 	background-color: #FFECCB;
 	color: #e79b4c;
@@ -71,8 +66,7 @@ lpc-directive
 	display: block;
 }
 
-.rate-box button
-{
+.rate-box button {
 	float: right;
     height: 75px;
     width: 75px;
@@ -91,14 +85,12 @@ lpc-directive
     border: 0;
     display: block;
 
-    &:active
-    {
+    &:active {
     	background-color: darken(#53C8E9, 10%);
     }
 }
 
-.lpc-range
-{
+.lpc-range {
 	height: 400px;
 	background-color: transparent;
 	position: absolute;
@@ -108,14 +100,12 @@ lpc-directive
 	height: 100%;
 	width: 100%;
 
-	input
-	{
+	input {
 		background: transparent;
 	}
 }
 
-.lpc-container input[type='range']
-{
+.lpc-container input[type='range'] {
 	background-color: transparent;
 	box-shadow: none;
 	overflow: visible;
@@ -125,8 +115,7 @@ lpc-directive
 	width: 100%;
 	z-index: 3;
 
-	&::-webkit-slider-thumb
-	{
+	&::-webkit-slider-thumb {
 		height: 400px;
 		display: block;
 		background: url('../img/star2.svg') no-repeat;
@@ -170,8 +159,7 @@ lpc-directive
 
 }
 
-#sand
-{
+#sand {
 	height: 60px;
 	display: block;
 	position: absolute;

@@ -440,6 +440,31 @@ input[type=range]::-webkit-slider-thumb {
   width: 100vw;
   margin-top: 13.87143vh; }
 
+<<<<<<< HEAD
+.state-contentBox, .state-contentBox--wide {
+  padding: 0;
+  margin: 0;
+  display: -webkit-flex;
+  -webkit-flex: 1;
+  margin-top: 6.93571vh;
+  margin-left: 16.66vw;
+  height: auto;
+  width: 76.68vw;
+  font-size: 1rem; }
+
+.state-contentBox--wide {
+  margin-left: 0;
+  padding: 0;
+  width: 100vw; }
+
+.pane {
+  flex-flow: column; }
+
+canvas {
+  background-color: #ffffff; }
+
+=======
+>>>>>>> master
 #nav-container {
   display: -webkit-flex;
   -webkit-flex-direction: column;

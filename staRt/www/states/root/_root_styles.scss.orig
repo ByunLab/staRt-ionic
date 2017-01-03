@@ -104,6 +104,47 @@
       //border: 1px solid red; //#db
     }
 
+<<<<<<< HEAD
+    // IN STATE TEMPLATES
+      // ion-view.[state]_template.html should be the direct descendant of #content-container
+      // global styles for the state-level ion-view go here   (individual styles for each state should go in ion-view.state-contentBox's direct descendant and should be styled in the state's .scss file)
+    .state-contentBox {
+      padding: 0; // reset 
+      margin: 0; // reset
+
+      display: -webkit-flex;
+      -webkit-flex: 1;
+      margin-top: $rowHalf;
+      margin-left: $navW; 
+      height: auto;
+      width: $appW - $navW - $col-pad;
+      font-size: 1rem;
+      //border: 1px solid $blue-light; //#db DEBUG LINES
+    }
+
+    .state-contentBox--wide {  // used in tutorial for full width graphics
+      @extend .state-contentBox;
+      margin-left: 0;
+      padding: 0; 
+      width: $appW;
+    }
+
+
+    .pane {  
+      // not entirely sure what this does. seems to be an ion-thing that groups content. 
+      //currently, used in Resources & Profiles. It should probably be moved to the individual state .scss files #hc
+      flex-flow: column;
+      //border: 1px solid yellow;
+    }
+
+    canvas {
+      background-color: $white;
+      // box-shadow
+      // rounded corners
+    }
+
+=======
+>>>>>>> master
 
 // NAV CONTAINER =================================================================
   // All of the nav icon animations live in  'common-styles/_keyframeAni.scss' 
