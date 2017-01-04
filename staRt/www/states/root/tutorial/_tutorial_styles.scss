@@ -16,7 +16,7 @@
 	height: 475px;
 	z-index: 10;
 
-	//border: 1px solid yellow;
+	border: 1px solid yellow;
 }
 
 
@@ -37,7 +37,7 @@
 		z-index: 1;
 		background-image: url("../img/tutorial/sand.svg");
 		background-size: auto 100%;
-		//border: 1px solid lime;
+		border: 1px solid lime;
 	}
 
 	.sandbar-coinRow {
@@ -47,26 +47,29 @@
 		align-items: center;
 		justify-content: space-between;
 		flex-wrap: nowrap;
-		margin-top: $rowHalf;
 		height: 100%;
 		margin-left: $navW;
 		width: $appW - $navW - $col-pad;
 		z-index: 25;
-		//border: 1px solid orange;
+		border: 1px solid orange;
 	}
 
 	.sandbar-coinBox {
 		align-self: flex-start;
+		display: flex;
+		flex-direction: column;
 		padding: 0px 10px;
+		height: 100%;
+
 		z-index: 25;
 		border: 1px solid white;
 	}
 
 	.sandbar-coinImgBox {
-		height: 68px; //64%; //64%; //100%; //
+		height: 60px; //64%; //64%; //100%; //
 		// height: $rowHalf; //		#hc need a var for nav icon size
 		width: auto;
-		//border: 1px solid aqua;
+		border: 1px solid aqua;
 	}
 
 	.sandbar-coinImg {

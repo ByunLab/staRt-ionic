@@ -6,7 +6,47 @@
 	SAND BAR -->
 		<div class="sandbarBox">
 			<list class="sandbar-coinRow">
-				<item ng-repeat="coin in coinData" class="sandbar-coinBox"
+				<a ui-sref="root.tutorial.p01" ui-sref-active="active">
+	              <item class="sandbar-coinBox">
+	                <span class="sandbar-coinImgBox"></span>
+	                <span class="sandbar-coinTxt">the wave</span>
+	              </item>
+            	</a>
+
+	            <a ui-sref="root.tutorial.p02" ui-sref-active="active">
+	              <item>
+	                <div class="sandbar-coinImgBox"></div>
+	                <div class="sandbar-coinTxt">eee sounds</div>
+	              </item>
+	            </a>
+	          
+	            <a ui-sref="root.tutorial.p03" ui-sref-active="active">
+	              <item>
+	                <div class="sandbar-coinImgBox"></div>
+	                <div class="sandbar-coinTxt">aah sounds</div>
+	              </item>
+	            </a>
+
+	            <a ui-sref="root.tutorial.p04" ui-sref-active="active">
+	               <item>
+	                <div class="sandbar-coinImgBox"></div>
+	                <div class="sandbar-coinTxt">ooh sounds</div>
+	              </item>
+	            </a>
+	            
+	            <a ui-sref="root.tutorial.p05" ui-sref-active="active">
+	              <item>
+	                <div class="sandbar-coinImgBox"></div>
+	                <div class="sandbar-coinTxt">/r/ sounds</div>
+	              </item>
+	            </a>
+			</list>
+
+
+			<!-- 
+				<item 
+					ng-repeat="coin in coinData" 
+					class="sandbar-coinBox"
 				>
 					<div class="sandbar-coinImgBox">
 					</div>
@@ -15,9 +55,9 @@
 					</div>
 				</item>
 
-			</list> <!-- end .coinList -->
+			</list> <!- end .coinList ->
 
-			<!-- 
+			
 				<list class="navTabs">
 
 				      <item
@@ -54,6 +94,7 @@
 				<!-- <a ui-sref-active="active" ui-sref=".p01s1"><span>1</span>The Wave</a>
 				  <a ui-sref-active="active" ui-sref=".interests"><span>2</span> Full Image Template</a>
 				  <a ui-sref-active="active" ui-sref=".payment"><span>3</span> Wave2 Template</a> -->
+
 			</div><!-- end sandbar-coins -->
 
 
@@ -63,12 +104,14 @@
 	<!-- ==================================
 	SCENE CONTENT -->
 		<div class="sceneBox">
+			<div ui-view> </div>
+
 			
 			<!-- <ion-slides options="sliderOpts" slider="data.slider"> -->
-			<ion-slides options="sliderOpts" slider="swiper">
+			<!-- <ion-slides options="sliderOpts" slider="swiper"> -->
 			
 			<!-- PAGE 01 -->
-		  	    <ion-slide-page id="p01s1">
+				<!-- <ion-slide-page id="p01s1">
 			    	<img src="img/tutorial/p01s1.png" class="tutSlide">  
 			    </ion-slide-page>
 
@@ -86,20 +129,20 @@
 
 			    <ion-slide-page id="p01s5">
 			    	<img src="img/tutorial/p01s5.png" class="tutSlide">  
-			    </ion-slide-page>
+			    </ion-slide-page> -->
 			
 
 		<!-- PAGE 02 -->
-				<ion-slide-page id="p02s1">
+				<!-- <ion-slide-page id="p02s1">
 			    	<img src="img/tutorial/p02s1.png" class="tutSlide">  
 			    </ion-slide-page>
 
 			    <ion-slide-page id="p02s2">
 			    	<img src="img/tutorial/p02s2.png" class="tutSlide">  
-			    </ion-slide-page>
+			    </ion-slide-page> -->
 		
 		<!-- PAGE 03 -->
-				<ion-slide-page id="p03s1">
+				<!-- <ion-slide-page id="p03s1">
 			    	<img src="img/tutorial/p03s1.png" class="tutSlide">  
 			    </ion-slide-page>
 
@@ -109,21 +152,21 @@
 
 			    <ion-slide-page id="p03s3">
 			    	<img src="img/tutorial/p03s3.png" class="tutSlide">  
-			    </ion-slide-page>
+			    </ion-slide-page> -->
 		
 
 		<!-- PAGE 04 -->
-				<ion-slide-page id="p04s1">
+				<!-- <ion-slide-page id="p04s1">
 			    	<img src="img/tutorial/p04s1.png" class="tutSlide">  
 			    </ion-slide-page>
 
 			    <ion-slide-page id="p04s2">
 			    	<img src="img/tutorial/p04s2.png" class="tutSlide">  
-			    </ion-slide-page>
+			    </ion-slide-page> -->
 		
 
 		<!-- PAGE 05 -->
-				<ion-slide-page id="p05s1">
+				<!-- <ion-slide-page id="p05s1">
 			    	<img src="img/tutorial/p05s1.png" class="tutSlide">  
 			    </ion-slide-page>
 
@@ -141,11 +184,11 @@
 
 			    <ion-slide-page id="p05s5">
 			    	<img src="img/tutorial/p05s5.png" class="tutSlide">  
-			    </ion-slide-page>
+			    </ion-slide-page> -->
 
 
 
-			</ion-slides> <!-- end ion-slides -->
+			<!-- </ion-slides>  end ion-slides -->
 
 		</div> <!-- end sceneBox -->
 	

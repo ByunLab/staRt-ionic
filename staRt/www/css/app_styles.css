@@ -536,7 +536,8 @@ canvas {
   margin-left: 170px;
   width: 80%;
   height: 475px;
-  z-index: 10; }
+  z-index: 10;
+  border: 1px solid yellow; }
 
 .sandbarBox {
   position: relative;
@@ -547,7 +548,8 @@ canvas {
   flex-direction: column;
   z-index: 1;
   background-image: url("../img/tutorial/sand.svg");
-  background-size: auto 100%; }
+  background-size: auto 100%;
+  border: 1px solid lime; }
 
 .sandbar-coinRow {
   position: relative;
@@ -556,21 +558,25 @@ canvas {
   align-items: center;
   justify-content: space-between;
   flex-wrap: nowrap;
-  margin-top: 6.93571vh;
   height: 100%;
   margin-left: 16.66vw;
   width: 76.68vw;
-  z-index: 25; }
+  z-index: 25;
+  border: 1px solid orange; }
 
 .sandbar-coinBox {
   align-self: flex-start;
+  display: flex;
+  flex-direction: column;
   padding: 0px 10px;
+  height: 100%;
   z-index: 25;
   border: 1px solid white; }
 
 .sandbar-coinImgBox {
-  height: 68px;
-  width: auto; }
+  height: 60px;
+  width: auto;
+  border: 1px solid aqua; }
 
 .sandbar-coinTxt {
   margin-top: 5px; }
