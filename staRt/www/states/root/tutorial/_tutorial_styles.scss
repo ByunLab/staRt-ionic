@@ -19,6 +19,19 @@
 	border: 1px solid yellow;
 }
 
+.lpc1 {
+	position: absolute;
+	top: $rowHalf * 0.85;
+	left: 0;
+	height: 215px;
+	width: 490px;
+	border: 1px solid red;
+}
+
+ion-slide-page {
+	z-index: 99;
+}
+
 
 .swiper-slide {
 	//border: 1px solid pink;

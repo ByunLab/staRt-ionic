@@ -539,6 +539,17 @@ canvas {
   z-index: 10;
   border: 1px solid yellow; }
 
+.lpc1 {
+  position: absolute;
+  top: 5.89536vh;
+  left: 0;
+  height: 215px;
+  width: 490px;
+  border: 1px solid red; }
+
+ion-slide-page {
+  z-index: 99; }
+
 .sandbarBox {
   position: relative;
   height: 27.74286vh;

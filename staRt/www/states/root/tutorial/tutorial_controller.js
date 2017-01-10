@@ -10,7 +10,7 @@
 		$scope.coinData = [
 			{ 
 				id: "coin1",
-				sref: "",
+				sref: "p01",
 				img: "",
 				txt: "the wave",
 				ani: "",
@@ -21,7 +21,7 @@
 			},
 			{ 
 				id: "coin2",
-				sref: "",
+				sref: "p02",
 				img: "",
 				txt: "eee sounds",
 				ani: "",
@@ -32,7 +32,7 @@
 			},
 			{ 
 				id: "coin3",
-				sref: "",
+				sref: "p03",
 				img: "",
 				txt: "ahh sounds",
 				ani: "",
@@ -43,7 +43,7 @@
 			},
 			{ 
 				id: "coin4",
-				sref: "",
+				sref: "p04",
 				img: "",
 				txt: "ooh sounds",
 				ani: "",
@@ -54,7 +54,7 @@
 			},
 			{ 
 				id: "coin5",
-				sref: "",
+				sref: "p05",
 				img: "",
 				txt: "/r/ sounds",
 				ani: "",
@@ -73,20 +73,50 @@
 		    // this seems to be the only way to get the swiperJs obj
 		    onInit: function(swiper){  
 		    $scope.swiper = swiper;
-		    console.log($scope.swiper);
+		    console.log('The active index is ' + swiper.activeIndex); 
 		    // Now you can do whatever you want with the swiper
+
 		    },
 
 		    onSlideChangeEnd: function(swiper){
 		    console.log('The active index is ' + swiper.activeIndex); 
 		    }
+
+
 		  };
+		  
 
-		
-		
+// var mySwiper = new Swiper ('.swiper-container', {
+//     // Optional parameters
+//     direction: 'vertical',
+//     loop: true,
+    
+//     // If we need pagination
+//     pagination: '.swiper-pagination',
+    
+//     // Navigation arrows
+//     nextButton: '.swiper-button-next',
+//     prevButton: '.swiper-button-prev',
+    
+//     // And if we need scrollbar
+//     scrollbar: '.swiper-scrollbar',
+//   })  
 
+		// $scope.$on("$ionicSlides.sliderInitialized", function(event, data){
+		// 	  // data.slider is the instance of Swiper
+		// 	  $scope.slider = data.slider;
+		// 	  console.log('slider init!');
+		// });
 
+// $scope.$on("$ionicSlides.slideChangeStart", function(event, data){
+//   console.log('Slide change is beginning');
+// });
 
+// $scope.$on("$ionicSlides.slideChangeEnd", function(event, data){
+//   // note: the indexes are 0-based
+//   $scope.activeIndex = data.slider.activeIndex;
+//   $scope.previousIndex = data.slider.previousIndex;
+// }); -->
 
 		console.log('TutorialController here!');
 	});
