@@ -38,7 +38,9 @@ lpcDirective.controller( 'LpcDirectiveController',
 		$scope.$emit('ratingChange', $scope.data.rating);
 	});
 
-	$scope.lpcRenderer = new LPCRenderer($element, 20);
+	var canvasElement = $element[0].querySelector('#lpc-canvas');
+
+	$scope.lpcRenderer = new LPCRenderer(canvasElement, 20);
 
 	// Mouse events
 	$scope.lpcRenderer.renderer.domElement.addEventListener('mousedown', onTouchStart, false);
@@ -54,6 +56,7 @@ lpcDirective.controller( 'LpcDirectiveController',
 	$scope.active = false;
 	$scope.pause = false;
 	$scope.pointerDown = false;
+	$scope.lpcHidden = false;
 	$scope.lpcRenderer.doShowSand = $scope.sand;
 	$scope.lpcRenderer.doShowSlider = $scope.slider;
 	$scope.targetNeedsUpdate = false;
@@ -291,7 +294,7 @@ lpcDirective.controller( 'LpcDirectiveController',
 				ProfileService.saveProfile(currentProfile);
 			}
 		})
-	}
+	};
 
 	$scope.resetF3 = function() {
 		ProfileService.getCurrentProfile().then(function(res)
@@ -305,16 +308,26 @@ lpcDirective.controller( 'LpcDirectiveController',
 				})
 			}
 		})
+	};
+
+	$scope.showLPC = function() {
+		$scope.lpcHidden = false;
+	};
+
+	$scope.hideLPC = function() {
+		$scope.lpcHidden = true;
 	}
 
-	$scope.$parent.$on('$ionicView.afterEnter', function() {
-		$scope.active = true;
-		setInitialTarget();
-		$scope.animate();
+	$scope.active = true;
+	setInitialTarget();
+	$scope.animate();
+
+	$scope.$on('beforeLeave', function() {
+		$scope.active = false;
 	});
 
-	$scope.$parent.$on('$ionicView.beforeLeave', function() {
-		$scope.active = false;
+	$scope.$on("resetRating", function() {
+		$scope.data.rating = 0;
 	});
 
 	$scope.$watch('targetF3', function()

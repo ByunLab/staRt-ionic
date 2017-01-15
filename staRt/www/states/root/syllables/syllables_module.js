@@ -3,7 +3,7 @@
 ( function(  )
 {
 	var syllables = angular.module( 'syllables',
-	[ ] );
+	[ 'practiceDirective' ] );
 
 	syllables.config( function( $stateProvider )
 	{

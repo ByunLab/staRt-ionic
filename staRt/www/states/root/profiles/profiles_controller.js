@@ -25,19 +25,19 @@
 		{
 			console.log("hi");
 
+			$scope.isEditing = false;
+			$scope.data = {};
+
 			ProfileService.getAllProfiles().then( function(res) {
 				console.log(res);
 				$scope.data.profiles = res;
 			});
-			
-			$scope.isEditing = false;
-			$scope.data = {};
 
 			ProfileService.getCurrentProfile().then(function(res)
 			{
 				console.log(res);
 				if (res)
-				{				
+				{
 					$scope.data.currentProfile = res;
 					$scope.data.currentProfileUUID = res.uuid;
 				}
@@ -45,7 +45,7 @@
 
 			$scope.$watchCollection('data.currentProfile', function(data)
 			{
-				if(data)
+				if (data)
 				{
 					$scope.data.currentProfileUUID = $scope.data.currentProfile.uuid;
 					if (window.AudioPlugin !== undefined)
@@ -91,7 +91,7 @@
 						$scope.setIsEditing(false);
 						ProfileService.setCurrentProfile($scope.data.currentProfile);
 					});
-				});		
+				});
 			} else {
 				alert("Profile is missing some data");
 			}

@@ -3,7 +3,7 @@
 ( function(  )
 {
 	var words = angular.module( 'words',
-	[ ] );
+	[ 'practiceDirective' ] );
 
 	words.config( function( $stateProvider )
 	{
@@ -17,12 +17,6 @@
 					templateUrl: 'states/root/words/words_template.html',
 					controller: 'WordsController as words'
 				}
-			},
-			resolve:
-			{
-				wordListData: function($http) {
-	          		return $http.get('data/staRt_wordlist.csv');
-	        	}
 			}
 			// abstract: true,
 		} );

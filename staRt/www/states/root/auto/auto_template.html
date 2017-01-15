@@ -2,8 +2,26 @@
 	<div class="auto-contentBox">
 
 		<div class="text-and-lpc__text">
-			The Auto section will go here.
+			Syllable or Word Probes
 		</div>
+
+		<!-- 30 items, sequential -->
+		<button
+			class="big-button"
+			click="beginSyllableProbe()"
+			ng-hide="practicing"
+		>
+			Syllable Probe
+		</button>
+
+		<!-- 50 items, random -->
+		<button
+			class="big-button"
+			click="beginWordProbe()"
+			ng-hide="practicing"
+		>
+			Word Probe
+		</button>
 
 	</div> <!-- .auto-contentBox -->
 </ion-view>

@@ -366,8 +366,7 @@ input[type=range]::-webkit-slider-thumb {
   outline: none;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
-  font-family: 'Quicksand', 'Helvetica Neue', sans-serif !important;
-  -webkit-user-select: none; }
+  font-family: 'Quicksand', 'Helvetica Neue', sans-serif !important; }
 
 .animated {
   -webkit-animation-duration: 1s;
@@ -389,6 +388,26 @@ input[type=range]::-webkit-slider-thumb {
 .animated.ng-leave,
 .animated.ng-enter.ng-enter-active {
   display: block; }
+
+.big-button {
+  height: 65px;
+  background-color: #FFECCB;
+  color: #e79b4c;
+  border: 0px solid red;
+  position: relative;
+  height: 65px;
+  width: 80px;
+  margin: 0px;
+  padding: 5px;
+  font-size: 0.90em;
+  font-family: 'Quicksand', 'Helvetica Neue', sans-serif;
+  font-weight: 800;
+  text-align: center;
+  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.15);
+  z-index: 99;
+  border: 0;
+  display: block;
+  margin-bottom: 20px; }
 
 #app-container {
   display: -webkit-flex;
@@ -662,24 +681,7 @@ lpc-directive {
   right: 0; }
 
 .reset-button {
-  height: 65px;
-  background-color: #FFECCB;
-  color: #e79b4c;
-  float: right;
-  border: 0px solid red;
-  position: relative;
-  height: 65px;
-  width: 80px;
-  margin: 0px;
-  padding: 5px;
-  font-size: 0.90em;
-  font-family: 'Quicksand', 'Helvetica Neue', sans-serif;
-  font-weight: 800;
-  text-align: center;
-  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.15);
-  z-index: 99;
-  border: 0;
-  display: block; }
+  float: right; }
 
 .rate-box button {
   float: right;
@@ -701,6 +703,8 @@ lpc-directive {
   display: block; }
   .rate-box button:active {
     background-color: #26bae3; }
+  .rate-box button.selected {
+    background-color: #04c541; }
 
 .lpc-range {
   height: 400px;

@@ -46,48 +46,36 @@ lpc-directive {
 }
 
 .reset-button {
-	height: 65px;
-	background-color: #FFECCB;
-	color: #e79b4c;
 	float: right;
-	border: 0px solid red;
-	position: relative; 
-	height: 65px;
-	width: 80px;
-	margin: 0px;
-	padding: 5px; 
-	font-size: 0.90em;
-	font-family: 'Quicksand', 'Helvetica Neue', sans-serif;
-	font-weight: 800;
-	text-align: center;
-	box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.15);
-	z-index: 99;
-	border: 0;
-	display: block;
 }
 
 .rate-box button {
 	float: right;
-    height: 75px;
-    width: 75px;
-    padding: 10px;
-    border-radius: 75px;
-    margin-bottom: 20px;
-    border: 0px solid red;
-    position: relative;
-    font-size: 0.90em;
-    font-weight: bold;
-    text-align: center;
-    color: #fff;
-    background-color: #53C8E9;
-    box-shadow: 1px 1px 1px rgba(0,0,0,0.15);
-    z-index: 99;
-    border: 0;
-    display: block;
+	height: 75px;
+	width: 75px;
+	padding: 10px;
+	border-radius: 75px;
+	margin-bottom: 20px;
+	border: 0px solid red;
+	position: relative;
+	font-size: 0.90em;
+	font-weight: bold;
+	text-align: center;
+	color: #fff;
+	background-color: #53C8E9;
+	box-shadow: 1px 1px 1px rgba(0,0,0,0.15);
+	z-index: 99;
+	border: 0;
+	display: block;
 
-    &:active {
-    	background-color: darken(#53C8E9, 10%);
-    }
+	&:active {
+		background-color: darken(#53C8E9, 10%);
+	}
+
+	&.selected
+	{
+		background-color: #04c541;
+	}
 }
 
 .lpc-range {

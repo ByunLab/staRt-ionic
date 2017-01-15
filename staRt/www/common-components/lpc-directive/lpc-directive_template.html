@@ -4,49 +4,50 @@
 		class="slider-and-canvas"
 		ng-class="{'full-width': !rate && !reset}">
 		<!-- Renderer will be inserted here -->
-		
-		
-		<!-- Slider ->
-		<div
-			ng-if="slider"
-			class="lpc-range">
-		
-			<!- Starfish ->
-			<input
-				ng-if="slider"
-				type="range"
-				min="0"
-				max="4500"
-				ng-model="data.targetF3"
-				ng-change="updateTarget()"
-				data-thumbwidth="50"/>
-			
-			<!- Line + numbers ->
-			<output name="rangeVal"></output>
-			
-			<div id="sand"></div>
-		
-		</div> -->
+		<canvas id="lpc-canvas" ng-hide="lpcHidden" ></canvas>
 	</div>
 
 	<div class="lpc-buttons">
 		<div class="rate-box" ng-if="rate">
-			<button ng-click="data.rating = 1">
+			<button
+				ng-click="data.rating = 1"
+				ng-class="{selected: data.rating === 1}"
+			>
 				Poor
 			</button>
-			<button ng-click="data.rating = 2">
+			<button
+				ng-click="data.rating = 2"
+				ng-class="{selected: data.rating === 2}"
+			>
 				Decent
 			</button>
-			<button ng-click="data.rating = 3">
+			<button
+				ng-click="data.rating = 3"
+				ng-class="{selected: data.rating === 3}"
+			>
 				Great
 			</button>
 		</div>
 
 		<button
 			ng-click="resetF3()"
-			class="reset-button"
+			class="reset-button big-button"
 			ng-if="reset">
 			Reset Target
+		</button>
+
+		<button
+			ng-click="showLPC()"
+			class="reset-button big-button"
+			ng-hide="!lpcHidden || rate">
+			Show Wave
+		</button>
+
+		<button
+			ng-click="hideLPC()"
+			class="reset-button big-button"
+			ng-hide="lpcHidden || rate">
+			Hide Wave
 		</button>
 	</div>
 

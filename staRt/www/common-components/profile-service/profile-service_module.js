@@ -71,6 +71,13 @@ profileService.factory('ProfileService', function($localForage, $http)
 				profilePromises.push( $localForage.getItem(key) );
 			});
 
+			if (profilePromises.length === 0) {
+				return {
+					currentProfileUUID : null,
+					profiles : []
+				}
+			}
+
 			return Promise.all(profilePromises).then( function(result) {
 				var retVal = {};
 				for (var i=0; i<result.length; i++) {

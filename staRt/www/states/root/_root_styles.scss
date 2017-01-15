@@ -5,7 +5,6 @@
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
   font-family: 'Quicksand', 'Helvetica Neue', sans-serif !important;
-  -webkit-user-select: none;
 }
 
 // KEYFRAME ANIMATION BASE  =================================================================
@@ -35,6 +34,27 @@
   .animated.ng-enter.ng-enter-active {
     display: block;
   }
+
+  .big-button {
+  height: 65px;
+  background-color: #FFECCB;
+  color: #e79b4c;
+  border: 0px solid red;
+  position: relative;
+  height: 65px;
+  width: 80px;
+  margin: 0px;
+  padding: 5px;
+  font-size: 0.90em;
+  font-family: 'Quicksand', 'Helvetica Neue', sans-serif;
+  font-weight: 800;
+  text-align: center;
+  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.15);
+  z-index: 99;
+  border: 0;
+  display: block;
+  margin-bottom: 20px;
+}
 
  // PAGE LAYOUT  =================================================================
  

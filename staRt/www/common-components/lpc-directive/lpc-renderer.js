@@ -54,21 +54,6 @@ lpcDirective.factory('LPCRenderer', function (Drawing, $http)
 		}
 	});
 
-	LPCRenderer.prototype.injectRenderer = function(renderer, element)
-	{
-		var containerDiv = angular.element(element[0].querySelector('.slider-and-canvas'))[0];
-
-		var firstElt = null;
-
-		if (containerDiv.children.length > 0) firstElt = containerDiv.children[0];
-
-		if (firstElt) {
-			containerDiv.insertBefore(firstElt, renderer.domElement);
-		} else {
-			containerDiv.appendChild(renderer.domElement);
-		}
-	};
-
 	LPCRenderer.prototype.getDrawingDim = function(canvas)
 	{
 		// These might be needed if the css throws off our current clientWidth & clientHeight measurements
@@ -474,11 +459,9 @@ lpcDirective.factory('LPCRenderer', function (Drawing, $http)
 
 	LPCRenderer.prototype.initialize = function(element)
 	{
-		this.renderer = new THREE.WebGLRenderer({ antialias: true });
+		this.renderer = new THREE.WebGLRenderer({ antialias: true, canvas: element });
 
-		this.injectRenderer(this.renderer, element);
-
-		this.canvas = this.renderer.domElement;
+		this.canvas = element;
 		this.canvas.id = "lpc-canvas";
 
 		this.savedTarget = 2247;
