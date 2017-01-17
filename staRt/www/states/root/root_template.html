@@ -27,7 +27,7 @@
           >
           <!-- defines img active state -->
           <img 
-            ng-if="state.current.url === tab.sref" 
+            ng-if="state.current.url == tab.sref" 
             ng-src="{{ 'img/nav/' + tab.sref + '-b.svg' }}"
             class="nav-svg animated {{ tab.ani }}"
           >

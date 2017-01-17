@@ -4,87 +4,86 @@
 {
 	var tutorial = angular.module( 'tutorial' );
 
-	tutorial.controller('TutorialController', function($scope, $timeout, $localForage, StartUIState, $rootScope, $state)
+	//#q  added $http to get some local json. I don't really understand 'services' and 'factories', but they seems like a 'more correct' way to do this. Should look into this ...
+
+	tutorial.controller('TutorialController', function($scope, $timeout, $localForage, StartUIState, $rootScope, $state, $http)  
 	{
-		
-		$scope.coinData = [
-			{ 
-				id: "coin1",
-				sref: "p01",
-				img: "",
-				txt: "the wave",
-				ani: "",
-				xpos: "",
-				ypos: "",
-				height: "",
-				width: ""
-			},
-			{ 
-				id: "coin2",
-				sref: "p02",
-				img: "",
-				txt: "eee sounds",
-				ani: "",
-				xpos: "",
-				ypos: "",
-				height: "",
-				width: ""
-			},
-			{ 
-				id: "coin3",
-				sref: "p03",
-				img: "",
-				txt: "ahh sounds",
-				ani: "",
-				xpos: "",
-				ypos: "",
-				height: "",
-				width: ""
-			},
-			{ 
-				id: "coin4",
-				sref: "p04",
-				img: "",
-				txt: "ooh sounds",
-				ani: "",
-				xpos: "",
-				ypos: "",
-				height: "",
-				width: ""
-			},
-			{ 
-				id: "coin5",
-				sref: "p05",
-				img: "",
-				txt: "/r/ sounds",
-				ani: "",
-				xpos: "",
-				ypos: "",
-				height: "",
-				width: ""
-			},
-		];
+		//get data for tutorial_template.html 
+		$http.get('states/root/tutorial/tut-data/coinData.json').success(function(data){
+			$scope.coinData = data;
+		});
 
-		$scope.sliderOpts = {
-		    effect: 'slide',
-		    initialSlide: 0,
-		    pagination: false,
+		// this is read in as json
+		$http.get('states/root/tutorial/tut-data/step01.js').success(function(data)
+		{
+			$scope.step01 = data;
+			$scope.p01s1 = $scope.step01[0];
+			$scope.p01s2 = $scope.step01[1];
+			$scope.p01s3 = $scope.step01[2];
+			$scope.p01s4 = $scope.step01[3];
+			$scope.p01s5 = $scope.step01[4];
+		});
 
-		    // this seems to be the only way to get the swiperJs obj
-		    onInit: function(swiper){  
-		    $scope.swiper = swiper;
-		    console.log('The active index is ' + swiper.activeIndex); 
-		    // Now you can do whatever you want with the swiper
+		$scope.hello = function() {
+			console.log('hello');
+			$state.go('root.tutorial.p02'); //doesn't work
+		}
 
-		    },
+		// function setDevPage() {
+		// 	$state.go('root.tutorial.p01s1');
+		// }
+		// setDevPage();
+			
 
-		    onSlideChangeEnd: function(swiper){
-		    console.log('The active index is ' + swiper.activeIndex); 
-		    }
+			//console.log('scope.step1: ' + coinData);
+
+			
+			//var step01 = [];
+			//step01 = $scope.step01;
+			// var stepCount = 0;
+//			console.log($scope.step01);
+
+//			if stepCount > step01.length
+			// $http.get('states/root/tutorial/tut-data/coinData.json').success(function(data){
+			// 	$scope.coinData = data;
+			// 	//console.log($scope.coinData)
+			// });
+		//console.log(p01s1);
+		console.log('TutorialController here!');
+	});
+} )(  );
+
+/*
+
+var phonecatControllers = angular.module('phonecatControllers', []);
+
+phonecatControllers.controller('PhoneListCtrl', ['$scope', '$http',
+  function($scope, $http) {
+    $http.get('phones/phones.json').success(function(data) {
+      $scope.phones = data;
+    });
+
+    $scope.orderProp = 'age';
+  }]);
+
+phonecatControllers.controller('PhoneDetailCtrl', ['$scope', '$routeParams', '$http',
+  function($scope, $routeParams, $http) {
+    $http.get('phones/' + $routeParams.phoneId + '.json').success(function(data) {
+      $scope.phone = data;
+    });
+  }]);
 
 
-		  };
-		  
+  //---------------
+
+Slide Events
+The slides component dispatches events when the active slide changes
+
+$ionicSlides.slideChangeStart	This event is emitted when a slide change begins
+$ionicSlides.slideChangeEnd	This event is emitted when a slide change completes
+$ionicSlides.sliderInitialized	This event is emitted when the slider is initialized. It provides access to an instance of the slider.
+
+
 
 // var mySwiper = new Swiper ('.swiper-container', {
 //     // Optional parameters
@@ -117,19 +116,5 @@
 //   $scope.activeIndex = data.slider.activeIndex;
 //   $scope.previousIndex = data.slider.previousIndex;
 // }); -->
-
-		console.log('TutorialController here!');
-	});
-
-} )(  );
-
-/*
-
-Slide Events
-The slides component dispatches events when the active slide changes
-
-$ionicSlides.slideChangeStart	This event is emitted when a slide change begins
-$ionicSlides.slideChangeEnd	This event is emitted when a slide change completes
-$ionicSlides.sliderInitialized	This event is emitted when the slider is initialized. It provides access to an instance of the slider.
 
 */

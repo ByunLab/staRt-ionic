@@ -1,0 +1,34 @@
+<div class="pageView">
+
+	<img ng-src="{{currStep.bgImg}}" class="tut-bgImg">
+
+	<div class="tutPg-header">{{currStep.header.txt}}</div> 
+	
+	<div class="tutNoWave-content">
+		<div class="noWaveBox">
+			<div class="noWaveRow noWave1">{{currStep.LRow1.txt}}</div>
+			<div class="noWaveRow noWave2">{{currStep.LRow2.txt}}</div>
+			<div class="noWaveRow noWave3">{{currStep.LRow3.txt}}</div>
+		</div>
+
+		<div class="inputBox">
+			<button
+				class="tutBtn"
+				ui-sref="{{'root.tutorial.' + currStep.input.next}}">
+				{{currStep.input.txt}}
+			</button>
+		</div>
+		
+		<img 
+			ng-src="{{currStep.char.img}}" 
+			class="charImg" 
+			style="height:{{currStep.char.hgt}}; 
+				width:{{currStep.char.w}}; 
+				top:{{currStep.char.top}}; 
+				left:{{currStep.char.left}};">
+		</div>
+	</div> <!-- end tutNoWave-content ng-click=""-->
+</div> <!-- end .pageView -->
+
+
+

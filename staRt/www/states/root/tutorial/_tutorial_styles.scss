@@ -8,15 +8,302 @@
 	//border: 1px solid yellow;
 }
 
-.sceneBox {
+.sceneBox { // is this n/a now
 	position: absolute;
 	top: 0;
 	margin-left: 170px;
 	width: 80%;
 	height: 475px;
 	z-index: 10;
+	//border: 1px solid yellow;
+}
 
-	border: 1px solid yellow;
+#pageView {  // this is the ui-view in the parent ele
+	width: 100%;
+	height: 475px;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: stretch;
+	// border: 1px solid pink;
+}
+
+.pageView {  // this is the parent ele in the view template
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: stretch;
+	font-size: 1.4em;
+	//font-weight: bold;
+	border: 1px solid lightBlue;
+}
+
+	.tutPg-header {
+		display: flex;
+		flex-direction: row;
+		justify-content: flex-start;
+		align-items: flex-start;
+		text-align: left;
+		padding: 0;
+		width: 100%;
+		//min-height: $rowHalf;
+		height: auto;
+		//border: 1px solid lightBlue;
+	}
+
+	.tut-bgImg {
+		height: 100%;
+		width: 100%;
+		position: absolute;
+		top: 0px;
+		left: 0px;
+		z-index: 1;
+		opacity: 0.1;
+		//border: 1px solid red;
+	}
+
+	
+	.tutNoWave-content {
+		display: flex;
+		flex-direction: column;
+		flex-wrap: nowrap;
+		align-items: flex-start;
+		justify-content: space-between;
+		height: 100%;
+		//border: 1px solid orange;
+
+		.noWaveBox {
+			display: flex;
+			flex-direction: column;
+			align-items: flex-start;
+			justify-content: space-around;
+			width: 60%;
+			height: $rowH * 3;
+			//border: 1px solid lime;
+		}
+
+		.noWaveRow {
+			display: flex;
+			flex-direction: row;
+			flex-wrap: nowrap;
+			justify-content: flex-start;
+			align-items: flex-start;
+			text-align: left;
+			width: 100%;
+			//border: 1px solid green;
+
+			.noWave3 {
+				//border: 1px solid green;
+				width: 50%;
+			}
+
+		} //end .noWaveRow
+
+		.charImg {
+			position: absolute;
+			//border: 1px solid pink;
+		}
+	} // end .tutNoWave-content
+
+	.tutSingleWave-content {
+		// should be identical to .tutNoWave-content w/ the exception of flex-direction
+		display: flex;
+		flex-direction: row;
+		flex-wrap: nowrap;
+		align-items: flex-start;
+		justify-content: space-between;
+		height: 100%;
+		text-align: left;
+		//border: 1px solid orange;
+
+		.leftBox {
+			display: flex;
+			flex-direction: column;
+			height: 100%;
+			width: 65%;
+			//border: 1px solid lightBlue;
+			
+			.leftRow {
+				display: flex;
+				flex-direction: row;
+				flex-wrap: nowrap;
+				align-items: flex-start;
+				//height: auto;
+				//border: 1px solid lightBlue;
+			}
+
+			.wave1 {
+				padding: 10px;
+				padding-top: 20px;
+			// just a container
+				.waveFrame {
+					height: 190px;
+					width: 500px;
+					background-color: $blue-white;
+					border-radius: 10px;
+					box-shadow: $itemShadow;
+
+					.lpcBox {
+						margin: 10px;
+						height: 170px;
+						width: 480px;
+						border-radius: 10px;
+						background-color: $blue-light;
+						//border: 1px solid red;
+					}
+					
+					.waveFrame-label {
+						position: relative;
+						margin: 10px;
+						top: - 190px;
+						left: - 0px;
+						height: auto;
+						padding: 5px;
+						width: 190px;
+						margin: 0 auto;
+						background-color: $blue-white;
+						border-radius: 10px;
+						text-align: center;
+
+						.waveFrame-label--txt {
+							font-size: 1em;
+						}
+						.waveFrame-label--title {
+							font-size: 0.65em;
+							font-weight: bold;
+						}
+					} // end .waveFrame-label
+
+				} // end waveFrame
+			}
+			.leftRow2 {
+				padding-top: 20px;
+
+
+			}
+			.leftRow3 {
+				flex-direction: column;
+
+			}
+		}
+
+		.rightBox {
+			display: flex;
+			flex-direction: column;
+			height: 100%;
+			width: 33%;
+			//border: 1px solid orange;
+			
+			.rightRow1 {
+				display: flex;
+				flex-direction: row;
+				min-height: 25px;
+				width: 100%;
+				//border: 1px solid lightBlue;
+			}
+
+			.starImg {
+				position: absolute;
+				height: 265px;
+				width: 267px;
+				top: $rowH * 2;
+				border: 1px solid lightBlue;
+			}
+		}
+
+	} // end .tutPgView-content
+
+
+	.tutPgView-content {
+		// should be identical to .tutNoWave-content w/ the exception of flex-direction
+		display: flex;
+		flex-direction: row;
+		flex-wrap: nowrap;
+		align-items: flex-start;
+		justify-content: space-between;
+		height: 100%;
+		border: 1px solid orange;
+
+		.leftBox {
+			display: flex;
+			flex-direction: column;
+			height: 100%;
+			width: 65%;
+			border: 1px solid lightBlue;
+			
+			.leftRow {
+				display: flex;
+				flex-direction: row;
+				flex-wrap: nowrap;
+				align-items: flex-start;
+				height: 10%;
+				border: 1px solid lightBlue;
+			}
+
+			.leftRow1 {
+
+			}
+			.leftRow2 {
+
+			}
+			.leftRow3 {
+				flex-direction: column;
+
+			}
+		}
+
+		.rightBox {
+			display: flex;
+			flex-direction: column;
+			height: 100%;
+			width: 33%;
+			border: 1px solid orange;
+			
+			.rightRow1 {
+				display: flex;
+				flex-direction: row;
+				min-height: 25px;
+				width: 100%;
+				border: 1px solid lightBlue;
+			}
+
+			.starBox {
+				position: absolute;
+				height: 265px;
+				width: 267px;
+				top: $rowH * 2;
+				border: 1px solid yellow;
+			}
+		}
+
+	} // end .tutPgView-content
+
+
+	.inputBox {
+		position: absolute;
+		display: flex;
+		flex-direction: row;
+		flex-wrap: nowrap;
+		justify-content: center;
+		width: 60%;
+		height: auto;
+		top: $rowH * 3.5;
+		margin-bottom: $rowHalf;
+		//border: 1px solid yellow;
+	}
+
+button.tutBtn, a.tutBtn {
+	min-height: $rowHalf;
+	min-width: 150px;
+	border-radius: $rowHalf;
+	border: none;
+	box-shadow: $itemShadow;
+	color: white;
+	font-size: 1em;
+	background-color: $blue-main;
+	z-index: 99;
 }
 
 .lpc1 {
@@ -25,7 +312,7 @@
 	left: 0;
 	height: 215px;
 	width: 490px;
-	border: 1px solid red;
+	//border: 1px solid red;
 }
 
 ion-slide-page {
@@ -34,7 +321,7 @@ ion-slide-page {
 
 
 .swiper-slide {
-	//border: 1px solid pink;
+	border: 1px solid pink;
 }
 
 
@@ -50,7 +337,7 @@ ion-slide-page {
 		z-index: 1;
 		background-image: url("../img/tutorial/sand.svg");
 		background-size: auto 100%;
-		border: 1px solid lime;
+		//border: 1px solid lime;
 	}
 
 	.sandbar-coinRow {
@@ -64,7 +351,7 @@ ion-slide-page {
 		margin-left: $navW;
 		width: $appW - $navW - $col-pad;
 		z-index: 25;
-		border: 1px solid orange;
+		//border: 1px solid orange;
 	}
 
 	.sandbar-coinBox {

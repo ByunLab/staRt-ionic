@@ -1,0 +1,163 @@
+[
+	{
+		"id": "p01s1",
+		"sref": "p01s1",
+		"nav": {
+			"page": 1,
+			"pagetxt": "p01",
+			"scene": 1,
+			"scenetxt": "s1"
+		},
+
+		"template":"waveNone.html",
+		
+		"XbgImg": "img/tutorial/p01s1.png",
+
+		"header": {
+			"txt": "HELLO! This tutorial will show you how to use the staRt wave to practice your 'r' sounds."
+		},
+		
+		"LRow1": {
+			"txt": "You should have an external microphone plugged into our iPad."
+		},
+		
+		"RRow1": {
+			"txt":""
+		},
+		
+		"LRow2": {
+			"txt": "Please allow yourself 15 minutes to complete the tutorial."
+		},
+		
+		"LRow3": {
+			"txt":""
+		},
+		
+		"char": {
+			"img":"img/tutorial/char-p01s1.png",
+			"hgt": "330px",
+			"w": "316px",
+			"top": "145px",
+			"left":"505px"
+		},
+		
+		"input": {
+			"txt":"Let's go!",
+			"next": "p02"
+		}
+	},
+
+	{
+		"id": "p01s2",
+		"sref": "p01s2",
+		"nav": {
+			"page": 1,
+			"pagetxt": "p01",
+			"scene": 2,
+			"scenetxt": "s2"
+		},
+
+		"template":"waveSingle.html",
+		
+		"bgImg": "img/tutorial/p01s2.png",
+		"header": "StaRt makes a picture of your speech sounds in real-time.",
+		"LRow1": "live lpc",
+		"RRow1": "Speak into the microphone.",
+		"LRow2": "See how the eave moves around when you talk?",
+		"LRow3": "",
+		"starImg": {
+			"img":"img/tutorial/starMic.png",
+			"hgt": "",
+			"w": "",
+			"top": "",
+			"left":""
+		},
+		"input": {
+			"txt":"Next",
+			"next": ""
+		}
+	},
+	{
+		"id": "p01s3",
+		"sref": "p01s3",
+		"template":"waveSingle.html",
+		"bgImg": "img/tutorial/p01s3.png",
+		"header": "p01s3",
+		"LRow1": "live lpc",
+		"RRow1": "Speak into the microphone.",
+		"LRow2": "See how the eave moves around when you talk?",
+		"LRow3": "",
+		"starImg": {
+			"img":"img/tutorial/starPoint.png",
+			"hgt": "",
+			"w": "",
+			"top": "",
+			"left":""
+		},
+		"input": {
+			"txt":"Next",
+			"next": ""
+		}
+	},
+	{
+		"id": "p01s4",
+		"sref": "p01s4",
+		"template":"waveSingle.html",
+		"bgImg": "img/tutorial/p01s4.png",
+		"header": "p01s4",
+		"LRow1": "live lpc",
+		"RRow1": "Speak into the microphone.",
+		"LRow2": "See how the eave moves around when you talk?",
+		"LRow3": "",
+		"starImg": "",
+		"input":"<button>Next</button>"	
+	},
+	{
+		"id": "p01s5",
+		"sref": "p01s5",
+		"nav": {
+			"page": 1,
+			"pagetxt": "p01",
+			"scene": 5,
+			"scenetxt": "s5"
+		},
+
+		"template":"waveNone.html",
+		
+		"bgImg": "img/tutorial/p01s5.png",
+
+		"header": {
+			"txt": "HELLO! This tutorial will show you how to use the staRt wave to practice your 'r' sounds."
+		},
+		
+		"LRow1": {
+			"txt": "You should have an external microphone plugged into our iPad."
+		},
+		
+		"RRow1": {
+			"txt":""
+		},
+		
+		"LRow2": {
+			"txt": "Please allow yourself 15 minutes to complete the tutorial."
+		},
+		
+		"LRow3": {
+			"txt":""
+		},
+		
+		"char": {
+			"img":"img/tutorial/char-p01s1.png",
+			"hgt": "330px",
+			"w": "316px",
+			"top": "145px",
+			"left":"505px"
+		},
+		
+		"input": {
+			"txt":"Let's go!",
+			"next": "p02"
+		}
+	}
+
+]

@@ -3,48 +3,144 @@
 ( function(  )
 {
 	var tutorial = angular.module( 'tutorial',
-	[ ] );
+	['tutService'] );
 
-	tutorial.config( function( $stateProvider) {
-		
+	tutorial.config( function($stateProvider, $urlRouterProvider) {
+
+		$urlRouterProvider
+			.when('tutorial', 'tutorial/p01s1')
+			.otherwise('states/root/tutorial/p01s1');
+
+		/* 
+		When the application is in a particular state — when a state is "active" — all of its ancestor states are implicitly active as well. Child states will load their templates into their parent's ui-view.
+		https://github.com/angular-ui/ui-router/wiki/Nested-States-and-Nested-Views
+
+		~ NOTE ~
+		OBVIOUSLY, this is NOT happening
+		we can probably fix it with ui-routers '$routeParams', but I think that reqs a service 
+		*/
+
+		/* note about no components in Ang 1.14 
+			- routeParams reqs service which I didn't have time to figure out
+		*/
+
 		$stateProvider
-		// root . this is the parent of all other views
+		// this is the parent of all other views
 		.state('root.tutorial', {
+			//abstract: 'true',
 			url: 'tutorial', // this sets the active left-nav tab to tutorial
 			views: {
 				'content-view': {
 					templateUrl: 'states/root/tutorial/tutorial_template.html',
 					controller: 'TutorialController as tutorial'
-				}
+				}//,
+				// 'pageView': {
+				// 	templateUrl: 'states/root/tutorial/sceneTemplates/waveNone.html',
+				// 	controller: function($scope){
+				// 	$scope.currStep = $scope.p01s1
+				// }
 			}
-		}) //end root templateß
+		}) //end root template
 
-			.state('root.tutorial.p01', {
-				url: 'tutorial'
-				//template: '<h1>Step 1</h1>'
-				//templateUrl: 'step1.html',
-				//controller: 'TutorialController as tutorial'
-			}) //end step1 template
+			.state('root.tutorial.p01s1', {
+				url: '/p01s1', // this sets the active left-nav tab to tutorial
+				views: {
+					'pageView': {
+						templateUrl: 'states/root/tutorial/sceneTemplates/waveNone.html',
+						controller: function($scope){
+							$scope.currStep = $scope.p01s1;
+						}
+					}
+				}
+			}) //end p01s1 state def
 
 			.state('root.tutorial.p02', {
-				url: 'tutorial'
-				//templateUrl: 'step2.html'
-			}) //end step2 template
+				url: '/p02', // this sets the active left-nav tab to tutorial
+				views: {
+					'pageView': {
+						templateUrl: 'states/root/tutorial/sceneTemplates/waveSingle.html',
+						controller: function($scope){
+							$scope.currStep = $scope.p01s2;
+						}
+					}
+				}
+			}) //end p01s2 state def
 
 			.state('root.tutorial.p03', {
-				url: 'tutorial'
-				//templateUrl: 'step3.html'
-			}) //end step3 template
+				url: 'tutorial', // this sets the active left-nav tab to tutorial
+				views: {
+					'pageView': {
+						templateUrl: 'states/root/tutorial/sceneTemplates/waveSingle.html',
+						controller: function($scope){
+							$scope.currStep = $scope.p01s3;
+						}
+					}
+				}
+			}) //end p01s3 state def
 
 			.state('root.tutorial.p04', {
-				url: 'tutorial'
-				//templateUrl: 'step4.html'
-			}) //end step4 template
+				url: 'tutorial', // this sets the active left-nav tab to tutorial
+				views: {
+					'pageView': {
+						templateUrl: 'states/root/tutorial/sceneTemplates/waveSingle.html',
+						controller: function($scope){
+							$scope.currStep = $scope.p01s4;
+
+						}
+					}
+				}
+			}) //end p01s4 state def
+
 
 			.state('root.tutorial.p05', {
-				url: 'tutorial'
-				//templateUrl: 'step5.html'
-			}) //end step5 template
+				url: 'tutorial', // this sets the active left-nav tab to tutorial
+				views: {
+					'pageView': {
+						templateUrl: 'states/root/tutorial/sceneTemplates/waveNone.html',
+						controller: function($scope){
+							$scope.currStep = $scope.p01s5;
+							console.log($scope.currStep);
+						}
+					}
+				}
+			}) //end p01s5 state def
+
+		// PAGE 2 --------------------------------------------------------------
+
+			// .state('root.tutorial.p05', {
+			// 	url: 'tutorial', // this sets the active left-nav tab to tutorial
+			// 	views: {
+			// 		'pageView': {
+			// 			templateUrl: 'states/root/tutorial/sceneTemplates/waveNone.html',
+			// 			controller: function($scope){
+			// 				$scope.currStep = $scope.p01s5;
+			// 				console.log($scope.currStep);
+			// 			}
+			// 		}
+			// 	}
+			// }) //end p02 state def
+
+
+		// PAGE 3 --------------------------------------------------------------
+			// .state('root.tutorial.p03', {
+			// 	url: 'tutorial', // this sets the active left-nav tab to tutorial
+			// 	views: {
+			// 		'pageView': {
+			// 			templateUrl: 'states/root/tutorial/sceneTemplates/waveSingle.html',
+			// 			controller: function($scope){
+			// 				$scope.currStep = $scope.p01s3;
+
+			// 			}
+			// 		}
+			// 	}
+			// }) //end p01s3 state def
+
+
+
+
+
+
+			// -------------------------------------------
 
 	} ); // end tutorial.config
 } )(  );

@@ -555,19 +555,219 @@ canvas {
   margin-left: 170px;
   width: 80%;
   height: 475px;
-  z-index: 10;
-  border: 1px solid yellow; }
+  z-index: 10; }
+
+#pageView {
+  width: 100%;
+  height: 475px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch; }
+
+.pageView {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  font-size: 1.4em;
+  border: 1px solid lightBlue; }
+
+.tutPg-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+  text-align: left;
+  padding: 0;
+  width: 100%;
+  height: auto; }
+
+.tut-bgImg {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index: 1;
+  opacity: 0.1; }
+
+.tutNoWave-content {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  height: 100%; }
+  .tutNoWave-content .noWaveBox {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-around;
+    width: 60%;
+    height: 41.61429vh; }
+  .tutNoWave-content .noWaveRow {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    text-align: left;
+    width: 100%; }
+    .tutNoWave-content .noWaveRow .noWave3 {
+      width: 50%; }
+  .tutNoWave-content .charImg {
+    position: absolute; }
+
+.tutSingleWave-content {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  height: 100%;
+  text-align: left; }
+  .tutSingleWave-content .leftBox {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 65%; }
+    .tutSingleWave-content .leftBox .leftRow {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      align-items: flex-start; }
+    .tutSingleWave-content .leftBox .wave1 {
+      padding: 10px;
+      padding-top: 20px; }
+      .tutSingleWave-content .leftBox .wave1 .waveFrame {
+        height: 190px;
+        width: 500px;
+        background-color: #F0F9FC;
+        border-radius: 10px;
+        box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.15); }
+        .tutSingleWave-content .leftBox .wave1 .waveFrame .lpcBox {
+          margin: 10px;
+          height: 170px;
+          width: 480px;
+          border-radius: 10px;
+          background-color: #c5f3ff; }
+        .tutSingleWave-content .leftBox .wave1 .waveFrame .waveFrame-label {
+          position: relative;
+          margin: 10px;
+          top: -190px;
+          left: 0px;
+          height: auto;
+          padding: 5px;
+          width: 190px;
+          margin: 0 auto;
+          background-color: #F0F9FC;
+          border-radius: 10px;
+          text-align: center; }
+          .tutSingleWave-content .leftBox .wave1 .waveFrame .waveFrame-label .waveFrame-label--txt {
+            font-size: 1em; }
+          .tutSingleWave-content .leftBox .wave1 .waveFrame .waveFrame-label .waveFrame-label--title {
+            font-size: 0.65em;
+            font-weight: bold; }
+    .tutSingleWave-content .leftBox .leftRow2 {
+      padding-top: 20px; }
+    .tutSingleWave-content .leftBox .leftRow3 {
+      flex-direction: column; }
+  .tutSingleWave-content .rightBox {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 33%; }
+    .tutSingleWave-content .rightBox .rightRow1 {
+      display: flex;
+      flex-direction: row;
+      min-height: 25px;
+      width: 100%; }
+    .tutSingleWave-content .rightBox .starImg {
+      position: absolute;
+      height: 265px;
+      width: 267px;
+      top: 27.74286vh;
+      border: 1px solid lightBlue; }
+
+.tutPgView-content {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  height: 100%;
+  border: 1px solid orange; }
+  .tutPgView-content .leftBox {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 65%;
+    border: 1px solid lightBlue; }
+    .tutPgView-content .leftBox .leftRow {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      align-items: flex-start;
+      height: 10%;
+      border: 1px solid lightBlue; }
+    .tutPgView-content .leftBox .leftRow3 {
+      flex-direction: column; }
+  .tutPgView-content .rightBox {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 33%;
+    border: 1px solid orange; }
+    .tutPgView-content .rightBox .rightRow1 {
+      display: flex;
+      flex-direction: row;
+      min-height: 25px;
+      width: 100%;
+      border: 1px solid lightBlue; }
+    .tutPgView-content .rightBox .starBox {
+      position: absolute;
+      height: 265px;
+      width: 267px;
+      top: 27.74286vh;
+      border: 1px solid yellow; }
+
+.inputBox {
+  position: absolute;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: center;
+  width: 60%;
+  height: auto;
+  top: 48.55vh;
+  margin-bottom: 6.93571vh; }
+
+button.tutBtn, a.tutBtn {
+  min-height: 6.93571vh;
+  min-width: 150px;
+  border-radius: 6.93571vh;
+  border: none;
+  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.15);
+  color: white;
+  font-size: 1em;
+  background-color: #53c8e9;
+  z-index: 99; }
 
 .lpc1 {
   position: absolute;
   top: 5.89536vh;
   left: 0;
   height: 215px;
-  width: 490px;
-  border: 1px solid red; }
+  width: 490px; }
 
 ion-slide-page {
   z-index: 99; }
+
+.swiper-slide {
+  border: 1px solid pink; }
 
 .sandbarBox {
   position: relative;
@@ -578,8 +778,7 @@ ion-slide-page {
   flex-direction: column;
   z-index: 1;
   background-image: url("../img/tutorial/sand.svg");
-  background-size: auto 100%;
-  border: 1px solid lime; }
+  background-size: auto 100%; }
 
 .sandbar-coinRow {
   position: relative;
@@ -591,8 +790,7 @@ ion-slide-page {
   height: 100%;
   margin-left: 16.66vw;
   width: 76.68vw;
-  z-index: 25;
-  border: 1px solid orange; }
+  z-index: 25; }
 
 .sandbar-coinBox {
   align-self: flex-start;

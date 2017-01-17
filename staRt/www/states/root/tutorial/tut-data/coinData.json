@@ -1,0 +1,57 @@
+[
+	{
+		"id": "coin1",
+		"sref": "p01s1",
+		"img": "",
+		"txt": "the wave",
+		"ani": "",
+		"xpos": "",
+		"ypos": "",
+		"height": "",
+		"width": ""
+	},
+	{ 
+		"id": "coin2",
+		"sref": "p02",
+		"img": "",
+		"txt": "eee sounds",
+		"ani": "",
+		"xpos": "",
+		"ypos": "",
+		"height": "",
+		"width": ""
+	},
+	{ 
+		"id": "coin3",
+		"sref": "p03",
+		"img": "",
+		"txt": "ahh sounds",
+		"ani": "",
+		"xpos": "",
+		"ypos": "",
+		"height": "",
+		"width": ""
+	},
+	{ 
+		"id": "coin4",
+		"sref": "p04",
+		"img": "",
+		"txt": "ooh sounds",
+		"ani": "",
+		"xpos": "",
+		"ypos": "",
+		"height": "",
+		"width": ""
+	},
+	{ 
+		"id": "coin5",
+		"sref": "p05",
+		"img": "",
+		"txt": "/r/ sounds",
+		"ani": "",
+		"xpos": "",
+		"ypos": "",
+		"height": "",
+		"width": ""
+	}
+]
