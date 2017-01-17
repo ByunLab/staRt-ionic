@@ -591,7 +591,7 @@ canvas {
   position: absolute;
   top: 0px;
   left: 0px;
-  z-index: 1;
+  z-index: -1;
   opacity: 0.1; }
 
 .tutNoWave-content {
@@ -685,12 +685,14 @@ canvas {
       flex-direction: row;
       min-height: 25px;
       width: 100%; }
-    .tutSingleWave-content .rightBox .starImg {
+    .tutSingleWave-content .rightBox .starBox {
       position: absolute;
       height: 265px;
-      width: 267px;
+      width: 265px;
       top: 27.74286vh;
       border: 1px solid lightBlue; }
+    .tutSingleWave-content .rightBox .starImg {
+      position: relative; }
 
 .tutPgView-content {
   display: flex;

@@ -59,7 +59,7 @@
 		position: absolute;
 		top: 0px;
 		left: 0px;
-		z-index: 1;
+		z-index: -1;
 		opacity: 0.1;
 		//border: 1px solid red;
 	}
@@ -204,12 +204,20 @@
 				//border: 1px solid lightBlue;
 			}
 
-			.starImg {
+			.starBox {
 				position: absolute;
 				height: 265px;
-				width: 267px;
+				width: 265px;
 				top: $rowH * 2;
 				border: 1px solid lightBlue;
+			}
+
+
+			.starImg {
+				position: relative;
+				// max-height: 265px;
+				// max-width: 265px;
+				//border: 1px solid lightBlue;
 			}
 		}
 

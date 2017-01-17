@@ -48,7 +48,6 @@
 			"next": "p02"
 		}
 	},
-
 	{
 		"idx": 1,
 		"sref": "p01s2",
@@ -88,9 +87,9 @@
 
 		"star": {
 			"img":"img/tutorial/starMic.png",
-			"hgt": "",
-			"w": "",
-			"top": "",
+			"hgt": "260px",
+			"w": "265px",
+			"top": "5px",
 			"left":""
 		},
 		
@@ -138,10 +137,10 @@
 
 		"star": {
 			"img":"img/tutorial/starPoint.png",
-			"hgt": "",
-			"w": "",
-			"top": "",
-			"left":""
+			"hgt": "255px",
+			"w": "235px",
+			"top": "10px",
+			"left":"20px"
 		},
 		
 		"input": {
@@ -149,18 +148,56 @@
 			"next": "p04"
 		}
 	},
+
+
 	{
-		"id": "p01s4",
+		"idx": 3,
 		"sref": "p01s4",
+		"nav": {
+			"id": "p01s4",
+			"page": 1,
+			"pagetxt": "p01",
+			"scene": 4,
+			"scenetxt": "s4"
+		},
+
 		"template":"waveSingle.html",
+		
 		"bgImg": "img/tutorial/oldSlides/p01s4.png",
-		"header": "p01s4",
-		"LRow1": "live lpc",
-		"RRow1": "Speak into the microphone.",
-		"LRow2": "See how the eave moves around when you talk?",
-		"LRow3": "",
-		"starImg": "",
-		"input":"<button>Next</button>"	
+		
+		"header": {
+			"txt": "The dark lines are there to help you find the peaks in your wave, but ..."
+		},
+
+		"LRow1": {
+			"lpc": true,
+			"labelTitle": "Your Speech Wave"
+		},
+
+		"LRow2": {
+			"txt":"Pay more attention to the overall shape of the wave."
+		},
+
+		"LRow3": {
+			"txt":"In staRt, peaks are more important than lines."
+		},
+		
+		"RRow1": {
+			"txt": "sometimes you will see a peak without a line, or a line without a peak. "
+		},
+
+		"star": {
+			"img":"img/tutorial/starPoint.png",
+			"hgt": "255px",
+			"w": "235px",
+			"top": "10px",
+			"left":"20px"
+		},
+		
+		"input": {
+			"txt":"Next",
+			"next": "p05"
+		}
 	},
 	{
 		"id": "p01s5",
@@ -207,7 +244,7 @@
 		
 		"input": {
 			"txt":"Next",
-			"next": "p02"
+			"next": "p01s1"
 		}
 	}
 

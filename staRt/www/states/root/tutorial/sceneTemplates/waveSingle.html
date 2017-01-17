@@ -16,8 +16,7 @@
 			</div>
 
 			<div class="leftRow leftRow2">{{currStep.LRow2.txt}}</div>
-			<div class="leftRow leftRow3">
-			</div>
+			<div class="leftRow leftRow3">{{currStep.LRow3.txt}}</div>
 		</div>
 
 		<div class="inputBox">
@@ -30,14 +29,15 @@
 
 		<div class="rightBox">
 			<div class="rightRow1">{{currStep.RRow1.txt}}</div>
-			<img 
-			ng-src="{{currStep.star.img}}" 
-			class="starImg">
-			<!-- indiv style props ???
-				style="height:{{currStep.char.hgt}}; 
-				width:{{currStep.char.w}}; 
-				top:{{currStep.char.top}}; 
-				left:{{currStep.char.left}};"> -->
+			<div class="starBox">
+				<img 
+				ng-src="{{currStep.star.img}}" 
+				class="starImg" 
+				style="height:{{currStep.star.hgt}}; 
+					width:{{currStep.star.w}}; 
+					top:{{currStep.star.top}}; 
+					left:{{currStep.star.left}};">
+			<div>
 		</div>
 
 	</div> <!-- end tutPgView-content -->
