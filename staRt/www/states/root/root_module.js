@@ -30,7 +30,7 @@
 					controller: 'RootController as root'
 				}
 			}
-			// abstract: true
+			//abstract: true
 		});
 	} );
 

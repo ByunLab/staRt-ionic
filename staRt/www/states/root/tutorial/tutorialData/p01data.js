@@ -1,38 +1,34 @@
 [
 	{
-		
 		"idx": 0,
 		"sref": "p01s1",
+		"coinRef":"p01",
 		"nav": {
 			"id": "p01s1",
 			"page": 1,
-			"pagetxt": "p01",
-			"scene": 1,
-			"scenetxt": "s1"
+			"scene": 1
 		},
 
 		"template":"waveNone.html",
 		
-		"XbgImg": "img/tutorial/oldSlides/p01s1.png",
+		"bgImg": {
+			"status": "done",
+			"url":"img/tutorial/oldSlides/p01s1.png"
+		},
 
 		"header": {
-			"txt": "HELLO! This tutorial will show you how to use the staRt wave to practice your 'r' sounds."
+			"txt": "HELLO! <p>This tutorial will show you how to use the staRt wave to practice your 'r' sounds.</p>"
 		},
 		
 		"LRow1": {
-			"txt": "You should have an external microphone plugged into our iPad."
-		},
-		
-		"RRow1": {
-			"txt":""
+			"txt": "You should have an <span class='txtBold-blue'>external microphone </span> plugged into your iPad."
 		},
 		
 		"LRow2": {
-			"txt": "Please allow yourself 15 minutes to complete the tutorial."
+			"txt": "Please allow yourself <span class='txtBold-blueDark'>15 minutes</span> to complete the tutorial."
 		},
 		
 		"LRow3": {
-			"txt":""
 		},
 		
 		"char": {
@@ -45,27 +41,31 @@
 		
 		"input": {
 			"txt":"Let's go!",
-			"next": "p02"
+			"next": "p01s2"
 		}
 	},
+
+
 	{
 		"idx": 1,
 		"sref": "p01s2",
-		
+		"coinRef":"p01",
 		"nav": {
 			"id": "p01s2",
 			"page": 1,
-			"pagetxt": "p01",
-			"scene": 2,
-			"scenetxt": "s2"
+			"scene": 2
 		},
 
 		"template":"waveSingle.html",
 		
-		"XbgImg": "img/tutorial/oldSlides/p01s2.png",
+		"bgImg": {
+			"status": "done",
+			"url":"img/tutorial/oldSlides/p01s2.png"
+		},
 
 		"header": {
-			"txt": "StaRt makes a picture of your speech sounds in real-time."
+			"head": true,
+			"txt": "<span class='txtBold'>StaRt makes a picture of your speech soundsin real-time.</span> "
 		},
 
 		"LRow1": {
@@ -78,7 +78,6 @@
 		},
 
 		"LRow3": {
-			"txt":""
 		},
 		
 		"RRow1": {
@@ -95,27 +94,31 @@
 		
 		"input": {
 			"txt":"Next",
-			"next": "p03"
+			"next": "p01s3"
 		}
 	},
+
 
 	{
 		"idx": 2,
 		"sref": "p01s3",
+		"coinRef":"p01",
 		"nav": {
 			"id": "p01s3",
 			"page": 1,
-			"pagetxt": "p01",
-			"scene": 3,
-			"scenetxt": "s3"
+			"scene": 3
 		},
 
 		"template":"waveSingle.html",
 		
-		"bgImg": "img/tutorial/oldSlides/p01s3.png",
+		"bgImg": {
+			"status": "done",
+			"url":"img/tutorial/oldSlides/p01s3.png"
+		},
 
 		"header": {
-			"txt": "We are going to focus on the bumps or peaks in your wave."
+			"head": true,
+			"txt": "<span class='txtBold'>We are going to focus on the bumps or <span class='txtBold-blueDark'>peaks</span> in your wave.</span>"
 		},
 
 		"LRow1": {
@@ -128,7 +131,6 @@
 		},
 
 		"LRow3": {
-			"txt":""
 		},
 		
 		"RRow1": {
@@ -145,7 +147,7 @@
 		
 		"input": {
 			"txt":"Next",
-			"next": "p04"
+			"next": "p01s4"
 		}
 	},
 
@@ -153,17 +155,19 @@
 	{
 		"idx": 3,
 		"sref": "p01s4",
+		"coinRef":"p01",
 		"nav": {
 			"id": "p01s4",
 			"page": 1,
-			"pagetxt": "p01",
-			"scene": 4,
-			"scenetxt": "s4"
+			"scene": 4
 		},
 
 		"template":"waveSingle.html",
 		
-		"bgImg": "img/tutorial/oldSlides/p01s4.png",
+		"bgImg": {
+			"status": "done",
+			"url":"img/tutorial/oldSlides/p01s4.png"
+		},
 		
 		"header": {
 			"txt": "The dark lines are there to help you find the peaks in your wave, but ..."
@@ -175,7 +179,7 @@
 		},
 
 		"LRow2": {
-			"txt":"Pay more attention to the overall shape of the wave."
+			"txt":"<span class='txtBold'>Pay attention to the overall shape of the wave.</span>"
 		},
 
 		"LRow3": {
@@ -196,25 +200,30 @@
 		
 		"input": {
 			"txt":"Next",
-			"next": "p05"
+			"next": "p01s5"
 		}
 	},
+	
+
 	{
 		"id": "p01s5",
 		"sref": "p01s5",
+		"coinRef":"p01",
 		"nav": {
 			"page": 1,
-			"pagetxt": "p01",
-			"scene": 5,
-			"scenetxt": "s5"
+			"scene": 5
 		},
 
 		"template":"waveNone.html",
 		
-		"XbgImg": "img/tutorial/oldSlides/p01s5.png",
+		"bgImg": {
+			"status": "done",
+			"url":"img/tutorial/oldSlides/p01s5.png"
+		},
 
 		"header": {
-			"txt": "You’ve completed the first step of the tutorial."
+			"head": true,
+			"txt": "<span class='txtBold'>You’ve completed the first step of the tutorial.</span>"
 		},
 		
 		"LRow1": {
@@ -222,8 +231,13 @@
 		},
 		
 		"LRow2": {
-			"txt": "[coins img goes here]",
-			"img": ""
+			"img": {
+				"url": "img/tutorial/p01s5-coins.png",
+				"hgt": "69px",
+				"w": "420px",
+				"top": "",
+				"left":""
+			}
 		},
 		
 		"LRow3": {
@@ -244,7 +258,7 @@
 		
 		"input": {
 			"txt":"Next",
-			"next": "p01s1"
+			"next":"p02s1"
 		}
 	}
 

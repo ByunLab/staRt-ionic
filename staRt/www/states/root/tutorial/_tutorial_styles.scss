@@ -8,7 +8,7 @@
 	//border: 1px solid yellow;
 }
 
-.sceneBox { // is this n/a now
+.sceneBox { // #hc is this n/a now
 	position: absolute;
 	top: 0;
 	margin-left: 170px;
@@ -18,6 +18,10 @@
 	//border: 1px solid yellow;
 }
 
+.pane { // this is class for ionic <ion-nav-view> eles 
+	background-color: transparent;
+}
+
 #pageView {  // this is the ui-view in the parent ele
 	width: 100%;
 	height: 475px;
@@ -25,6 +29,7 @@
 	flex-direction: column;
 	justify-content: flex-start;
 	align-items: stretch;
+	background-color: transparent;
 	// border: 1px solid pink;
 }
 
@@ -36,8 +41,7 @@
 	justify-content: flex-start;
 	align-items: stretch;
 	font-size: 1.4em;
-	//font-weight: bold;
-	border: 1px solid lightBlue;
+	//border: 1px solid lightBlue;
 }
 
 	.tutPg-header {
@@ -46,10 +50,9 @@
 		justify-content: flex-start;
 		align-items: flex-start;
 		text-align: left;
-		padding: 0;
 		width: 100%;
-		//min-height: $rowHalf;
 		height: auto;
+		padding-bottom: 1em;
 		//border: 1px solid lightBlue;
 	}
 
@@ -60,52 +63,58 @@
 		top: 0px;
 		left: 0px;
 		z-index: -1;
-		opacity: 0.1;
+		//opacity: 0.1;
 		//border: 1px solid red;
 	}
 
-	
-	.tutNoWave-content {
-		display: flex;
-		flex-direction: column;
-		flex-wrap: nowrap;
-		align-items: flex-start;
-		justify-content: space-between;
-		height: 100%;
-		//border: 1px solid orange;
+	.tut-bgImg--dim {
+		opacity: 0.1;
+	}
 
-		.noWaveBox {
-			display: flex;
-			flex-direction: column;
-			align-items: flex-start;
-			justify-content: space-around;
-			width: 60%;
-			height: $rowH * 3;
-			//border: 1px solid lime;
-		}
+	// .tutNoWave-content {
+	// 	display: flex;
+	// 	flex-direction: column;
+	// 	flex-wrap: nowrap;
+	// 	align-items: flex-start;
+	// 	justify-content: space-between;
+	// 	height: 100%;
+	// 	//border: 1px solid orange;
 
-		.noWaveRow {
-			display: flex;
-			flex-direction: row;
-			flex-wrap: nowrap;
-			justify-content: flex-start;
-			align-items: flex-start;
-			text-align: left;
-			width: 100%;
-			//border: 1px solid green;
+	// 	.noWaveBox {
+	// 		display: flex;
+	// 		flex-direction: column;
+	// 		align-items: flex-start;
+	// 		justify-content: space-around;
+	// 		width: 60%;
+	// 		height: auto;
+	// 		padding: 10px 0;
+	// 		//height: $rowH * 3;
+	// 		//border: 1px solid lime;
+	// 	}
 
-			.noWave3 {
-				//border: 1px solid green;
-				width: 50%;
-			}
+	// 	.noWaveRow {
+	// 		display: flex;
+	// 		flex-direction: row;
+	// 		flex-wrap: nowrap;
+	// 		justify-content: flex-start;
+	// 		align-items: flex-start;
+	// 		text-align: left;
+	// 		width: 100%;
+	// 		margin: 10px 0; //#hc
+	// 		//border: 1px solid green;
 
-		} //end .noWaveRow
+	// 		.noWave3 {
+	// 			//border: 1px solid green;
+	// 			width: 50%;
+	// 		}
 
-		.charImg {
-			position: absolute;
-			//border: 1px solid pink;
-		}
-	} // end .tutNoWave-content
+	// 	} //end .noWaveRow
+
+	// 	.charImg {
+	// 		position: absolute;
+	// 		//border: 1px solid pink;
+	// 	}
+	// } // end .tutNoWave-content
 
 	.tutSingleWave-content {
 		// should be identical to .tutNoWave-content w/ the exception of flex-direction
@@ -121,7 +130,7 @@
 		.leftBox {
 			display: flex;
 			flex-direction: column;
-			height: 100%;
+			max-height: 100%;
 			width: 65%;
 			//border: 1px solid lightBlue;
 			
@@ -135,8 +144,8 @@
 			}
 
 			.wave1 {
-				padding: 10px;
-				padding-top: 20px;
+				// padding: 10px;
+				// padding-top: 20px;
 			// just a container
 				.waveFrame {
 					height: 190px;
@@ -160,15 +169,16 @@
 						top: - 190px;
 						left: - 0px;
 						height: auto;
-						padding: 5px;
-						width: 190px;
+						padding: 7px 15px;
+						width: 225px;
 						margin: 0 auto;
 						background-color: $blue-white;
 						border-radius: 10px;
 						text-align: center;
 
 						.waveFrame-label--txt {
-							font-size: 1em;
+							font-size: 0.65em;
+							line-height: 1em;
 						}
 						.waveFrame-label--title {
 							font-size: 0.65em;
@@ -181,6 +191,80 @@
 			.leftRow2 {
 				padding-top: 20px;
 
+
+			}
+			.leftRow3 {
+				flex-direction: column;
+
+			}
+		}
+
+		.rightBox {
+			display: flex;
+			flex-direction: column;
+			height: 100%;
+			width: 33%;
+			padding-top: 0px;
+			//border: 1px solid orange;
+			
+			.rightRow1 {
+				display: flex;
+				flex-direction: row;
+				min-height: 25px;
+				width: 100%;
+				//border: 1px solid lightBlue;
+			}
+
+			.starBox {
+				position: absolute;
+				height: 265px;
+				width: 265px;
+				top: $rowH * 2;
+				//border: 1px solid lightBlue;
+			}
+
+
+			.starImg {
+				position: relative;
+				// max-height: 265px;
+				// max-width: 265px;
+				//border: 1px solid lightBlue;
+			}
+		}
+
+	} // end .tutPgView-content
+
+
+	.tutPgView-content {
+		// should be identical to .tutNoWave-content w/ the exception of flex-direction
+		display: flex;
+		flex-direction: row;
+		flex-wrap: nowrap;
+		align-items: flex-start;
+		justify-content: space-between;
+		height: 100%;
+		//border: 1px solid orange;
+
+		.leftBox {
+			display: flex;
+			flex-direction: column;
+			height: 100%;
+			width: 65%;
+			//border: 1px solid lightBlue;
+			
+			.leftRow {
+				display: flex;
+				flex-direction: row;
+				flex-wrap: nowrap;
+				align-items: flex-start;
+				height: 10%;
+				//border: 1px solid lightBlue;
+			}
+
+			.leftRow1 {
+
+			}
+			.leftRow2 {
 
 			}
 			.leftRow3 {
@@ -207,100 +291,27 @@
 			.starBox {
 				position: absolute;
 				height: 265px;
-				width: 265px;
-				top: $rowH * 2;
-				border: 1px solid lightBlue;
-			}
-
-
-			.starImg {
-				position: relative;
-				// max-height: 265px;
-				// max-width: 265px;
-				//border: 1px solid lightBlue;
-			}
-		}
-
-	} // end .tutPgView-content
-
-
-	.tutPgView-content {
-		// should be identical to .tutNoWave-content w/ the exception of flex-direction
-		display: flex;
-		flex-direction: row;
-		flex-wrap: nowrap;
-		align-items: flex-start;
-		justify-content: space-between;
-		height: 100%;
-		border: 1px solid orange;
-
-		.leftBox {
-			display: flex;
-			flex-direction: column;
-			height: 100%;
-			width: 65%;
-			border: 1px solid lightBlue;
-			
-			.leftRow {
-				display: flex;
-				flex-direction: row;
-				flex-wrap: nowrap;
-				align-items: flex-start;
-				height: 10%;
-				border: 1px solid lightBlue;
-			}
-
-			.leftRow1 {
-
-			}
-			.leftRow2 {
-
-			}
-			.leftRow3 {
-				flex-direction: column;
-
-			}
-		}
-
-		.rightBox {
-			display: flex;
-			flex-direction: column;
-			height: 100%;
-			width: 33%;
-			border: 1px solid orange;
-			
-			.rightRow1 {
-				display: flex;
-				flex-direction: row;
-				min-height: 25px;
-				width: 100%;
-				border: 1px solid lightBlue;
-			}
-
-			.starBox {
-				position: absolute;
-				height: 265px;
 				width: 267px;
 				top: $rowH * 2;
-				border: 1px solid yellow;
+				//border: 1px solid yellow;
 			}
 		}
 
 	} // end .tutPgView-content
 
 
-	.inputBox {
-		position: absolute;
-		display: flex;
-		flex-direction: row;
-		flex-wrap: nowrap;
-		justify-content: center;
-		width: 60%;
-		height: auto;
-		top: $rowH * 3.5;
-		margin-bottom: $rowHalf;
-		//border: 1px solid yellow;
-	}
+.inputBox {
+	position: absolute;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	justify-content: center;
+	width: 65%;
+	height: auto;
+	top: $rowH * 3.5;
+	margin-bottom: $rowHalf;
+	//border: 1px solid red;
+}
 
 button.tutBtn, a.tutBtn {
 	min-height: $rowHalf;
@@ -388,3 +399,12 @@ ion-slide-page {
 		margin-top: 5px;
 	}
 
+	.activeCoin {
+		color: red;
+		font-weight: bold;
+	}
+
+// IMPORTS THE INDIVIDUAL TEMPLATE STYLES
+@import 'sceneStyles/waveNone';
+@import 'sceneStyles/waveSingle';
+@import 'sceneStyles/waveDouble';

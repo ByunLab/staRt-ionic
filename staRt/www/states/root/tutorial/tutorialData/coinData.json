@@ -12,7 +12,7 @@
 	},
 	{ 
 		"id": "coin2",
-		"sref": "p02",
+		"sref": "p02s1",
 		"img": "",
 		"txt": "eee sounds",
 		"ani": "",
@@ -23,7 +23,7 @@
 	},
 	{ 
 		"id": "coin3",
-		"sref": "p03",
+		"sref": "p03s1",
 		"img": "",
 		"txt": "ahh sounds",
 		"ani": "",
@@ -34,7 +34,7 @@
 	},
 	{ 
 		"id": "coin4",
-		"sref": "p04",
+		"sref": "p04s1",
 		"img": "",
 		"txt": "ooh sounds",
 		"ani": "",
@@ -45,7 +45,7 @@
 	},
 	{ 
 		"id": "coin5",
-		"sref": "p05",
+		"sref": "p05s1",
 		"img": "",
 		"txt": "/r/ sounds",
 		"ani": "",

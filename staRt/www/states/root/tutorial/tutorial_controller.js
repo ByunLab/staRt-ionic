@@ -4,67 +4,72 @@
 {
 	var tutorial = angular.module( 'tutorial' );
 
-	//#q  added $http to get some local json. I don't really understand 'services' and 'factories', but they seems like a 'more correct' way to do this. Should look into this ...
+	/* SYNTAX NOTE: Since Angular infers the controller's dependencies from the names of arguments to the controller's constructor function, if you were to minify your code all of its function arguments for the controller would be minified as well, and the dependency injector would not be able to identify services correctly.  
+	To prevent this, its common to provide the services as strings, and the constructor function inline as an anonymous function when registering the controller. https://code.angularjs.org/1.4.3/docs/tutorial/step_05  */
 
-	tutorial.controller('TutorialController', function($scope, $timeout, $localForage, StartUIState, $rootScope, $state, $http)  
-	{
-		//get data for tutorial_template.html 
-		$http.get('states/root/tutorial/tut-data/coinData.json').success(function(data){
-			$scope.coinData = data;
-		});
+	//#q  added $http to get some local json. I don't really understand when to use 'services' and 'factories', but these sound like good topics for 'next step/optimization' ideas re: the process below... 
 
-		// this is read in as json
-		$http.get('states/root/tutorial/tut-data/step01.js').success(function(data)
+	tutorial.controller('TutorialController', ['$scope', '$timeout', '$localForage', 'StartUIState', '$rootScope', '$state', '$http', 
+		function($scope, $timeout, $localForage, StartUIState, $rootScope, $state, $http, $stateParams) 
 		{
-			$scope.step01 = data;
-			$scope.p01s1 = $scope.step01[0];
-			$scope.p01s2 = $scope.step01[1];
-			$scope.p01s3 = $scope.step01[2];
-			$scope.p01s4 = $scope.step01[3];
-			$scope.p01s5 = $scope.step01[4];
-		});
+			//get data for tutorial_template.html 
+			$http.get('states/root/tutorial/tutorialData/coinData.json').success(function(data){
+				$scope.coinData = data;
+			});
 
-		$scope.hello = function() {
-			console.log('hello');
-			$state.go('root.tutorial.p02'); //doesn't work
-		}
+			// all this is read in as json
+			$http.get('states/root/tutorial/tutorialData/p01data.js').success(function(data)
+			{
+				$scope.p01data = data;
+				$scope.p01s1 = $scope.p01data[0];
+				$scope.p01s2 = $scope.p01data[1];
+				$scope.p01s3 = $scope.p01data[2];
+				$scope.p01s4 = $scope.p01data[3];
+				$scope.p01s5 = $scope.p01data[4];
+			});
 
-		// function setDevPage() {
-		// 	$state.go('root.tutorial.p01s1');
-		// }
-		// setDevPage();
-			
+			$http.get('states/root/tutorial/tutorialData/p02data.js').success(function(data)
+			{
+				$scope.p02data = data;
+				$scope.p02s1 = $scope.p02data[0];
+				$scope.p02s2 = $scope.p02data[1];
+			});
 
-			//console.log('scope.step1: ' + coinData);
+			$http.get('states/root/tutorial/tutorialData/p03data.js').success(function(data)
+			{
+				$scope.p03data = data;
+				$scope.p03s1 = $scope.p03data[0];
+				$scope.p03s2 = $scope.p03data[1];
+				$scope.p03s3 = $scope.p03data[2];
+			});
 
-			
-			//var step01 = [];
-			//step01 = $scope.step01;
-			// var stepCount = 0;
-//			console.log($scope.step01);
+			$http.get('states/root/tutorial/tutorialData/p04data.js').success(function(data)
+			{
+				$scope.p04data = data;
+				$scope.p04s1 = $scope.p04data[0];
+				$scope.p04s2 = $scope.p04data[1];
+				$scope.p04s3 = $scope.p04data[2];
+			});
 
-//			if stepCount > step01.length
-			// $http.get('states/root/tutorial/tut-data/coinData.json').success(function(data){
-			// 	$scope.coinData = data;
-			// 	//console.log($scope.coinData)
-			// });
-		//console.log(p01s1);
+			$http.get('states/root/tutorial/tutorialData/p05data.js').success(function(data)
+			{
+				$scope.p05data = data;
+				$scope.p05s1 = $scope.p05data[0];
+				$scope.p05s2 = $scope.p05data[1];
+				$scope.p05s3 = $scope.p05data[2];
+				$scope.p05s4 = $scope.p05data[3];
+				$scope.p05s5 = $scope.p05data[4];
+			});
+
 		console.log('TutorialController here!');
-	});
+	} 	// end of controller constructor body
+	]); // end of controller constructor fx
 } )(  );
+
 
 /*
 
-var phonecatControllers = angular.module('phonecatControllers', []);
-
-phonecatControllers.controller('PhoneListCtrl', ['$scope', '$http',
-  function($scope, $http) {
-    $http.get('phones/phones.json').success(function(data) {
-      $scope.phones = data;
-    });
-
-    $scope.orderProp = 'age';
-  }]);
+Example of $routeParams from phoneCat: https://code.angularjs.org/1.4.14/docs/tutorial/step_07
 
 phonecatControllers.controller('PhoneDetailCtrl', ['$scope', '$routeParams', '$http',
   function($scope, $routeParams, $http) {

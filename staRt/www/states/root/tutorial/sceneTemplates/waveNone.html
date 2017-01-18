@@ -1,22 +1,41 @@
 <div class="pageView">
 
-	<img ng-src="{{currStep.bgImg}}" class="tut-bgImg">
+	<img ng-if="currStep.bgImg.status != 'done'" ng-src="{{currStep.bgImg.url}}" class="tut-bgImg" ng-class="{'tut-bgImg--dim': currStep.bgImg.status === 'dim'}">
 
-	<div class="tutPg-header">{{currStep.header.txt}}</div> 
+	<div class="tutPg-header" ng-if="currStep.header.txt">
+	 	<span ng-bind-html="currStep.header.txt"></span>
+	</div> 
 	
 	<div class="tutNoWave-content">
 		<div class="noWaveBox">
-			<div class="noWaveRow noWave1">{{currStep.LRow1.txt}}</div>
-			<div class="noWaveRow noWave2">{{currStep.LRow2.txt}}</div>
-			<div class="noWaveRow noWave3">{{currStep.LRow3.txt}}</div>
-		</div>
+			
+			<div class="noWaveRow noWave1" ng-if="currStep.LRow1.txt">
+				<span ng-bind-html="currStep.LRow1.txt"></span>
+			</div>
 
-		<div class="inputBox">
-			<button
-				class="tutBtn"
-				ui-sref="{{'root.tutorial.' + currStep.input.next}}">
-				{{currStep.input.txt}}
-			</button>
+			<div class="noWaveRow noWave2" >
+				<span ng-if="currStep.LRow2.txt" ng-bind-html="currStep.LRow2.txt"></span>
+				<img 
+					ng-if="currStep.LRow2.img"
+					ng-src="{{currStep.LRow2.img.url}}" 
+					class="" 
+					style="height:{{currStep.LRow2.img.hgt}}; 
+						width:{{currStep.LRow2.img.w}}; 
+						top:{{currStep.LRow2.img.top}}; 
+						left:{{currStep.LRow2.img.left}};">
+			</div>
+
+			<div class="noWaveRow noWave3" ng-if="currStep.LRow3.txt">
+				<span ng-bind-html="currStep.LRow3.txt"></span>
+			</div>
+
+			<div class="inputBox">
+				<button
+					class="tutBtn"
+					ui-sref="{{'root.tutorial.' + currStep.input.next}}">
+					{{currStep.input.txt}}
+				</button>
+			</div>
 		</div>
 		
 		<img 

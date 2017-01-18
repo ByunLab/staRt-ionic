@@ -20,3 +20,21 @@
 	font-style: normal;
 }
 
+.txtBold {
+	font-weight: $bold;
+}
+
+.txtBold-blue {
+	@extend .txtBold;
+	color: $blue-main;
+}
+
+.txtBold-blueDark {
+	@extend .txtBold;
+	color: $blue-dark;
+}
+
+.txtBold-blueLight {
+	@extend .txtBold;
+	color: $blue-light;
+}

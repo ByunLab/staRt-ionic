@@ -13,7 +13,7 @@
 					ui-sref-active="activeCoin">	
 
 						<div class="sandbar-coinImgBox">
-							<!--
+							<!--NOTE: this isn't going to work if the url routing isn't working 
 				        	<!- defines img inactive state ->
 				          	<img
 					            ng-if="state.current.url != tab.sref" 
@@ -42,8 +42,12 @@
 	<!-- ==================================
 	SCENE CONTENT -->
 		<div class="sceneBox">
-			<div ui-view id="pageView" name="pageView">
-			</div>
+			<!--	
+				for some reason, making this an <ion-view> does NOT work 
+				Why? IDK https://ionicframework.com/docs/api/directive/ionView/
+			-->
+			<ui-view id="pageView" name="pageView">
+			</ui-view>
 		</div> <!-- end sceneBox -->
 	
 	</div> <!-- end tut-contentBox -->

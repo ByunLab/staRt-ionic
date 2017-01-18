@@ -1,9 +1,11 @@
-<div class="pageView"><!-- style="background-image: url({{$scope.step01.bgImg}})" --> 
+<div class="pageView">
+	
+	<img ng-if="currStep.bgImg.status != 'done'" ng-src="{{currStep.bgImg.url}}" class="tut-bgImg" ng-class="{'tut-bgImg--dim': currStep.bgImg.status === 'dim'}">
 
-	<img ng-src="{{currStep.bgImg}}" class="tut-bgImg">
-	<div class="tutPg-header">
-		{{currStep.header}}
+	 <div class="tutPg-header" ng-if="currStep.header.txt">
+	 	<span ng-bind-html="currStep.header.txt"></span>
 	</div> 
+	
 	<div class="tutPgView-content">
 		<div class="leftBox">
 			<div class="leftRow leftRow1">{{currStep.LRow1}}</div>
