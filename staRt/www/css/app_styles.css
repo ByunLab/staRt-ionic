@@ -827,64 +827,6 @@ ion-slide-page {
   .tutNoWave-content .charImg {
     position: absolute; }
 
-.tutNoWave-content {
-  display: flex;
-  flex-direction: column;
-  flex-wrap: nowrap;
-  align-items: flex-start;
-  justify-content: space-between;
-  height: 100%; }
-  .tutNoWave-content .noWaveBox {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: space-around;
-    width: 60%;
-    height: auto;
-    padding: 10px 0; }
-  .tutNoWave-content .noWaveRow {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    justify-content: flex-start;
-    align-items: flex-start;
-    text-align: left;
-    width: 100%;
-    margin: 10px 0; }
-    .tutNoWave-content .noWaveRow .noWave3 {
-      width: 50%; }
-  .tutNoWave-content .charImg {
-    position: absolute; }
-
-.tutNoWave-content {
-  display: flex;
-  flex-direction: column;
-  flex-wrap: nowrap;
-  align-items: flex-start;
-  justify-content: space-between;
-  height: 100%; }
-  .tutNoWave-content .noWaveBox {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: space-around;
-    width: 60%;
-    height: auto;
-    padding: 10px 0; }
-  .tutNoWave-content .noWaveRow {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    justify-content: flex-start;
-    align-items: flex-start;
-    text-align: left;
-    width: 100%;
-    margin: 10px 0; }
-    .tutNoWave-content .noWaveRow .noWave3 {
-      width: 50%; }
-  .tutNoWave-content .charImg {
-    position: absolute; }
-
 .words-word {
   font-size: 3rem;
   font-weight: 700;

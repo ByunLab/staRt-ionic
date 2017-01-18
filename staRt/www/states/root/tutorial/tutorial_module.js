@@ -3,7 +3,7 @@
 ( function(  )
 {
 	var tutorial = angular.module( 'tutorial',
-	['tutService'] );
+	[] );
 
 	tutorial.config( function($stateProvider, $urlRouterProvider) {
 
