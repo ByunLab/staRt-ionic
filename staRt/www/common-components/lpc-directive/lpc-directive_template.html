@@ -4,7 +4,7 @@
 		class="slider-and-canvas"
 		ng-class="{'full-width': !rate && !reset}">
 		<!-- Renderer will be inserted here -->
-		<canvas id="lpc-canvas" ng-hide="lpcHidden" ></canvas>
+		<canvas id="lpc-canvas" ng-hide="lpcHidden || probe || waveHidden" ></canvas>
 	</div>
 
 	<div class="lpc-buttons">
@@ -32,13 +32,14 @@
 		<button
 			ng-click="resetF3()"
 			class="reset-button big-button"
-			ng-if="reset">
+			ng-if="reset && !probe">
 			Reset Target
 		</button>
 
 		<button
 			ng-click="showLPC()"
 			class="reset-button big-button"
+			ng-if="!probe"
 			ng-hide="!lpcHidden || rate">
 			Show Wave
 		</button>
@@ -46,6 +47,7 @@
 		<button
 			ng-click="hideLPC()"
 			class="reset-button big-button"
+			ng-if="!probe"
 			ng-hide="lpcHidden || rate">
 			Hide Wave
 		</button>

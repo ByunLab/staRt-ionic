@@ -1,14 +1,14 @@
-<ion-view view-title="Auto" class="state-contentBox">
+<ion-view view-title="Test Probes" class="state-contentBox">
 	<div class="auto-contentBox">
 
-		<div class="text-and-lpc__text">
+		<div class="text-and-lpc__text" ng-hide="practicing">
 			Syllable or Word Probes
 		</div>
 
 		<!-- 30 items, sequential -->
 		<button
 			class="big-button"
-			click="beginSyllableProbe()"
+			ng-click="beginSyllableProbe()"
 			ng-hide="practicing"
 		>
 			Syllable Probe
@@ -17,11 +17,19 @@
 		<!-- 50 items, random -->
 		<button
 			class="big-button"
-			click="beginWordProbe()"
+			ng-click="beginWordProbe()"
 			ng-hide="practicing"
 		>
 			Word Probe
 		</button>
+
+		<practice-directive
+			probe="true"
+			csv="csv"
+			order="order"
+			count="count"
+			end-practice-callback="endProbeCallback()">
+		</practice-directive>
 
 	</div> <!-- .auto-contentBox -->
 </ion-view>

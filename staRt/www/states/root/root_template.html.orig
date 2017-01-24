@@ -26,8 +26,13 @@
             class="nav-svg"
           >
           <!-- defines img active state -->
+<<<<<<< HEAD
+          <img 
+            ng-if="state.current.url == tab.sref" 
+=======
           <img
             ng-if="state.current.url === tab.sref"
+>>>>>>> master
             ng-src="{{ 'img/nav/' + tab.sref + '-b.svg' }}"
             class="nav-svg animated {{ tab.ani }}"
           >

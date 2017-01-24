@@ -138,14 +138,6 @@ practiceDirective.controller( 'PracticeDirectiveController',
 	{
 		console.log('Practice Controller here!');
 
-		$http.get($scope.data, {
-			headers: {
-				'Content-type': 'application/csv'
-			}
-		}).success(function (res) {
-			$scope.parseWordList(res);
-		});
-
 		$scope.$on("enter", function() {
 			$scope.active = true;
 		});
@@ -177,6 +169,7 @@ practiceDirective.controller( 'PracticeDirectiveController',
 		$scope.rating = 0;
 		$scope.isRecording = false;
 		$scope.isUploading = false;
+		$scope.hasValidWordList = false;
 		$scope.uploadProgress = 0;
 
 		$scope.currentWordIdx = -1;
@@ -271,7 +264,7 @@ practiceDirective.controller( 'PracticeDirectiveController',
 
 			$scope.currentWordIdx++;
 
-			if ($scope.count && $scope.currentWordIdx >= count) {
+			if ($scope.count && $scope.currentWordIdx >= $scope.count) {
 				$scope.endWordPractice();
 			} else {
 				var lookupIdx = $scope.currentWordIdx % $scope.wordOrder.length;
@@ -279,6 +272,17 @@ practiceDirective.controller( 'PracticeDirectiveController',
 					scrambleArray($scope.wordOrder);
 				}
 				$scope.currentWord = $scope.wordList[$scope.wordOrder[lookupIdx]];
+			}
+
+			if ($scope.pauseEvery && $scope.pauseEvery > 0 && $scope.currentWordIdx > 0) {
+				if ($scope.currentWordIdx % $scope.pauseEvery === 0) {
+					$scope.isFeedbacking = true;
+					navigator.notification.confirm("Pausing for feedback",
+						function () {
+							$scope.isFeedbacking = false;
+						}, "Pausing for feedback",
+						["Done"]);
+				}
 			}
 		}
 
@@ -302,7 +306,9 @@ practiceDirective.controller( 'PracticeDirectiveController',
 					if (navigator.notification)
 						navigator.notification.alert("Can't start work practice: " + err, null, "Error");
 				}
-				);
+			);
+
+			if ($scope.startPracticeCallback) $scope.startPracticeCallback();
 		};
 
 		$scope.endWordPractice = function() {
@@ -315,6 +321,7 @@ practiceDirective.controller( 'PracticeDirectiveController',
 				AudioPlugin.stopRecording(recordingDidStop, recordingDidFail);
 			}
 			console.log("Ending word practice");
+			if ($scope.endPracticeCallback) $scope.endPracticeCallback();
 		};
 
 		$scope.nextWord = function() {
@@ -330,11 +337,29 @@ practiceDirective.controller( 'PracticeDirectiveController',
 			for (var i=0; i<$scope.wordList.length; ++i) {
 				$scope.wordOrder.push(i);
 			}
+			$scope.hasValidWordList = true
+		}
+
+		$scope.reloadCSVData = function() {
+			$http.get($scope.csv, {
+				headers: {
+					'Content-type': 'application/csv'
+				}
+			}).success(function (res) {
+				$scope.parseWordList(res);
+			});
 		}
 
 		$scope.$on('ratingChange', function(event, data)
 		{
 			$scope.rating = data;
 		});
+
+		$scope.$watch("csv", function () {
+			$scope.hasValidWordList = false;
+			if ($scope.csv) $scope.reloadCSVData();
+		});
+
+		if ($scope.csv) $scope.reloadCSVData();
 	}
 );

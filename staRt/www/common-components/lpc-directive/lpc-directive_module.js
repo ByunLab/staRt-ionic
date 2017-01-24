@@ -17,10 +17,12 @@ lpcDirective.directive( 'lpcDirective', function()
 		controller: 'LpcDirectiveController',
 		scope:
 		{
+			probe: '=',
 			sand: '=',
 			slider: '=',
 			reset: '=',
-			rate: '='
+			rate: '=',
+			waveHidden: "="
 		},
 		templateUrl: 'common-components/lpc-directive/lpc-directive_template.html'
 	};

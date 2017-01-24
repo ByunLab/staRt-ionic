@@ -1,6 +1,6 @@
 <div class="words-contentBox">
 
-	<button style="margin:40px;" ng-click="beginWordPractice()" ng-hide="isPracticing">
+	<button style="margin:40px;" ng-click="beginWordPractice()" ng-hide="isPracticing || !hasValidWordList">
 		Start Word Practice
 	</button>
 	<button style="margin:40px;" ng-click="nextWord()" ng-hide="!isPracticing">
@@ -21,6 +21,13 @@
 		Uploading {{uploadProgress * 100}}
 	</p>
 
-	<lpc-directive slider="true" rate="isPracticing" reset="true" sand="true"></lpc-directive>
+	<lpc-directive
+		probe="probe"
+		slider="true"
+		rate="isPracticing"
+		reset="true"
+		sand="true"
+		waveHidden="isFeedbacking"
+	/>
 
 </div> <!-- end words-contentBox-->

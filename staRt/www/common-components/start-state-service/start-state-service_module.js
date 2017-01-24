@@ -19,10 +19,10 @@ startStateService.factory('StartUIState', function()
       {
         title: "Tutorial",
         sref: "tutorial",
-        ani: "rotateIn" 
+        ani: "rotateIn"
       },
       {
-        title: "Auto",
+        title: "Test",
         sref: "auto",
         ani: "flipInX"
       },
