@@ -1,0 +1,43 @@
+.tutNoWave-content {
+	display: flex;
+	flex-direction: column;
+	flex-wrap: nowrap;
+	align-items: flex-start;
+	justify-content: space-between;
+	height: 100%;
+	//border: 1px solid orange;
+
+	.noWaveBox {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		justify-content: space-around;
+		width: 60%;
+		height: auto;
+		padding: 10px 0;
+		//height: $rowH * 3;
+		//border: 1px solid lime;
+	}
+
+	.noWaveRow {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: nowrap;
+		justify-content: flex-start;
+		align-items: flex-start;
+		text-align: left;
+		width: 100%;
+		margin: 10px 0; //#hc
+		//border: 1px solid green;
+
+		.noWave3 {
+			//border: 1px solid green;
+			width: 50%;
+		}
+	} //end .noWaveRow
+
+	.charImg {
+		position: absolute;
+		//border: 1px solid pink;
+	}
+} // end .tutNoWave-content

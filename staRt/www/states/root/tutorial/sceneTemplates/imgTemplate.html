@@ -1,0 +1,16 @@
+<div class="pageView">
+
+	<img ng-if="currStep.bgImg.status != 'done'" ng-src="{{currStep.bgImg.url}}" class="tut-bgImg" ng-class="{'tut-bgImg--dim': currStep.bgImg.status === 'dim'}">
+
+	<div class="tutPgView-content">
+
+		<div class="inputBox">
+			<button
+				class="tutBtn"
+				ui-sref="{{'root.tutorial.' + currStep.input.next}}">
+				{{currStep.input.txt}}
+			</button>
+		</div>
+
+	</div> <!-- end tutPgView-content -->
+</div> <!-- end .pageView -->

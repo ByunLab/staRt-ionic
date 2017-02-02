@@ -18,6 +18,18 @@
   font-weight: bold;
   font-style: normal; }
 
+.txtBold, .txtBold-blue, .txtBold-blueDark, .txtBold-blueLight {
+  font-weight: 600; }
+
+.txtBold-blue {
+  color: #53c8e9; }
+
+.txtBold-blueDark {
+  color: #018B9D; }
+
+.txtBold-blueLight {
+  color: #c5f3ff; }
+
 button {
   font-weight: bold; }
 
@@ -528,7 +540,8 @@ input[type=range]::-webkit-slider-thumb {
   width: 100vw; }
 
 .pane {
-  flex-flow: column; }
+  flex-flow: column;
+  background-color: transparent; }
 
 canvas {
   background-color: #ffffff; }
@@ -550,53 +563,269 @@ canvas {
   width: 100%; }
 
 .sceneBox {
-  border: 1px solid yellow;
   position: absolute;
+  top: 0;
   margin-left: 170px;
   width: 80%;
   height: 475px;
   z-index: 10; }
 
-.sandbarBox {
-  position: relative;
-  height: 150px;
-  top: 435px;
+.pane {
+  background-color: transparent; }
+
+#pageView {
+  width: 100%;
+  height: 475px;
   display: flex;
   flex-direction: column;
-  z-index: 1; }
+  justify-content: flex-start;
+  align-items: stretch;
+  background-color: transparent; }
 
-.sandbar-img {
+.pageView {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  font-size: 1.4em; }
+
+.tutPg-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+  text-align: left;
+  width: 100%;
+  height: auto;
+  padding-bottom: 1em; }
+
+.tut-bgImg {
+  height: 100%;
+  width: 100%;
   position: absolute;
-  height: 150px;
-  width: 100vw;
+  top: 0px;
+  left: 0px;
+  z-index: -1; }
+
+.tut-bgImg--dim {
+  opacity: 0.1; }
+
+.tutSingleWave-content {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  height: 100%;
+  text-align: left; }
+  .tutSingleWave-content .leftBox {
+    display: flex;
+    flex-direction: column;
+    max-height: 100%;
+    width: 65%; }
+    .tutSingleWave-content .leftBox .leftRow {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      align-items: flex-start; }
+    .tutSingleWave-content .leftBox .wave1 .waveFrame {
+      height: 190px;
+      width: 500px;
+      background-color: #F0F9FC;
+      border-radius: 10px;
+      box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.15); }
+      .tutSingleWave-content .leftBox .wave1 .waveFrame .lpcBox {
+        margin: 10px;
+        height: 170px;
+        width: 480px;
+        border-radius: 10px;
+        background-color: #c5f3ff; }
+      .tutSingleWave-content .leftBox .wave1 .waveFrame .waveFrame-label {
+        position: relative;
+        margin: 10px;
+        top: -190px;
+        left: 0px;
+        height: auto;
+        padding: 7px 15px;
+        width: 225px;
+        margin: 0 auto;
+        background-color: #F0F9FC;
+        border-radius: 10px;
+        text-align: center; }
+        .tutSingleWave-content .leftBox .wave1 .waveFrame .waveFrame-label .waveFrame-label--txt {
+          font-size: 0.65em;
+          line-height: 1em; }
+        .tutSingleWave-content .leftBox .wave1 .waveFrame .waveFrame-label .waveFrame-label--title {
+          font-size: 0.65em;
+          font-weight: bold; }
+    .tutSingleWave-content .leftBox .leftRow2 {
+      padding-top: 20px; }
+    .tutSingleWave-content .leftBox .leftRow3 {
+      flex-direction: column; }
+  .tutSingleWave-content .rightBox {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 33%;
+    padding-top: 0px; }
+    .tutSingleWave-content .rightBox .rightRow1 {
+      display: flex;
+      flex-direction: row;
+      min-height: 25px;
+      width: 100%; }
+    .tutSingleWave-content .rightBox .starBox {
+      position: absolute;
+      height: 265px;
+      width: 265px;
+      top: 27.74286vh; }
+    .tutSingleWave-content .rightBox .starImg {
+      position: relative; }
+
+.tutPgView-content {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  height: 100%; }
+  .tutPgView-content .leftBox {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 65%; }
+    .tutPgView-content .leftBox .leftRow {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      align-items: flex-start;
+      height: 10%; }
+    .tutPgView-content .leftBox .leftRow3 {
+      flex-direction: column; }
+  .tutPgView-content .rightBox {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 33%; }
+    .tutPgView-content .rightBox .rightRow1 {
+      display: flex;
+      flex-direction: row;
+      min-height: 25px;
+      width: 100%; }
+    .tutPgView-content .rightBox .starBox {
+      position: absolute;
+      height: 265px;
+      width: 267px;
+      top: 27.74286vh; }
+
+.inputBox {
+  position: absolute;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: center;
+  width: 65%;
+  height: auto;
+  top: 48.55vh;
+  margin-bottom: 6.93571vh; }
+
+button.tutBtn, a.tutBtn {
+  min-height: 6.93571vh;
+  min-width: 150px;
+  border-radius: 6.93571vh;
+  border: none;
+  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.15);
+  color: white;
+  font-size: 1em;
+  background-color: #53c8e9;
+  z-index: 99; }
+
+.lpc1 {
+  position: absolute;
+  top: 5.89536vh;
   left: 0;
-  opacity: 1;
-  z-index: 1; }
+  height: 215px;
+  width: 490px; }
+
+ion-slide-page {
+  z-index: 99; }
+
+.swiper-slide {
+  border: 1px solid pink; }
+
+.sandbarBox {
+  position: relative;
+  height: 27.74286vh;
+  width: 100vw;
+  top: 55.48571vh;
+  display: flex;
+  flex-direction: column;
+  z-index: 1;
+  background-image: url("../img/tutorial/sand.svg");
+  background-size: auto 100%; }
 
 .sandbar-coinRow {
-  position: absolute;
+  position: relative;
   display: inline-flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
   flex-wrap: nowrap;
-  top: 44px;
-  height: 13.87143vh;
+  height: 100%;
   margin-left: 16.66vw;
   width: 76.68vw;
   z-index: 25; }
 
 .sandbar-coinBox {
   align-self: flex-start;
-  z-index: 25; }
+  display: flex;
+  flex-direction: column;
+  padding: 0px 10px;
+  height: 100%;
+  z-index: 25;
+  border: 1px solid white; }
 
 .sandbar-coinImgBox {
-  height: 68px;
-  width: 100px;
-  border: 1px solid white; }
+  height: 60px;
+  width: auto;
+  border: 1px solid aqua; }
 
 .sandbar-coinTxt {
   margin-top: 5px; }
+
+.activeCoin {
+  color: red;
+  font-weight: bold; }
+
+.tutNoWave-content {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  height: 100%; }
+  .tutNoWave-content .noWaveBox {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-around;
+    width: 60%;
+    height: auto;
+    padding: 10px 0; }
+  .tutNoWave-content .noWaveRow {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    text-align: left;
+    width: 100%;
+    margin: 10px 0; }
+    .tutNoWave-content .noWaveRow .noWave3 {
+      width: 50%; }
+  .tutNoWave-content .charImg {
+    position: absolute; }
 
 .words-word {
   font-size: 3rem;

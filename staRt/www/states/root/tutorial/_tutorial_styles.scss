@@ -8,71 +8,403 @@
 	//border: 1px solid yellow;
 }
 
-.sceneBox {
-	border: 1px solid yellow;
+.sceneBox { // #hc is this n/a now
 	position: absolute;
+	top: 0;
 	margin-left: 170px;
 	width: 80%;
 	height: 475px;
 	z-index: 10;
+	//border: 1px solid yellow;
+}
+
+.pane { // this is class for ionic <ion-nav-view> eles 
+	background-color: transparent;
+}
+
+#pageView {  // this is the ui-view in the parent ele
+	width: 100%;
+	height: 475px;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: stretch;
+	background-color: transparent;
+	// border: 1px solid pink;
+}
+
+.pageView {  // this is the parent ele in the view template
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: stretch;
+	font-size: 1.4em;
+	//border: 1px solid lightBlue;
+}
+
+	.tutPg-header {
+		display: flex;
+		flex-direction: row;
+		justify-content: flex-start;
+		align-items: flex-start;
+		text-align: left;
+		width: 100%;
+		height: auto;
+		padding-bottom: 1em;
+		//border: 1px solid lightBlue;
+	}
+
+	.tut-bgImg {
+		height: 100%;
+		width: 100%;
+		position: absolute;
+		top: 0px;
+		left: 0px;
+		z-index: -1;
+		//opacity: 0.1;
+		//border: 1px solid red;
+	}
+
+	.tut-bgImg--dim {
+		opacity: 0.1;
+	}
+
+	// .tutNoWave-content {
+	// 	display: flex;
+	// 	flex-direction: column;
+	// 	flex-wrap: nowrap;
+	// 	align-items: flex-start;
+	// 	justify-content: space-between;
+	// 	height: 100%;
+	// 	//border: 1px solid orange;
+
+	// 	.noWaveBox {
+	// 		display: flex;
+	// 		flex-direction: column;
+	// 		align-items: flex-start;
+	// 		justify-content: space-around;
+	// 		width: 60%;
+	// 		height: auto;
+	// 		padding: 10px 0;
+	// 		//height: $rowH * 3;
+	// 		//border: 1px solid lime;
+	// 	}
+
+	// 	.noWaveRow {
+	// 		display: flex;
+	// 		flex-direction: row;
+	// 		flex-wrap: nowrap;
+	// 		justify-content: flex-start;
+	// 		align-items: flex-start;
+	// 		text-align: left;
+	// 		width: 100%;
+	// 		margin: 10px 0; //#hc
+	// 		//border: 1px solid green;
+
+	// 		.noWave3 {
+	// 			//border: 1px solid green;
+	// 			width: 50%;
+	// 		}
+
+	// 	} //end .noWaveRow
+
+	// 	.charImg {
+	// 		position: absolute;
+	// 		//border: 1px solid pink;
+	// 	}
+	// } // end .tutNoWave-content
+
+	.tutSingleWave-content {
+		// should be identical to .tutNoWave-content w/ the exception of flex-direction
+		display: flex;
+		flex-direction: row;
+		flex-wrap: nowrap;
+		align-items: flex-start;
+		justify-content: space-between;
+		height: 100%;
+		text-align: left;
+		//border: 1px solid orange;
+
+		.leftBox {
+			display: flex;
+			flex-direction: column;
+			max-height: 100%;
+			width: 65%;
+			//border: 1px solid lightBlue;
+			
+			.leftRow {
+				display: flex;
+				flex-direction: row;
+				flex-wrap: nowrap;
+				align-items: flex-start;
+				//height: auto;
+				//border: 1px solid lightBlue;
+			}
+
+			.wave1 {
+				// padding: 10px;
+				// padding-top: 20px;
+			// just a container
+				.waveFrame {
+					height: 190px;
+					width: 500px;
+					background-color: $blue-white;
+					border-radius: 10px;
+					box-shadow: $itemShadow;
+
+					.lpcBox {
+						margin: 10px;
+						height: 170px;
+						width: 480px;
+						border-radius: 10px;
+						background-color: $blue-light;
+						//border: 1px solid red;
+					}
+					
+					.waveFrame-label {
+						position: relative;
+						margin: 10px;
+						top: - 190px;
+						left: - 0px;
+						height: auto;
+						padding: 7px 15px;
+						width: 225px;
+						margin: 0 auto;
+						background-color: $blue-white;
+						border-radius: 10px;
+						text-align: center;
+
+						.waveFrame-label--txt {
+							font-size: 0.65em;
+							line-height: 1em;
+						}
+						.waveFrame-label--title {
+							font-size: 0.65em;
+							font-weight: bold;
+						}
+					} // end .waveFrame-label
+
+				} // end waveFrame
+			}
+			.leftRow2 {
+				padding-top: 20px;
+
+
+			}
+			.leftRow3 {
+				flex-direction: column;
+
+			}
+		}
+
+		.rightBox {
+			display: flex;
+			flex-direction: column;
+			height: 100%;
+			width: 33%;
+			padding-top: 0px;
+			//border: 1px solid orange;
+			
+			.rightRow1 {
+				display: flex;
+				flex-direction: row;
+				min-height: 25px;
+				width: 100%;
+				//border: 1px solid lightBlue;
+			}
+
+			.starBox {
+				position: absolute;
+				height: 265px;
+				width: 265px;
+				top: $rowH * 2;
+				//border: 1px solid lightBlue;
+			}
+
+
+			.starImg {
+				position: relative;
+				// max-height: 265px;
+				// max-width: 265px;
+				//border: 1px solid lightBlue;
+			}
+		}
+
+	} // end .tutPgView-content
+
+
+	.tutPgView-content {
+		// should be identical to .tutNoWave-content w/ the exception of flex-direction
+		display: flex;
+		flex-direction: row;
+		flex-wrap: nowrap;
+		align-items: flex-start;
+		justify-content: space-between;
+		height: 100%;
+		//border: 1px solid orange;
+
+		.leftBox {
+			display: flex;
+			flex-direction: column;
+			height: 100%;
+			width: 65%;
+			//border: 1px solid lightBlue;
+			
+			.leftRow {
+				display: flex;
+				flex-direction: row;
+				flex-wrap: nowrap;
+				align-items: flex-start;
+				height: 10%;
+				//border: 1px solid lightBlue;
+			}
+
+			.leftRow1 {
+
+			}
+			.leftRow2 {
+
+			}
+			.leftRow3 {
+				flex-direction: column;
+
+			}
+		}
+
+		.rightBox {
+			display: flex;
+			flex-direction: column;
+			height: 100%;
+			width: 33%;
+			//border: 1px solid orange;
+			
+			.rightRow1 {
+				display: flex;
+				flex-direction: row;
+				min-height: 25px;
+				width: 100%;
+				//border: 1px solid lightBlue;
+			}
+
+			.starBox {
+				position: absolute;
+				height: 265px;
+				width: 267px;
+				top: $rowH * 2;
+				//border: 1px solid yellow;
+			}
+		}
+
+	} // end .tutPgView-content
+
+
+.inputBox {
+	position: absolute;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	justify-content: center;
+	width: 65%;
+	height: auto;
+	top: $rowH * 3.5;
+	margin-bottom: $rowHalf;
+	//border: 1px solid red;
+}
+
+button.tutBtn, a.tutBtn {
+	min-height: $rowHalf;
+	min-width: 150px;
+	border-radius: $rowHalf;
+	border: none;
+	box-shadow: $itemShadow;
+	color: white;
+	font-size: 1em;
+	background-color: $blue-main;
+	z-index: 99;
+}
+
+.lpc1 {
+	position: absolute;
+	top: $rowHalf * 0.85;
+	left: 0;
+	height: 215px;
+	width: 490px;
+	//border: 1px solid red;
+}
+
+ion-slide-page {
+	z-index: 99;
+}
+
+
+.swiper-slide {
+	border: 1px solid pink;
 }
 
 
 // SANDBAR -------------------------------------
 
-.sandbarBox {
-	position: relative;
-	height: 150px;
-	top: 435px;
-	display: flex;
-	flex-direction: column;
-	z-index: 1;
-	//border: 1px solid lime;
-}
+	.sandbarBox {
+		position: relative;
+		height: $rowH * 2;
+		width: $appW;
+		top: $rowH * 4;
+		display: flex;
+		flex-direction: column;
+		z-index: 1;
+		background-image: url("../img/tutorial/sand.svg");
+		background-size: auto 100%;
+		//border: 1px solid lime;
+	}
 
-.sandbar-img {
-	position: absolute;
-	height: 150px;
-	width: $appW;
-	left: 0;
-	opacity: 1;
-	z-index: 1;
-	//border: 1px solid pink;
-}
+	.sandbar-coinRow {
+		position: relative;
+		display: inline-flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+		flex-wrap: nowrap;
+		height: 100%;
+		margin-left: $navW;
+		width: $appW - $navW - $col-pad;
+		z-index: 25;
+		//border: 1px solid orange;
+	}
 
-.sandbar-coinRow {
-	position: absolute;
-	display: inline-flex;
-	flex-direction: row;
-	align-items: center;
-	justify-content: space-between;
-	flex-wrap: nowrap;
+	.sandbar-coinBox {
+		align-self: flex-start;
+		display: flex;
+		flex-direction: column;
+		padding: 0px 10px;
+		height: 100%;
 
-	top: 44px;  // vert offset, or hgt of .sandbarBox - $rowH
-	height: $rowH;
-	margin-left: $navW;
-	width: $appW - $navW - $col-pad;
-	z-index: 25;
-	//border: 1px solid orange;
-}
+		z-index: 25;
+		border: 1px solid white;
+	}
 
-.sandbar-coinBox {
-	align-self: flex-start;
-	z-index: 25;
-	//border: 1px solid lime;
-}
+	.sandbar-coinImgBox {
+		height: 60px; //64%; //64%; //100%; //
+		// height: $rowHalf; //		#hc need a var for nav icon size
+		width: auto;
+		border: 1px solid aqua;
+	}
 
-.sandbar-coinImgBox {
-	height: 68px; //64%;
-	width: 100px;
-	border: 1px solid white;
-}
+	.sandbar-coinImg {
 
-.sandbar-coinImg {
-	
-}
+	}
 
-.sandbar-coinTxt {
-	margin-top: 5px;
-}
+	.sandbar-coinTxt {
+		margin-top: 5px;
+	}
 
+	.activeCoin {
+		color: red;
+		font-weight: bold;
+	}
+
+// IMPORTS THE INDIVIDUAL TEMPLATE STYLES
+@import 'sceneStyles/waveNone';
+@import 'sceneStyles/waveSingle';
+@import 'sceneStyles/waveDouble';

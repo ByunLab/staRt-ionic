@@ -1,0 +1,64 @@
+<div class="pageView">
+
+	<img ng-if="currStep.bgImg.status != 'done'" ng-src="{{currStep.bgImg.url}}" class="tut-bgImg" ng-class="{'tut-bgImg--dim': currStep.bgImg.status === 'dim'}">
+
+	 <div class="tutPg-header" ng-if="currStep.header.txt">
+	 	<span ng-bind-html="currStep.header.txt"></span>
+	</div> 
+	
+	<div class="tutSingleWave-content">
+		<div class="leftBox">
+
+			<div class="leftRow wave1">
+					<div class="waveFrame">
+						<div class="lpcBox"></div>
+						<div class="waveFrame-label">
+							<div class="waveFrame-label--title" ng-if="currStep.LRow1.labelTitle">
+								<span ng-bind-html="currStep.LRow1.labelTitle"></span>
+							</div>
+
+							<div class="waveFrame-label--txt" ng-if="currStep.LRow1.labelTxt">
+								<span ng-bind-html="currStep.LRow1.labelTxt"></span>
+							</div>
+						</div>
+					</div>
+			</div>
+
+			<div class="leftRow leftRow2" ng-if="currStep.LRow2.txt">
+				<span ng-bind-html="currStep.LRow2.txt"></span>
+			</div>
+			
+			<div class="leftRow leftRow3" ng-if="currStep.LRow3.txt">
+				<span ng-bind-html="currStep.LRow3.txt"></span>
+			</div>
+		</div>
+
+		<div class="inputBox">
+			<button
+				class="tutBtn"
+				ui-sref="{{'root.tutorial.' + currStep.input.next}}">
+				{{currStep.input.txt}}
+			</button>
+		</div>
+
+		<div class="rightBox">
+
+			<div class="rightRow1" ng-if="currStep.RRow1.txt">
+				<span ng-bind-html="currStep.RRow1.txt"></span>
+			</div>
+			
+			<div class="starBox">
+				<img 
+				ng-src="{{currStep.star.img}}" 
+				class="starImg" 
+				style="height:{{currStep.star.hgt}}; 
+					width:{{currStep.star.w}}; 
+					top:{{currStep.star.top}}; 
+					left:{{currStep.star.left}};">
+			<div>
+
+		</div>
+
+	</div> <!-- end tutPgView-content -->
+</div> <!-- end .pageView -->
+

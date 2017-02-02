@@ -213,10 +213,8 @@
     }
 
     .pane {  
-      // not entirely sure what this does. seems to be an ion-thing that groups content. 
-      //currently, used in Resources & Profiles. It should probably be moved to the individual state .scss files #hc
       flex-flow: column;
-      //border: 1px solid yellow;
+      background-color: transparent;
     }
 
     canvas {

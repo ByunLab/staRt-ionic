@@ -1,75 +1,56 @@
 <ion-view view-title="Tutorial" class="state-contentBox--wide">
 	
-	<div class="tut-contentBox">
+	<div class="tut-contentBox"> <!-- <ion-content scroll="false"> n/a w/ <div> -->
 
-		<!-- sand bar goes here -->
+	<!-- ==================================
+	SAND BAR -->
 		<div class="sandbarBox">
-
-			<img src="img/tutorial/sand.svg" class="sandbar-img">
-
 			<list class="sandbar-coinRow">
-				<item ng-repeat="coin in coinData" class="sandbar-coinBox"
-				>
-					<div class="sandbar-coinImgBox">
-					</div>
-					<div class="sandbar-coinTxt">
-						{{coin.txt}}
-					</div>
+			<item  ng-repeat="coin in coinData">
+				<!-- ui-router adds class="activeCoin" only if the STATE matches the ui-sref (coin.sref) -->
+					<a class="sandbar-coinBox"
+					ui-sref="{{'root.tutorial.' + coin.sref }}"
+					ui-sref-active="activeCoin">	
+
+						<div class="sandbar-coinImgBox">
+							<!--NOTE: this isn't going to work if the url routing isn't working 
+				        	<!- defines img inactive state ->
+				          	<img
+					            ng-if="state.current.url != tab.sref" 
+					            ng-src="{{ 'img/nav/' + tab.sref + '.svg' }}"
+					            class="nav-svg"
+					          >
+					          <!- defines img active state ->
+					          <img 
+					            ng-if="state.current.url === tab.sref" 
+					            ng-src="{{ 'img/nav/' + tab.sref + '-b.svg' }}"
+					            class="nav-svg animated {{ tab.ani }}"
+					          >
+				      		-->
+						</div>
+
+						<div class="sandbar-coinTxt">
+							{{coin.txt}}
+						</div>
+					</a>
 				</item>
 
-			</list> <!-- end .coinList -->
-
-				<!-- 
-				<list class="navTabs">
-
-				      <item
-				        ng-repeat="tab in tabData"
-				        class="navTab"
-				        ui-sref="{{ 'root.' + tab.sref }}"
-				        ng-class="{ 'active': state.current.url === tab.sref }">
-				        
-				        <div class="navTabText">
-
-				          <!- defines img inactive state ->
-				          <img
-				            ng-if="state.current.url != tab.sref" 
-				            ng-src="{{ 'img/nav/' + tab.sref + '.svg' }}"
-				            class="nav-svg"
-				          >
-				          <!- defines img active state ->
-				          <img 
-				            ng-if="state.current.url === tab.sref" 
-				            ng-src="{{ 'img/nav/' + tab.sref + '-b.svg' }}"
-				            class="nav-svg animated {{ tab.ani }}"
-				          >
-				          
-				          {{tab.title}}
-
-				        </div>
-
-				      </item>
-				    </list>
-				 -->
-
-				<!-- the links to nested states using relative paths -->
-		  		<!-- adds active class if the state matches the ui-sref -->
-<!-- 				  <a ui-sref-active="active" ui-sref=".p01s1"><span>1</span>The Wave</a>
-				  <a ui-sref-active="active" ui-sref=".interests"><span>2</span> Full Image Template</a>
-				  <a ui-sref-active="active" ui-sref=".payment"><span>3</span> Wave2 Template</a> -->
-			</div><!-- end sandbar-coins -->
-
-
+			</list> <!-- end .coinRow -->
 		</div> <!-- end sandbarBox -->
 
 
-		<!-- scene content goes here -->
+	<!-- ==================================
+	SCENE CONTENT -->
 		<div class="sceneBox">
-			
-
-
-
-		</div>
+			<!--	
+				for some reason, making this an <ion-view> does NOT work 
+				Why? IDK https://ionicframework.com/docs/api/directive/ionView/
+			-->
+			<ui-view id="pageView" name="pageView">
+			</ui-view>
+		</div> <!-- end sceneBox -->
 	
-
-	</div> <!-- end tut-contentBox-->
+	</div> <!-- end tut-contentBox -->
 </ion-view>
+
+
