@@ -1,5 +1,4 @@
-// base layout
-.profiles-contentBox {
+.profiles-layout_view-container {
 	position: relative;
 	display: flex;
 	width: 100vw;
@@ -30,7 +29,7 @@
 		} // end .bar-header
 	} // end profiles-ion-nav-bar
 
-	.profiles-bg {
+	.profiles-layout_bg-container {
 		position: absolute;
 		top: 0;
 		left: 0;
@@ -39,7 +38,7 @@
 		z-index: 1;
 	}
 
-	.profiles-layout {
+	.profiles-layout_content-container {
 		position: relative;
 		display: flex;
 		flex-flow: row nowrap;

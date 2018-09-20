@@ -577,19 +577,19 @@ input, textarea {
 .animated.ng-enter.ng-enter-active {
   display: block; }
 
-.profiles-contentBox {
+.profiles-layout_view-container {
   position: relative;
   display: flex;
   width: 100vw;
   height: 100vh; }
-  .profiles-contentBox .profiles-ion-nav-bar .bar-header {
+  .profiles-layout_view-container .profiles-ion-nav-bar .bar-header {
     background-color: #c5f3ff;
     height: 16.66667vh !important;
     display: flex;
     align-items: center;
     box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.15);
     padding-left: 16.66vw; }
-    .profiles-contentBox .profiles-ion-nav-bar .bar-header .title {
+    .profiles-layout_view-container .profiles-ion-nav-bar .bar-header .title {
       position: relative;
       display: block;
       text-transform: uppercase;
@@ -600,14 +600,14 @@ input, textarea {
       padding-top: 10px;
       text-align: left;
       overflow: visible; }
-  .profiles-contentBox .profiles-bg {
+  .profiles-layout_view-container .profiles-layout_bg-container {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     z-index: 1; }
-  .profiles-contentBox .profiles-layout {
+  .profiles-layout_view-container .profiles-layout_content-container {
     position: relative;
     display: flex;
     flex-flow: row nowrap;
@@ -716,7 +716,7 @@ p.display-name {
     text-align: left;
     overflow: visible; }
 
-.tut-contentBox {
+.tutorial-layout_view-container {
   position: relative;
   top: 21.42857vh;
   height: 71.42857vh;
@@ -1040,19 +1040,19 @@ div.needleBox {
   left: 169px;
   z-index: 9; }
 
-.auto-contentBox {
+.auto-layout_view-container {
   position: relative;
   display: flex;
   width: 100vw;
   height: 100vh; }
-  .auto-contentBox .auto-ion-nav-bar .bar-header {
+  .auto-layout_view-container .auto-ion-nav-bar .bar-header {
     background-color: #c5f3ff;
     height: 16.66667vh !important;
     display: flex;
     align-items: center;
     box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.15);
     padding-left: 16.66vw; }
-    .auto-contentBox .auto-ion-nav-bar .bar-header .title {
+    .auto-layout_view-container .auto-ion-nav-bar .bar-header .title {
       position: relative;
       display: block;
       text-transform: uppercase;
@@ -1063,14 +1063,14 @@ div.needleBox {
       padding-top: 10px;
       text-align: left;
       overflow: visible; }
-  .auto-contentBox .auto-bg {
+  .auto-layout_view-container .auto-layout_bg-container {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     z-index: 1; }
-  .auto-contentBox .auto-layout {
+  .auto-layout_view-container .auto-layout_content-container {
     position: relative;
     display: flex;
     flex-direction: column;
@@ -1113,19 +1113,19 @@ div.needleBox {
   display: flex;
   flex: 1 0 auto; }
 
-.free-contentBox {
+.free-layout_view-container {
   position: relative;
   display: flex;
   width: 100vw;
   height: 100vh; }
-  .free-contentBox .free-ion-nav-bar .bar-header {
+  .free-layout_view-container .free-ion-nav-bar .bar-header {
     background-color: #c5f3ff;
     height: 16.66667vh !important;
     display: flex;
     align-items: center;
     box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.15);
     padding-left: 16.66vw; }
-    .free-contentBox .free-ion-nav-bar .bar-header .title {
+    .free-layout_view-container .free-ion-nav-bar .bar-header .title {
       position: relative;
       display: block;
       text-transform: uppercase;
@@ -1136,14 +1136,14 @@ div.needleBox {
       padding-top: 10px;
       text-align: left;
       overflow: visible; }
-  .free-contentBox .free-bg {
+  .free-layout_view-container .free-layout_bg-container {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     z-index: 1; }
-  .free-contentBox .free-layout {
+  .free-layout_view-container .free-layout_content-container {
     position: relative;
     display: flex;
     flex-flow: column nowrap;
@@ -1155,19 +1155,19 @@ div.needleBox {
     align-items: center;
     z-index: 10; }
 
-.quest-contentBox {
+.quest-layout_view-container {
   position: relative;
   display: flex;
   width: 100vw;
   height: 100vh; }
-  .quest-contentBox .quest-ion-nav-bar .bar-header {
+  .quest-layout_view-container .quest-ion-nav-bar .bar-header {
     background-color: #c5f3ff;
     height: 16.66667vh !important;
     display: flex;
     align-items: center;
     box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.15);
     padding-left: 16.66vw; }
-    .quest-contentBox .quest-ion-nav-bar .bar-header .title {
+    .quest-layout_view-container .quest-ion-nav-bar .bar-header .title {
       position: relative;
       display: block;
       text-transform: uppercase;
@@ -1178,14 +1178,14 @@ div.needleBox {
       padding-top: 10px;
       text-align: left;
       overflow: visible; }
-  .quest-contentBox .quest-bg {
+  .quest-layout_view-container .quest-layout_bg-container {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     z-index: 1; }
-  .quest-contentBox .quest-layout {
+  .quest-layout_view-container .quest-layout_content-container {
     position: relative;
     display: flex;
     flex-flow: column nowrap;
@@ -1272,19 +1272,19 @@ div.needleBox {
   top: 16.66667vh;
   padding: 10px; }
 
-.resources-contentBox {
+.resources-layout_view-container {
   position: relative;
   display: flex;
   width: 100vw;
   height: 100vh; }
-  .resources-contentBox .resources-ion-nav-bar--old .bar-header {
+  .resources-layout_view-container .resources-ion-nav-bar--old .bar-header {
     background-color: #c5f3ff;
     height: 16.66667vh !important;
     display: flex;
     align-items: center;
     box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.15);
     padding-left: 16.66vw; }
-    .resources-contentBox .resources-ion-nav-bar--old .bar-header .title {
+    .resources-layout_view-container .resources-ion-nav-bar--old .bar-header .title {
       position: relative;
       display: block;
       text-transform: uppercase;
@@ -1295,9 +1295,9 @@ div.needleBox {
       padding-top: 10px;
       text-align: left;
       overflow: visible; }
-  .resources-contentBox .resources-ion-nav-bar .bar {
+  .resources-layout_view-container .resources-ion-nav-bar .bar {
     background-image: none !important; }
-  .resources-contentBox .resources-ion-nav-bar .bar-header {
+  .resources-layout_view-container .resources-ion-nav-bar .bar-header {
     background-color: transparent;
     height: 16.66667vh !important;
     display: flex;
@@ -1306,21 +1306,21 @@ div.needleBox {
     align-items: center;
     padding-left: 16.66vw;
     padding-right: 8.33333vw; }
-    .resources-contentBox .resources-ion-nav-bar .bar-header .title {
+    .resources-layout_view-container .resources-ion-nav-bar .bar-header .title {
       position: relative;
       display: block;
       text-transform: uppercase;
       font-weight: 500;
       font-size: 1.75em;
       color: #7ab5b8; }
-  .resources-contentBox .resources-bg {
+  .resources-layout_view-container .resources-layout_bg-container {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     z-index: 1; }
-  .resources-contentBox .resources-layout {
+  .resources-layout_view-container .resources-layout_content-container {
     position: relative;
     display: flex;
     flex-flow: column nowrap;

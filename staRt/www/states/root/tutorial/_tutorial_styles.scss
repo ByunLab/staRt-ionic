@@ -25,8 +25,7 @@ $rowHalf: $rowH/2;
 	} // end .bar-header
 } // end tut-ion-nav-bar
 
-
-.tut-contentBox  { // parent ele for tut content
+.tutorial-layout_view-container  { // parent ele for tut content
 	// needs to be a flex
 	position: relative;
 	//margin-top: $rowH * 1.5;

@@ -1,5 +1,4 @@
-// base layout
-.quest-contentBox {
+.quest-layout_view-container {
 	position: relative;
 	display: flex;
 	width: 100vw;
@@ -31,7 +30,7 @@
 		} // end .bar-header
 	} // end profiles-ion-nav-bar
 
-	.quest-bg {
+	.quest-layout_bg-container {
 		position: absolute;
 		top: 0;
 		left: 0;
@@ -40,7 +39,7 @@
 		z-index: 1;
 	}
 
-	.quest-layout {
+	.quest-layout_content-container {
 		position: relative;
 		display: flex;
 		flex-flow: column nowrap;

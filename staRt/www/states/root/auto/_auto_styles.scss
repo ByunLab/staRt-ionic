@@ -1,5 +1,4 @@
-// base layout
-.auto-contentBox {
+.auto-layout_view-container {
 	position: relative;
 	display: flex;
 	width: 100vw;
@@ -29,7 +28,7 @@
 		} // end .bar-header
 	} // end profiles-ion-nav-bar
 
-	.auto-bg {
+	.auto-layout_bg-container {
 		position: absolute;
 		top: 0;
 		left: 0;
@@ -38,7 +37,7 @@
 		z-index: 1;
 	}
 
-	.auto-layout {
+	.auto-layout_content-container {
 		position: relative;
 		display: flex;
 		flex-direction: column;

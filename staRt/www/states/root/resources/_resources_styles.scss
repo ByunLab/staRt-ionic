@@ -1,5 +1,4 @@
-// base layout
-.resources-contentBox {
+.resources-layout_view-container {
 	position: relative;
   display: flex;
 	width: 100vw;
@@ -57,7 +56,7 @@
 	} // end profiles-ion-nav-bar
 
 
-	.resources-bg {
+.resources-layout_bg-container {
 		position: absolute;
 		top: 0;
 		left: 0;
@@ -66,7 +65,7 @@
 		z-index: 1;
 	}
 
-	.resources-layout {
+.resources-layout_content-container {
 		position: relative;
 		display: flex;
 		flex-flow: column nowrap;

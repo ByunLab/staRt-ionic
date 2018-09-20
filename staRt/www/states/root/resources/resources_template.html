@@ -1,6 +1,6 @@
 <ion-view view-title="SLP Resources" class="state-contentBox">
 
-	<div class="resources-contentBox">
+	<div class="resources-layout_view-container">
 
 		<!-- ion-nav-bar -->
 		<ion-nav-bar ng-class="{
@@ -10,20 +10,21 @@
 			<ion-nav-title>{{data.navTitle}}</ion-nav-title>
 		</ion-nav-bar>
 
-
 		<!-- full-width & abs pos eles go here -->
-		<div ng-if="!data.configuring" ng-class="{'resources-bg': true, 'img-bg': !data.configuring, 'img-bg_res': !data.configuring}"></div>
+		<div class="resources-layout_bg-container">
+			<div ng-if="!data.configuring" class="img-bg img-bg_res"></div>
 
-		<div class="version-display">
-				<p>staRt app version {{data.version}}</p>
-				<p>{{data.platform}}</p>
-		</div>
+			<div class="version-display">
+					<p>staRt app version {{data.version}}</p>
+					<p>{{data.platform}}</p>
+			</div>
+		</div>  <!-- end resources-bg -->
 
 
-		<!-- content goes here -->
-		<div class="resources-layout">
+		<!-- ===================================== -->
+		<!-- page content goes here -->
+		<div class="resources-layout_content-container">
 
-			<!-- ===================================== -->
 			<div class="resources-links-container resources" ng-if="!data.configuring">
 				<button ng-click="configureLPC()" class="button button-calm adjust-profile">Adjust Profile LPC</button>
 				<h3>Downloads</h3>

@@ -12,6 +12,5 @@
     "www/**/*",
     "!www/lib/**/*"
   ],
-  "type": "ionic1",
-  "app_id": ""
+  "type": "ionic1"
 }
