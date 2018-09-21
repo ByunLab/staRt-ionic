@@ -3,7 +3,7 @@
 	<div class="resources-layout_view-container">
 
 		<!-- ion-nav-bar -->
-		<ion-nav-bar class="{{ (!data.configuring) ? 'ion-nav-bar' : 'ion-nav-bar--old' }}">
+		<ion-nav-bar ng-class="!data.configuring ? 'ion-nav-bar' : 'ion-nav-bar--old'">
 			<ion-nav-title>{{data.navTitle}}</ion-nav-title>
 		</ion-nav-bar>
 
