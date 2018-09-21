@@ -1,7 +1,8 @@
 <ion-view view-title="Quest" class="state-contentBox">
 
 	<div class="quest-layout_view-container">
-		<ion-nav-bar class="quest-ion-nav-bar">
+
+		<ion-nav-bar class="{{ (practicing) ? 'ion-nav-bar' : 'ion-nav-bar--old' }}">
 			<ion-nav-title>{{data.navTitle}}</ion-nav-title>
 		</ion-nav-bar>
 

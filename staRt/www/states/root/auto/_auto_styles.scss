@@ -4,30 +4,6 @@
 	width: 100vw;
 	height: 100vh;
 
-	.auto-ion-nav-bar {
-		.bar-header { // styles <ion-header-bar>
-		  background-color: $blue-light;
-		  height: $row-h !important; //iOS cordova will overwrite this if not !important
-		  display: flex;
-		  align-items: center;
-		  box-shadow: $itemShadow;
-		  padding-left: $navW;
-
-		  .title { // // styles .title w/in <ion-header-bar>
-		    position: relative;
-		    display: block;
-		    text-transform: uppercase;
-		    color: $blue-main;
-		    font-weight: bold;
-		    font-size: $header-type;
-		    line-height: 0; // this adjusts for weird iOS stuff
-		    padding-top: 10px; // also adjusts for weird iOS styling
-		    text-align: left;
-		    overflow: visible;
-		  } //end .title
-		} // end .bar-header
-	} // end profiles-ion-nav-bar
-
 	.auto-layout_bg-container {
 		position: absolute;
 		top: 0;

@@ -4,32 +4,6 @@
 	width: 100vw;
 	height: 100vh;
 
-
-	.quest-ion-nav-bar {
-
-		.bar-header { // styles <ion-header-bar>
-		  background-color: $blue-light;
-		  height: $row-h !important; //iOS cordova will overwrite this if not !important
-		  display: flex;
-		  align-items: center;
-		  box-shadow: $itemShadow;
-		  padding-left: $navW;
-
-		  .title { // // styles .title w/in <ion-header-bar>
-		    position: relative;
-		    display: block;
-		    text-transform: uppercase;
-		    color: $blue-main;
-		    font-weight: bold;
-		    font-size: $header-type;
-		    line-height: 0;
-		    padding-top: 10px;
-		    text-align: left;
-		    overflow: visible;
-		  } //end .title
-		} // end .bar-header
-	} // end profiles-ion-nav-bar
-
 	.quest-layout_bg-container {
 		position: absolute;
 		top: 0;

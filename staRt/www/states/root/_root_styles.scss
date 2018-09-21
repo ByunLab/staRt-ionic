@@ -69,9 +69,57 @@ input, textarea {
   flex-flow: row nowrap;
 }
 
-.root-ion-nav-bar {
-  display: none;
-}
+.root-ion-nav-bar { display: none; }
+
+.ion-nav-bar--old {
+  .bar-header { // styles <ion-header-bar>
+    background-color: $blue-light;
+    height: $row-h !important;
+    display: flex;
+    align-items: center;
+    box-shadow: $itemShadow;
+    padding-left: $navW;
+
+    .title { // // styles .title w/in <ion-header-bar>
+      position: relative;
+      display: block;
+      text-transform: uppercase;
+      color: $blue-main;
+      font-weight: bold;
+      font-size: $header-type;
+      line-height: 0; // this adjusts for weird iOS stuff
+      padding-top: 10px;
+      text-align: left;
+      overflow: visible;
+    } //end .title
+  } // end .bar-header
+} // end resources-ion-nav-bar--OLD
+
+.ion-nav-bar { // new styles are here
+  .bar { //ionic style
+    background-image: none !important;
+  }
+
+  .bar-header { //ionic style for <ion-header-bar>
+    background-color: transparent;
+    height: $row-h !important;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-items: center;
+    padding-left: $navW;
+    padding-right: $col-w;
+
+    .title { //ionic style for .title w/in <ion-header-bar>
+      position: relative;
+      display: block;
+      text-transform: uppercase;
+      font-weight: 500;
+      font-size: 1.75em;
+      color: $c-text-subtle;
+    } //end .title
+  } // end .bar-header
+} // end profiles-ion-nav-bar
 
 // <ion-nav-view> in root_template
 // this is the ROUTER CONTROLLED content container

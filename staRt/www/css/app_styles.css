@@ -473,6 +473,45 @@ input, textarea {
 .root-ion-nav-bar {
   display: none; }
 
+.ion-nav-bar--old .bar-header {
+  background-color: #c5f3ff;
+  height: 16.66667vh !important;
+  display: flex;
+  align-items: center;
+  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.15);
+  padding-left: 16.66vw; }
+  .ion-nav-bar--old .bar-header .title {
+    position: relative;
+    display: block;
+    text-transform: uppercase;
+    color: #53c8e9;
+    font-weight: bold;
+    font-size: 50px;
+    line-height: 0;
+    padding-top: 10px;
+    text-align: left;
+    overflow: visible; }
+
+.ion-nav-bar .bar {
+  background-image: none !important; }
+
+.ion-nav-bar .bar-header {
+  background-color: transparent;
+  height: 16.66667vh !important;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  align-items: center;
+  padding-left: 16.66vw;
+  padding-right: 8.33333vw; }
+  .ion-nav-bar .bar-header .title {
+    position: relative;
+    display: block;
+    text-transform: uppercase;
+    font-weight: 500;
+    font-size: 1.75em;
+    color: #7ab5b8; }
+
 #content-container {
   display: -webkit-flex;
   -webkit-flex: 1;
@@ -582,24 +621,6 @@ input, textarea {
   display: flex;
   width: 100vw;
   height: 100vh; }
-  .profiles-layout_view-container .profiles-ion-nav-bar .bar-header {
-    background-color: #c5f3ff;
-    height: 16.66667vh !important;
-    display: flex;
-    align-items: center;
-    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.15);
-    padding-left: 16.66vw; }
-    .profiles-layout_view-container .profiles-ion-nav-bar .bar-header .title {
-      position: relative;
-      display: block;
-      text-transform: uppercase;
-      color: #53c8e9;
-      font-weight: bold;
-      font-size: 50px;
-      line-height: 0;
-      padding-top: 10px;
-      text-align: left;
-      overflow: visible; }
   .profiles-layout_view-container .profiles-layout_bg-container {
     position: absolute;
     top: 0;
@@ -696,25 +717,6 @@ p.display-name {
 .upload_badge {
   color: #00bb00;
   font-weight: bold; }
-
-.tut-ion-nav-bar .bar-header {
-  background-color: #c5f3ff;
-  height: 16.66667vh !important;
-  display: flex;
-  align-items: center;
-  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.15);
-  padding-left: 16.66vw; }
-  .tut-ion-nav-bar .bar-header .title {
-    position: relative;
-    display: block;
-    text-transform: uppercase;
-    color: #53c8e9;
-    font-weight: bold;
-    font-size: 50px;
-    line-height: 0;
-    padding-top: 10px;
-    text-align: left;
-    overflow: visible; }
 
 .tutorial-layout_view-container {
   position: relative;
@@ -1045,24 +1047,6 @@ div.needleBox {
   display: flex;
   width: 100vw;
   height: 100vh; }
-  .auto-layout_view-container .auto-ion-nav-bar .bar-header {
-    background-color: #c5f3ff;
-    height: 16.66667vh !important;
-    display: flex;
-    align-items: center;
-    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.15);
-    padding-left: 16.66vw; }
-    .auto-layout_view-container .auto-ion-nav-bar .bar-header .title {
-      position: relative;
-      display: block;
-      text-transform: uppercase;
-      color: #53c8e9;
-      font-weight: bold;
-      font-size: 50px;
-      line-height: 0;
-      padding-top: 10px;
-      text-align: left;
-      overflow: visible; }
   .auto-layout_view-container .auto-layout_bg-container {
     position: absolute;
     top: 0;
@@ -1118,24 +1102,6 @@ div.needleBox {
   display: flex;
   width: 100vw;
   height: 100vh; }
-  .free-layout_view-container .free-ion-nav-bar .bar-header {
-    background-color: #c5f3ff;
-    height: 16.66667vh !important;
-    display: flex;
-    align-items: center;
-    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.15);
-    padding-left: 16.66vw; }
-    .free-layout_view-container .free-ion-nav-bar .bar-header .title {
-      position: relative;
-      display: block;
-      text-transform: uppercase;
-      color: #53c8e9;
-      font-weight: bold;
-      font-size: 50px;
-      line-height: 0;
-      padding-top: 10px;
-      text-align: left;
-      overflow: visible; }
   .free-layout_view-container .free-layout_bg-container {
     position: absolute;
     top: 0;
@@ -1160,24 +1126,6 @@ div.needleBox {
   display: flex;
   width: 100vw;
   height: 100vh; }
-  .quest-layout_view-container .quest-ion-nav-bar .bar-header {
-    background-color: #c5f3ff;
-    height: 16.66667vh !important;
-    display: flex;
-    align-items: center;
-    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.15);
-    padding-left: 16.66vw; }
-    .quest-layout_view-container .quest-ion-nav-bar .bar-header .title {
-      position: relative;
-      display: block;
-      text-transform: uppercase;
-      color: #53c8e9;
-      font-weight: bold;
-      font-size: 50px;
-      line-height: 0;
-      padding-top: 10px;
-      text-align: left;
-      overflow: visible; }
   .quest-layout_view-container .quest-layout_bg-container {
     position: absolute;
     top: 0;
@@ -1277,42 +1225,6 @@ div.needleBox {
   display: flex;
   width: 100vw;
   height: 100vh; }
-  .resources-layout_view-container .resources-ion-nav-bar--old .bar-header {
-    background-color: #c5f3ff;
-    height: 16.66667vh !important;
-    display: flex;
-    align-items: center;
-    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.15);
-    padding-left: 16.66vw; }
-    .resources-layout_view-container .resources-ion-nav-bar--old .bar-header .title {
-      position: relative;
-      display: block;
-      text-transform: uppercase;
-      color: #53c8e9;
-      font-weight: bold;
-      font-size: 50px;
-      line-height: 0;
-      padding-top: 10px;
-      text-align: left;
-      overflow: visible; }
-  .resources-layout_view-container .resources-ion-nav-bar .bar {
-    background-image: none !important; }
-  .resources-layout_view-container .resources-ion-nav-bar .bar-header {
-    background-color: transparent;
-    height: 16.66667vh !important;
-    display: flex;
-    flex-flow: row nowrap;
-    justify-content: center;
-    align-items: center;
-    padding-left: 16.66vw;
-    padding-right: 8.33333vw; }
-    .resources-layout_view-container .resources-ion-nav-bar .bar-header .title {
-      position: relative;
-      display: block;
-      text-transform: uppercase;
-      font-weight: 500;
-      font-size: 1.75em;
-      color: #7ab5b8; }
   .resources-layout_view-container .resources-layout_bg-container {
     position: absolute;
     top: 0;

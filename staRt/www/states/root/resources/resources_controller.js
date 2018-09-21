@@ -16,10 +16,10 @@
 			navTitle: "SLP Resources"
 
     };
-    // cordova.getAppVersion.getVersionNumber().then(function (version) {
-    //   $scope.data.version = `${version}`;
-    //   $scope.data.platform = `${device.platform} ${device.version}`
-    // });
+    cordova.getAppVersion.getVersionNumber().then(function (version) {
+      $scope.data.version = `${version}`;
+      $scope.data.platform = `${device.platform} ${device.version}`
+    });
 
 		$scope.$on("$ionicView.enter", function() {
 			console.log('view content loaded!');
