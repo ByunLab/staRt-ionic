@@ -1,11 +1,12 @@
 <ion-view view-title="Quest" class="state-contentBox">
 
-	<div class="quest-contentBox">
-		<ion-nav-bar class="quest-ion-nav-bar">
+	<div class="quest-layout_view-container">
+
+		<ion-nav-bar ng-class="practicing ? 'ion-nav-bar' : 'ion-nav-bar--old'">
 			<ion-nav-title>{{data.navTitle}}</ion-nav-title>
 		</ion-nav-bar>
 
-		<div class="quest-bg">
+		<div class="quest-layout_bg-container">
       <!-- full-width eles go here -->
       <div ng-if="practicing && !data.waveHidden" class="img-bg img-bg_qtBF--BG"></div>
       <div ng-if="practicing && !data.waveHidden" class="img-bg img-bg_qtBF--MG"></div>
@@ -13,7 +14,9 @@
       <div ng-if="practicing && data.waveHidden" class="img-bg img-bg_qtNoBF"></div>
 		</div>
 
-		<div class="quest-layout">
+		<!-- ===================================== -->
+		<!-- page content goes here -->
+		<div class="quest-layout_content-container">
 			<div class="quest-header" ng-hide="practicing || configuring">
 				<h2 class="text-and-lpc__text">
 					What would you like to practice?
@@ -145,6 +148,6 @@
 				end-practice-callback="endQuestCallback()">
 			</practice-directive>
 
-		</div> <!-- end .quest-layout -->
-	</div> <!-- .quest-contentBox -->
+		</div> <!-- quest-layout_content-container -->
+	</div> <!-- .quest-layout_view-container -->
 </ion-view>
