@@ -11,6 +11,7 @@ var angularFilesort = require('gulp-angular-filesort');
 var mainBowerFiles = require('main-bower-files');
 var connect = require('gulp-connect');
 var path = require('path');
+var eslint = require('gulp-eslint');
 
 
 var pathToThisFile = __dirname;
@@ -70,6 +71,14 @@ gulp.task('inject', function()
 		.pipe( gulp.dest( './www' ) )
 		.pipe( connect.reload() );
 });
+
+gulp.task('eslint', function() {
+    return gulp.src( paths.js )
+    .pipe(eslint())
+    .pipe(eslint.format())
+    .pipe(eslint.failAfterError())
+});
+
 
 gulp.task('watch', function() {
 	gulp.watch( [ __dirname + '/www/**/*.scss', __dirname + '/www/states/root/**/*.scss'], ['sass']);
