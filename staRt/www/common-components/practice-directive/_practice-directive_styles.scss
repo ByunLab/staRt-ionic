@@ -11,6 +11,40 @@
 // TOOLBAR ------------------------------------
 // see common-styles/toolbar
 
+// MEDALS -----------------------------
+.medal-container {
+  position: absolute;
+  display:flex;
+  flex-flow: column nowrap;
+  justify-content: space-around;
+  align-items:flex-start;
+  width: $col-w * 4;
+  height: $row-h;
+  top: 8px;
+  left: $col-w * 1.5;
+  display: flex;
+  padding: 0;
+  z-index: 99;
+  //border: 1px solid blue;
+
+  .medal-col {
+    display:flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    margin: 0 12px;
+    width: 100%;
+    //border: 1px solid lightBlue;
+    font-size: 0.8em;
+    line-height: 1.25em;
+
+    // .medal-txt {
+    //   font-size: 0.8em;
+    //   line-height: 0.8em;
+    // }
+  }
+}
+
+
 // WORD PROMPT ------------------------------------
  .promptBox-layout {
   position: absolute;
@@ -89,15 +123,20 @@
 // COIN ROW ------------------------------------
 .coin-row-layout {
   position: absolute;
-  top: $row-h * 5;
-  left: $col-w * 2;
+  display: flex;
+  flex-flow: row nowrap;
+  top: $row-h * 4.5;
+  left: $col-w * 3;
   width: $col-w * 7;
   height: $row-h * 0.8;
-  //border: 1px solid red;
+  z-index: 50;
+  border: 1px solid white;
 }
  .coinBox-layout {
-  text-align: left;
-  margin: auto;
+   display: flex;
+   flex-flow: column nowrap;
+   text-align: left;
+   margin: auto;
 }
  .coin_stack {
   display: inline-block;
@@ -109,3 +148,53 @@
  img.coin {
   position: absolute;
 }
+
+// SANDBANK ------------------------------------
+
+.sandbank-container {
+  position: absolute;
+  top: $row-h * 5;
+  width: 100%;
+  height: $row-h;
+
+  .sandbank-bg {
+    position: absolute;
+    width: 100%;
+    height: $row-h * 0.8;
+    top: $row-h * 0.2;
+    background-image: url("../img/bgImg/bg_sandbank--handle.svg");
+    background-position: right bottom;
+    background-repeat: no-repeat;
+    z-index: 0;
+    //border: 1px solid blue;
+  }
+  .sandbank-score {
+    position: relative;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: space-between;
+    align-items: center;
+    height: $row-h * 0.9;
+    width: $col-w * 2;
+    bottom: $row-h * 0.2;
+    //padding-bottom: $row-h * 0.1;
+    margin-left: $col-w * 10;
+    font-size: 1.25em;
+    font-weight: 600;
+    text-align: center;
+    color: #c7b299;
+    z-index: 50;
+    //border: 1px solid pink;
+
+    .sandbank-sandDollar {
+      position: relative;
+      display: flex;
+      height: $row-h * 0.6;
+      width: $col-w * 1.1;
+      background-image: url("../img/ui/sandDollar.svg");
+      background-position: center;
+      background-repeat: no-repeat;
+      //border: 1px solid red;
+    }
+  } // .sandbank-score
+} // .sandbank-container

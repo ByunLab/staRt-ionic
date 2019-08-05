@@ -1,6 +1,59 @@
 var practiceDirective = angular.module( 'practiceDirective' );
 practiceDirective.factory('AdaptDiff', function AdaptDiffFactory() {
 
+/*
+Scripts to adjust the the difficulty of word prompts based on performance
+*/
+
+// $scope.block_score = 0;
+// $scope.session_score = 0;
+// $scope.difficulty = 1;
+
+
+var increase_difficulty_threshold = 0.8;
+var decrease_difficulty_threshold = 0.5;
+
+var remap_adaptive_difficulty_score = {
+    3: 1,
+    2: .5,
+    1: 0
+};
+
+function calculate_difficulty_performance(total, count){
+    return total / count;
+};
+
+/*
+function revise_difficulty() {
+  if ($scope.type == "Syllable" || $scope.probe) {
+    // don't modify carrier phrase if doing a Syllable Quest or Word Quiz
+    return;
+  }
+
+  switch ($scope.difficulty) {
+    case 1:
+    case 2:
+    case 3:
+      //carrier_phrases = carrier_phrases_bank[0];
+      $scope.carrier_phrases = AdaptDiff.phrases[0];
+      break;
+    case 4:
+      //carrier_phrases = carrier_phrases_bank[1];
+      $scope.carrier_phrases = AdaptDiff.phrases[1];
+      break;
+    case 5:
+      //carrier_phrases = carrier_phrases_bank[2];
+      $scope.carrier_phrases = AdaptDiff.phrases[2];
+      break;
+    default:
+  }
+}
+*/
+
+
+  // DIFFICULT WORD LISTS -------------------------------------
+
+  // Not sure why these word lists are separate???
   var carrier_phrases_bank = [
       ["___"],
       ["Say ___ to me"],

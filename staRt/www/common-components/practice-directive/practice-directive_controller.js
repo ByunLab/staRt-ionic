@@ -94,7 +94,7 @@ function saveJSON(jsonObject, absolutePath, successCb)
 var practiceDirective = angular.module( 'practiceDirective' );
 
 practiceDirective.controller( 'PracticeDirectiveController',
-			      function($scope, $timeout, $localForage, AutoService, NotifyingService, FirebaseService, ProfileService, SessionStatsService, StartUIState, UploadService, $rootScope, $state, $http, $cordovaDialogs, ToolbarService, AdaptDiff)
+			      function($scope, $timeout, $localForage, AutoService, NotifyingService, FirebaseService, ProfileService, SessionStatsService, StartUIState, UploadService, $rootScope, $state, $http, $cordovaDialogs, ToolbarService, AdaptDiff, CSVhelp, Score)
     {
 	// var uploadURLs = [
 	// 	"http://localhost:5000",
@@ -110,21 +110,24 @@ practiceDirective.controller( 'PracticeDirectiveController',
 	$scope.rating = 0;
 	$scope.isRecording = false;
 	$scope.hasValidWordList = false;
+  $scope.scores = null;
 	$scope.uploadStatus = {
 	    isUploading: false,
 	    uploadProgress: 0
 	}
 
-	$scope.currentWordIdx = -1;
-	$scope.currentPracticeSession = null;
-
-  // console.log(AdaptDiff);
-
-  // TOOLBAR ----------------------------------------------------
-  // TO BE IMPLEMENTED IN THE FUTURE / NOT CURRENTLY IN USE
+  // an obj to hold Adaptive Difficulty data and methods
+  $scope.aDiff;
 
   // holds toolbar content for the current practice state
   $scope.toolbar;
+
+	$scope.currentWordIdx = -1;
+	$scope.currentPracticeSession = null;
+
+
+  // TOOLBAR ----------------------------------------------------
+  // TO BE IMPLEMENTED IN THE FUTURE / NOT CURRENTLY IN USE
 
   // called by $scope.beginWordPractice()
   $scope.setupToolbar = function() {
@@ -147,9 +150,13 @@ practiceDirective.controller( 'PracticeDirectiveController',
 	/* --------------------------------
 	   adaptive difficulty
   	   -------------------------------- */
-	$scope.block_score = 0;
-	$scope.session_score = 0;
+
+  //todo: get aDiff record from fb profile
+  // if no aDiff in fb profile, then start at 0
+  // $scope.block_score = 0;
+	// $scope.session_score = 0;
 	$scope.difficulty = 1;
+
 	//var carrier_phrases = carrier_phrases_bank[0];
   $scope.carrier_phrases = AdaptDiff.phrases[0];
 
@@ -163,33 +170,59 @@ practiceDirective.controller( 'PracticeDirectiveController',
 	    1: 0
 	};
 
+  //var visual_reinforcement_coin_color_map = {
+  var mapCoinColor = {
+      3: "gold",
+      2: "silver",
+      1: "bronze"
+  }
+
 	function calculate_difficulty_performance(total, count){
 	    return total / count;
   };
 
+
   function handleRatingData($scope, data) {
-    // visual reinforcement
-    if (!$scope.probe) {
-      $scope.block_coins[$scope.block_coins.length - 1].push(visual_reinforcement_coin_color_map[data]);
-      $scope.session_coins[visual_reinforcement_coin_color_map[data]]++;
-      if (visual_reinforcement_coin_color_map[data] == "gold") {
-        $scope.consecutive_golds++;
-        var temp_golds_consecutive_gold_display = 0;
-        $scope.consecutive_golds_breakpoints.forEach(function (value) {
-          if ($scope.consecutive_golds >= value) {
-            temp_golds_consecutive_gold_display = value;
-          }
-        })
-        $scope.consecutive_golds_display = temp_golds_consecutive_gold_display;
-      } else {
-        $scope.consecutive_golds = 0;
-      }
+
+    if (!$scope.probe) { // visual reinforcement
+
+      // see 'helpers/qtScoring'
+      // updates all score and milestone counters
+      Score.questRating(data, $scope.scores);
+      console.log($scope.scores);
+
+      // arrays of 10 which hold the coin colors for each block
+      // $scope.block_coins[$scope.block_coins.length - 1].push(mapCoinColor[data]);
+      // console.log('block coins: ');
+      // console.log($scope.block_coins);
+
+      // the number of each type of coin earned in session
+      //$scope.session_coins[mapCoinColor[data]]++;
+      // console.log('session coins: ');
+      // console.log($scope.session_coins);
+
+
+    //   if (mapCoinColor[data] == "gold") {
+    //     $scope.consecutive_golds++;
+    //
+    //     var temp_golds_consecutive_gold_display = 0;
+    //
+    //     $scope.consecutive_golds_breakpoints.forEach(function (value) {
+    //       if ($scope.consecutive_golds >= value) {
+    //         temp_golds_consecutive_gold_display = value;
+    //       }
+    //     })
+    //     $scope.consecutive_golds_display = temp_golds_consecutive_gold_display;
+    //
+    //   } else {
+    //     $scope.consecutive_golds = 0;
+    //   }
+
     }
 
     // adaptive difficulty
-
-    $scope.block_score += remap_adaptive_difficulty_score[data];
-    $scope.session_score += remap_adaptive_difficulty_score[data];
+    //$scope.block_score += remap_adaptive_difficulty_score[data];
+    //$scope.session_score += remap_adaptive_difficulty_score[data];
 
     if ($scope.currentWordIdx % 10 == 0 &&
       $scope.currentWordIdx != 0) {
@@ -197,7 +230,7 @@ practiceDirective.controller( 'PracticeDirectiveController',
 
       // recalculate difficulty
       var performance = calculate_difficulty_performance(
-        $scope.block_score,
+        $scope.scores.block_score,
         10 // working in blocks of ten
       );
 
@@ -212,9 +245,11 @@ practiceDirective.controller( 'PracticeDirectiveController',
 
         // reset scores
         $scope.block_score = 0;
+        $scope.scores.block_score = 0;
 
-        // reset coins
+        // reset coins for new block
         $scope.block_coins.push([]);
+        $scope.scores.block_coins.push([]);
 
         // reset consecutive count
         $scope.consecutive_golds = 0;
@@ -270,54 +305,59 @@ practiceDirective.controller( 'PracticeDirectiveController',
 	   visual reinforcement
   	   -------------------------------- */
 	if(!$scope.probe){
-	    $scope.highscores = {
-		session: {
-		    score: {
-			total: 0,
-			date: null
-		    },
-		    golds: {
-			total: 0,
-			date: null
-		    }
-		},
-		block: {
-		    score: {
-			total: 0,
-			date: null
-		    },
-		    golds: {
-			total: 0,
-			date: null
-		    }
-		}
-	    };
+    // $scope.scores = Score.initScores;
+    // console.log($scope.scores);
 
+
+    /*
+	    $scope.highscores = {
+    		session: {
+    		    score: {
+    			total: 0,
+    			date: null
+    		    },
+    		    golds: {
+    			total: 0,
+    			date: null
+    		    }
+    		},
+    		block: {
+    		    score: {
+    			total: 0,
+    			date: null
+    		    },
+    		    golds: {
+    			total: 0,
+    			date: null
+    		    }
+    		}
+	    };
+      */
 	    // push to array so that history can be preserved
-	    $scope.block_coins = [[]];
+	    //$scope.block_coins = [[]];
 
 	    // need history on session coins?
-	    $scope.session_coins = {
-		gold: 0,
-		silver: 0,
-		bronze: 0
-	    };
-	    $scope.block_golds_highscore = 0;
-	    $scope.block_score_highscore = 0;
-
-	    $scope.consecutive_golds = 0;
-	    $scope.consecutive_golds_breakpoints = [3, 5, 8, 10];
-
+	    // $scope.session_coins = {
+    	// 	gold: 0,
+    	// 	silver: 0,
+    	// 	bronze: 0
+	    // };
+	    // $scope.block_golds_highscore = 0;
+	    // $scope.block_score_highscore = 0;
+      //
+	    // $scope.consecutive_golds = 0;
+	    // $scope.consecutive_golds_breakpoints = [3, 5, 8, 10];
+      //
 	    // create helper variable to iterate through and create sandholes
 	    $scope.sandholes = new Array(Math.ceil($scope.count / 10));
 	}
 
 	// need this outside for some reason
-	var visual_reinforcement_coin_color_map = {
-	    3: "gold",
-	    2: "silver",
-	    1: "bronze"
-	}
+	// var visual_reinforcement_coin_color_map = {
+	//     3: "gold",
+	//     2: "silver",
+	//     1: "bronze"
+	// }
 
   // ----------------------------------------------
 
@@ -481,11 +521,13 @@ practiceDirective.controller( 'PracticeDirectiveController',
     if (!$scope.probe) {
       if (user.highscores) {
         // if there is user data on highscores
-        // load them here
-        $scope.highscores = user.highscores;
+        //TODO: $scope.highscores = user.highscores;
+      } else {
+        $scope.highscores = Score.initFakeHighScores; //#hc
       }
-      // implied else
-      // use default highscores
+      $scope.scores = Score.initScores();
+      console.log($scope.scores);
+      console.log($scope.highscores);
     }
 
     var sessionPrepTask = Promise.resolve();
@@ -510,6 +552,7 @@ practiceDirective.controller( 'PracticeDirectiveController',
         $scope.count
       );
     }
+    console.log($scope.currentPracticeSession);
 
     // Even if this is a continuation of a previous session, it still needs
     // a unique recording ID
@@ -589,6 +632,7 @@ practiceDirective.controller( 'PracticeDirectiveController',
 	  ProfileService.getCurrentProfile().then(
 	    function (res) {
 	      if (res) {
+          console.log(res);
 	        beginPracticeForUser(res);
 	        if ($scope.startPracticeCallback) $scope.startPracticeCallback();
 	      } else {
@@ -608,8 +652,12 @@ practiceDirective.controller( 'PracticeDirectiveController',
 	       visual reinforcement
   	   -------------------------------- */
 	  if (!$scope.probe) {
-	    // check if new highscores
+
 	    var shouldUpdateHighscores = false;
+      // check if new highscores & update
+      // Score.updateHighscores($scope.scores, $score.highscores, shouldUpdateHighscores);
+
+      /*
 	    if ($scope.block_score_highscore > $scope.highscores.block.score.total) {
 	      shouldUpdateHighscores = true;
 	      $scope.highscores.block.score.total = $scope.block_score_highscore;
@@ -635,6 +683,7 @@ practiceDirective.controller( 'PracticeDirectiveController',
 	    if (shouldUpdateHighscores) {
 	      NotifyingService.notify("update-highscores", $scope.highscores);
 	    }
+      */
 	  }
 
 	  // todo: send highscores
@@ -700,8 +749,7 @@ practiceDirective.controller( 'PracticeDirectiveController',
       $scope.reorderWords();
       return Promise.resolve();
 	  }
-	  if ($scope.type === "Syllable" ||
-	    $scope.probe) {
+	  if ($scope.type === "Syllable" || $scope.probe) {
 	    $scope.wordList = [];
 	    var loadTasks = [];
 	    $scope.csvs.forEach(function (csv) {
