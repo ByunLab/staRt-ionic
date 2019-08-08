@@ -12,26 +12,38 @@
 // see common-styles/toolbar
 
 // MEDALS -----------------------------
+.qtdebug-hs{
+  left: $col-w * 1.5;
+}
+.qtdebug-scores{
+  left: $col-w * 3.75;
+}
+.qtdebug-perf{
+  left: $col-w * 8;
+}
+
 .medal-container {
   position: absolute;
   display:flex;
   flex-flow: column nowrap;
-  justify-content: space-around;
+  //justify-content: space-around;
   align-items:flex-start;
-  width: $col-w * 4;
-  height: $row-h;
+  width: $col-w * 2;
+  //height: $row-h;
   top: 8px;
-  left: $col-w * 1.5;
+  //left: $col-w * 1.5;
   display: flex;
-  padding: 0;
+  padding: 6px 4px;
+  background-color: rgba(255, 255, 255, 0.4);
   z-index: 99;
-  //border: 1px solid blue;
+  border-radius: 4px;
+  //border: 1px solid white;
 
   .medal-col {
     display:flex;
     flex-flow: row nowrap;
     justify-content: flex-start;
-    margin: 0 12px;
+    margin: 3px 0px;
     width: 100%;
     //border: 1px solid lightBlue;
     font-size: 0.8em;

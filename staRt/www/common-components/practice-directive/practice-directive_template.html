@@ -28,7 +28,9 @@
 
 <!-- MEDALS ----------------------------- -->
 
-<div class="medal-container">
+<div class="medal-container qtdebug-hs">
+  <div class="">HIGHSCORES</div>
+
   <div class="medal-col">Most Gold in Block:&nbsp;
     <span>{{highscores.mgib}}</span>
   </div>
@@ -38,7 +40,7 @@
   </div>
 
   <div class="medal-col">Gold Streak:&nbsp;
-    <span ng-if="scores.streak > 1">{{scores.streak}}</span>
+    <span>{{highscores.streak}}</span>
   </div>
 
   <div class="medal-col">Most Gold in Quest:&nbsp;
@@ -56,6 +58,41 @@
       <div class="tbTab-txt">{{tab.title}}</div>
     </div> -->
 </div>
+
+<div class="medal-container qtdebug-scores">
+  <div class="">CURRENT SCORES</div>
+
+  <div class="medal-col">Gold in Block:&nbsp;
+    <span>{{scores.block_goldCount}}</span>
+  </div>
+
+  <div class="medal-col">Score in Block:&nbsp;
+    <span>{{scores.block_display_score}}</span>
+  </div>
+
+  <div class="medal-col">Gold Streak:&nbsp;
+    <span ng-if="scores.streak > 1">{{scores.streak}}</span>
+  </div>
+
+  <div class="medal-col">Gold in Quest:&nbsp;
+    <span>{{scores.session_coins.gold}}</span>
+  </div>
+
+  <div class="medal-col">Score:&nbsp;
+    <span>{{scores.display_score}}</span>
+  </div>
+</div>
+
+<div class="medal-container qtdebug-perf">
+  <div class="">DIFFICULTY</div>
+  <div class="medal-col">Diff Level:&nbsp;
+    <span>{{difficulty}}</span>
+  </div>
+  <div class="medal-col">Perf. Score:&nbsp;
+    <span>{{scores.performance}}</span>
+  </div>
+</div>
+
 
 
 

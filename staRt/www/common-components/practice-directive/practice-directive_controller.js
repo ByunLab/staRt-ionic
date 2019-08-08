@@ -110,20 +110,18 @@ practiceDirective.controller( 'PracticeDirectiveController',
 	$scope.rating = 0;
 	$scope.isRecording = false;
 	$scope.hasValidWordList = false;
-  $scope.scores = null;
+  $scope.scores = undefined;
 	$scope.uploadStatus = {
 	    isUploading: false,
 	    uploadProgress: 0
 	}
 
-  // an obj to hold Adaptive Difficulty data and methods
-  $scope.aDiff;
-
-  // holds toolbar content for the current practice state
-  $scope.toolbar;
-
 	$scope.currentWordIdx = -1;
 	$scope.currentPracticeSession = null;
+
+  // TODO: get aDiff record from fb profile ???
+  // if no aDiff in fb profile, then start at 0
+  $scope.difficulty = 1;
 
 
   // TOOLBAR ----------------------------------------------------
@@ -149,33 +147,13 @@ practiceDirective.controller( 'PracticeDirectiveController',
 
 	/* --------------------------------
 	   adaptive difficulty
-  	   -------------------------------- */
-
-  //todo: get aDiff record from fb profile
-  // if no aDiff in fb profile, then start at 0
-  // $scope.block_score = 0;
-	// $scope.session_score = 0;
-	$scope.difficulty = 1;
+  -------------------------------- */
 
 	//var carrier_phrases = carrier_phrases_bank[0];
   $scope.carrier_phrases = AdaptDiff.phrases[0];
 
 	var increase_difficulty_threshold = 0.8;
 	var decrease_difficulty_threshold = 0.5;
-
-	// remap data according to specs
-	var remap_adaptive_difficulty_score = {
-	    3: 1,
-	    2: .5,
-	    1: 0
-	};
-
-  //var visual_reinforcement_coin_color_map = {
-  var mapCoinColor = {
-      3: "gold",
-      2: "silver",
-      1: "bronze"
-  }
 
 	function calculate_difficulty_performance(total, count){
 	    return total / count;
@@ -185,76 +163,23 @@ practiceDirective.controller( 'PracticeDirectiveController',
   function handleRatingData($scope, data) {
 
     if (!$scope.probe) { // visual reinforcement
-
       // see 'helpers/qtScoring'
       // updates all score and milestone counters
-      Score.questRating(data, $scope.scores);
-      console.log($scope.scores);
-
-      // arrays of 10 which hold the coin colors for each block
-      // $scope.block_coins[$scope.block_coins.length - 1].push(mapCoinColor[data]);
-      // console.log('block coins: ');
-      // console.log($scope.block_coins);
-
-      // the number of each type of coin earned in session
-      //$scope.session_coins[mapCoinColor[data]]++;
-      // console.log('session coins: ');
-      // console.log($scope.session_coins);
-
-
-    //   if (mapCoinColor[data] == "gold") {
-    //     $scope.consecutive_golds++;
-    //
-    //     var temp_golds_consecutive_gold_display = 0;
-    //
-    //     $scope.consecutive_golds_breakpoints.forEach(function (value) {
-    //       if ($scope.consecutive_golds >= value) {
-    //         temp_golds_consecutive_gold_display = value;
-    //       }
-    //     })
-    //     $scope.consecutive_golds_display = temp_golds_consecutive_gold_display;
-    //
-    //   } else {
-    //     $scope.consecutive_golds = 0;
-    //   }
-
+      Score.questRating(data, $scope.scores, $scope.highscores, $scope.currentWordIdx);
+      //console.log($scope.scores);
     }
 
-    // adaptive difficulty
-    //$scope.block_score += remap_adaptive_difficulty_score[data];
-    //$scope.session_score += remap_adaptive_difficulty_score[data];
-
+    // end of block calculations
     if ($scope.currentWordIdx % 10 == 0 &&
       $scope.currentWordIdx != 0) {
-      // todo: ratingChange emit error is preventing accurate calculation
 
       // recalculate difficulty
+      // NEED TO RE-LINK THIS
       var performance = calculate_difficulty_performance(
         $scope.scores.block_score,
-        10 // working in blocks of ten
+        10 // working in blocks of ten only
       );
-
-
-      if (!$scope.probe) {
-        // recalculate highscores
-        $scope.block_score_highscore = Math.max($scope.block_score_highscore, $scope.block_score);
-        $scope.block_golds_highscore = Math.max($scope.block_golds_highscore,
-          $scope.block_coins[$scope.block_coins.length - 1].filter(function (color) {
-            return color === "gold";
-          }).length);
-
-        // reset scores
-        $scope.block_score = 0;
-        $scope.scores.block_score = 0;
-
-        // reset coins for new block
-        $scope.block_coins.push([]);
-        $scope.scores.block_coins.push([]);
-
-        // reset consecutive count
-        $scope.consecutive_golds = 0;
-        $scope.consecutive_golds_display = 0;
-      }
+      // console.log('performance: ' + performance);
 
       if (performance >= increase_difficulty_threshold &&
         $scope.difficulty < 5) {
@@ -270,6 +195,7 @@ practiceDirective.controller( 'PracticeDirectiveController',
       // implied else
       // keep difficulty the same
     }
+
 
     return Promise.resolve();
   }
@@ -300,64 +226,15 @@ practiceDirective.controller( 'PracticeDirectiveController',
 	}
 
 
+  // ----------------------------------------------
 
 	/* --------------------------------
 	   visual reinforcement
   	   -------------------------------- */
 	if(!$scope.probe){
-    // $scope.scores = Score.initScores;
-    // console.log($scope.scores);
-
-
-    /*
-	    $scope.highscores = {
-    		session: {
-    		    score: {
-    			total: 0,
-    			date: null
-    		    },
-    		    golds: {
-    			total: 0,
-    			date: null
-    		    }
-    		},
-    		block: {
-    		    score: {
-    			total: 0,
-    			date: null
-    		    },
-    		    golds: {
-    			total: 0,
-    			date: null
-    		    }
-    		}
-	    };
-      */
-	    // push to array so that history can be preserved
-	    //$scope.block_coins = [[]];
-
-	    // need history on session coins?
-	    // $scope.session_coins = {
-    	// 	gold: 0,
-    	// 	silver: 0,
-    	// 	bronze: 0
-	    // };
-	    // $scope.block_golds_highscore = 0;
-	    // $scope.block_score_highscore = 0;
-      //
-	    // $scope.consecutive_golds = 0;
-	    // $scope.consecutive_golds_breakpoints = [3, 5, 8, 10];
-      //
-	    // create helper variable to iterate through and create sandholes
-	    $scope.sandholes = new Array(Math.ceil($scope.count / 10));
+	    // #hc Check that this still works when resume a sesh
+	    // $scope.sandholes = new Array(Math.ceil($scope.count / 10));
 	}
-
-	// need this outside for some reason
-	// var visual_reinforcement_coin_color_map = {
-	//     3: "gold",
-	//     2: "silver",
-	//     1: "bronze"
-	// }
 
   // ----------------------------------------------
 
@@ -526,6 +403,7 @@ practiceDirective.controller( 'PracticeDirectiveController',
         $scope.highscores = Score.initFakeHighScores; //#hc
       }
       $scope.scores = Score.initScores();
+      $scope.sandholes = new Array(Math.ceil($scope.count / 10)); //#hc
       console.log($scope.scores);
       console.log($scope.highscores);
     }
@@ -648,45 +526,15 @@ practiceDirective.controller( 'PracticeDirectiveController',
 	};
 
 	$scope.endWordPractice = function () {
-	  /* --------------------------------
-	       visual reinforcement
-  	   -------------------------------- */
 	  if (!$scope.probe) {
 
-	    var shouldUpdateHighscores = false;
-      // check if new highscores & update
-      // Score.updateHighscores($scope.scores, $score.highscores, shouldUpdateHighscores);
+      // #hc: Check if milestone.shouldUpdateFirebase =true
+      // #hc: What quest SeshStats should be updated (SLP dashboard)
 
-      /*
-	    if ($scope.block_score_highscore > $scope.highscores.block.score.total) {
-	      shouldUpdateHighscores = true;
-	      $scope.highscores.block.score.total = $scope.block_score_highscore;
-	      $scope.highscores.block.score.date = Date.now();
-	    }
-	    if ($scope.block_golds_highscore > $scope.highscores.block.golds.total) {
-	      shouldUpdateHighscores = true;
-	      $scope.highscores.block.golds.total = $scope.block_golds_highscore;
-	      $scope.highscores.block.golds.date = Date.now();
-	    }
-
-	    if ($scope.session_score > $scope.highscores.session.score.total) {
-	      shouldUpdateHighscores = true;
-	      $scope.highscores.session.score.total = $scope.session_score;
-	      $scope.highscores.session.score.date = Date.now();
-	    }
-	    if ($scope.session_coins['gold'] > $scope.highscores.session.golds.total) {
-	      shouldUpdateHighscores = true;
-	      $scope.highscores.session.golds.total = $scope.session_coins['gold'];
-	      $scope.highscores.session.golds.date = Date.now();
-	    }
-
-	    if (shouldUpdateHighscores) {
-	      NotifyingService.notify("update-highscores", $scope.highscores);
-	    }
-      */
+	    // if (shouldUpdateHighscores) {
+	    //   NotifyingService.notify("update-highscores", $scope.highscores);
+	    // }
 	  }
-
-	  // todo: send highscores
 
 	  $scope.isPracticing = false;
 	  $scope.rating = 0;
