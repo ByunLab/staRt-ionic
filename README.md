@@ -70,7 +70,7 @@ The local audio plugin must be installed like so, without the 'ionic' prefix
 cordova plugin add ../audio-plugin
 ```
 
-otherwise the plugin will not install correctly. Whenever you change the plugin, it may be necessary to uninstall and reinstall the plugin.
+otherwise the plugin will not install correctly. Whenever you change the plugin, it may be necessary to uninstall and reinstall the plugin. You can do this with the rebuild_with_plugin.sh file.
 
 ### Buliding the ionic app
 
