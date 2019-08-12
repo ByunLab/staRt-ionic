@@ -37,7 +37,7 @@ NSString *const LPCRecordingSessionAudioKey = @"Audio";
     return dateFormatter;
 }
 
-+ (instancetype) sessionWithProfileDescription:(LPCProfileDescription *)profile clientUserData:(NSString *)userDataString
++ (instancetype) sessionWithProfileDescription:(LPCProfileDescription *)profile clientUserData:(NSString *)userDataString recordingSessionId:(NSString *)recordingSessionId
 {
     LPCRecordingSession *session = [[LPCRecordingSession alloc] init];
     session.profileDescription = profile;
@@ -51,9 +51,9 @@ NSString *const LPCRecordingSessionAudioKey = @"Audio";
 	
     session.dateString = [dateFormatter stringFromDate:session.date];
 	session.endDateString = @"";
-    session.metadataFilename = [NSString stringWithFormat:@"%@-%@-meta.csv", session.profileDescription.uuid, session.dateString];
-    session.lpcFilename = [NSString stringWithFormat:@"%@-%@-lpc.csv", session.profileDescription.uuid, session.dateString];
-    session.audioFilename = [NSString stringWithFormat:@"%@-%@-audio.m4a", session.profileDescription.uuid, session.dateString];
+    session.metadataFilename = [NSString stringWithFormat:@"%@-%@-meta.csv", recordingSessionId, session.dateString];
+    session.lpcFilename = [NSString stringWithFormat:@"%@-%@-lpc.csv", recordingSessionId, session.dateString];
+    session.audioFilename = [NSString stringWithFormat:@"%@-%@-audio.m4a", recordingSessionId, session.dateString];
     
     return session;
 }

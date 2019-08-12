@@ -20,7 +20,7 @@ FOUNDATION_EXPORT NSString *const LPCRecordingSessionAudioKey;
 @property (nonatomic, readonly) NSString *lpcFilename;
 @property (nonatomic, readonly) NSString *audioFilename;
 
-+ (instancetype) sessionWithProfileDescription:(LPCProfileDescription *)profile clientUserData:(NSString *)userDataString;
++ (instancetype) sessionWithProfileDescription:(LPCProfileDescription *)profile clientUserData:(NSString *)userDataString recordingSessionId:(NSString *)recordingSessionId;
 + (instancetype) sessionWithMetadataFile:(NSString *)metadata;
 + (NSArray<LPCRecordingSession *> *) recordingsForAccount:(LPCProfileDescription *)profile;
 + (NSString *) recordingDirectory;

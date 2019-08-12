@@ -67,11 +67,13 @@
     LPCProfileDescription *description;
     NSDictionary *accountAsDict = [command argumentAtIndex:0 withDefault:nil andClass:[NSDictionary class]];
 	NSString *userString = [command argumentAtIndex:1 withDefault:@"" andClass:[NSString class]];
+    NSString *recordingSessionId = [command argumentAtIndex:2 withDefault:@"INVALID-ID" andClass:[NSString class]];
     if (accountAsDict) {
         description = [LPCProfileDescription accountDescriptionWithDictionary:accountAsDict];
         LPCRecordingSession *session = [LPCRecordingSession
 										sessionWithProfileDescription:description
-										clientUserData:userString];
+										clientUserData:userString
+                                        recordingSessionId:recordingSessionId];
         [self.audioManager startRecordingForRecordingSession:session];
         NSDictionary *recordingFiles = [session recordingFilesDictionary];
         CDVPluginResult *result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK
