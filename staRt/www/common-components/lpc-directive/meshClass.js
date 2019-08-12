@@ -294,7 +294,7 @@ Mesh.prototype.createRightTailGroup = function(dim, graphicsGroup) {
 	rightTailGroup.name = 'rightTailGroup';
 
 	function rightTailCB() {
-		console.log('rightTail CB');
+		//console.log('rightTail CB');
 		var xpos = dim.col_W * 4;
 		var ypos = (dim.row_H * 0.98);
 		var zpos = 3;

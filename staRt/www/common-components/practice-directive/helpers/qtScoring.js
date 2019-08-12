@@ -7,32 +7,50 @@ practiceDirective.factory('Score', function ScoreFactory() {
 -------------------- */
 
 // Constructors ----
-function Milestone() {
+// leaderboard or sticker???
+// ability to reset Milestone?
+//perfectBlockHx: [],
+  // mgibHx: [],
+  // hsibHX: [],
+  // mgiqHx: [],
+  // hsiqHx: [],
+  // hsiqHx: [],
+  //
+function Milestones() {
   return  {
     mgib: 0,
+    mgibHx: [],
     hsib: 0,
+    hsibHX: [],
     mgiq: 0,
+    mgiqHx: [],
     hsiq: 0,
+    hsiqHx: [],
     streak: 0,
+    streakHx: [],
     perfectBlock: 0,
+    perfectBlockHx: [],
     shouldUpdateFirebase: false
   }
 }
 
 function SeshScores() {
   return {
-
+    block_display_score: 0, //user val
+    block_coins: [[]],
+    block_goldCount: 0,
+    block_score: 0, // lab val (difficulty score)
+    session_score: 0,
+    display_score: 0,
+    session_coins: {
+      gold: 0,
+      silver: 0,
+      bronze: 0
+    },
+    streak: 0,
+    performance: 0
   }
 }
-
-
-/*
-milestones {
-  score:
-  date:
-  history: [];
-}
-*/
 
 // ------------------------
 
@@ -66,34 +84,20 @@ var initFakeHighScores = { // for testing only
   shouldUpdateFirebase: false
 }
 
-var initHighscores = {
-  mgib: 0,
-  hsib: 0,
-  mgiq: 0,
-  hsiq: 0,
-  streak: 0,
-  perfectBlock: 0,
-  shouldUpdateFirebase: false
+var initHighscores = function(highscores) {
+  // check if highscores exist?
+  highscores = undefined;
+  highscores = new Milestones();
+
+  return highscores;
 }
 
 var initScores = function(scores) {
-    scores = undefined;
-    scores = {
-      block_display_score: 0, //user val
-      block_coins: [[]],
-      block_goldCount: 0,
-      block_score: 0, // lab val (difficulty score)
-      session_score: 0,
-      display_score: 0,
-      session_coins: {
-        gold: 0,
-        silver: 0,
-        bronze: 0
-      },
-      streak: 0,
-      performance: 0
-    }
-    return scores;
+  // check if scores exist?
+  scores = undefined;
+  scores = new SeshScores();
+
+  return scores;
 }
 
 // maps coin value(int) to color or userScore value
@@ -189,7 +193,6 @@ var checkUpdateMilestones = function(scores, highscores, endOfBlock) {
   }
 
   if( endOfBlock ) {
-
     resetForNewBlock(scores);
     endOfBlock = false;
     console.log('endOfBlock false');
@@ -233,7 +236,6 @@ var questRating = function(data, scores, highscores, currentWordIdx) {
   } else {
     scores.streak = 0;
   }
-
 
   // ---------------------------------------
   // check for end of block

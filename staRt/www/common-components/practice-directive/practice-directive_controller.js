@@ -120,7 +120,8 @@ practiceDirective.controller( 'PracticeDirectiveController',
 	$scope.currentPracticeSession = null;
 
   // TODO: get aDiff record from fb profile ???
-  // if no aDiff in fb profile, then start at 0
+  // if no aDiff in fb profile, then start at 1
+  // should happen in beginPracticeForUser(user)
   $scope.difficulty = 1;
 
 
@@ -152,19 +153,13 @@ practiceDirective.controller( 'PracticeDirectiveController',
 	//var carrier_phrases = carrier_phrases_bank[0];
   $scope.carrier_phrases = AdaptDiff.phrases[0];
 
-	var increase_difficulty_threshold = 0.8;
-	var decrease_difficulty_threshold = 0.5;
-
-	function calculate_difficulty_performance(total, count){
-	    return total / count;
-  };
-
+  var increase_difficulty_threshold = 0.8;
+  var decrease_difficulty_threshold = 0.5;
 
   function handleRatingData($scope, data) {
 
     if (!$scope.probe) { // visual reinforcement
-      // see 'helpers/qtScoring'
-      // updates all score and milestone counters
+      // see 'helpers/qtScoring'. updates all score and milestone counters
       Score.questRating(data, $scope.scores, $scope.highscores, $scope.currentWordIdx);
       //console.log($scope.scores);
     }
@@ -172,33 +167,42 @@ practiceDirective.controller( 'PracticeDirectiveController',
     // end of block calculations
     if ($scope.currentWordIdx % 10 == 0 &&
       $scope.currentWordIdx != 0) {
+        console.log('End of block');
+      //
+      // AdaptDiff.checkDifficulty(
+      //   $scope.scores.performance,
+      //   $scope.difficulty
+      //   $scope.carrier_phrases //current carrier_phases
+      //   $scope.reloadCSVData //cb
+      // );
+      // console.log('Pactice-Directive sez: ' + $scope.difficulty);
 
-      // recalculate difficulty
-      // NEED TO RE-LINK THIS
-      var performance = calculate_difficulty_performance(
-        $scope.scores.block_score,
-        10 // working in blocks of ten only
-      );
-      // console.log('performance: ' + performance);
-
-      if (performance >= increase_difficulty_threshold &&
+      if ($scope.scores.performance >= increase_difficulty_threshold &&
         $scope.difficulty < 5) {
+        console.log('INCREASING DIFFICULTY');
         $scope.difficulty++;
         revise_difficulty();
+        console.log('Pactice-Directive sez: ' + $scope.difficulty);
+
         return $scope.reloadCSVData();
-      } else if (performance <= decrease_difficulty_threshold &&
+
+      } else if ($scope.scores.performance <= decrease_difficulty_threshold &&
         $scope.difficulty > 1) {
+        console.log('DECREASING DIFFICULTY');
         $scope.difficulty--;
         revise_difficulty();
+        console.log('Pactice-Directive sez: ' + $scope.difficulty);
+
         return $scope.reloadCSVData();
       }
       // implied else
       // keep difficulty the same
-    }
+    } // end endOfBlock
 
 
     return Promise.resolve();
   }
+
 
 	function revise_difficulty() {
 	  if ($scope.type == "Syllable" || $scope.probe) {
@@ -396,6 +400,7 @@ practiceDirective.controller( 'PracticeDirectiveController',
 	    visual reinforcement
   	-------------------------------- */
     if (!$scope.probe) {
+      //check and set a users $scope.difficulty????
       if (user.highscores) {
         // if there is user data on highscores
         //TODO: $scope.highscores = user.highscores;
@@ -408,6 +413,7 @@ practiceDirective.controller( 'PracticeDirectiveController',
       console.log($scope.highscores);
     }
 
+    // preps AudioPlugin session
     var sessionPrepTask = Promise.resolve();
 
     if (user.inProcessSession) {
@@ -568,6 +574,7 @@ practiceDirective.controller( 'PracticeDirectiveController',
 	}
 
 	$scope.reloadCSVData = function () {
+    console.log('reloadCSVData CALLED');
 	  if ($scope.type === 'Word'
 	    // hackzorz: we know that we're doing a Word Quiz and not a Quest
 	    // if requested CSV is data/Word_Probe
@@ -620,7 +627,7 @@ practiceDirective.controller( 'PracticeDirectiveController',
 	}
 
 	$scope.$on('ratingChange', function (event, data) {
-	  console.log('rating change! ' + data);
+	  //console.log('rating change! ' + data);
 	  $scope.rating = data === undefined ? 0 : data;
 	  if (!!$scope.rating) {
 	    $scope.nextWord();
@@ -674,292 +681,3 @@ practiceDirective.controller( 'PracticeDirectiveController',
 	});
     }
 );
-
-/*
-// save here to avoid async loads
-var carrier_phrases_bank = [
-    ["___"],
-    ["Say ___ to me"],
-    [
-	"He got detention because he said ___",
-	"When he said ___, she got mad at him",
-	"She passed me a note that said ___",
-	"I put ___ at the top of my list",
-	"He hoped she would know how to say ___",
-	"I want to put ___ on the envelope",
-	"I paid 10 cents to copy a sheet that said ___",
-	"She hoped he would say ___",
-	"I made a label that said ___",
-	"You should take ___ off of the list",
-	"It was funny when you said ___",
-	"She put ___ on the ticket",
-	"I walked past a sign that said ___",
-	"My dad bought a book called ___",
-	"I didn't expect to see a football team called ___",
-	"I laughed when she said ___",
-	"I built him a lemonade stand and called it ___",
-	"He wasn't listening when she said ___",
-	"I named my dog ___"
-    ]
-];
-*/
-
-/*
-var words = {
-    'consonantal_back': {
-	'1': [
-	    'rod',
-	    'rot',
-	    'romp',
-	    'rub',
-	    'rough',
-	    'rust',
-	    'road',
-	    'rogue',
-	    'roam',
-	    'rope',
-	    'rote',
-	    'roast',
-	    'rue',
-	    'roof',
-	    'room',
-	    'root'
-	],
-	'2': [
-	    'robin',
-	    'rocket',
-	    'rotten',
-	    'rusty',
-	    'running',
-	    'rugby',
-	    'roping',
-	    'roaming',
-	    'romance',
-	    'rotate',
-	    'rooting',
-	    'ruby',
-	    'rudest',
-	    'roommate'
-	],
-	'3': [
-	    'roll',
-	    'rolled',
-	    'rule',
-	    'ruled',
-	    'robber',
-	    'Ronald',
-	    'rubber',
-	    'rubble',
-	    'runner',
-	    'roughly',
-	    'parole',
-	    'rolling',
-	    'roadless',
-	    'rower',
-	    'rudely',
-	    'rueful',
-	    'ruling',
-	    'roomful'
-	]
-    },
-    'consonantal_front': {
-	'1': [
-	    'raid',
-	    'rain',
-	    'ray',
-	    'rate',
-	    'wreck',
-	    'rest',
-	    'reef',
-	    'reek',
-	    'reap',
-	    'rib',
-	    'wrist',
-	    'rich',
-	    'rhyme',
-	    'rice',
-	    'right',
-	    'ripe',
-	    'rise',
-	    'write'
-	],
-	'2': [
-	    'raisin',
-	    'raven',
-	    'racing',
-	    'resting',
-	    'remnant',
-	    'ready',
-	    'reading',
-	    'reason',
-	    'written',
-	    'rigging',
-	    'ribbon',
-	    'riddance',
-	    'rhyming',
-	    'rising',
-	    'rhino',
-	    'arrive'
-	],
-	'3': [
-	    'rail',
-	    'railed',
-	    'real',
-	    'rear',
-	    'rile',
-	    'riled',
-	    'rear',
-	    'railing',
-	    'rainfall',
-	    'razor',
-	    'restful',
-	    'rental',
-	    'reckless',
-	    'regal',
-	    'relay',
-	    'really',
-	    'richly',
-	    'ripple',
-	    'riddle',
-	    'Riley',
-	    'rival',
-	    'writer',
-	    'rifle'
-	]
-    },
-    'vocalic_all': {
-	'1': [
-	    'dirt',
-	    'hurt',
-	    'burn',
-	    'first',
-	    'serve',
-	    'heard'
-	],
-	'2': [
-	    'birthday',
-	    'dirty',
-	    'turkey',
-	    'person',
-	    'certain',
-	    'hurry'
-	],
-	'3': [
-	    'curl',
-	    'girl',
-	    'learn',
-	    'blur',
-	    'worst',
-	    'worth',
-	    'turtle',
-	    'curly',
-	    'working',
-	    'worried',
-	    'worship',
-	    'worthy'
-	]
-    },
-    'vocalic_back': {
-	'1': [
-	    'chart',
-	    'dart',
-	    'heart',
-	    'park',
-	    'smart',
-	    'bark',
-	    'poor',
-	    'score',
-	    'shore',
-	    'bored',
-	    'cord',
-	    'torn'
-	],
-	'2': [
-	    'party',
-	    'guitar',
-	    'carton',
-	    'hearty',
-	    'harden',
-	    'garden',
-	    'adore',
-	    'ashore',
-	    'forty',
-	    'tortoise',
-	    'boring',
-	    'boarded'
-	],
-	'3': [
-	    'lard',
-	    'large',
-	    'lark',
-	    'Carl',
-	    'snarl',
-	    'wore',
-	    'swore',
-	    'warm',
-	    'warn',
-	    'quart',
-	    'wart',
-	    'hardly',
-	    'partly',
-	    'heartless',
-	    'alarm',
-	    'darling',
-	    'startle',
-	    'galore',
-	    'normal',
-	    'cordless',
-	    'Laura',
-	    'warning',
-	    'coral'
-	]
-    },
-    'vocalic_front': {
-	'1': [
-	    'cared',
-	    'fair',
-	    'hair',
-	    'spare',
-	    'dare',
-	    'mare',
-	    'deer',
-	    'fear',
-	    'gear',
-	    'hear',
-	    'near',
-	    'steer'
-	],
-	'2': [
-	    'haircut',
-	    'marry',
-	    'barefoot',
-	    'carry',
-	    'appear',
-	    'hearing',
-	    'cheering',
-	    'smearing',
-	    'steering',
-	    'nearest'
-	],
-	'3': [
-	    'glare',
-	    'lair',
-	    'wear',
-	    'square',
-	    "we're",
-	    'cleared',
-	    'leer',
-	    'wearing',
-	    'barely',
-	    'careful',
-	    'Larry',
-	    'weary',
-	    'leering',
-	    'sheerly',
-	    'fearless',
-	    'nearly',
-	    'bleary'
-	]
-    }
-};
-*/
