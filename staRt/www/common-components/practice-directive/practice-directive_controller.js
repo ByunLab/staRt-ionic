@@ -215,34 +215,30 @@ practiceDirective.controller( 'PracticeDirectiveController',
         // reset consecutive count
         $scope.consecutive_golds = 0;
         $scope.consecutive_golds_display = 0;
-      }
+			}
 
-      if (performance >= increase_difficulty_threshold &&
-        $scope.difficulty < 5) {
-        $scope.difficulty++;
-        revise_difficulty();
-        return $scope.reloadCSVData();
-      } else if (performance <= decrease_difficulty_threshold &&
-        $scope.difficulty > 1) {
-        $scope.difficulty--;
-        revise_difficulty();
-        return $scope.reloadCSVData();
-      }
-      // implied else
-      // keep difficulty the same
+			function should_increase_difficulty() {return performance >= increase_difficulty_threshold && $scope.difficulty < 5;}
+			function should_decrease_difficulty() {return performance <= decrease_difficulty_threshold && $scope.difficulty > 1;}
+			function update_difficulty(increment) {
+				$scope.difficulty += increment;
+				if (!($scope.type == "Syllable" || $scope.probe)) {
+					update_carrier_phase();
+					return $scope.reloadCSVData();
+				}
+				return Promise.resolve();
+			}
+
+      if (should_increase_difficulty()) {
+				return update_difficulty(1);
+      } else if (should_decrease_difficulty()) {
+				return update_difficulty(-1);
+			}
     }
 
     return Promise.resolve();
-  }
+	}
 
-	function revise_difficulty() {
-	  if ($scope.type == "Syllable" ||
-	    $scope.probe) {
-	    // hackzorz
-	    // don't modify carrier phrase if doing a Syllable Quest or Word Quiz
-	    return;
-	  }
-
+	function update_carrier_phase() {
 	  switch ($scope.difficulty) {
 	    case 1:
 	    case 2:
@@ -473,7 +469,7 @@ practiceDirective.controller( 'PracticeDirectiveController',
   function beginPracticeForUser(user) {
     /* --------------------------------
 	    visual reinforcement
-  	-------------------------------- */
+		-------------------------------- */
     if (!$scope.probe) {
       if (user.highscores) {
         // if there is user data on highscores
@@ -485,20 +481,19 @@ practiceDirective.controller( 'PracticeDirectiveController',
     }
 
     var sessionPrepTask = Promise.resolve();
-
+		$scope.currentWordIdx = 0;
     if (user.inProcessSession) {
       $scope.currentPracticeSession = Object.assign({}, user.inProcessSession);
 
       var previousRatings = $scope.currentPracticeSession.ratings;
-      $scope.currentWordIdx = 0;
       sessionPrepTask = forEachPromise(previousRatings, function (rating) {
-        $scope.currentWordIdx++;
+				$scope.currentWordIdx++;
         return handleRatingData($scope, rating.rating);
       }).then(function () {
         $scope.currentWordIdx = $scope.currentPracticeSession.ratings.length - 1;
       });
     } else {
-      $scope.currentWordIdx = -1;
+			$scope.currentWordIdx = -1;
       $scope.currentPracticeSession = initialPracticeSession(
         Date.now(),
         $scope.type || "word",
@@ -516,7 +511,7 @@ practiceDirective.controller( 'PracticeDirectiveController',
         AudioPlugin.startRecording(user, sessionDisplayString(),  $scope.currentPracticeSession.id, recordingDidStart, recordingDidFail);
       }
       advanceWord();
-    });
+		});
   }
 
 	function advanceWord() {
@@ -534,16 +529,13 @@ practiceDirective.controller( 'PracticeDirectiveController',
 	    $scope.$broadcast("resetRating");
 	  }
 
-	  $scope.currentWordIdx++;
+		$scope.currentWordIdx++;
 
 	  if ($scope.count && $scope.currentWordIdx >= $scope.count) {
 	    $scope.endWordPractice();
 	  } else {
-	    var lookupIdx = $scope.currentWordIdx % $scope.wordOrder.length;
-	    if ((lookupIdx === 0) && ($scope.order === "random")) {
-	      scrambleArray($scope.wordOrder);
-	    }
-	    $scope.currentWord = $scope.wordList[$scope.wordOrder[lookupIdx]];
+			var lookupIdx = $scope.currentWordIdx % $scope.wordOrder.length;
+			$scope.currentWord = $scope.wordList[$scope.wordOrder[lookupIdx]];
 
 	    // also select a random carrier phrase
       $scope.carrier_phrase = carrier_phrases[Math.floor(Math.random() * carrier_phrases.length)];
@@ -559,6 +551,9 @@ practiceDirective.controller( 'PracticeDirectiveController',
 	        navigator.notification.confirm("Pausing for feedback",
 	          function () {
 	            $scope.$apply(function () {
+								// Current word was not properly being updated.
+								lookupIdx = $scope.currentWordIdx % $scope.wordOrder.length;
+								$scope.currentWord = $scope.wordList[$scope.wordOrder[lookupIdx]];
 	              $scope.isFeedbacking = false;
 	            });
 	          }, "",
@@ -570,7 +565,7 @@ practiceDirective.controller( 'PracticeDirectiveController',
 
 	$scope.beginWordPractice = function () {
     $scope.currentWord = null;
-    if ($scope.isPracticing) return;
+		if ($scope.isPracticing) return;
     $scope.isPracticing = true;
     $scope.setupToolbar();
 
@@ -656,13 +651,16 @@ practiceDirective.controller( 'PracticeDirectiveController',
 	    $scope.wordList = $scope.wordList.concat(nextWordList);
 	}
 
-	$scope.reorderWords = function() {
+	$scope.reorderWords = function(randomize = true) {
 	    $scope.wordOrder = [];
 	    $scope.hasValidWordList = $scope.wordList.length > 0;
 	    for (var i=0; i<$scope.wordList.length; ++i) {
         $scope.wordOrder.push(i);
-      }
-      scrambleArray($scope.wordOrder);
+			}
+			if (randomize) {
+				console.log("Randomizing!");
+				scrambleArray($scope.wordOrder);
+			}
 	}
 
 	$scope.reloadCSVData = function () {
@@ -689,15 +687,14 @@ practiceDirective.controller( 'PracticeDirectiveController',
 	      }
 	    });
 
-	    $scope.wordList = tempWordList;
-
+			$scope.wordList = tempWordList;
       $scope.reorderWords();
       return Promise.resolve();
-	  }
+		}
 	  if ($scope.type === "Syllable" ||
 	    $scope.probe) {
 	    $scope.wordList = [];
-	    var loadTasks = [];
+			var loadTasks = [];
 	    $scope.csvs.forEach(function (csv) {
 	      loadTasks.push(
 	        $http.get(csv, {
@@ -706,13 +703,12 @@ practiceDirective.controller( 'PracticeDirectiveController',
 	          }
 	        }).then(function (res) {
 	          $scope.parseWordList(res.data);
-	          //console.log("Appending word list");
-	          //console.log($scope.wordList);
 	        })
 	      );
-	    });
+			});
+
 	    return Promise.all(loadTasks).then(function (res) {
-	      $scope.reorderWords();
+	      $scope.reorderWords(!($scope.type === "Syllable" && $scope.probe));
 	    });
 	  }
 	}
@@ -736,7 +732,7 @@ practiceDirective.controller( 'PracticeDirectiveController',
 	});
 
 	$scope.$watch("csvs", function () {
-	    $scope.hasValidWordList = false;
+			$scope.hasValidWordList = false;
 	    if ($scope.csvs) {
         $scope.reloadCSVData().then(function () {
           if ($scope.hasValidWordList && !$scope.isPracticing && $scope.beginOnLoad) {
@@ -745,14 +741,6 @@ practiceDirective.controller( 'PracticeDirectiveController',
         });
       }
 	});
-
-	if ($scope.csvs) {
-    $scope.reloadCSVData().then(function () {
-      if ($scope.hasValidWordList && !$scope.isPracticing && $scope.beginOnLoad) {
-        $scope.beginWordPractice();
-      }
-    });
-  }
 
 	$scope.myURL = $state.current.name;
 
