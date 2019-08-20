@@ -16,6 +16,7 @@
         "cordova-plugin-dialogs": "^1.3.4",
         "cordova-plugin-file": "^5.0.0",
         "cordova-plugin-file-transfer": "^1.7.1",
+        "cordova-plugin-inappbrowser": "^3.1.0",
         "cordova-sqlite-storage": "^2.5.1",
         "cordova-universal-links-plugin-fix": "^1.2.1",
         "localforage-cordovasqlitedriver": "^1.6.0",
@@ -67,7 +68,8 @@
             },
             "cordova-plugin-app-version": {},
             "cordova-custom-config": {},
-            "site.girlfriends.start.audio": {}
+            "site.girlfriends.start.audio": {},
+            "cordova-plugin-inappbrowser": {}
         },
         "platforms": [
             "ios"
