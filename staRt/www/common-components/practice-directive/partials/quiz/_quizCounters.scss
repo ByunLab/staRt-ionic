@@ -1,23 +1,13 @@
-.qzCounters-layout {}
-
-.qzSW-container {
-  position: absolute;
+.qzCounters-layout {
+  position: relative;
   display: block;
-  top: 18px;
-  height: 748px;
-  width: 100%;
-  border: 1px solid red;
+  z-index: 2;
 }
 
-
+// foreground
 .img-bg_qz--FG {
   background-image: url("../img/bgImg/bg_quiz--foreground.svg");
   z-index: 5 !important;
-}
-
-.qz-MG {
-  z-index: 2;
-  //border: 1px solid red;
 }
 
 // .img-bg {
@@ -33,6 +23,22 @@
 //   // // border: 1px solid red;
 // }
 
+// ---------------------------------
+.qzSW-container {
+  position: absolute;
+  top: 18px;
+  left: 0px;
+  height: 748px;
+  width: 100%;
+  //border: 1px solid red;
+}
+
+
+
+
+
+
+// ---------------------------------
 //.shadBack { fill: #93c9c7;}
 path.cls-1 { fill: #93c9c7; } //shadow-back
 path.cls-2 { fill: #c0e5e7; } //grubby blue

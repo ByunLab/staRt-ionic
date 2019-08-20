@@ -91,7 +91,7 @@ function saveJSON(jsonObject, absolutePath, successCb)
 var practiceDirective = angular.module( 'practiceDirective' );
 
 practiceDirective.controller( 'PracticeDirectiveController',
-			      function($scope, $timeout, $localForage, AutoService, NotifyingService, FirebaseService, ProfileService, SessionStatsService, StartUIState, UploadService, $rootScope, $state, $http, $cordovaDialogs, ToolbarService, QuestScore, QuizScore)
+			      function($scope, $timeout, $localForage, AutoService, NotifyingService, FirebaseService, ProfileService, SessionStatsService, StartUIState, UploadService, $rootScope, $state, $http, $cordovaDialogs, ToolbarService, QuestScore, QuizScore, AdaptDifficulty)
     {
 	// var uploadURLs = [
 	// 	"http://localhost:5000",
@@ -114,9 +114,17 @@ practiceDirective.controller( 'PracticeDirectiveController',
 
 	$scope.currentWordIdx = -1;
 	$scope.currentPracticeSession = null;
+
+  // quest-specific vars
   $scope.questCoins = []; //holds stacks of Quest Coins
+  $scope.difficulty = 1; //
+  $scope.carrier_phrases = [];
+
+  // quiz-specific vars
+  $scope.quizType = undefined;
 
   QuizScore.hello();
+  AdaptDifficulty.hello();
 
   // TOOLBAR ----------------------------------------------------
   // TO BE IMPLEMENTED IN THE FUTURE / NOT CURRENTLY IN USE
@@ -145,165 +153,77 @@ practiceDirective.controller( 'PracticeDirectiveController',
 	/* --------------------------------
 	   adaptive difficulty
   	   -------------------------------- */
-	// $scope.block_score = 0;
-	// $scope.session_score = 0;
-	$scope.difficulty = 1;
-	var carrier_phrases = carrier_phrases_bank[0];
+	//$scope.difficulty = 1;
+  $scope.carrier_phrases = AdaptDifficulty.phrases[0];
+
+	//var carrier_phrases = carrier_phrases_bank[0];
 	var increase_difficulty_threshold = 0.8;
 	var decrease_difficulty_threshold = 0.5;
 
-	// remap data according to specs
-	// var remap_adaptive_difficulty_score = {
-	//     3: 1,
-	//     2: .5,
-	//     1: 0
-	// };
-  //
-	// function calculate_difficulty_performance(total, count){
-	//     return total / count;
-  // };
+  function update_carrier_phrase() {
+    switch ($scope.difficulty) {
+      case 1:
+      case 2:
+      case 3:
+        $scope.carrier_phrases = AdaptDifficulty.phrases[0];
+        break;
+      case 4:
+        $scope.carrier_phrases = AdaptDifficulty.phrases[1];
+        break;
+      case 5:
+        $scope.carrier_phrases = AdaptDifficulty.phrases[2];
+        break;
+      default:
+    }
+  }
 
   function handleRatingData($scope, data) {
 
-    if (!$scope.probe) { // visual reinforcement
-      // see 'helpers/qtScoring'. updates all score and milestone counters
+    if (!$scope.probe) { //quest
+      // updates all score and milestone counters
       QuestScore.questRating(data, $scope.scores, $scope.highscores, $scope.currentWordIdx);
       //console.log($scope.scores);
+
+      // if end of block, check Adaptive Difficulty
+      if ($scope.currentWordIdx % 10 == 0 &&
+        $scope.currentWordIdx != 0) {
+          var performance = $scope.scores.performance;
+
+          function should_increase_difficulty() {return performance >= increase_difficulty_threshold && $scope.difficulty < 5;}
+
+          function should_decrease_difficulty() {return performance <= decrease_difficulty_threshold && $scope.difficulty > 1;}
+
+          function update_difficulty(increment) {
+            $scope.difficulty += increment;
+            if (!($scope.type == "Syllable" || $scope.probe)) {
+              update_carrier_phrase();
+              // AdaptDifficulty.update_carrier_phrase( $scope.difficulty, $scope.carrier_phrases);
+
+              return $scope.reloadCSVData();
+            }
+            return Promise.resolve();
+          }
+
+          if (should_increase_difficulty()) {
+            // trigger badge
+            console.log('INCREASING DIFF - watch for new words!');
+            return update_difficulty(1);
+          } else if (should_decrease_difficulty()) {
+            return update_difficulty(-1);
+          }
+
+        }
+
+      return Promise.resolve();
+
+    } else { //if quiz, no adapt Diff
+      // I only have the qzSW svg at the moment
+      if($scope.quizType === 'qzSW') {
+        QuizScore.quizRating(data, $scope.quizType, $scope.currentWordIdx);
+      }
+      // console.log("QUIZ TYPE: " + $scope.quizType);
     }
-
-
-    // adaptive difficulty
-
-    // $scope.block_score += remap_adaptive_difficulty_score[data];
-    // $scope.session_score += remap_adaptive_difficulty_score[data];
-
-    if ($scope.currentWordIdx % 10 == 0 &&
-      $scope.currentWordIdx != 0) {
-      // todo: ratingChange emit error is preventing accurate calculation
-
-      // recalculate difficulty
-      // var performance = calculate_difficulty_performance(
-      //   $scope.block_score,
-      //   10 // working in blocks of ten
-      // );
-      var performance = $scope.scores.performance;
-
-      if (!$scope.probe) {
-        /*
-        // recalculate highscores
-        $scope.block_score_highscore = Math.max($scope.block_score_highscore, $scope.block_score);
-        $scope.block_golds_highscore = Math.max($scope.block_golds_highscore,
-          $scope.block_coins[$scope.block_coins.length - 1].filter(function (color) {
-            return color === "gold";
-          }).length);
-
-        // reset scores
-        $scope.block_score = 0;
-
-        // reset coins
-        $scope.block_coins.push([]);
-
-        // reset consecutive count
-        $scope.consecutive_golds = 0;
-        $scope.consecutive_golds_display = 0;
-        */
-			}
-
-			function should_increase_difficulty() {return performance >= increase_difficulty_threshold && $scope.difficulty < 5;}
-			function should_decrease_difficulty() {return performance <= decrease_difficulty_threshold && $scope.difficulty > 1;}
-			function update_difficulty(increment) {
-				$scope.difficulty += increment;
-				if (!($scope.type == "Syllable" || $scope.probe)) {
-					update_carrier_phase();
-					return $scope.reloadCSVData();
-				}
-				return Promise.resolve();
-			}
-
-      if (should_increase_difficulty()) {
-				return update_difficulty(1);
-      } else if (should_decrease_difficulty()) {
-				return update_difficulty(-1);
-			}
-    }
-
-    return Promise.resolve();
-	}
-
-	function update_carrier_phase() {
-	  switch ($scope.difficulty) {
-	    case 1:
-	    case 2:
-	    case 3:
-	      carrier_phrases = carrier_phrases_bank[0];
-	      break;
-	    case 4:
-	      carrier_phrases = carrier_phrases_bank[1];
-	      break;
-	    case 5:
-	      carrier_phrases = carrier_phrases_bank[2];
-	      break;
-	    default:
-
-	  }
-	}
-
-
-
-	/* --------------------------------
-	   visual reinforcement
-  	   -------------------------------- */
-	if(!$scope.probe){
-    /*
-	    $scope.highscores = {
-		session: {
-		    score: {
-			total: 0,
-			date: null
-		    },
-		    golds: {
-			total: 0,
-			date: null
-		    }
-		},
-		block: {
-		    score: {
-			total: 0,
-			date: null
-		    },
-		    golds: {
-			total: 0,
-			date: null
-		    }
-		}
-	    };
-
-	    // push to array so that history can be preserved
-	    $scope.block_coins = [[]];
-
-	    // need history on session coins?
-	    $scope.session_coins = {
-		gold: 0,
-		silver: 0,
-		bronze: 0
-	    };
-	    $scope.block_golds_highscore = 0;
-	    $scope.block_score_highscore = 0;
-
-	    $scope.consecutive_golds = 0;
-	    $scope.consecutive_golds_breakpoints = [3, 5, 8, 10];
-
-	    // create helper variable to iterate through and create sandholes
-	    $scope.sandholes = new Array(Math.ceil($scope.count / 10));
-      */
-	}
-
-	// need this outside for some reason
-	// var visual_reinforcement_coin_color_map = {
-	//     3: "gold",
-	//     2: "silver",
-	//     1: "bronze"
-	// }
+	} // end handleRatingData
 
   // ----------------------------------------------
 
@@ -462,7 +382,7 @@ practiceDirective.controller( 'PracticeDirectiveController',
 
   function beginPracticeForUser(user) {
 
-    if (!$scope.probe) {
+    if (!$scope.probe) { // if quest -------------------
       //check and set a users $scope.difficulty????
       if (user.highscores) {
         // if there is user data on highscores
@@ -475,9 +395,25 @@ practiceDirective.controller( 'PracticeDirectiveController',
       // $scope.questCoins = []; //holds stacks of Quest Coins
       QuestScore.initCoinRow($scope.count, $scope.questCoins);
 
-      // $scope.sandholes = new Array(Math.ceil($scope.count / 10)); //#hc
+      // check AdaptDiff level?????? or
+      $scope.difficulty = 1;
+
       console.log($scope.scores);
       console.log($scope.highscores);
+    }
+
+    if ($scope.probe) { // if quiz -------------------
+      // $scope.quizType is used by svg in counters
+      if ($scope.type === 'Syllable') {
+        $scope.quizType = 'qzSyll';
+      } else if($scope.type === 'Word' && $scope.count < 40) {
+        $scope.quizType = 'qzSW';
+      } else if($scope.type === 'Word' && $scope.count > 40) {
+        $scope.quizType = 'qzWord';
+      } else {
+        $scope.quizType = undefined;
+      }
+      console.log('QUIZ TYPE: ' + $scope.quizType);
     }
 
     var sessionPrepTask = Promise.resolve();
@@ -538,7 +474,8 @@ practiceDirective.controller( 'PracticeDirectiveController',
 			$scope.currentWord = $scope.wordList[$scope.wordOrder[lookupIdx]];
 
 	    // also select a random carrier phrase
-      $scope.carrier_phrase = carrier_phrases[Math.floor(Math.random() * carrier_phrases.length)];
+      // $scope.carrier_phrase = carrier_phrases[Math.floor(Math.random() * carrier_phrases.length)];
+      $scope.carrier_phrase = $scope.carrier_phrases[Math.floor(Math.random() * $scope.carrier_phrases.length)];
       $scope.smallFont = $scope.carrier_phrase.length >= 16;
       $scope.tinyFont = $scope.carrier_phrase.length >= 32;
 	  }
@@ -636,6 +573,8 @@ practiceDirective.controller( 'PracticeDirectiveController',
 	  $scope.$broadcast("resetRating");
 	  $scope.currentWord = null;
 	  $scope.currentWordIdx = -1;
+    $scope.quizType = undefined;
+
 	  if (window.AudioPlugin !== undefined) {
 	    AudioPlugin.stopRecording(recordingDidStop, recordingDidFail);
 	  }
@@ -679,13 +618,13 @@ practiceDirective.controller( 'PracticeDirectiveController',
 	    $scope.csvs.forEach(function (csv) {
 	      var key = csv.replace('data/wp_', '').replace('.csv', '');
 	      if ($scope.difficulty <= 3) {
-	        tempWordList = tempWordList.concat(words[key][$scope.difficulty]);
+	        tempWordList = tempWordList.concat(AdaptDifficulty.words[key][$scope.difficulty]);
 	      } else {
 	        // difficulty is 4 or 5
 	        tempWordList = tempWordList
-	          .concat(words[key][1])
-	          .concat(words[key][2])
-	          .concat(words[key][3]);
+            .concat(AdaptDifficulty.words[key][1])
+            .concat(AdaptDifficulty.words[key][2])
+            .concat(AdaptDifficulty.words[key][3]);
 	      }
 	    });
 
@@ -721,7 +660,6 @@ practiceDirective.controller( 'PracticeDirectiveController',
 	  if (!!$scope.rating) {
 	    $scope.nextWord();
 	  }
-	  // keep running average of ratings
 	  if (data) {
       handleRatingData($scope, data);
 	  }
@@ -762,290 +700,3 @@ practiceDirective.controller( 'PracticeDirectiveController',
 	});
     }
 );
-
-
-// save here to avoid async loads
-var carrier_phrases_bank = [
-    ["___"],
-    ["Say ___ to me"],
-    [
-	"He got detention because he said ___",
-	"When he said ___, she got mad at him",
-	"She passed me a note that said ___",
-	"I put ___ at the top of my list",
-	"He hoped she would know how to say ___",
-	"I want to put ___ on the envelope",
-	"I paid 10 cents to copy a sheet that said ___",
-	"She hoped he would say ___",
-	"I made a label that said ___",
-	"You should take ___ off of the list",
-	"It was funny when you said ___",
-	"She put ___ on the ticket",
-	"I walked past a sign that said ___",
-	"My dad bought a book called ___",
-	"I didn't expect to see a football team called ___",
-	"I laughed when she said ___",
-	"I built him a lemonade stand and called it ___",
-	"He wasn't listening when she said ___",
-	"I named my dog ___"
-    ]
-];
-
-
-var words = {
-    'consonantal_back': {
-	'1': [
-	    'rod',
-	    'rot',
-	    'romp',
-	    'rub',
-	    'rough',
-	    'rust',
-	    'road',
-	    'rogue',
-	    'roam',
-	    'rope',
-	    'rote',
-	    'roast',
-	    'rue',
-	    'roof',
-	    'room',
-	    'root'
-	],
-	'2': [
-	    'robin',
-	    'rocket',
-	    'rotten',
-	    'rusty',
-	    'running',
-	    'rugby',
-	    'roping',
-	    'roaming',
-	    'romance',
-	    'rotate',
-	    'rooting',
-	    'ruby',
-	    'rudest',
-	    'roommate'
-	],
-	'3': [
-	    'roll',
-	    'rolled',
-	    'rule',
-	    'ruled',
-	    'robber',
-	    'Ronald',
-	    'rubber',
-	    'rubble',
-	    'runner',
-	    'roughly',
-	    'parole',
-	    'rolling',
-	    'roadless',
-	    'rower',
-	    'rudely',
-	    'rueful',
-	    'ruling',
-	    'roomful'
-	]
-    },
-    'consonantal_front': {
-	'1': [
-	    'raid',
-	    'rain',
-	    'ray',
-	    'rate',
-	    'wreck',
-	    'rest',
-	    'reef',
-	    'reek',
-	    'reap',
-	    'rib',
-	    'wrist',
-	    'rich',
-	    'rhyme',
-	    'rice',
-	    'right',
-	    'ripe',
-	    'rise',
-	    'write'
-	],
-	'2': [
-	    'raisin',
-	    'raven',
-	    'racing',
-	    'resting',
-	    'remnant',
-	    'ready',
-	    'reading',
-	    'reason',
-	    'written',
-	    'rigging',
-	    'ribbon',
-	    'riddance',
-	    'rhyming',
-	    'rising',
-	    'rhino',
-	    'arrive'
-	],
-	'3': [
-	    'rail',
-	    'railed',
-	    'real',
-	    'rear',
-	    'rile',
-	    'riled',
-	    'rear',
-	    'railing',
-	    'rainfall',
-	    'razor',
-	    'restful',
-	    'rental',
-	    'reckless',
-	    'regal',
-	    'relay',
-	    'really',
-	    'richly',
-	    'ripple',
-	    'riddle',
-	    'Riley',
-	    'rival',
-	    'writer',
-	    'rifle'
-	]
-    },
-    'vocalic_all': {
-	'1': [
-	    'dirt',
-	    'hurt',
-	    'burn',
-	    'first',
-	    'serve',
-	    'heard'
-	],
-	'2': [
-	    'birthday',
-	    'dirty',
-	    'turkey',
-	    'person',
-	    'certain',
-	    'hurry'
-	],
-	'3': [
-	    'curl',
-	    'girl',
-	    'learn',
-	    'blur',
-	    'worst',
-	    'worth',
-	    'turtle',
-	    'curly',
-	    'working',
-	    'worried',
-	    'worship',
-	    'worthy'
-	]
-    },
-    'vocalic_back': {
-	'1': [
-	    'chart',
-	    'dart',
-	    'heart',
-	    'park',
-	    'smart',
-	    'bark',
-	    'poor',
-	    'score',
-	    'shore',
-	    'bored',
-	    'cord',
-	    'torn'
-	],
-	'2': [
-	    'party',
-	    'guitar',
-	    'carton',
-	    'hearty',
-	    'harden',
-	    'garden',
-	    'adore',
-	    'ashore',
-	    'forty',
-	    'tortoise',
-	    'boring',
-	    'boarded'
-	],
-	'3': [
-	    'lard',
-	    'large',
-	    'lark',
-	    'Carl',
-	    'snarl',
-	    'wore',
-	    'swore',
-	    'warm',
-	    'warn',
-	    'quart',
-	    'wart',
-	    'hardly',
-	    'partly',
-	    'heartless',
-	    'alarm',
-	    'darling',
-	    'startle',
-	    'galore',
-	    'normal',
-	    'cordless',
-	    'Laura',
-	    'warning',
-	    'coral'
-	]
-    },
-    'vocalic_front': {
-	'1': [
-	    'cared',
-	    'fair',
-	    'hair',
-	    'spare',
-	    'dare',
-	    'mare',
-	    'deer',
-	    'fear',
-	    'gear',
-	    'hear',
-	    'near',
-	    'steer'
-	],
-	'2': [
-	    'haircut',
-	    'marry',
-	    'barefoot',
-	    'carry',
-	    'appear',
-	    'hearing',
-	    'cheering',
-	    'smearing',
-	    'steering',
-	    'nearest'
-	],
-	'3': [
-	    'glare',
-	    'lair',
-	    'wear',
-	    'square',
-	    "we're",
-	    'cleared',
-	    'leer',
-	    'wearing',
-	    'barely',
-	    'careful',
-	    'Larry',
-	    'weary',
-	    'leering',
-	    'sheerly',
-	    'fearless',
-	    'nearly',
-	    'bleary'
-	]
-    }
-};

@@ -40,10 +40,8 @@
 
 
   <!-- SCORING DEBUGGER ----------------------------- -->
-
   <div class="qtdebug-container"
-  ng-show="!probe && isPracticing"
-  ng-hide="!isPracticing && probe"
+  ng-if="isPracticing && !probe"
   ng-include=" './common-components/practice-directive/partials/quest/qtDebug.html' ">
     <!-- DELETE AFTER TESTING SCORING SCRIPTS -->
   </div> <!-- end .profiles-layout_drawer-left -->
@@ -64,24 +62,19 @@
   </div>
 
   <!-- QUIZ GRAPHICS ----------------------------- -->
+  <div class="" ng-if="probe && isPracticing">
 
-  <div class="qzCounters-layout"
-    ng-if="probe && isPracticing">
-
-    <div class=""
+    <div class="qzCounters-layout "
       ng-if="type==='Syllable'">
-      Pennant Counters
     </div>
 
-    <div class="" ng-if="type==='Word' && count < 40">
-      <div class=""
-        ng-include=" './common-components/practice-directive/partials/quiz/umbrellas-shortWordQuiz.html' ">
-      </div>
+    <div class="qzCounters-layout"
+      ng-if="type==='Word' && count < 40"
+      ng-include=" './common-components/practice-directive/partials/quiz/umbrellas-shortWordQuiz.html' ">
     </div>
 
-    <div class=""
+    <div class="qzCounters-layout"
       ng-if="type==='Word' && count > 40">
-      Flag Counters
     </div>
 
     <div class="img-bg img-bg_qz--FG"></div>
