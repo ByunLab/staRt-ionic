@@ -14,8 +14,6 @@
   </div>
   -->
 
-
-
   <!-- Temp 'Stop Session' Button
       (will be replaced by toolbar in the future) -->
   <div class="toolbar-container">
@@ -29,7 +27,7 @@
   </div>
 
 
-<!-- (what is this? #sjt) ----------------------------- -->
+<!-- (what is this? #sjt) --------------------------- -->
   <button style="margin:40px;"
     ng-click="beginWordPractice()"
     ng-hide="suppressStartButton || isPracticing || !hasValidWordList">
@@ -39,6 +37,16 @@
   <button style="margin:40px;" ng-click="nextWord()" ng-hide="!isPracticing" ng-if="false">
     Next {{type}}
   </button>
+
+
+  <!-- SCORING DEBUGGER ----------------------------- -->
+
+  <div class="qtdebug-container"
+  ng-show="!probe && isPracticing"
+  ng-hide="!isPracticing && probe"
+  ng-include=" './common-components/practice-directive/partials/quest/qtDebug.html' ">
+    <!-- DELETE AFTER TESTING SCORING SCRIPTS -->
+  </div> <!-- end .profiles-layout_drawer-left -->
 
 
   <!-- PROMPT BOX ------------------------------- -->
@@ -54,6 +62,32 @@
       </p>
     </div>
   </div>
+
+  <!-- QUIZ GRAPHICS ----------------------------- -->
+
+  <div class="qzCounters-layout"
+    ng-if="probe && isPracticing">
+
+    <div class=""
+      ng-if="type==='Syllable'">
+      Pennant Counters
+    </div>
+
+    <div class="" ng-if="type==='Word' && count < 40">
+      <div class=""
+        ng-include=" './common-components/practice-directive/partials/quiz/umbrellas-shortWordQuiz.html' ">
+      </div>
+    </div>
+
+    <div class=""
+      ng-if="type==='Word' && count > 40">
+      Flag Counters
+    </div>
+
+    <div class="img-bg img-bg_qz--FG"></div>
+
+  </div>
+
 
 
   <!-- LPC DIRECTIVE: Wave & Rating Btns --------------- -->
@@ -71,14 +105,29 @@
      beach="true">
     </lpc-directive>
 
-   </div> <!-- end quest-lpcDir-layout -->
+  </div> <!-- end quest-lpcDir-layout -->
 
 
-   <!-- COIN ROW ------------------------------- -->
+
+   <!-- COIN ROW (Quest)----------------------------- -->
+
+   <div class="coin-row-layout" ng-if="!probe && isPracticing">
+    <!-- a single stack of 10 coins with number and sandhole -->
+    <div ng-repeat="stack in questCoins" class="stackBox">
+      <div id=" {{ 'stack' + stack.id}}" class="stack"
+        ng-include=" './common-components/practice-directive/partials/quest/coinStack.svg' ">
+      </div>
+      <div class="stackNum">{{stack.id + 1}}</div>
+      <div class="stackHole img-sb_sandHole"></div>
+    </div>
+   </div>
+
+
+<!-- Old Method. TODO: Update saved sesions to new method --
    <div class="coin-row-layout" ng-if="!probe">
      <div class="coinBox-layout" style="width: {{sandholes.length * 41}}px;">
        <div class="sand_coins">
-         <div ng-repeat="stack_coins in block_coins track by $index" class="coin_stack">
+         <div ng-repeat="stack_coins in scores.block_coins track by $index" class="coin_stack">
            <img ng-repeat="stack_coin in stack_coins track by $index" src="img/stackCoins/stackCoin-{{stack_coin}}.png"
              class="coin" style="bottom: {{$index * 6}}px" />
          </div>
@@ -88,5 +137,17 @@
        </div>
      </div>
    </div>
+  -->
+
+
+   <!-- SCORE & SANDBANK ----------------------------- -->
+   <div class="" ng-if="!probe && isPracticing"
+   ng-include=" './common-components/practice-directive/partials/quest/sandbank.html' ">
+   </div> <!-- end -->
+
+
+   <!-- DIALOG BOX TEMPLATE ---------------------- -->
+   <!-- dialog sequence templates will go here -->
+
 
 </div> <!-- end words-contentBox-->

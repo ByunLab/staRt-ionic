@@ -1,0 +1,48 @@
+// SANDBANK ------------------------------------
+.sandbank-container {
+  position: absolute;
+  top: $row-h * 5;
+  width: 100%;
+  height: $row-h;
+
+  .sandbank-bg {
+    position: absolute;
+    width: 100%;
+    height: $row-h * 0.8;
+    top: $row-h * 0.2;
+    background-image: url("../img/bgImg/bg_sandbank--handle.svg");
+    background-position: right bottom;
+    background-repeat: no-repeat;
+    z-index: 0;
+    //border: 1px solid blue;
+  }
+  .sandbank-score {
+    position: relative;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: space-between;
+    align-items: center;
+    height: $row-h * 0.9;
+    width: $col-w * 2;
+    bottom: $row-h * 0.2;
+    //padding-bottom: $row-h * 0.1;
+    margin-left: $col-w * 10;
+    font-size: 1.25em;
+    font-weight: 600;
+    text-align: center;
+    color: #c7b299;
+    z-index: 50;
+    //border: 1px solid pink;
+
+    .sandbank-sandDollar {
+      position: relative;
+      display: flex;
+      height: $row-h * 0.6;
+      width: $col-w * 1.1;
+      background-image: url("../img/ui/sandDollar.svg");
+      background-position: center;
+      background-repeat: no-repeat;
+      //border: 1px solid red;
+    }
+  } // .sandbank-score
+} // .sandbank-container
