@@ -93,4 +93,5 @@
     <plugin name="cordova-plugin-file-transfer" spec="^1.7.1" />
     <plugin name="cordova-sqlite-storage" spec="^2.5.1" />
     <plugin name="site.girlfriends.start.audio" spec="../audio-plugin" />
+    <plugin name="cordova-plugin-inappbrowser" spec="^3.1.0" />
 </widget>
