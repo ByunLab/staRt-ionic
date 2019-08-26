@@ -94,18 +94,6 @@ profileService.factory('ProfileService', function($rootScope, $localForage, $htt
 		return arr;
 	}
 
-	function commitProfilesInterfaceState() {
-		var promises = [];
-		return profilesInterfaceState.then(function(res) {
-			for (var k in res) {
-				if (res.hasOwnProperty(k)) {
-					promises.push($localForage.setItem(k, res[k]));
-				}
-			}
-			return Promise.all(promises);
-		});
-	}
-
 	function loadProfilesInterfaceState() {
 		return $localForage.keys().then(function(keys, err) {
 			var profilePromises = [];
@@ -124,7 +112,6 @@ profileService.factory('ProfileService', function($rootScope, $localForage, $htt
 				for (var i=0; i<result.length; i++) {
 					retVal[keys[i]] = result[i];
 				}
-				console.log(retVal);
 				return retVal;
 			});
 		});
@@ -201,6 +188,10 @@ profileService.factory('ProfileService', function($rootScope, $localForage, $htt
 
 	profilesInterfaceState = loadProfilesInterfaceState();
 
+	function _reloadProfilesInterfaceState() {
+		profilesInterfaceState = loadProfilesInterfaceState();
+	}
+
 	return {
     clearInProgressSessionForCurrentProfile: function()
     {
@@ -211,6 +202,8 @@ profileService.factory('ProfileService', function($rootScope, $localForage, $htt
         });
       });
     },
+
+		reloadProfilesInterfaceState : function () {return  _reloadProfilesInterfaceState(); },
 
 		getAllProfiles: function()
 		{
@@ -283,7 +276,7 @@ profileService.factory('ProfileService', function($rootScope, $localForage, $htt
 					NotifyingService.notify('will-set-current-profile-uuid', profileUUID);
 				}
 				res['currentProfileUUID'] = profileUUID;
-        commitProfilesInterfaceState();
+				$localForage.setItem('currentProfileUUID', profileUUID);
 				return res['currentProfileUUID'];
 			});
 		},
