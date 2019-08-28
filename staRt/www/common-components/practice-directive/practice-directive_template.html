@@ -83,7 +83,7 @@
      <div class="coinBox-layout" style="width: {{sandholes.length * 41}}px;">
        <div class="sand_coins">
          <div ng-repeat="stack_coins in block_coins track by $index" class="coin_stack">
-           <img ng-repeat="stack_coin in stack_coins track by $index" src="img/stackCoins/stackCoin-{{stack_coin}}.png"
+           <img ng-repeat="stack_coin in stack_coins track by $index" ng-src="img/stackCoins/stackCoin-{{stack_coin}}.png"
              class="coin" style="bottom: {{$index * 6}}px" />
          </div>
        </div>
