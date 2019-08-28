@@ -96,6 +96,11 @@ var practiceDirective = angular.module( 'practiceDirective' );
 practiceDirective.controller( 'PracticeDirectiveController',
 			      function($scope, $timeout, $localForage, AutoService, NotifyingService, FirebaseService, ProfileService, SessionStatsService, StartUIState, UploadService, $rootScope, $state, $http, $cordovaDialogs, ToolbarService)
     {
+	ProfileService.getCurrentProfile().then((profile) => {
+	    $scope.participant_name = profile.name;
+	    $scope.clinician_name = FirebaseService.userName();;
+	});
+
 	// var uploadURLs = [
 	// 	"http://localhost:5000",
 	// 	"http://localhost:5000",
