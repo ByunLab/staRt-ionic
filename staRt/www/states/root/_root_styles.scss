@@ -42,7 +42,7 @@ input, textarea {
 $row-h: 100vh/6;
 $col-w: 100vw/12;
 
-// TO RM
+// TO RM once old styles are gone
 $nav-btnW: 10vw; // width of left nav, OLD nav
 $col-pad: 6.66vw; // OLD nav
 $navW: $nav-btnW + $col-pad; // OLD nav
@@ -143,6 +143,7 @@ $navW: $nav-btnW + $col-pad; // OLD nav
   text-align: center;
   height: 100%;
   width: 100%;
+  //border: 1px solid lime;
 }
 
 
@@ -244,6 +245,27 @@ $navW: $nav-btnW + $col-pad; // OLD nav
     }
   } // .navTabContent
 } // end #nav-container
+
+// ACCOUNT LABEL -------------------------------------
+.acctLabel-container {
+  position: absolute;
+  display: flex;
+  flex-flow: column;
+  top: 0;
+  left: $col-w * 1.75;
+  height: $row-h * 0.5;
+  width: $col-w * 3;
+  justify-content: flex-end;
+  text-align: left;
+  color: $c-text-main;
+  //border: 1px solid cyan;
+  z-index: 2;
+
+  .slp-text { font-size: 0.75rem; }
+  .user-text{ font-size: 0.9rem; }
+}
+//$c-text-main: rgba(61,109,132,1); //#3D6D84; navy blue
+// $c-text-subtle: #7ab5b8;
 
 
 // ===================================================
