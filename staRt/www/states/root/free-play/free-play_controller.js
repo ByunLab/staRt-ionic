@@ -4,7 +4,7 @@
 {
 	var freePlay = angular.module( 'freePlay' );
 
-	freePlay.controller('FreePlayController', function($scope, $timeout, $localForage, StartUIState, NotifyingService, $rootScope, $state)
+	freePlay.controller('FreePlayController', function($scope, $timeout, $localForage, StartUIState, NotifyingService, $rootScope, $state, ProfileService, FirebaseService)
 	{
 		console.log('FreePlayController here!');
 
@@ -24,6 +24,11 @@
 			$scope.data.waveHidden = false;
 			$scope.data.researchSession= false;
 		}
+
+		ProfileService.getCurrentProfile().then((profile) => {
+				$scope.data.participant_name = profile.name;
+				$scope.data.clinician_name = FirebaseService.userName();;
+		});
 
 		var lastChronoTime = Date.now();
 

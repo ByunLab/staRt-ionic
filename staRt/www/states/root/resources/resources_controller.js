@@ -4,7 +4,7 @@
 {
 	var resources = angular.module( 'resources' );
 
-	resources.controller('ResourcesController', function($scope, $timeout, $localForage, ProfileService, StartUIState, $rootScope, $state)
+	resources.controller('ResourcesController', function($scope, $timeout, $localForage, ProfileService, StartUIState, $rootScope, $state, FirebaseService)
 	{
 		//console.log('ResourcesController here!');
 
@@ -13,6 +13,11 @@
       platform: "",
 			navTitle: "SLP Resources"
     };
+
+		ProfileService.getCurrentProfile().then((profile) => {
+				$scope.data.participant_name = profile.name;
+				$scope.data.clinician_name = FirebaseService.userName();;
+		});
 
 		if (window.AudioPlugin !== undefined) {
 	     cordova.getAppVersion.getVersionNumber().then(function (version) {

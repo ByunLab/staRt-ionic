@@ -70,21 +70,20 @@
 
 .version-display {
   position: absolute;
-	margin-left: $col-w * 9.25;
-	margin-top: 3em;
-	width: $col-w * 2;
-	font-size: 0.8em;
-	line-height: 1.5;
-	font-weight: 500;
+	display: flex;
+	flex-flow: column;
+	top: 0;
+	left: $col-w * 8.75;
+	height: $row-h * 0.5;
+	width: $col-w * 2.5;
+	justify-content: flex-end;
 	text-align: right;
-	color: $c-text-subtle; //$c-text-main;
+	color: $c-text-main;
 	z-index: 99;
 	//border: 1px solid cyan;
-}
-.res-important {
-	font-weight: 700;
-	z-index: 99;
-	// color: $c-text-main;
+
+	.iOS-text { font-size: 0.75rem; }
+	.version-text { font-size: 0.9rem; }
 }
 
 .res-sect {
