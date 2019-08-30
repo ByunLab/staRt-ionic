@@ -4,11 +4,11 @@
   display: flex;
   flex-flow: row nowrap;
   top: $row-h * 4.5;
-  left: $col-w * 3;
+  left: $col-w * 2.9;
   width: $col-w * 7;
   height: $row-h * 0.8;
   z-index: 10;
-  //border: 1px solid white;
+  //border-bottom: 1px solid white;
 }
 
 .stackBox {
@@ -48,7 +48,7 @@
 
 .stack {
   position: absolute;
-  top: 27px;
+  top: 20px;
   height: 80px;
   width: 34px;
 

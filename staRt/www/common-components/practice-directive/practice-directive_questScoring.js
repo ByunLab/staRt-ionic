@@ -3,16 +3,15 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 
 /* ---------------------------------------
   Purpose: Handles Quest scoring, milestone, and badging logic
-  Specs: See qtScoring.md
+  Specs: See qtScoring.md, altho this may be out-of-date
 
   Process:
     on each rating:
     - update data: scores, coin, streaks
+    - check for new highscores, which triggers badges
     - check for end of block
 
     on end-of-block
-      - check for new highscores
-      - trigger badges
       - queque and run end-of-block seq
 
     on end-of-block seq: TODO
@@ -66,6 +65,7 @@ var blockNewRecord;
 var onARoll;
 var perfectBlock;
 var incrDiff;
+
 var badgeFlags = {
   questNewRecord: false,
   blockNewRecord: false,
@@ -100,29 +100,26 @@ var initHighscores = function(highscores) {
   return highscores;
 }
 
-var initScores = function(scores, count) {
+var initScores = function(count, questCoins) {
   // check if scores exist?
   scores = undefined;
   scores = new SeshScores();
 
-
-  return scores;
-}
-
-var initCoinRow = function(count, questCoins) {
   var numStack = count/10;
   for(let i=0; i<numStack; i++) {
     // let rotation =
     let stack = { id: i }
     questCoins.push(stack)
   }
+
+  return scores;
 }
 
 // ==============================================
 // HELPERS ------------------------
 
 // -- called by questRating() (each trial)  ------
-// maps coin value(int) to color or userScore value
+// maps coin value to color or userScore value
 var mapCoinColor = {
   3: "gold",
   2: "silver",
@@ -137,7 +134,7 @@ var mapLabScore = {
 }
 
 var updateCoinGraphic = function(data, currentWordIdx) {
-  console.log('currentWordIdx: ' + currentWordIdx);
+  //console.log('currentWordIdx: ' + currentWordIdx);
 
   //graphics use zero-based idx
   var wordIdx = currentWordIdx - 1;
@@ -175,17 +172,8 @@ var endOfBlock = false;
 
 //called by questRating()
 var checkUpdateMilestones = function(scores, highscores, endOfBlock) {
-  // every trial
-  // end of block
-  // reset if block end
 
-  if( endOfBlock ) {
-    console.log('endOfBlock TRUE');
-    scores.performance = scores.block_score/10;
-    console.log('performance: ' + scores.performance);
-  }
-
-
+  // checked every trial -----------------------------
   if( scores.block_goldCount > highscores.mgib) {
       // trigger newRecord badge
       console.log('NEW RECORD: MOST GOLD IN BLOCK');
@@ -195,30 +183,12 @@ var checkUpdateMilestones = function(scores, highscores, endOfBlock) {
       highscores.shouldUpdateFirebase = true;
   };
 
-  if(scores.block_goldCount === 10) {
-    // trigger perfectBlock badge
-    console.log('PERFECT BLOCK');
-    // queque endOfBlock milestone
-    // record milestone?
-    highscores.perfectBlock++;
-    highscores.shouldUpdateFirebase = true;
-  }
-
   if( scores.block_display_score > highscores.hsib) {
       // trigger newRecord badge
       console.log('NEW RECORD: HIGH SCORE IN BLOCK');
       // queque endOfBlock milestone
       // record milestone?
       highscores.hsib = scores.block_display_score;
-      highscores.shouldUpdateFirebase = true;
-  };
-
-  if( scores.session_coins.gold > highscores.mgiq) {
-      // trigger newRecord badge
-      console.log('NEW RECORD: MOST GOLD IN QUEST');
-      // queque endOfBlock milestone
-      // record milestone?
-      highscores.mgiq = scores.session_coins.gold;
       highscores.shouldUpdateFirebase = true;
   };
 
@@ -231,11 +201,12 @@ var checkUpdateMilestones = function(scores, highscores, endOfBlock) {
       highscores.shouldUpdateFirebase = true;
   };
 
-  if( scores.streak > highscores.streak ) {
-      console.log('NEW RECORD: STREAK');
+  if( scores.session_coins.gold > highscores.mgiq) {
+      // trigger newRecord badge
+      console.log('NEW RECORD: MOST GOLD IN QUEST');
       // queque endOfBlock milestone
       // record milestone?
-      highscores.streak = scores.streak;
+      highscores.mgiq = scores.session_coins.gold;
       highscores.shouldUpdateFirebase = true;
   };
 
@@ -244,20 +215,43 @@ var checkUpdateMilestones = function(scores, highscores, endOfBlock) {
     // trigger 'on a roll' badge
   }
 
+  if( scores.streak > highscores.streak ) {
+      console.log('NEW RECORD: STREAK');
+      // queque endOfBlock milestone
+      // record milestone?
+      highscores.streak = scores.streak;
+      highscores.shouldUpdateFirebase = true;
+  };
+
+  if(scores.block_goldCount === 10) {
+    // trigger perfectBlock badge
+    console.log('PERFECT BLOCK');
+    // queque endOfBlock milestone
+    // record milestone?
+    highscores.perfectBlock++;
+    highscores.shouldUpdateFirebase = true;
+  }
+
+
+  // checked at end of block -----------------------------
   if( endOfBlock ) {
+    console.log('endOfBlock TRUE');
+    scores.performance = scores.block_score/10;
+    console.log('performance: ' + scores.performance);
     resetForNewBlock(scores);
     endOfBlock = false;
     console.log('endOfBlock false');
   }
-
 } //end checkUpdateMilestones
 
 //called by each rating button press
 var questRating = function(data, scores, highscores, currentWordIdx) {
-  // update scores
-  // check for end of block
-  // check for highscores
-  // trigger badge
+  /*
+  update coin graphic
+  update scores
+  check for end of block
+  call milestone update
+  */
 
   endOfBlock = false;
 
@@ -280,7 +274,6 @@ var questRating = function(data, scores, highscores, currentWordIdx) {
 
   if (mapCoinColor[data] == "gold") {
     scores.streak++;
-    // check high score for streak
   } else {
     scores.streak = 0;
   }
@@ -299,7 +292,6 @@ var questRating = function(data, scores, highscores, currentWordIdx) {
     initScores: initScores,
     questRating: questRating,
     initHighscores: initHighscores,
-    initFakeHighScores: initFakeHighScores,
-    initCoinRow: initCoinRow
+    initFakeHighScores: initFakeHighScores
   }
 });

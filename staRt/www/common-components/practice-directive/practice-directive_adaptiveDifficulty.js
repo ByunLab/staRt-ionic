@@ -2,11 +2,7 @@ var practiceDirective = angular.module( 'practiceDirective' );
 practiceDirective.factory('AdaptDifficulty', function AdaptDifficultyFactory() {
 
   /* ---------------------------------------
-    Purpose: For adjust the the difficulty of Quest
-    word prompts based on performance
-
-    Process:
-
+    Purpose:
   --------------------------------------- */
   var words = {
       'consonantal_back': {
@@ -292,13 +288,7 @@ practiceDirective.factory('AdaptDifficulty', function AdaptDifficultyFactory() {
       ]
   ];
 
-  // var increase_difficulty_threshold = 0.8;
-  // var decrease_difficulty_threshold = 0.5;
-
-  //update_carrier_phrase: update_carrier_phrase
-  // logNewDiffLevel()
   return {
-    hello: function() { console.log('Hello from the Adaptive Difficulty Provider!'); },
     phrases: carrier_phrases_bank,
     words: words
   }
