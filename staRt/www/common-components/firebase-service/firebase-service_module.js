@@ -2,7 +2,7 @@ var firebaseService = angular.module('firebaseService', []);
 
 firebaseService.factory('FirebaseService', function()
 {
-    function signInSuccess(currentUser, credential, redirectUrl) {
+    function signInSuccessWithAuthResult(currentUser, credential, redirectUrl) {
         // Do something.
         // Return type determines whether we continue the redirect automatically
         // or whether we leave that to developer to handle.
@@ -15,7 +15,7 @@ firebaseService.factory('FirebaseService', function()
 
     var uiConfig = {
         callbacks: {
-            signInSuccess: signInSuccess
+            signInSuccessWithAuthResult: signInSuccessWithAuthResult
         },
         signInOptions: [
             firebase.auth.EmailAuthProvider.PROVIDER_ID
