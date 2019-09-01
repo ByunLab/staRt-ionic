@@ -7,18 +7,19 @@
 	root.controller('RootController', function($scope, $timeout, $localForage, $ionicNavBarDelegate, AutoService, FirebaseService, StartUIState, ProfileService, SessionStatsService, UploadService, $rootScope, $state)
 	{
 		//console.log('RootController here!');
-
-		$localForage._localforage.defineDriver(window.cordovaSQLiteDriver).then(function() {
-			return $localForage._localforage.setDriver([
-				// Try setting cordovaSQLiteDriver if available,
-				window.cordovaSQLiteDriver._driver,
-				// otherwise use one of the default localForage drivers as a fallback.
-				// This should allow you to transparently do your tests in a browser
-				$localForage._localforage.INDEXEDDB,
-				$localForage._localforage.WEBSQL,
-				$localForage._localforage.LOCALSTORAGE
-			]);
-		});
+		if (window.cordovaSQLiteDriver !== undefined) {
+			$localForage._localforage.defineDriver(window.cordovaSQLiteDriver).then(function() {
+				return $localForage._localforage.setDriver([
+					// Try setting cordovaSQLiteDriver if available,
+					window.cordovaSQLiteDriver._driver,
+					// otherwise use one of the default localForage drivers as a fallback.
+					// This should allow you to transparently do your tests in a browser
+					$localForage._localforage.INDEXEDDB,
+					$localForage._localforage.WEBSQL,
+					$localForage._localforage.LOCALSTORAGE
+				]);
+			});
+		}
 
 		$scope.state = $state;
 		$scope.state.loggedIn = !!firebase.auth().currentUser;
