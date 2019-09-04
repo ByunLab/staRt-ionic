@@ -1,18 +1,7 @@
-var profileService = angular.module('profileService', [ 'firebaseService', 'notifyingService' ]);
+var profileService = angular.module('profileService', [ 'firebaseService', 'notifyingService', 'utilitiesService' ]);
 
-profileService.factory('ProfileService', function($rootScope, $localForage, $http, FirebaseService, NotifyingService, StartServerService)
+profileService.factory('ProfileService', function($rootScope, $localForage, $http, FirebaseService, NotifyingService, StartServerService, UtilitiesService)
 {
-	function guid() {
-		return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-		s4() + '-' + s4() + s4() + s4();
-	};
-
-	function s4() {
-		return Math.floor((1 + Math.random()) * 0x10000)
-		.toString(16)
-		.substring(1);
-	};
-
 	function newUserProfile() {
 		if (!FirebaseService.loggedIn()) { return null; }
 
@@ -24,7 +13,7 @@ profileService.factory('ProfileService', function($rootScope, $localForage, $htt
 			heightFeet: undefined,
 			heightInches: undefined,
 			gender: undefined,
-      uuid: guid(),
+      uuid: UtilitiesService.guid(),
 
 			// Profile cumulative statistics
 			allSessionTime: 0, // Milliseconds logged in for this profile
@@ -68,31 +57,14 @@ profileService.factory('ProfileService', function($rootScope, $localForage, $htt
 	{
 		// Set up norms data
 		normsData = res;
-		norms = parseCSV(normsData.data).slice(1);
+		norms = UtilitiesService.parseCSV(normsData.data).slice(1);
 	});
 
 	$http.get('data/filter_norms.csv').then(function(res)
 	{
 		filterOrderData = res;
-		filterOrder = parseCSV(filterOrderData.data).slice(1);
+		filterOrder = UtilitiesService.parseCSV(filterOrderData.data).slice(1);
 	});
-
-	function parseCSV(str) {
-		var arr = [];
-		var quote = false;
-		var row=0, col=0, c=0;
-		for (; c < str.length; c++) {
-			var cc = str[c], nc = str[c+1];
-			arr[row] = arr[row] || [];
-			arr[row][col] = arr[row][col] || '';
-			if (cc == '"' && quote && nc == '"') { arr[row][col] += cc; ++c; continue; }
-			if (cc == '"') { quote = !quote; continue; }
-			if (cc == ',' && !quote) { ++col; continue; }
-			if (cc == '\n' && !quote) { ++row; col = 0; continue; }
-			arr[row][col] += cc;
-		}
-		return arr;
-	}
 
 	function commitProfilesInterfaceState() {
 		var promises = [];
