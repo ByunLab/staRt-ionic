@@ -11,19 +11,12 @@ var uploadURLs = {
 	Audio: "https://byunlab.com/start/session/audio"
 };
 
-// var uploadURLs = [
-// 	Ratings: "https://non.sense/ratings",
-// 	Metadata: "https://non.sense/metadata",
-// 	LPC: "https://non.sense/lpc",
-// 	Audio: "https://non.sense/audio"
-// ];
-
-// var uploadURLs = [
+// var uploadURLs = {
 // 	Ratings: "http://localhost:3000/session/ratings",
 // 	Metadata: "http://localhost:3000/session/metadata",
 // 	LPC: "http://localhost:3000/session/lpc",
 // 	Audio: "http://localhost:3000/session/audio"
-// ];
+// };
 
 var downloadStatusCache = {};
 
@@ -54,7 +47,7 @@ uploadService.factory('UploadService', function($localForage, $http, $cordovaDia
 	}
 
 	// Returns a promise that resolves when the upload is complete (or fails)
-	function uploadFile(absolutePath, destURL, mimeType, sessionID, progressCb, $http, $cordovaDialogs)
+	function uploadFile(absolutePath, destURL, mimeType, recordingSessionID, progressCb, $http, $cordovaDialogs)
 	{
 		return new Promise(function (resolve, reject) {
 			var win = function (r) {
@@ -85,12 +78,12 @@ uploadService.factory('UploadService', function($localForage, $http, $cordovaDia
 						}
 						options.headers = headers;
 						var params = {
-							"session_id": sessionID
+							"session_id": recordingSessionID
 						};
 						options.params = params;
 
 						// HACK: Add the session id to the URL, so that the server will recognize it
-						destURL = destURL + "?session_id=" + sessionID;
+						destURL = destURL + "?session_id=" + recordingSessionID;
 
 						var ft = new FileTransfer();
 						ft.onprogress = progressCb;
@@ -118,10 +111,10 @@ uploadService.factory('UploadService', function($localForage, $http, $cordovaDia
 			});
 		},
 
-		uploadPracticeSessionFiles: function(filesToUpload, id, progressCallback, completeCallback, errorCallback) {
+		uploadPracticeSessionFiles: function(filesToUpload, recordingSessionID, progressCallback, completeCallback, errorCallback) {
 			var uploadTodos = [];
 
-			saveUploadStatusForSessionKey(id, {uploading: true});
+			saveUploadStatusForSessionKey(recordingSessionID, {uploading: true});
 
 			fileKeys.forEach(function (fileKey, idx) {
 				var filename = filesToUpload[fileKey];
@@ -133,7 +126,7 @@ uploadService.factory('UploadService', function($localForage, $http, $cordovaDia
 				uploadTodos.push(uploadFile(filename,
 					uploadURL,
 					mimeType,
-					id,
+					recordingSessionID,
 					progressCb,
 					$http,
 					$cordovaDialogs
@@ -143,8 +136,8 @@ uploadService.factory('UploadService', function($localForage, $http, $cordovaDia
 			// eslint-disable-next-line no-undef
 			Promise.all(uploadTodos)
 				.then(function() {
-          console.log("Uploaded true for key " + id);
-					saveUploadStatusForSessionKey(id, {uploading: false, uploaded: true});
+          			console.log("Uploaded true for key " + recordingSessionID);
+					saveUploadStatusForSessionKey(recordingSessionID, {uploading: false, uploaded: true});
 					completeCallback();
 				})
 				.catch(function(err) {
