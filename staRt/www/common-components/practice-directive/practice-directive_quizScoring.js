@@ -40,20 +40,22 @@ practiceDirective.factory('QuizScore', function QuizScoreFactory() {
   }
 
 
-  function quizRating(data, qzType, currentWordIdx) {
+  function quizRating(data, qzType, currentWordIdx, qzGraphicsMode) {
 
     var wordIdx = currentWordIdx -1;
 
-    switch(data) {
-      case 3:
-        graphicStepSelector( wordIdx, qzType, rateGold );
-        break;
-      case 2:
-        graphicStepSelector( wordIdx, qzType, rateSilver );
-        break;
-      case 1:
-        graphicStepSelector( wordIdx, qzType, rateBronze );
-        break;
+    if(qzGraphicsMode) {
+      switch(data) {
+        case 3:
+          graphicStepSelector( wordIdx, qzType, rateGold );
+          break;
+        case 2:
+          graphicStepSelector( wordIdx, qzType, rateSilver );
+          break;
+        case 1:
+          graphicStepSelector( wordIdx, qzType, rateBronze );
+          break;
+      }
     }
     //console.log('quizRating');
     //console.log(qzType + ' Word: ' + wordIdx + ', rated ' + data);

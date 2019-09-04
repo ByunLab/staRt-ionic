@@ -60,28 +60,23 @@ function SeshScores() {
 
 
 // BADGES ------------------------
-var questNewRecord;
-var blockNewRecord;
-var onARoll;
-var perfectBlock;
-var incrDiff;
-
-var badgeFlags = {
-  questNewRecord: false,
-  blockNewRecord: false,
-  onARoll: false,
-  perfectBlock: false,
-  incrDiff: false
-}
-
-
-// DIALOG SEQUENCE QUEQUES ------------------------
-var endBlockSum;
-
-var endQuestSum;
+// var questNewRecord;
+// var blockNewRecord;
+// var onARoll;
+// var perfectBlock;
+// var incrDiff;
 
 
 // INITS ------------------------
+var initCoinCounter = function(count, questCoins){
+  var numStack = count/10;
+  for(let i=0; i<numStack; i++) {
+    // let rotation =
+    let stack = { id: i }
+    questCoins.push(stack)
+  }
+}
+
 var initFakeHighScores = { // for testing only
   mgib: 5,
   hsib: 19,
@@ -100,20 +95,37 @@ var initHighscores = function(highscores) {
   return highscores;
 }
 
-var initScores = function(count, questCoins) {
+var initScores = function() {
   // check if scores exist?
   scores = undefined;
   scores = new SeshScores();
 
-  var numStack = count/10;
-  for(let i=0; i<numStack; i++) {
-    // let rotation =
-    let stack = { id: i }
-    questCoins.push(stack)
-  }
-
   return scores;
 }
+
+var initBadges = function(badges) {
+  badges = undefined;
+  // perfectBlock: false,
+  // incrDiff: false
+  badges = {
+    flags: {
+      questNewRecord: false,
+      blockNewRecord: true,
+      onARoll: false,
+    },
+    endBlockSum: {
+      mgib: false,
+      mgibCount: 0,
+      hsib: false,
+      hsibCount: 0,
+      streak: false,
+      streakCount: 0,
+    },
+    endQuestSum: []
+  }
+  return badges;
+}
+
 
 // ==============================================
 // HELPERS ------------------------
@@ -132,6 +144,7 @@ var mapLabScore = {
   2: .5,
   1: 0
 }
+
 
 var updateCoinGraphic = function(data, currentWordIdx) {
   //console.log('currentWordIdx: ' + currentWordIdx);
@@ -158,11 +171,29 @@ var updateCoinGraphic = function(data, currentWordIdx) {
 }
 
 // -- called by checkUpdateMilestones() (each block)---
-var resetForNewBlock = function(scores) {
+var resetForNewBlock = function(scores, badges) {
   scores.block_score = 0;
   scores.block_display_score = 0;
-  //scores.block_coins.push([]);
+  badges.blockNewRecord = false;
+  badges.endBlockSum.mgib = false;
+  badges.endBlockSum.mgibCount = 0;
+  badges.endBlockSum.hsib = false;
+  badges.endBlockSum.hsibCount = 0;
+  badges.endBlockSum.streak = false;
 }
+
+/*
+var clearSetBadges = function(badges, key) {
+  for (var key in badges) {
+  	if (badges.hasOwnProperty(key)) {
+  		badges[key] = false;
+  	}
+  }
+  badges[key] = true;
+
+  return badges;
+}
+*/
 
 
 // ==============================================
@@ -171,56 +202,69 @@ var resetForNewBlock = function(scores) {
 var endOfBlock = false;
 
 //called by questRating()
-var checkUpdateMilestones = function(scores, highscores, endOfBlock) {
+var checkUpdateMilestones = function(scores, highscores, endOfBlock, badges) {
 
   // checked every trial -----------------------------
   if( scores.block_goldCount > highscores.mgib) {
-      // trigger newRecord badge
-      console.log('NEW RECORD: MOST GOLD IN BLOCK');
-      // queque endOfBlock milestone
-      // record milestone?
-      highscores.mgib = scores.block_goldCount;
-      highscores.shouldUpdateFirebase = true;
+    //clearSetBadges(badges, 'blockNewRecord')
+    badges.flags.onARoll = false;
+    badges.flags.blockNewRecord = true;
+    console.log('NEW RECORD: MOST GOLD IN BLOCK');
+
+    badges.endBlockSum.mgib = true;
+    badges.endBlockSum.mgibCount = scores.block_goldCount;
+
+    highscores.mgib = scores.block_goldCount;
+    highscores.shouldUpdateFirebase = true;
   };
 
   if( scores.block_display_score > highscores.hsib) {
-      // trigger newRecord badge
-      console.log('NEW RECORD: HIGH SCORE IN BLOCK');
-      // queque endOfBlock milestone
-      // record milestone?
-      highscores.hsib = scores.block_display_score;
-      highscores.shouldUpdateFirebase = true;
+    //clearSetBadges(badges, 'blockNewRecord')
+    badges.flags.onARoll = false;
+    badges.flags.blockNewRecord = true;
+    console.log('NEW RECORD: HIGH SCORE IN BLOCK');
+
+    badges.endBlockSum.hsib = true;
+    badges.endBlockSum.hsibCount = scores.block_display_score;
+
+    highscores.hsib = scores.block_display_score;
+    highscores.shouldUpdateFirebase = true;
   };
 
   if( scores.display_score > highscores.hsiq) {
-      // trigger newRecord badge
-      console.log('NEW RECORD: HIGH SCORE IN QUEST');
-      // queque endOfBlock milestone
-      // record milestone?
-      highscores.hsiq = scores.display_score;
-      highscores.shouldUpdateFirebase = true;
+    // trigger newRecord badge
+    console.log('NEW RECORD: HIGH SCORE IN QUEST');
+    // queque endOfBlock milestone
+    // record milestone?
+    highscores.hsiq = scores.display_score;
+    highscores.shouldUpdateFirebase = true;
   };
 
   if( scores.session_coins.gold > highscores.mgiq) {
-      // trigger newRecord badge
-      console.log('NEW RECORD: MOST GOLD IN QUEST');
-      // queque endOfBlock milestone
-      // record milestone?
-      highscores.mgiq = scores.session_coins.gold;
-      highscores.shouldUpdateFirebase = true;
+    // trigger newRecord badge
+    console.log('NEW RECORD: MOST GOLD IN QUEST');
+    // queque endOfBlock milestone
+    // record milestone?
+    highscores.mgiq = scores.session_coins.gold;
+    highscores.shouldUpdateFirebase = true;
   };
 
   if(scores.streak > 3) {
+    badges.onARoll = true;
     console.log('ON A ROLL!!');
-    // trigger 'on a roll' badge
+  } else {
+    badges.onARoll = false;
   }
-
   if( scores.streak > highscores.streak ) {
-      console.log('NEW RECORD: STREAK');
-      // queque endOfBlock milestone
-      // record milestone?
-      highscores.streak = scores.streak;
-      highscores.shouldUpdateFirebase = true;
+    badges.flags.onARoll = false;
+    badges.flags.blockNewRecord = true;
+    console.log('NEW RECORD: STREAK');
+    badges.endBlockSum.streak = true;
+    badges.endBlockSum.streakCount = scores.streak;
+
+    // record milestone?
+    highscores.streak = scores.streak;
+    highscores.shouldUpdateFirebase = true;
   };
 
   if(scores.block_goldCount === 10) {
@@ -232,26 +276,30 @@ var checkUpdateMilestones = function(scores, highscores, endOfBlock) {
     highscores.shouldUpdateFirebase = true;
   }
 
-
   // checked at end of block -----------------------------
   if( endOfBlock ) {
-    console.log('endOfBlock TRUE');
     scores.performance = scores.block_score/10;
-    console.log('performance: ' + scores.performance);
-    resetForNewBlock(scores);
+    console.log(badges.endBlockSum);
+    // queque endBlockSum Seq
+    resetForNewBlock(scores, badges);
     endOfBlock = false;
-    console.log('endOfBlock false');
   }
 } //end checkUpdateMilestones
 
+
+//--------------------------------------------------
 //called by each rating button press
-var questRating = function(data, scores, highscores, currentWordIdx) {
+var questRating = function(data, scores, highscores, currentWordIdx, badges) {
   /*
   update coin graphic
   update scores
   check for end of block
   call milestone update
   */
+  console.log('quest rating called');
+  console.log(data);
+  console.log(currentWordIdx);
+
 
   endOfBlock = false;
 
@@ -278,18 +326,19 @@ var questRating = function(data, scores, highscores, currentWordIdx) {
     scores.streak = 0;
   }
 
-  // ---------------------------------------
   // check for end of block
   if (currentWordIdx % 10 == 0 && currentWordIdx != 0) {
       endOfBlock = true;
   }
 
-  checkUpdateMilestones(scores, highscores, endOfBlock);
+  checkUpdateMilestones(scores, highscores, endOfBlock, badges);
 } // end questRating()
 
   return {
     hello: function() { console.log('Hello from Score!'); },
+    initCoinCounter: initCoinCounter,
     initScores: initScores,
+    initBadges: initBadges,
     questRating: questRating,
     initHighscores: initHighscores,
     initFakeHighScores: initFakeHighScores

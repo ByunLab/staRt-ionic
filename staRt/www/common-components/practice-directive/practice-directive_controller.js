@@ -124,12 +124,17 @@ practiceDirective.controller( 'PracticeDirectiveController',
   // quest-specific vars
   $scope.questCoins = []; //holds stacks of Quest Coins
   $scope.difficulty = 1; //
-  $scope.carrier_phrases = [];
+  //$scope.carrier_phrases = [];
+  $scope.carrier_phrases = AdaptDifficulty.phrases[0]
 
   // quiz-specific vars
   $scope.quizType = undefined;
 
-  QuizScore.hello();
+  // WIP Helpers ---------------------------
+  $scope.qtScoreDebug = false;
+  $scope.qtAdaptDiffDebug = true;
+  $scope.qtBadgesDebug = false;
+  $scope.qzGraphicsMode = true;
 
   // TOOLBAR ----------------------------------------------------
   // TO BE IMPLEMENTED IN THE FUTURE / NOT CURRENTLY IN USE
@@ -161,7 +166,7 @@ practiceDirective.controller( 'PracticeDirectiveController',
 
     if (!$scope.probe) { //quest
       // updates all score and milestone counters
-      QuestScore.questRating(data, $scope.scores, $scope.highscores, $scope.currentWordIdx);
+      QuestScore.questRating(data, $scope.scores, $scope.highscores, $scope.currentWordIdx, $scope.badges);
       //console.log($scope.scores);
 
       // if Quest end-of-block, check Adaptive Difficulty
@@ -206,7 +211,7 @@ practiceDirective.controller( 'PracticeDirectiveController',
     } else { //if quiz, no adapt Diff
       // I only have the qzSW svg at the moment
       if($scope.quizType === 'qzSW') {
-        QuizScore.quizRating(data, $scope.quizType, $scope.currentWordIdx);
+        QuizScore.quizRating(data, $scope.quizType, $scope.currentWordIdx, $scope.qzGraphicsMode);
       }
       // console.log("QUIZ TYPE: " + $scope.quizType);
     }
@@ -353,6 +358,18 @@ practiceDirective.controller( 'PracticeDirectiveController',
 	  $scope.isRecording = false;
   }
 
+  function setQuizType_graphics() {
+    if ($scope.type === 'Syllable') {
+      $scope.quizType = 'qzSyll';
+    } else if($scope.type === 'Word' && $scope.count < 40) {
+      $scope.quizType = 'qzSW';
+    } else if($scope.type === 'Word' && $scope.count > 40) {
+      $scope.quizType = 'qzWord';
+    } else {
+      $scope.quizType = undefined;
+    }
+  }
+
   /**
    *
    * @param items An array of items.
@@ -369,53 +386,32 @@ practiceDirective.controller( 'PracticeDirectiveController',
 
   function beginPracticeForUser(user) {
 
-    if (!$scope.probe) { // if quest -------------------
-      //check and set a users $scope.difficulty????
-      if (user.highscores) {
-        // if there is user data on highscores
-        //TODO: $scope.highscores = user.highscores;
-      } else {
-        $scope.highscores = QuestScore.initFakeHighScores; //#hc
-      }
-      // init for new scores and coin row graphics
-      // $scope.questCoins = []; //holds stacks of Quest Coins
-      $scope.scores = QuestScore.initScores($scope.count, $scope.questCoins);
-
-      // check for stored AdaptDiff level?????? or
-      $scope.difficulty = 1;
-      $scope.carrier_phrases = AdaptDifficulty.phrases[0];
-
-      console.log($scope.scores);
-      console.log($scope.highscores);
-    }
-
-    if ($scope.probe) { // if quiz -------------------
-      // $scope.quizType is used by svg in counters
-      if ($scope.type === 'Syllable') {
-        $scope.quizType = 'qzSyll';
-      } else if($scope.type === 'Word' && $scope.count < 40) {
-        $scope.quizType = 'qzSW';
-      } else if($scope.type === 'Word' && $scope.count > 40) {
-        $scope.quizType = 'qzWord';
-      } else {
-        $scope.quizType = undefined;
-      }
-      console.log('QUIZ TYPE: ' + $scope.quizType);
-    }
-
     var sessionPrepTask = Promise.resolve();
 		$scope.currentWordIdx = 0;
-    if (user.inProcessSession) {
+
+    if (user.inProcessSession) { // only happens if !probe
+      console.log('SESSION IN PROGRESS');
+
       $scope.currentPracticeSession = Object.assign({}, user.inProcessSession);
 
+      QuestScore.initCoinCounter(user.inProcessSession.count, $scope.questCoins);
+      $scope.scores = QuestScore.initScores();
+      $scope.highscores = QuestScore.initFakeHighScores; //#hc
+      $scope.badges = QuestScore.initBadges($scope.badges); // #hc - should save this with session dat in the future
+
+      console.log($scope.csvs);
+      //$scope.reloadCSVData();
       var previousRatings = $scope.currentPracticeSession.ratings;
+      //console.log(previousRatings);
+
       sessionPrepTask = forEachPromise(previousRatings, function (rating) {
 				$scope.currentWordIdx++;
         return handleRatingData($scope, rating.rating);
       }).then(function () {
         $scope.currentWordIdx = $scope.currentPracticeSession.ratings.length - 1;
       });
-    } else {
+
+    } else { // if no previously saved mid-session data
 			$scope.currentWordIdx = -1;
       $scope.currentPracticeSession = initialPracticeSession(
         Date.now(),
@@ -423,8 +419,27 @@ practiceDirective.controller( 'PracticeDirectiveController',
         $scope.probe || "quest",
         $scope.count
       );
-    }
+      if (!$scope.probe) { // if quest -------------------
+        //check and set a users $scope.difficulty????
+        if (user.highscores) {
+          // if there is user data on highscores
+          //TODO: $scope.highscores = = Object.assign({}, user.highscores);
+        } else {
+          $scope.highscores = QuestScore.initFakeHighScores; //#hc
+        }
+        // init for new scores and coin row graphics
+        // $scope.questCoins = []; //holds stacks of Quest Coins
+        QuestScore.initCoinCounter($scope.count, $scope.questCoins);
+        $scope.scores = QuestScore.initScores();
+        $scope.badges = QuestScore.initBadges($scope.badges);
 
+        // check for stored AdaptDiff level?????? or
+        $scope.difficulty = 1;
+        //$scope.carrier_phrases = AdaptDifficulty.phrases[0];
+      } // if quest
+
+    }
+    // -----------------------------------------------------
     // Even if this is a continuation of a previous session, it still needs
     // a unique recording ID
     $scope.currentPracticeSession.id = guid();
@@ -460,11 +475,14 @@ practiceDirective.controller( 'PracticeDirectiveController',
 			var lookupIdx = $scope.currentWordIdx % $scope.wordOrder.length;
 			$scope.currentWord = $scope.wordList[$scope.wordOrder[lookupIdx]];
 
-	    // also select a random carrier phrase
+      //console.log($scope.currentWord);
+
+      // also select a random carrier phrase
       // $scope.carrier_phrase = carrier_phrases[Math.floor(Math.random() * carrier_phrases.length)];
       $scope.carrier_phrase = $scope.carrier_phrases[Math.floor(Math.random() * $scope.carrier_phrases.length)];
       $scope.smallFont = $scope.carrier_phrase.length >= 16;
       $scope.tinyFont = $scope.carrier_phrase.length >= 32;
+
 	  }
 
 	  if ($scope.pauseEvery && $scope.pauseEvery > 0 && $scope.currentWordIdx > 0) {
@@ -490,9 +508,14 @@ practiceDirective.controller( 'PracticeDirectiveController',
 	$scope.beginWordPractice = function () {
     $scope.currentWord = null;
 		if ($scope.isPracticing) return;
+
     $scope.isPracticing = true;
     $scope.setupToolbar();
 
+    // $scope.quizType is used by svg in counters
+    if ($scope.probe)  setQuizType_graphics();
+
+    //console.log('QUIZ TYPE: ' + $scope.quizType);
 	  console.log("Beginning " + sessionDisplayString());
 
 	  if (window.AudioPlugin === undefined) {

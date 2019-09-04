@@ -1,46 +1,46 @@
-<div class="qtdebug-container qtdebug-scores">
+<div ng-if="qtScoreDebug"
+  class="qtdebug-box qtdebug-scores">
 
-  <div class="qtdebug-box qtdebug-scores">
-    <div class="">SCORES&nbsp;&nbsp;&nbsp;(current | high)</div>
+  <div class="">SCORES&nbsp;&nbsp;&nbsp;(current | high)</div>
 
-    <div class="qtdebug-row">Most Gold in Block:&nbsp;
-      <span>{{scores.block_goldCount}} | {{highscores.mgib}}</span>
-    </div>
-
-    <div class="qtdebug-row">High Score in Block:&nbsp;
-      <span>{{scores.block_display_score}} | {{highscores.hsib}}</span>
-    </div>
-
-    <!-- ng-if="scores.streak > 1" -->
-    <div class="qtdebug-row">Gold Streak:&nbsp;
-      <span>{{scores.streak}} | {{highscores.streak}}</span>
-    </div>
-
-    <div class="qtdebug-row">Most Gold in Quest:&nbsp;
-      <span>{{scores.session_coins.gold}} | {{highscores.mgiq}}</span>
-    </div>
-
-    <div class="qtdebug-row">High Score:&nbsp;
-      <span>{{scores.display_score}} | {{highscores.hsiq}}</span>
-    </div>
-
-      <!-- <div class="toolbar-tab" ng-repeat="tab in toolbar"
-      ng-click={{tab.action}}>
-        <div class="tbTab-icon l-ico-cTextSubtle"
-          ng-include="tab.icon"></div>
-        <div class="tbTab-txt">{{tab.title}}</div>
-      </div> -->
+  <div class="qtdebug-row">Most Gold in Block:&nbsp;
+    <span>{{scores.block_goldCount}} | {{highscores.mgib}}</span>
   </div>
 
-  <div class="qtdebug-box qtdebug-perf">
-    <div class="">DIFFICULTY</div>
-    <div class="qtdebug-row">Diff Level:&nbsp;
-      <span>{{difficulty}}</span>
-    </div>
-    <div class="qtdebug-row">Perf. Score:&nbsp;
-      <span>{{scores.performance}}</span>
-    </div>
+  <div class="qtdebug-row">High Score in Block:&nbsp;
+    <span>{{scores.block_display_score}} | {{highscores.hsib}}</span>
   </div>
 
 
+  <div class="qtdebug-row">Gold Streak:&nbsp;
+    <span>{{scores.streak}} | {{highscores.streak}}</span>
+  </div>
+
+  <div class="qtdebug-row">Most Gold in Quest:&nbsp;
+    <span>{{scores.session_coins.gold}} | {{highscores.mgiq}}</span>
+  </div>
+
+  <div class="qtdebug-row">High Score:&nbsp;
+    <span>{{scores.display_score}} | {{highscores.hsiq}}</span>
+  </div>
+
+    <!-- <div class="toolbar-tab" ng-repeat="tab in toolbar"
+    ng-click={{tab.action}}>
+      <div class="tbTab-icon l-ico-cTextSubtle"
+        ng-include="tab.icon"></div>
+      <div class="tbTab-txt">{{tab.title}}</div>
+    </div> -->
+</div>
+
+
+
+<div class="qtdebug-box qtdebug-perf"
+  ng-if="qtAdaptDiffDebug">
+  <div class="">DIFFICULTY</div>
+  <div class="qtdebug-row">Diff Level:&nbsp;
+    <span>{{difficulty}}</span>
+  </div>
+  <div class="qtdebug-row">Perf. Score:&nbsp;
+    <span>{{scores.performance}}</span>
+  </div>
 </div>

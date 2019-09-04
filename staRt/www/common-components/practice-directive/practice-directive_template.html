@@ -1,5 +1,16 @@
 <div class="words-contentBox practice-directive-container">
 
+  <div class="acctLabel-container">
+    <div class="user-text">{{participant_name}}</div>
+    <div class="slp-text" ng-if="clinician_name">Clinician: {{clinician_name}}</div>
+  </div>
+
+  <!-- BADGES ------------------------------- -->
+  <div ng-if="isPracticing && !probe"
+    ng-include=" './common-components/practice-directive/partials/quest/badges.html' ">
+  </div> <!-- end .badge-container -->
+
+
   <!-- TOOLBAR ------------------------------- -->
 
   <!-- Toolbar, as designed -->
@@ -13,11 +24,6 @@
       </div>
   </div>
   -->
-
-  <div class="acctLabel-container">
-    <div class="user-text">{{participant_name}}</div>
-    <div class="slp-text" ng-if="clinician_name">Clinician: {{clinician_name}}</div>
-  </div>
 
   <!-- Temp 'Stop Session' Button
       (will be replaced by toolbar in the future) -->
@@ -63,29 +69,29 @@
       }">
         {{carrier_phrase.replace("___", currentWord)}}
       </p>
+
     </div>
   </div>
 
   <!-- QUIZ GRAPHICS ----------------------------- -->
   <div class="" ng-if="probe && isPracticing">
 
-    <div class="qzCounters-layout "
-      ng-if="type==='Syllable'">
+    <div class="qzCounters-layout"
+      ng-if="type==='Syllable' && qzGraphicsMode">
     </div>
 
     <div class="qzCounters-layout"
-      ng-if="type==='Word' && count < 40"
+      ng-if="type==='Word' && count < 40 && qzGraphicsMode"
       ng-include=" './common-components/practice-directive/partials/quiz/umbrellas-shortWordQuiz.html' ">
     </div>
 
     <div class="qzCounters-layout"
-      ng-if="type==='Word' && count > 40">
+      ng-if="type==='Word' && count > 40 && qzGraphicsMode">
     </div>
 
     <div class="img-bg img-bg_qz--FG"></div>
 
   </div>
-
 
 
   <!-- LPC DIRECTIVE: Wave & Rating Btns --------------- -->
