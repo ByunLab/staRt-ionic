@@ -2,34 +2,6 @@
 
 ///////// Helpers //////////////////////////////////////////////////////////////
 
-function guid() {
-    return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-	   s4() + '-' + s4() + s4() + s4();
-};
-
-function s4() {
-    return Math.floor((1 + Math.random()) * 0x10000)
-	       .toString(16)
-	       .substring(1);
-};
-
-function parseCSV(str) {
-    var arr = [];
-    var quote = false;
-    var row=0, col=0, c=0;
-    for (; c < str.length; c++) {
-	var cc = str[c], nc = str[c+1];
-	arr[row] = arr[row] || [];
-	arr[row][col] = arr[row][col] || '';
-	if (cc == '"' && quote && nc == '"') { arr[row][col] += cc; ++c; continue; }
-	if (cc == '"') { quote = !quote; continue; }
-	if (cc == ',' && !quote) { ++col; continue; }
-	if (cc == '\n' && !quote) { ++row; col = 0; continue; }
-	arr[row][col] += cc;
-    }
-    return arr;
-}
-
 function scrambleArray(array) {
     for (var i=0; i<array.length; ++i) {
 	var rndidx = Math.floor(Math.random()*array.length);
@@ -37,18 +9,6 @@ function scrambleArray(array) {
 	array[i] = array[rndidx];
 	array[rndidx] = tmp;
     }
-}
-
-function initialPracticeSession(startTimestamp, type, probe, count) {
-  return {
-    id: guid(),
-    ratings: [],
-    probe: probe,
-    type: type,
-    startTimestamp: startTimestamp,
-    endTimestamp: null,
-    count: count,
-  };
 }
 
 function createFile(dirEntry, fileName, dataObj, successCb)
@@ -88,16 +48,28 @@ function saveJSON(jsonObject, absolutePath, successCb)
 
 ////////////////////////////////////////////////////////////////////////////////
 
-var practiceDirective = angular.module( 'practiceDirective' );
+var practiceDirective = angular.module( 'practiceDirective');
 
 practiceDirective.controller( 'PracticeDirectiveController',
-			      function($scope, $timeout, $localForage, AutoService, NotifyingService, FirebaseService, ProfileService, SessionStatsService, StartUIState, UploadService, $rootScope, $state, $http, $cordovaDialogs, ToolbarService, QuestScore, QuizScore, AdaptDifficulty)
+    function($scope, $timeout, $localForage, AutoService, NotifyingService, FirebaseService, ProfileService, SessionStatsService, StartUIState, UploadService, UtilitiesService, $rootScope, $state, $http, $cordovaDialogs, ToolbarService, QuestScore, QuizScore, AdaptDifficulty)
     {
 
 	ProfileService.getCurrentProfile().then((profile) => {
 	    $scope.participant_name = profile.name;
 	    $scope.clinician_name = FirebaseService.userName();;
 	});
+
+	function initialPracticeSession(startTimestamp, type, probe, count) {
+		return {
+			id: UtilitiesService.guid(),
+			ratings: [],
+			probe: probe,
+			type: type,
+			startTimestamp: startTimestamp,
+			endTimestamp: null,
+			count: count,
+		};
+	}
 
 	// var uploadURLs = [
 	// 	"http://localhost:5000",
@@ -442,7 +414,7 @@ practiceDirective.controller( 'PracticeDirectiveController',
     // -----------------------------------------------------
     // Even if this is a continuation of a previous session, it still needs
     // a unique recording ID
-    $scope.currentPracticeSession.id = guid();
+    $scope.currentPracticeSession.id = UtilitiesService.guid();
 
     sessionPrepTask.then(function () {
       if (window.AudioPlugin !== undefined) {
@@ -573,7 +545,7 @@ practiceDirective.controller( 'PracticeDirectiveController',
 	};
 
 	$scope.parseWordList = function(wordListData) {
-	    var nextWordList = parseCSV(wordListData).slice(1).map(function(w) {
+	    var nextWordList = UtilitiesService.parseCSV(wordListData).slice(1).map(function(w) {
 		return w[0];
 	    });
 	    $scope.wordList = $scope.wordList.concat(nextWordList);
