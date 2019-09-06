@@ -4,24 +4,28 @@
   <div class="">SCORES&nbsp;&nbsp;&nbsp;(current | high)</div>
 
   <div class="qtdebug-row">Most Gold in Block:&nbsp;
-    <span>{{scores.block_goldCount}} | {{highscores.mgib}}</span>
+    <span>{{scores.block_goldCount}} | {{milestones.highscores.mgib}}</span>
   </div>
 
   <div class="qtdebug-row">High Score in Block:&nbsp;
-    <span>{{scores.block_display_score}} | {{highscores.hsib}}</span>
+    <span>{{scores.block_display_score}} | {{milestones.highscores.hsib}}</span>
   </div>
 
 
   <div class="qtdebug-row">Gold Streak:&nbsp;
-    <span>{{scores.streak}} | {{highscores.streak}}</span>
+    <span>{{scores.streak}} | {{milestones.highscores.streak}}</span>
   </div>
 
   <div class="qtdebug-row">Most Gold in Quest:&nbsp;
-    <span>{{scores.session_coins.gold}} | {{highscores.mgiq}}</span>
+    <span>{{scores.session_coins.gold}} | {{milestones.highscores.mgiq}}</span>
   </div>
 
   <div class="qtdebug-row">High Score:&nbsp;
-    <span>{{scores.display_score}} | {{highscores.hsiq}}</span>
+    <span>{{scores.display_score}} | {{milestones.highscores.hsiq}}</span>
+  </div>
+
+  <div class="qtdebug-row">Perfect Block Count:&nbsp;
+    <span>{{milestones.highscores.perfectBlock}}</span>
   </div>
 
     <!-- <div class="toolbar-tab" ng-repeat="tab in toolbar"
