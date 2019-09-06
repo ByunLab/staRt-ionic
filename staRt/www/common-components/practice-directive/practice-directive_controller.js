@@ -95,6 +95,9 @@ practiceDirective.controller( 'PracticeDirectiveController',
 
   // quest-specific vars
   $scope.questCoins = []; //holds stacks of Quest Coins
+  $scope.highscores;
+  $scope.milestones;
+  $scope.scores;
   $scope.difficulty = 1; //
   //$scope.carrier_phrases = [];
   $scope.carrier_phrases = AdaptDifficulty.phrases[0]
@@ -103,7 +106,7 @@ practiceDirective.controller( 'PracticeDirectiveController',
   $scope.quizType = undefined;
 
   // WIP Helpers ---------------------------
-  $scope.qtScoreDebug = false;
+  $scope.qtScoreDebug = true;
   $scope.qtAdaptDiffDebug = true;
   $scope.qtBadgesDebug = false;
   $scope.qzGraphicsMode = true;
@@ -391,19 +394,20 @@ practiceDirective.controller( 'PracticeDirectiveController',
         $scope.probe || "quest",
         $scope.count
       );
-      if (!$scope.probe) { // if quest -------------------
+      if (!$scope.probe) { // if quest, and no saved session -----------
         //check and set a users $scope.difficulty????
         if (user.highscores) {
-          // if there is user data on highscores
           //TODO: $scope.highscores = = Object.assign({}, user.highscores);
         } else {
-          $scope.highscores = QuestScore.initFakeHighScores; //#hc
+          // we should we init one on Firebase here ???
+          $scope.highscores = QuestScore.initFakeHighScores($scope.highscores); //#hc
+          $scope.milestones = QuestScore.initMilestones($scope.highscores);
         }
         // init for new scores and coin row graphics
         // $scope.questCoins = []; //holds stacks of Quest Coins
         QuestScore.initCoinCounter($scope.count, $scope.questCoins);
-        $scope.scores = QuestScore.initScores();
-        $scope.badges = QuestScore.initBadges($scope.badges);
+        $scope.scores = QuestScore.initScores($scope.scores);
+        $scope.badges = QuestScore.initBadges();
 
         // check for stored AdaptDiff level?????? or
         $scope.difficulty = 1;
