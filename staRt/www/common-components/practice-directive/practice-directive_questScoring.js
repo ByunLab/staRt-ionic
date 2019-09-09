@@ -69,7 +69,7 @@ function FakeIn_questHighScores() {
       {score: 6, date: 1539454440 }
     ],
     perfectBlockHx: [
-      {score: 1, date: 1539454440 }
+      { score: 1, date: 1539454440 }
     ]
   }
 }
