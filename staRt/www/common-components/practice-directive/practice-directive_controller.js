@@ -245,7 +245,19 @@ practiceDirective.controller( 'PracticeDirectiveController',
       console.log("upload error source " + error.source);
       console.log("upload error target " + error.target);
     }
-  }
+	}
+	
+	function storeRecordingSession() {
+		ProfileService.runTransactionForCurrentProfile(function(handle, doc, t) {
+			var recordingSessionHistory = doc.data().recordingSessionHistory;
+			if (recordingSessionHistory == null) {
+				recordingSessionHistory = [$scope.currentPracticeSession];
+			} else {
+				recordingSessionHistory.push($scope.currentPracticeSession);
+			}
+			t.update(handle, {recordingSessionHistory: recordingSessionHistory});
+		})
+	}
 
 	function recordingDidStop(files) {
 	  console.log("Finished recording");
@@ -329,7 +341,7 @@ practiceDirective.controller( 'PracticeDirectiveController',
       });
 
 	  });
-
+		storeRecordingSession();
 	  $scope.isRecording = false;
   }
 
