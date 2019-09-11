@@ -16,7 +16,6 @@
 
 		ProfileService.getCurrentProfile().then((profile) => {
 				$scope.data.participant_name = profile.name;
-				$scope.data.clinician_name = FirebaseService.userName();;
 		});
 
 		if (window.AudioPlugin !== undefined) {

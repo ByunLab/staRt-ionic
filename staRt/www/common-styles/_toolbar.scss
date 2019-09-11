@@ -1,13 +1,15 @@
 .toolbar-container {
   position: absolute;
+  display: flex;
+  flex-flow: row nowrap;
   width: $col-w * 4;
-  height: $row-h * 0.6;
+  height: $row-h; // * 0.6;
   top: 0;
   left: $col-w * 8;
   display: flex;
   padding: 0;
-  flex-flow: row nowrap;
   justify-content: flex-end;
+  align-items: center;
   z-index: 99;
   //border: 1px solid blue;
 }
@@ -63,7 +65,7 @@
   flex-flow: row nowrap;
   justify-content: space-around;
   align-items: center;
-  height: 100%;
+  height: $row-h * 0.6; //100%;
   width: $col-w * 1.5;
   //margin-left: 3px;
   padding: 8px;

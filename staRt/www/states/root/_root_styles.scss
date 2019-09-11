@@ -115,7 +115,7 @@ $navW: $nav-btnW + $col-pad; // OLD nav
     padding-left: $col-w * 3;
     padding-right: $col-w * 2;
     // width: $col-w * 7;
-    // border: 1px solid white;
+    //border: 1px solid white;
 
      .title { //ionic style for .title w/in <ion-header-bar>
       position: relative;
@@ -253,16 +253,17 @@ $navW: $nav-btnW + $col-pad; // OLD nav
   flex-flow: column;
   top: 0;
   left: $col-w * 1.75;
-  height: $row-h * 0.5;
+  height: $row-h; // * 0.6;
   width: $col-w * 3;
-  justify-content: flex-end;
+  justify-content: center;
   text-align: left;
-  color: $c-text-main;
-  //border: 1px solid cyan;
+  color: $c-text-subtle; //#4491a6;
+  font-weight: 500;
+  //border-bottom: 1px solid white;
   z-index: 2;
 
   .slp-text { font-size: 0.75rem; }
-  .user-text{ font-size: 0.9rem; }
+  .user-text{ font-size: 1.25rem; }
 }
 //$c-text-main: rgba(61,109,132,1); //#3D6D84; navy blue
 // $c-text-subtle: #7ab5b8;

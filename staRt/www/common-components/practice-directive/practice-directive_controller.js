@@ -54,10 +54,11 @@ practiceDirective.controller( 'PracticeDirectiveController',
     function($scope, $timeout, $localForage, AutoService, NotifyingService, FirebaseService, ProfileService, SessionStatsService, StartUIState, UploadService, UtilitiesService, $rootScope, $state, $http, $cordovaDialogs, ToolbarService, QuestScore, QuizScore, AdaptDifficulty)
     {
 
+  // used by UI
 	ProfileService.getCurrentProfile().then((profile) => {
 	    $scope.participant_name = profile.name;
-	    $scope.clinician_name = FirebaseService.userName();;
 	});
+
 
 	function initialPracticeSession(startTimestamp, type, probe, count) {
 		return {
@@ -68,6 +69,8 @@ practiceDirective.controller( 'PracticeDirectiveController',
 			startTimestamp: startTimestamp,
 			endTimestamp: null,
 			count: count,
+      // percentTrialsCorrect: 0,
+      // numberTrialsCorrect: 0
 		};
 	}
 
@@ -105,11 +108,11 @@ practiceDirective.controller( 'PracticeDirectiveController',
   // quiz-specific vars
   $scope.quizType = undefined;
 
-  // WIP Helpers ---------------------------
-  $scope.qtScoreDebug = true;
-  $scope.qtAdaptDiffDebug = true;
+  // WIP Helpers --------------------------- //#hc
+  $scope.qtScoreDebug = false;
+  $scope.qtAdaptDiffDebug = false;
   $scope.qtBadgesDebug = false;
-  $scope.qzGraphicsMode = true;
+  $scope.qzGraphicsMode = false;
 
   // TOOLBAR ----------------------------------------------------
   // TO BE IMPLEMENTED IN THE FUTURE / NOT CURRENTLY IN USE
@@ -246,7 +249,7 @@ practiceDirective.controller( 'PracticeDirectiveController',
       console.log("upload error target " + error.target);
     }
 	}
-	
+
 	function storeRecordingSession() {
 		ProfileService.runTransactionForCurrentProfile(function(handle, doc, t) {
 			var recordingSessionHistory = doc.data().recordingSessionHistory;
@@ -373,6 +376,9 @@ practiceDirective.controller( 'PracticeDirectiveController',
 
   function beginPracticeForUser(user) {
 
+    console.log(user);
+
+
     var sessionPrepTask = Promise.resolve();
 		$scope.currentWordIdx = 0;
 
@@ -425,7 +431,6 @@ practiceDirective.controller( 'PracticeDirectiveController',
         $scope.difficulty = 1;
         //$scope.carrier_phrases = AdaptDifficulty.phrases[0];
       } // if quest
-
     }
     // -----------------------------------------------------
     // Even if this is a continuation of a previous session, it still needs
