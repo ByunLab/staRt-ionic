@@ -194,9 +194,9 @@ practiceDirective.controller( 'PracticeDirectiveController',
         $scope.consecutive_golds_display = 0;
 			}
 
-			function should_increase_difficulty() {return performance >= increase_difficulty_threshold && $scope.difficulty < 5;}
-			function should_decrease_difficulty() {return performance <= decrease_difficulty_threshold && $scope.difficulty > 1;}
-			function update_difficulty(increment) {
+			var should_increase_difficulty = function() {return performance >= increase_difficulty_threshold && $scope.difficulty < 5;}
+			var should_decrease_difficulty = function() {return performance <= decrease_difficulty_threshold && $scope.difficulty > 1;}
+			var update_difficulty = function(increment) {
 				$scope.difficulty += increment;
 				if (!($scope.type == "Syllable" || $scope.probe)) {
 					update_carrier_phase();
@@ -640,7 +640,7 @@ practiceDirective.controller( 'PracticeDirectiveController',
 	    $scope.wordList = $scope.wordList.concat(nextWordList);
 	}
 
-	$scope.reorderWords = function(randomize = true) {
+	$scope.reorderWords = function(randomize) {
 	    $scope.wordOrder = [];
 	    $scope.hasValidWordList = $scope.wordList.length > 0;
 	    for (var i=0; i<$scope.wordList.length; ++i) {
@@ -677,7 +677,7 @@ practiceDirective.controller( 'PracticeDirectiveController',
 	    });
 
 			$scope.wordList = tempWordList;
-      $scope.reorderWords();
+      $scope.reorderWords(true);
       return Promise.resolve();
 		}
 	  if ($scope.type === "Syllable" ||
