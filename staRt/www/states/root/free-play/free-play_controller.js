@@ -25,9 +25,9 @@
 			$scope.data.researchSession= false;
 		}
 
-		ProfileService.getCurrentProfile().then(function(profile) {
-	    $scope.data.participant_name = profile.name;
-		});
+		// ProfileService.getCurrentProfile().then(function(profile) {
+	  //   $scope.data.participant_name = profile.name;
+		// });
 
 		var lastChronoTime = Date.now();
 

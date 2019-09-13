@@ -14,9 +14,9 @@
 			navTitle: "SLP Resources"
     };
 
-		ProfileService.getCurrentProfile().then(function(profile) {
-	    $scope.data.participant_name = profile.name;
-		});
+		// ProfileService.getCurrentProfile().then(function(profile) {
+	  //   $scope.data.participant_name = profile.name;
+		// });
 
 		if (window.AudioPlugin !== undefined) {
 	     cordova.getAppVersion.getVersionNumber().then(function (version) {
