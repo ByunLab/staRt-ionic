@@ -21,6 +21,7 @@ sessionStatsService.factory('SessionStatsService', function($rootScope, $localFo
 
 	var currentProfileStats = null;
 
+  /*
 	// function _checkForPrompt(profile) {
 	// 	StartServerService.getCredentials(function (credentials) {
 	// 		if (credentials) {
@@ -41,6 +42,7 @@ sessionStatsService.factory('SessionStatsService', function($rootScope, $localFo
 	// 		}
 	// 	});
   // }
+  */
 
   function _handleSuccessfulChanges(changes) {
     var profileChanges = changes.profileChanges;
@@ -152,6 +154,7 @@ sessionStatsService.factory('SessionStatsService', function($rootScope, $localFo
 
 
 	NotifyingService.subscribe('recording-completed', $rootScope, _updateProfileForRecording);
+
 	NotifyingService.subscribe('freeplay-tick', $rootScope, function(msg, duration) {
     ProfileService.runTransactionForCurrentProfile(function(handle, doc, t) {
       var profileChanges = {};
@@ -167,6 +170,7 @@ sessionStatsService.factory('SessionStatsService', function($rootScope, $localFo
       console.log(e);
     });
 	});
+
 	NotifyingService.subscribe('quest-start', $rootScope, function(msg) {
     ProfileService.runTransactionForCurrentProfile(function(handle, doc, t) {
       var profileChanges = {};
@@ -181,6 +185,7 @@ sessionStatsService.factory('SessionStatsService', function($rootScope, $localFo
       console.log(e);
     });
 	});
+
 	NotifyingService.subscribe('quest-tick', $rootScope, function(msg, duration) {
     ProfileService.runTransactionForCurrentProfile(function(handle, doc, t) {
       var profileChanges = {};
@@ -196,6 +201,7 @@ sessionStatsService.factory('SessionStatsService', function($rootScope, $localFo
       console.log(e);
     });
 	});
+
 	NotifyingService.subscribe('intro-completed', $rootScope, function(msg) {
     ProfileService.runTransactionForCurrentProfile(function(handle, doc, t) {
       var profileChanges = {};
@@ -242,6 +248,7 @@ sessionStatsService.factory('SessionStatsService', function($rootScope, $localFo
       console.log(e);
     });
 	});
+
 	NotifyingService.subscribe('conclusion-completed', $rootScope, function(msg) {
     ProfileService.runTransactionForCurrentProfile(function(handle, doc, t) {
       var profileChanges = {};
@@ -256,7 +263,8 @@ sessionStatsService.factory('SessionStatsService', function($rootScope, $localFo
       console.log(e);
     });
 	});
-	NotifyingService.subscribe('formal-testing-validated', $rootScope, function(msg) {
+
+  NotifyingService.subscribe('formal-testing-validated', $rootScope, function(msg) {
     ProfileService.runTransactionForCurrentProfile(function(handle, doc, t) {
       var profileChanges = {};
       var statsChanges = {};
@@ -270,63 +278,65 @@ sessionStatsService.factory('SessionStatsService', function($rootScope, $localFo
       console.log(e);
     });
 	});
-    NotifyingService.subscribe('will-set-current-profile-uuid', $rootScope, function(msg, profileUUID) {
 
-      if (profileUUID) {
-        ProfileService.getProfileWithUUID(profileUUID).then(function(profile) {
-          if (profile) {
-            if (profileLongSessionTimerId) clearTimeout(profileLongSessionTimerId);
-            profileLongSessionTimerId = null;
-            profileLongSessionTimerId = setTimeout(function() {
-              var handle = ProfileService.getProfileTransactionHandle(profile);
-              ProfileService.runTransaction(handle, function(handle, doc, t) {
-                var profileChanges = {};
-                var statsChanges = {};
-                _incrementProfileStat(doc.data(), "nLongSessionsCompleted", 1, profileChanges);
-                t.update(handle, profileChanges)
-                return { profileChanges, statsChanges };
-              }).then(function(changes) {
-                _handleSuccessfulChanges(changes);
-              }).catch(function(e) {
-                console.log(e);
-              });
-            }, LONG_SESSION_MILLIS);
+  NotifyingService.subscribe('will-set-current-profile-uuid', $rootScope, function(msg, profileUUID) {
 
-            {
-              var handle = ProfileService.getProfileTransactionHandle(profile);
-              ProfileService.runTransaction(handle, function(handle, doc, t) {
-                var profileChanges = {};
-                var statsChanges = {};
-                _updateProfileStat("lastLoginTime", Date.now(), profileChanges);
-                _resetProfileChrono();
-                t.update(handle, profileChanges)
-                return { profileChanges, statsChanges };
-              }).then(function(changes) {
-                _handleSuccessfulChanges(changes);
-              }).catch(function(e) {
-                console.log(e);
-              });
-            }
+    if (profileUUID) {
+      ProfileService.getProfileWithUUID(profileUUID).then(function(profile) {
+        if (profile) {
+          if (profileLongSessionTimerId) clearTimeout(profileLongSessionTimerId);
+          profileLongSessionTimerId = null;
+          profileLongSessionTimerId = setTimeout(function() {
+            var handle = ProfileService.getProfileTransactionHandle(profile);
+            ProfileService.runTransaction(handle, function(handle, doc, t) {
+              var profileChanges = {};
+              var statsChanges = {};
+              _incrementProfileStat(doc.data(), "nLongSessionsCompleted", 1, profileChanges);
+              t.update(handle, profileChanges)
+              return { profileChanges, statsChanges };
+            }).then(function(changes) {
+              _handleSuccessfulChanges(changes);
+            }).catch(function(e) {
+              console.log(e);
+            });
+          }, LONG_SESSION_MILLIS);
 
-            if (!!profile.brandNew) {
-              var handle = ProfileService.getProfileTransactionHandle(profile);
-              ProfileService.runTransaction(handle, function(handle, doc, t) {
-                var profileChanges = {};
-                var statsChanges = {};
-                _updateProfileStat("brandNew", false, profileChanges);
-                t.update(handle, profileChanges)
-                return { profileChanges, statsChanges };
-              }).then(function(changes) {
-                _handleSuccessfulChanges(changes);
-              }).catch(function(e) {
-                console.log(e);
-              });
-            }
+          {
+            var handle = ProfileService.getProfileTransactionHandle(profile);
+            ProfileService.runTransaction(handle, function(handle, doc, t) {
+              var profileChanges = {};
+              var statsChanges = {};
+              _updateProfileStat("lastLoginTime", Date.now(), profileChanges);
+              _resetProfileChrono();
+              t.update(handle, profileChanges)
+              return { profileChanges, statsChanges };
+            }).then(function(changes) {
+              _handleSuccessfulChanges(changes);
+            }).catch(function(e) {
+              console.log(e);
+            });
           }
-        });
-      }
-	});
-	NotifyingService.subscribe('$stateChangeSuccess', $rootScope, function() {
+
+          if (!!profile.brandNew) {
+            var handle = ProfileService.getProfileTransactionHandle(profile);
+            ProfileService.runTransaction(handle, function(handle, doc, t) {
+              var profileChanges = {};
+              var statsChanges = {};
+              _updateProfileStat("brandNew", false, profileChanges);
+              t.update(handle, profileChanges)
+              return { profileChanges, statsChanges };
+            }).then(function(changes) {
+              _handleSuccessfulChanges(changes);
+            }).catch(function(e) {
+              console.log(e);
+            });
+          }
+        }
+      });
+    }
+});
+
+  NotifyingService.subscribe('$stateChangeSuccess', $rootScope, function() {
 		ProfileService.getCurrentProfile().then(function (profile) {
 			if (profile) {
 				var profileChanges = {};
@@ -338,21 +348,23 @@ sessionStatsService.factory('SessionStatsService', function($rootScope, $localFo
 		});
 	});
 
+  // ---------------------------------------------
+
 	return {
-        init: function() {
-            console.log("Session stats tracking initialized");
+    init: function() {
+      console.log("Session stats tracking initialized");
 		},
 
 		getCurrentProfileStats: function() {
 			return currentProfileStats;
 		},
 
-	    beginContext(contextString) {
-		currentProfileStats = new ProfileStats(contextString);
-	    },
+	  beginContext(contextString) {
+		    currentProfileStats = new ProfileStats(contextString);
+	  },
 
-	    endContext() {
-		currentProfileStats = null;
-	    }
+	  endContext() {
+		    currentProfileStats = null;
+	  }
 	}
 });

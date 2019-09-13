@@ -29,5 +29,6 @@ module.exports = {
 
         "no-unused-vars": "warn",
         "no-redeclare": "warn",
+        "no-mixed-spaces-and-tabs": ["error", "smart-tabs"],
     }
 };
