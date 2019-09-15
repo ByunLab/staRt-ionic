@@ -85,7 +85,7 @@ practiceDirective.controller( 'PracticeDirectiveController',
 	$scope.isPracticing = false;
 	$scope.currentWord = null;
 	$scope.rating = 0;
-	$scope.isRecording = false;
+	$rootScope.isRecording = false;
 	$scope.hasValidWordList = false;
 	$scope.uploadStatus = {
 	    isUploading: false,
@@ -291,7 +291,7 @@ practiceDirective.controller( 'PracticeDirectiveController',
   // ----------------------------------------------
 
 	function recordingDidStart(profileDescArray) {
-	    $scope.isRecording = true;
+	    $rootScope.isRecording = true;
 	}
 
 	function recordingDidFail(err) {
@@ -438,7 +438,7 @@ practiceDirective.controller( 'PracticeDirectiveController',
 
 	  });
 		storeRecordingSession();
-	  $scope.isRecording = false;
+	  $rootScope.isRecording = false;
   }
 
   /**
@@ -737,7 +737,7 @@ practiceDirective.controller( 'PracticeDirectiveController',
 	  if (next === $scope.myURL) {
 	    $scope.active = true;
 	  } else {
-      if ($scope.isRecording) {
+      if ($rootScope.isRecording) {
         $scope.endWordPractice();
       }
       $scope.active = false;
