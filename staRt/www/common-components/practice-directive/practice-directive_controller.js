@@ -60,6 +60,13 @@ practiceDirective.controller( 'PracticeDirectiveController',
 	    $scope.participant_name = profile.name;
 		});
 
+	// var uploadURLs = [
+	// 	"http://localhost:5000",
+	// 	"http://localhost:5000",
+	// 	"http://localhost:5000",
+	// 	"http://localhost:5000"
+	// ];
+
 
 		function initialPracticeSession(startTimestamp, type, probe, count) {
 			return {
@@ -345,9 +352,9 @@ practiceDirective.controller( 'PracticeDirectiveController',
 				});
 
 	  });
-			storeRecordingSession();
-	  $scope.isRecording = false;
-		}
+		storeRecordingSession();
+	  $rootScope.isRecording = false;
+  }
 
 		function setQuizType_graphics() {
 			if ($scope.type === 'Syllable') {
