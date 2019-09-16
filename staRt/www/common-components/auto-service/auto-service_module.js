@@ -106,8 +106,9 @@ var IntroAuto = function (profile, currentStates, onShow, initialState) {
 			return null;
 		},
 		dialog: {
-			text: "Please navigate to the Tutorial.",
-			title: "Tutorial"
+			text: "You will be taken to the Tutorial.",			
+			title: "Tutorial",
+			navto: 'root.tutorial.p01s1'
 		}
 	};
 
@@ -117,8 +118,9 @@ var IntroAuto = function (profile, currentStates, onShow, initialState) {
 			if (currentStates.thisFreeplayTime >= timeThreshold) return steps.complete;
 		},
 		dialog: {
-			text: "Please navigate to Free Play and try out the wave for approximately five minutes.",
-			title: "Free Play"
+			text: "You will be taken to Free Play to try out the wave for approximately five minutes.",
+			title: "Free Play",
+			navto: 'root.free-play'
 		}
 	};
 
@@ -250,9 +252,10 @@ var SessionAuto = function (profile, currentStates, onShow, initialState) {
 			return null;
 		},
 		dialog: {
-			text: "Please navigate to Free Play and practice in any way you like for five minutes.",
+			text: "You will be taken to Free Play to practice in any way you like for five minutes.",
 			title: "Free Play",
-			button: "Okay"
+			button: "Okay",
+			navto: 'root.free-play'
 		}
 	};
 
@@ -263,8 +266,9 @@ var SessionAuto = function (profile, currentStates, onShow, initialState) {
 		}).bind(this),
 		dialog: (function (profile, currentStates, changeList) {
 			return {
-				text: "You are ready to get started! Please navigate to Quest to begin.",
+				text: "You are ready to get started! You will be taken to the quest page to begin.",
 				title: "Quest Time",
+				navto: "root.words",
 				callback: (function () {
 					this.state.hasAcceptedQuestPrompt = true;
 					this.processUpdate(profile, currentStates, []);
@@ -435,7 +439,7 @@ ConclusionAuto.shouldBegin = function (profile) {
 };
 
 // =============================================================================
-autoService.factory('AutoService', function ($rootScope, $ionicPlatform, NotifyingService, ProfileService, SessionStatsService, $cordovaDialogs) {
+autoService.factory('AutoService', function ($rootScope, $ionicPlatform, NotifyingService, ProfileService, SessionStatsService, $cordovaDialogs, $state) {
 	var currentAuto = null;
 	var currentRestrictions = null;
 
@@ -530,6 +534,7 @@ autoService.factory('AutoService', function ($rootScope, $ionicPlatform, Notifyi
 				message.buttons
 			).then(function (idx) {
 				if (message.callback) message.callback(idx);
+				if (message.navto) $state.go(message.navto);
 			});
 		} else {
 			$cordovaDialogs.alert(
@@ -538,6 +543,7 @@ autoService.factory('AutoService', function ($rootScope, $ionicPlatform, Notifyi
 				message.button || "Okay"
 			).then(function () {
 				if (message.callback) message.callback();
+				if (message.navto) $state.go(message.navto);
 			});
 		}
 	}
