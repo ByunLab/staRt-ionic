@@ -11,7 +11,9 @@
 			<div ng-if="data.waveHidden" class="img-bg img-bg_qtNoBF"></div>
 
 			<div class="acctLabel-container">
-				<!-- <div class="user-text">{{data.participant_name}}</div> -->
+				<div class="user-text">{{data.participant_name}}</div>
+				<div class="user-text" ng-if="data.session_number">Research Session # {{data.session_number}}</div>
+				<div class="user-text" ng-if="data.session_number">Please warm up for 5 minutes.</div>
 			</div>
 		</div>
 

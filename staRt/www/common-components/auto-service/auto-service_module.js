@@ -84,7 +84,7 @@ var IntroAuto = function (profile, currentStates, onShow, initialState) {
 			return null;
 		},
 		dialog: {
-			text: "Welcome to the staRt app! You will be taken to the Quiz section to complete our Long Word Quiz measure.",
+			text: "Welcome to the staRt app! You will be taken to the Quiz section, please choose Long Word Quiz once there.",
 			title: "Welcome",
 			navto: 'root.auto'
 		}
@@ -96,7 +96,7 @@ var IntroAuto = function (profile, currentStates, onShow, initialState) {
 			return null;
 		},
 		dialog: {
-			text: "You will be taken to the Quiz section to complete our Syllable Quiz measure.",
+			text: "Now please complete our Syllable Quiz measure.",
 			title: "Syllable Quiz",
 			navto: "root.auto"
 		}
@@ -108,7 +108,7 @@ var IntroAuto = function (profile, currentStates, onShow, initialState) {
 			return null;
 		},
 		dialog: {
-			text: "You will be taken to the Tutorial.",			
+			text: "You will be taken to the Tutorial.",
 			title: "Tutorial",
 			navto: 'root.tutorial.p01s1'
 		}
@@ -412,7 +412,7 @@ var ConclusionAuto = function (profile, currentStates, onShow, initialState) {
 			return null;
 		}).bind(this),
 		dialog: {
-			text: "You will be taken to the Quiz section to complete the final Syllable Quiz measure.",
+			text: "Now please complete the final Syllable Quiz measure.",
 			title: "Syllable Quiz",
 			button: "Okay",
 			navto: 'root.auto'
