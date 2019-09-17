@@ -84,8 +84,9 @@ var IntroAuto = function (profile, currentStates, onShow, initialState) {
 			return null;
 		},
 		dialog: {
-			text: "Welcome to the staRt app! Please begin by navigating to Quiz and completing our Long Word Quiz measure.",
-			title: "Welcome"
+			text: "Welcome to the staRt app! You will be taken to the Quiz section to complete our Long Word Quiz measure.",
+			title: "Welcome",
+			navto: 'root.auto'
 		}
 	};
 
@@ -95,8 +96,9 @@ var IntroAuto = function (profile, currentStates, onShow, initialState) {
 			return null;
 		},
 		dialog: {
-			text: "Please proceed to our Syllable Quiz measure.",
-			title: "Syllable Quiz"
+			text: "You will be taken to the Quiz section to complete our Syllable Quiz measure.",
+			title: "Syllable Quiz",
+			navto: "root.auto"
 		}
 	};
 
@@ -394,9 +396,10 @@ var ConclusionAuto = function (profile, currentStates, onShow, initialState) {
 			return null;
 		},
 		dialog: {
-			text: "Please begin navigate to Quiz and complete our Long Word Quiz measure.",
+			text: "You will be taken to the Quiz section to complete the final Long Word Quiz measure.",
 			title: "Word Quiz",
-			button: "Okay"
+			button: "Okay",
+			navto: 'root.auto'
 		}
 	};
 
@@ -409,9 +412,10 @@ var ConclusionAuto = function (profile, currentStates, onShow, initialState) {
 			return null;
 		}).bind(this),
 		dialog: {
-			text: "Please proceed to our Syllable Quiz measure.",
+			text: "You will be taken to the Quiz section to complete the final Syllable Quiz measure.",
 			title: "Syllable Quiz",
-			button: "Okay"
+			button: "Okay",
+			navto: 'root.auto'
 		}
 	};
 
