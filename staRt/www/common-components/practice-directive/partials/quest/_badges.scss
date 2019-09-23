@@ -1,0 +1,15 @@
+.badge-container {
+  position: absolute;
+  display:flex;
+  top: 0;
+  left: $col-w * 1.25;
+  height: $row-h * 1.25;
+  width: $col-w * 3.75;
+  //background-color: yellow;
+  border: 1px solid red;
+  z-index: 20;
+}
+
+.badge {
+
+}

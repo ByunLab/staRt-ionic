@@ -1,0 +1,52 @@
+.qtDialog-container {
+  display: flex;
+  flex-flow: column nowrap;
+  position: relative;
+  top: $row-h;
+  left: $col-w * 4;
+  height: $row-h * 4;
+  width: $col-w * 5;
+  background-color: $white;
+  z-index: 50;
+  // same as profiles card
+  border-radius: 10px;
+  box-shadow:2px 2px 4px rgba(0,0,0,0.25);
+}
+
+.dia-head {
+  display: flex;
+  flex-flow: column nowrap;
+  position: relative;
+  height: $row-h;
+  width: 100%;
+  justify-content: flex-start;
+  align-items: center;
+  padding: $col-w * 0.33;
+  padding-bottom: 0;
+  border-bottom: 1px solid rgba(0,0,0,0.15);
+  z-index: 51;
+
+  .title {
+    position: relative;
+    display: flex;
+    font-size: 1.75rem;
+    color: $c-text-main;
+    font-weight: $bold;
+    z-index: 51;
+  }
+  .subtitle {
+    position: relative;
+    display: flex;
+    font-size: 1.5rem;
+    color: $c-text-main;
+    z-index: 51;
+  }
+}
+
+.dia-body {
+
+}
+
+.dia-foot {
+
+}

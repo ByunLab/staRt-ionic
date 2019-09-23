@@ -1,0 +1,83 @@
+<svg id="coinStack" data-name="coinStack" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32.64 65.88">
+
+  <g id="coin-0" class="coin hidden animated">
+    <g class="side">
+      <ellipse cx="16.32" cy="64.55" rx="16.32" ry="1.33"/>
+      <rect y="60.33" width="32.64" height="4.22"/>
+    </g>
+    <ellipse class="top" cx="16.32" cy="60.33" rx="16.32" ry="1.33"/>
+  </g>
+
+  <g id="coin-1" class="coin hidden">
+    <g class="side">
+      <ellipse class="side" cx="16.32" cy="57.99" rx="16.32" ry="1.33"/>
+      <rect class="side" y="53.77" width="32.64" height="4.22"/>
+    </g>
+    <ellipse class="top" cx="16.32" cy="53.77" rx="16.32" ry="1.33"/>
+  </g>
+
+  <g id="coin-2" class="coin hidden">
+    <g class="side">
+      <ellipse class="side" cx="16.32" cy="51.44" rx="16.32" ry="1.33"/>
+      <rect class="side" y="47.22" width="32.64" height="4.22"/>
+    </g>
+    <ellipse class="top" cx="16.32" cy="47.22" rx="16.32" ry="1.33"/>
+  </g>
+
+  <g id="coin-3" class="coin hidden">
+    <g class="side">
+      <ellipse class="side" cx="16.32" cy="44.88" rx="16.32" ry="1.33"/>
+      <rect class="side" y="40.66" width="32.64" height="4.22"/>
+    </g>
+    <ellipse class="top" cx="16.32" cy="40.66" rx="16.32" ry="1.33"/>
+  </g>
+
+  <g id="coin-4" class="coin hidden">
+    <g class="side">
+      <ellipse class="side" cx="16.32" cy="38.33" rx="16.32" ry="1.33"/>
+      <rect class="side" y="34.11" width="32.64" height="4.22"/>
+    </g>
+    <ellipse class="top" cx="16.32" cy="34.11" rx="16.32" ry="1.33"/>
+  </g>
+
+  <g id="coin-5" class="coin hidden">
+    <g class="side">
+      <ellipse class="side" cx="16.32" cy="31.77" rx="16.32" ry="1.33"/>
+      <rect class="side" y="27.55" width="32.64" height="4.22"/>
+    </g>
+    <ellipse class="top" cx="16.32" cy="27.55" rx="16.32" ry="1.33"/>
+  </g>
+
+  <g id="coin-6" class="coin hidden">
+    <g class="side">
+      <ellipse class="side" cx="16.32" cy="25.22" rx="16.32" ry="1.33"/>
+      <rect class="side" y="21" width="32.64" height="4.22"/>
+    </g>
+    <ellipse class="top" cx="16.32" cy="21" rx="16.32" ry="1.33"/>
+  </g>
+
+  <g id="coin-7" class="coin hidden">
+    <g class="side">
+      <ellipse class="side" cx="16.32" cy="18.66" rx="16.32" ry="1.33"/>
+      <rect class="side" y="14.44" width="32.64" height="4.22"/>
+    </g>
+    <ellipse class="top" cx="16.32" cy="14.44" rx="16.32" ry="1.33"/>
+  </g>
+
+  <g id="coin-8" class="coin hidden">
+    <g class="side">
+      <ellipse class="side" cx="16.32" cy="12.11" rx="16.32" ry="1.33"/>
+      <rect class="side" y="7.89" width="32.64" height="4.22"/>
+    </g>
+    <ellipse class="top" cx="16.32" cy="7.89" rx="16.32" ry="1.33"/>
+  </g>
+
+  <g id="coin-9" class="coin hidden">
+    <g class="side">
+      <ellipse class="side" cx="16.32" cy="5.55" rx="16.32" ry="1.33"/>
+      <rect class="side" y="1.33" width="32.64" height="4.22"/>
+    </g>
+    <ellipse class="top" cx="16.32" cy="1.33" rx="16.32" ry="1.33"/>
+  </g>
+
+</svg>

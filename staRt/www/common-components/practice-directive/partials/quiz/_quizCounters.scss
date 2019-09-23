@@ -1,0 +1,64 @@
+.qzCounters-layout {
+  position: relative;
+  display: block;
+  z-index: 2;
+}
+
+// foreground
+.img-bg_qz--FG {
+  background-image: url("../img/bgImg/bg_quiz--foreground.svg");
+  z-index: 5 !important;
+}
+
+// .img-bg {
+//   // position: absolute;
+//   // top: 0px;
+//   // left: 0px;
+//   // height: 748px;
+//   // width: 1024px;
+//   // // width: 100%;
+//   // opacity: 1;
+//   // background-repeat: no-repeat;
+//   // z-index: 1;
+//   // // border: 1px solid red;
+// }
+
+// ---------------------------------
+.qzSW-container {
+  position: absolute;
+  top: 18px;
+  left: 0px;
+  height: 748px;
+  width: 100%;
+  //border: 1px solid red;
+}
+
+
+
+
+
+
+// ---------------------------------
+//.shadBack { fill: #93c9c7;}
+path.cls-1 { fill: #93c9c7; } //shadow-back
+path.cls-2 { fill: #c0e5e7; } //grubby blue
+path.cls-3 { fill: #d4eded; } //grubby white
+
+path.cls-10 { fill: none; }
+polygon.cls-10 { fill: none; }
+
+path.shadBack { fill: #93c9c7; }
+polygon.shadBack{ fill: #93c9c7; }
+
+path.dirtyBlue { fill: #c0e5e7; }
+polygon.dirtyBlue { fill: #c0e5e7; }
+
+path.dirtyWhite { fill: #d4eded; }
+polygon.dirtyWhite { fill: #d4eded; }
+
+path.gold { fill: #FFD576; }
+polygon.gold { fill: #FFD576; }
+path.silver { fill: #FFFFFF; }
+polygon.silver { fill: #FFFFFF; }
+path.bronze { fill: #F7C8A1; }
+polygon.bronze { fill: #F7C8A1; }

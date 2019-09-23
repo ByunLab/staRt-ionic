@@ -1,0 +1,110 @@
+// COIN ROW ------------------------------------
+.coin-row-layout {
+  position: absolute;
+  display: flex;
+  flex-flow: row nowrap;
+  top: $row-h * 4.5;
+  left: $col-w * 2.9;
+  width: $col-w * 7;
+  height: $row-h * 0.8;
+  z-index: 10;
+  //border-bottom: 1px solid white;
+}
+
+.stackBox {
+  position: relative;
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  //padding-bottom: 1.25em;
+  //border-right: 1px solid tan;
+
+  .stackHole {
+    position: absolute;
+    height: 13px;
+    width: 41px;
+    top: 80%;
+    margin: 0 auto;
+    background-image: url('../img/practDir/sandHole.svg');
+    background-repeat: no-repeat;
+    z-index: 6;
+    //border: 1px solid cyan;
+  }
+
+  .stackNum {
+    position: absolute;
+    width: 100%;
+    top: 59%;
+    text-align: center;
+    font-size: 1.5em;
+    font-weight: 600;
+    color: #988675;
+    z-index: 7;
+    //border: 1px solid green;
+  }
+}
+
+.stack {
+  position: absolute;
+  top: 20px;
+  height: 80px;
+  width: 34px;
+
+  z-index: 8;
+  //border: 1px solid lime;
+}
+
+
+// .coin * {
+//   // animation-duration: 3s;
+//   opacity: 1;
+//   -webkit-transition: opacity 0.25s, fill 1s;
+//   transition: opacity 0.25s, fill 1s;
+//   transition-timing-function: ease-in;
+// }
+//
+// .coin .hidden {
+//   opacity: 0;
+// }
+
+g.hidden {display: none;}
+
+.coinTop-3 { fill: #FFE592; }
+.coinSide-3 { fill: #FFC95F; }
+.coinTop-2 { fill: #ffffff; }
+.coinSide-2 { fill: #F0F9FC; }
+.coinTop-1 { fill: #F7C8A1; }
+.coinSide-1 { fill: #EFBD88; }
+
+
+
+/// OLD STUFF =================================
+//  .coinBox-layout {
+//    display: flex;
+//    flex-flow: column nowrap;
+//    text-align: left;
+//    margin: auto;
+//    border: 1px solid pink;
+// }
+//  .coin_stack {
+//   display: inline-block;
+//   position: relative;
+//   height: 80px;
+//   width: 33px;
+//   margin: 0 4px -21px 4px;
+// }
+//  img.coin {
+//   position: absolute;
+// }
+
+// .coinRow {
+//   position: absolute;
+//   top: $rowH * 4;
+//   height: $rowH * 2;
+//   width: 100%;
+//   display: flex;
+//   flex-flow: row nowrap;
+//   // border: 1px solid red;
+// }

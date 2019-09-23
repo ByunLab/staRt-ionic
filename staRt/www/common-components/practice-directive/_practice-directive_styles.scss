@@ -85,27 +85,10 @@
   } // lpc-directive
 } // .lpcDir-layout_quiz-quest
 
-
-// COIN ROW ------------------------------------
-.coin-row-layout {
-  position: absolute;
-  top: $row-h * 5;
-  left: $col-w * 2;
-  width: $col-w * 7;
-  height: $row-h * 0.8;
-  //border: 1px solid red;
-}
- .coinBox-layout {
-  text-align: left;
-  margin: auto;
-}
- .coin_stack {
-  display: inline-block;
-  position: relative;
-  height: 80px;
-  width: 33px;
-  margin: 0 4px -21px 4px;
-}
- img.coin {
-  position: absolute;
-}
+// PARTIALS -----------------------------
+@import 'partials/quest/qtDebug';
+@import 'partials/quest/coinRow';
+@import 'partials/quiz/quizCounters';
+@import 'partials/quest/qtDialogs';
+@import 'partials/quest/sandbank';
+@import 'partials/quest/badges';

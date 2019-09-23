@@ -25,10 +25,9 @@
 			$scope.data.researchSession= false;
 		}
 
-		ProfileService.getCurrentProfile().then((profile) => {
-				$scope.data.participant_name = profile.name;
-				$scope.data.clinician_name = FirebaseService.userName();;
-		});
+		// ProfileService.getCurrentProfile().then(function(profile) {
+	  //   $scope.data.participant_name = profile.name;
+		// });
 
 		var lastChronoTime = Date.now();
 
