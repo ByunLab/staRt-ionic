@@ -28,8 +28,6 @@ function compareRecordings(ra, rb) {
 
 	profiles.controller('ProfilesController', function($scope, $timeout, $localForage, AutoService, FirebaseService, StartUIState, NotifyingService, ProfileService, UploadService, $rootScope, $state, $cordovaDialogs)
 	{
-		console.log('ProfilesController here!');
-
 		// Nota Bene: A valid profile must have the following kv pairs:
 		// "name" (string) the name of the profile
 		// "uuid" (string) some string that is unique to each account
@@ -78,7 +76,6 @@ function compareRecordings(ra, rb) {
 			});
 
 			ProfileService.getAllProfiles().then( function(res) {
-				//console.log(res);
 				$scope.data.profiles = res;
 			});
 
@@ -298,7 +295,6 @@ function compareRecordings(ra, rb) {
 			function sessionKeyForRecording(recording) {
 				return recording.Metadata.split('/').pop().substr(0, 36);
 			}
-
 			$scope.data.selectedProfileRecordings = [];
 			ProfileService.getRecordingsForProfile($scope.data.currentProfile, function(recordings) {
 				var statusesToFetch = [];
@@ -483,7 +479,8 @@ function compareRecordings(ra, rb) {
 
 		$scope.logOut = function() {
 			firebase.auth().signOut().then(function (thing) {
-				console.log("Sign out successful");
+				$localForage.clear();
+				ProfileService.reloadProfilesInterfaceState();
 			}, function (err) {
 				console.trace(err);
 			});
