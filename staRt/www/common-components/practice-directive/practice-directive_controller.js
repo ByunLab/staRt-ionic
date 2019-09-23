@@ -60,14 +60,6 @@ practiceDirective.controller( 'PracticeDirectiveController',
 	    $scope.participant_name = profile.name;
 		});
 
-	// var uploadURLs = [
-	// 	"http://localhost:5000",
-	// 	"http://localhost:5000",
-	// 	"http://localhost:5000",
-	// 	"http://localhost:5000"
-	// ];
-
-
 		function initialPracticeSession(startTimestamp, type, probe, count) {
 			return {
 				id: UtilitiesService.guid(),
@@ -120,7 +112,7 @@ practiceDirective.controller( 'PracticeDirectiveController',
 		$scope.qtScoreDebug = false;
 		$scope.qtAdaptDiffDebug = false;
 		$scope.qtBadgesDebug = false;
-		$scope.qzGraphicsMode = false;
+		$scope.qzGraphicsMode = true;
 
 		// TOOLBAR ----------------------------------------------------
 		// TO BE IMPLEMENTED IN THE FUTURE / NOT CURRENTLY IN USE
