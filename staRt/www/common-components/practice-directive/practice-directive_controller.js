@@ -112,7 +112,8 @@ practiceDirective.controller( 'PracticeDirectiveController',
 		$scope.qtScoreDebug = false;
 		$scope.qtAdaptDiffDebug = false;
 		$scope.qtBadgesDebug = false;
-		$scope.qzGraphicsMode = true;
+		$scope.qzGraphicsMode = false;
+		$scope.qzDialogsMode = false;
 
 		// TOOLBAR ----------------------------------------------------
 		// TO BE IMPLEMENTED IN THE FUTURE / NOT CURRENTLY IN USE
@@ -376,7 +377,7 @@ practiceDirective.controller( 'PracticeDirectiveController',
 
 		function beginPracticeForUser(user) {
 
-			console.log(user);
+			//console.log(user);
 
 
 			var sessionPrepTask = Promise.resolve();
@@ -392,7 +393,7 @@ practiceDirective.controller( 'PracticeDirectiveController',
 				$scope.highscores = QuestScore.initFakeHighScores; //#hc
 				$scope.badges = QuestScore.initBadges($scope.badges); // #hc - should save this with session dat in the future
 
-				console.log($scope.csvs);
+				//console.log($scope.csvs);
 				//$scope.reloadCSVData();
 				var previousRatings = $scope.currentPracticeSession.ratings;
 				//console.log(previousRatings);
@@ -548,7 +549,7 @@ practiceDirective.controller( 'PracticeDirectiveController',
 	    }
 	  }
 
-			console.log($scope.currentPracticeSession);
+			//console.log($scope.currentPracticeSession);
 	  // todo: send highscores
 
 	  $scope.isPracticing = false;
