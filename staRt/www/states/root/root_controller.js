@@ -24,8 +24,7 @@
 		$scope.state = $state;
 		$scope.state.loggedIn = !!firebase.auth().currentUser;
 
-		 $scope.safelySwitchStates = function(destination) {
-			var inSession = true;
+		 $rootScope.safelySwitchStates = function(destination) {
 			if (navigator.notification && !!$rootScope.isRecording) {
 				navigator.notification.confirm("Are you sure you would like to leave this session?",
 					function (index) {
