@@ -25,9 +25,12 @@
 			$scope.data.researchSession= false;
 		}
 
-		// ProfileService.getCurrentProfile().then(function(profile) {
-	  //   $scope.data.participant_name = profile.name;
-		// });
+		ProfileService.getCurrentProfile().then(function (profile) {
+				$scope.data.participant_name = profile.name;
+				if (profile.nIntroComplete >= 1) {
+					$scope.data.session_number = profile.nBiofeedbackSessionsCompleted + profile.nNonBiofeedbackSessionsCompleted + 1;
+				}
+		});
 
 		var lastChronoTime = Date.now();
 

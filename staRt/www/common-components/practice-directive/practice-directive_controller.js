@@ -55,6 +55,13 @@ practiceDirective.controller( 'PracticeDirectiveController',
 	function($scope, $timeout, $localForage, AutoService, NotifyingService, FirebaseService, ProfileService, SessionStatsService, StartUIState, UploadService, UtilitiesService, $rootScope, $state, $http, $cordovaDialogs, ToolbarService, QuestScore, QuizScore, AdaptDifficulty)
 	{
 
+	ProfileService.getCurrentProfile().then(function (profile) {
+		$scope.participant_name = profile.name;
+		if (profile.nIntroComplete >= 1) {
+			$scope.session_number = profile.nBiofeedbackSessionsCompleted + profile.nNonBiofeedbackSessionsCompleted + 1;
+		}
+	});
+
 		// used by UI
 		ProfileService.getCurrentProfile().then(function(profile) {
 	    $scope.participant_name = profile.name;

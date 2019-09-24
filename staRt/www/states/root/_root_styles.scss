@@ -235,7 +235,7 @@ $navW: $nav-btnW + $col-pad; // OLD nav
     .navTabText {
       color: white;
       font-size: 0.8em;
-      opacity: 0.75;
+      opacity: 0.75;  
       //border: 1px solid white;
 
       &.active {
@@ -251,9 +251,8 @@ $navW: $nav-btnW + $col-pad; // OLD nav
   position: absolute;
   display: flex;
   flex-flow: column;
-  top: 0;
+  top: .3;
   left: $col-w * 1.75;
-  height: $row-h; // * 0.6;
   width: $col-w * 3;
   justify-content: center;
   text-align: left;
