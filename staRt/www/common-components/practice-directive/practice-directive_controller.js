@@ -81,6 +81,7 @@ practiceDirective.controller( 'PracticeDirectiveController',
 		// 	"http://localhost:5000"
 		// ];
 
+		
 		$scope.active = true;
 		$scope.isFeedbacking = false;
 		$scope.isPracticing = false;
@@ -93,6 +94,11 @@ practiceDirective.controller( 'PracticeDirectiveController',
 	    uploadProgress: 0
 		};
 
+		// We should rerandomize the word list when we've completed a cycle through all the words.
+		// But this gets tricky when we add new words to our list from a difficulty change, and our currentWordIdx
+		// is some value other than 0. So when we get a wordlist of a new length L we set reorderOffset to
+		// currentWordIdx. So when currentWordIdx - reordOffset 
+		$scope.reorderOffset = 0; 
 		$scope.currentWordIdx = -1;
 		$scope.currentPracticeSession = null;
 
@@ -508,7 +514,11 @@ practiceDirective.controller( 'PracticeDirectiveController',
 	          ['Done']);
 	      }
 	    }
-	  }
+		}
+
+		if ((1 + $scope.currentWordIdx - $scope.reorderOffset) % $scope.wordOrder.length == 0) {
+			$scope.reorderWords(true);
+		}
 	 } // advanceWord()
 
 		$scope.beginWordPractice = function () {
@@ -597,6 +607,7 @@ practiceDirective.controller( 'PracticeDirectiveController',
 			}
 			if (randomize) {
 				console.log('Randomizing!');
+				$scope.reorderOffset = $scope.currentWordIdx + 1;
 				scrambleArray($scope.wordOrder);
 			}
 		};
