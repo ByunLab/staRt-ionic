@@ -86,7 +86,7 @@ practiceDirective.controller( 'PracticeDirectiveController',
 		$scope.isPracticing = false;
 		$scope.currentWord = null;
 		$scope.rating = 0;
-		$scope.isRecording = false;
+		$rootScope.isRecording = false;
 		$scope.hasValidWordList = false;
 		$scope.uploadStatus = {
 	    isUploading: false,
@@ -135,7 +135,12 @@ practiceDirective.controller( 'PracticeDirectiveController',
 		};
 		$scope.tbStop = function() {
 			if ($scope.isPracticing) {
-				$scope.endWordPractice();
+					navigator.notification.confirm("Are you sure you would like to leave this session?",
+						function (index) {
+							if (index === 1 ) {
+								$scope.endWordPractice();
+							}}, "Quit Session?",
+						["Leave Session", "Stay"]);
 			}
 		};
 
@@ -199,7 +204,14 @@ practiceDirective.controller( 'PracticeDirectiveController',
 		// ----------------------------------------------
 
 		function recordingDidStart(profileDescArray) {
-	    $scope.isRecording = true;
+			console.log("Recording did start");
+			if (!!$state.current && ($state.current.url === 'words' || $state.current.url === 'auto')) {
+				$rootScope.isRecording = true;
+			}
+			// This is the case where someone starts a recording session and immediately quits.
+			else {
+				$scope.endWordPractice();
+			}
 		}
 
 		function recordingDidFail(err) {
@@ -552,7 +564,8 @@ practiceDirective.controller( 'PracticeDirectiveController',
 			//console.log($scope.currentPracticeSession);
 	  // todo: send highscores
 
-	  $scope.isPracticing = false;
+		$rootScope.isRecording = false;
+		$scope.isPracticing = false;
 	  $scope.rating = 0;
 	  $scope.$broadcast('resetRating');
 	  $scope.currentWord = null;
@@ -672,7 +685,7 @@ practiceDirective.controller( 'PracticeDirectiveController',
 	  if (next === $scope.myURL) {
 	    $scope.active = true;
 	  } else {
-				if ($scope.isRecording) {
+				if ($rootScope.isRecording) {
 					$scope.endWordPractice();
 				}
 				$scope.active = false;
