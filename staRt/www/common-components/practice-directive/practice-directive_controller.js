@@ -204,7 +204,14 @@ practiceDirective.controller( 'PracticeDirectiveController',
 		// ----------------------------------------------
 
 		function recordingDidStart(profileDescArray) {
-	    $rootScope.isRecording = true;
+			console.log("Recording did start");
+			if (!!$state.current && ($state.current.url === 'words' || $state.current.url === 'auto')) {
+				$rootScope.isRecording = true;
+			}
+			// This is the case where someone starts a recording session and immediately quits.
+			else {
+				$scope.endWordPractice();
+			}
 		}
 
 		function recordingDidFail(err) {
