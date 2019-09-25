@@ -474,7 +474,7 @@ practiceDirective.controller( 'PracticeDirectiveController',
 		function advanceWord() {
 	  if ($scope.currentWord !== null) {
 	    if ($scope.rating === 0) {
-	      navigator.notification.alert('Rate pronunciation before advancing!', null, 'No rating');
+	      console.log("Error - a given rating should never be 0");
 	      return;
 	    }
 	    $scope.currentPracticeSession.ratings.push({
