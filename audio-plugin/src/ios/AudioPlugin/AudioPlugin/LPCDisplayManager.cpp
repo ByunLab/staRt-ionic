@@ -6,6 +6,7 @@
  */
 
 #include <iostream>
+#include <cstdint>
 
 #include "LPCDisplayManager.h"
 #include "AudioManager.h"
@@ -28,6 +29,9 @@ m_numPeaks(0)
     
     // history buffer for smoothing out LPC magnitude computations
     _historyBuffer = new DoubleBuffer(_numDisplayBins,LPC_HIST_LEN);
+    
+    // Instance of Peaks and Valleys class
+    peaksAndValleys = *new PeaksAndValleys();
 }
 
 LPCDisplayManager::~LPCDisplayManager()
@@ -71,8 +75,30 @@ void LPCDisplayManager::render(Float32 *lpc_mag_buffer, Vector3 *freqVertices, V
     _historyBuffer->writeBuffer(lpc_mag_buffer);
     _historyBuffer->averageAllBuffers(avgLpc);
     
-    // find peaks
-    findMaxima(avgLpc, _numDisplayBins, &peakIndices[0], &m_numPeaks);
+    // Old peak detector
+    //    findMaxima(avgLpc, _numDisplayBins, &peakIndices[0], &m_numPeaks);
+    
+    // New peaks detector
+    if (!peaksAndValleys.initDisplayPtr){
+        
+        // Initialize all values and compute peaks and valleys for the incoming signal
+        peaksAndValleys.displayInit(avgLpc, _numDisplayBins);
+        peaksAndValleys.initDisplayPtr = true;
+    }
+    else if (peaksAndValleys.initDisplayPtr){
+        
+        // Reset all values and compute peaks and valleys for the incoming signal
+        peaksAndValleys.resetValues(_numDisplayBins);
+        peaksAndValleys.computeParams(avgLpc);
+    }
+    
+    // Update peak indices
+    for (int i = 0; i < peaksAndValleys.cntPeak; i++){
+        peakIndices[i] += peaksAndValleys.peaks->idx[i];
+    }
+    
+    // Update peak count
+    m_numPeaks = peaksAndValleys.cntPeak;
     
     float mag;
     int pk_cnt = 0, curr_pk_idx;
@@ -87,6 +113,7 @@ void LPCDisplayManager::render(Float32 *lpc_mag_buffer, Vector3 *freqVertices, V
         x_pos = (2.0*(float)i / (float)(_numDisplayBins-1)) - 1.0;
         
         mag = (float)( 20.0 * log10(fabsf(avgLpc[i])+1e-20));
+        
         if (mag > MAX_DB_VAL) mag = MAX_DB_VAL;
         if (mag < MIN_DB_VAL) mag = MIN_DB_VAL;
         
@@ -102,7 +129,15 @@ void LPCDisplayManager::render(Float32 *lpc_mag_buffer, Vector3 *freqVertices, V
             peakVertices[2*pk_cnt].y = min_y_pos;
             peakVertices[2*pk_cnt].z = 0.0;
             peakVertices[2*pk_cnt + 1].x = x_pos;
-            peakVertices[2*pk_cnt + 1].y = y_pos;
+            
+            // Peak picking based on an adaptive threshold
+            if(peaksAndValleys.peaks->mag[pk_cnt] == -1){
+                peakVertices[2*pk_cnt + 1].y = min_y_pos;
+            }
+            else {
+                peakVertices[2*pk_cnt + 1].y = y_pos;
+            }
+            
             peakVertices[2*pk_cnt + 1].z = 0.0;
             pk_cnt++;
         }
@@ -118,3 +153,4 @@ Float32 LPCDisplayManager::getNormalizedFreq(Float32 freq)
 {
     return 2.0*freq / m_sampleRate;
 }
+
