@@ -35,6 +35,17 @@ profileService.factory('ProfileService', function($rootScope, $localForage, $htt
 			nIntroComplete: 0, // number of times intro sequence has been completed
 			nFormalTreatmentComplete: 0, // number of times the formal treatment has been completed
 
+			// High Scores & Milestones
+			highscoresQuest: {
+				mgibHx: [ {score: 0, date: Date.now()} ],
+				hsibHx: [ {score: 0, date: Date.now()} ],
+				mgiqHx: [ {score: 0, date: Date.now()} ],
+				hsiqHx: [ {score: 0, date: Date.now()} ],
+				streakHx: [ {score: 0, date: Date.now()} ],
+				perfectBlockHx: [ {score: 0, date: Date.now()} ],
+			},
+			//TODO: highscoresQuiz: {}
+
 			// Other profile statistics
 			brandNew: true,
 			formalTester: false, // don't forget to make this false
