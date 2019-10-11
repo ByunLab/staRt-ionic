@@ -5,7 +5,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 
 	/* ---------------------------------------
   Purpose: Handles Quest scoring, milestone, and badging logic
-  Ref: See qtScoring.md
+  Ref: See https://github.com/ByunLab/staRt-ionic/wiki/Quest-Scoring
 	*/
 
 	function NewQuestHighScores() { // for new accts
