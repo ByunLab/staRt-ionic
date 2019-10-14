@@ -414,7 +414,23 @@ lpcDirective.controller( 'LpcDirectiveController',
 
 		$scope.myURL = $state.current.name;
 
+		$scope.onPause = function () {
+			console.log("pausing");
+			$scope.active = false;
+		};
+
+		// We may have to handle the case where someone hits the home button while in the 'pausing for feedback' section.
+		$scope.onResume = function () {
+			$scope.active = true;
+			$scope.animate();			
+		};
+
+		// Pausing is pressing the home button on ios.
+		document.addEventListener("pause", $scope.onPause);
+		document.addEventListener("resume", $scope.onResume);
+
 		var unsubscribe = $rootScope.$on('$urlChangeStart', function(event, next) {
+			console.log("unsubscribing lpc");
 			if (next === $scope.myURL) {
 				$scope.active = true;
 				$scope.animate();
@@ -424,9 +440,16 @@ lpcDirective.controller( 'LpcDirectiveController',
 				$scope.active = false;
 				fzText = undefined;
 			}
+
+			// If we don't include this then everytime we open the lpc we add a new event listener, causing a memory leak as well as
+			// the onPause and onResume functions to be called multiple times whenever we pause/resume.
+			document.removeEventListener("pause", $scope.onPause);
+			document.removeEventListener("resume", $scope.onResume);
 		});
 
 		$scope.$on('$destroy', function() {
 			unsubscribe();
 		});
+		
+
 	});
