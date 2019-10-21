@@ -130,8 +130,16 @@ void LPCDisplayManager::render(Float32 *lpc_mag_buffer, Vector3 *freqVertices, V
             peakVertices[2*pk_cnt].z = 0.0;
             peakVertices[2*pk_cnt + 1].x = x_pos;
             
+<<<<<<< HEAD
             // Peak picking based on an adaptive threshold. Magnitudes below threshold are set to -1.
             if(peaksAndValleys.peaks->mag[pk_cnt] != -1){
+=======
+            // Peak picking based on an adaptive threshold
+            if(peaksAndValleys.peaks->mag[pk_cnt] == -1){
+                peakVertices[2*pk_cnt + 1].y = min_y_pos;
+            }
+            else {
+>>>>>>> 183e1ec0c51cbae49a5096eaa8c3552bd22a3bfd
                 peakVertices[2*pk_cnt + 1].y = y_pos;
             }
             
