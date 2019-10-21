@@ -322,12 +322,7 @@ extern "C" {
         /*
          Negative slope method
          */
-        void slopeNeg();
-        
-        /*
-         Positive slope method
-         */
-        void slopePos();
+        void addPeaksAndValleys(int isPos);
         
         /*
          Update Peaks

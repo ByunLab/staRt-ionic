@@ -642,10 +642,15 @@ void PeaksAndValleys::computeParams(float *signal){
     }
     
     // Find slope changes
-    if (slopes[0] > 0)
-        slopePos();
-    else
-        slopeNeg();
+    if (slopes[0] > 0) {
+        updateValleys(0);
+        addPeaksAndValleys(1);
+    }
+    else {
+        prevSlopePos = 0;
+        addPeaksAndValleys(0);
+    }
+
     
     if (!prevSlopePos){
         for (int j = 0; j < len; j++){
@@ -671,30 +676,17 @@ void PeaksAndValleys::computeParams(float *signal){
     computeStats();
 }
 
-void PeaksAndValleys::slopeNeg(){
-    
-    for (int i = 0; i < len; i++){
-        if (sign(slopes[i]) < 0){
-            if (!init){
-                continue;
-            }
-            if (prevSlopePos){
-                updatePeaks(i);
-                prevSlopePos = 0;
-            }
+void PeaksAndValleys::addPeaksAndValleys(){
+    for (int i = 1; i < len; i++) {
+        if (sign(slope[i]) < 0 && prevSlopePos) {
+            updatePeaks(i);
+            prevSlopePos = 0;
         }
-        else{
-            if (!init){
-                updateValleys(i);
-                init = true;
-                continue;
-            }
-            if (!prevSlopePos){
-                updateValleys(i);
-            }
+        else if (sign(slope[i]) >= 0 && !prevSlopePos){ 
+            updateValleys(i);
             prevSlopePos = 1;
         }
-    }
+    }    
 }
 
 void PeaksAndValleys::slopePos(){
@@ -734,45 +726,14 @@ void PeaksAndValleys::updatePeaks(int k){
 }
 
 void PeaksAndValleys::updateValleys(int k){
-    int rangeLow, rangeHigh;
-    
-    if (valleyPair == 0){
-        rangeLow  = cntValley;
-        rangeHigh = cntValley + 1;
-        
-        valleys->idx[rangeLow]  = k;
-        valleys->idx[rangeHigh] = -1;
-        
-        valleys->mag[rangeLow]  = sigPointer[k];
-        valleys->mag[rangeHigh] = -1;
-        
-        valleyPair = valleyPair + 1;
+    valleys->idx[cntValley] = k;
+    valleys->mag[cntValley] = sigPointer[k];
+    // We always make sure we have a valley to the left of a peak and a valley to the right of a peak.
+    if (cntValley % 2 == 0) {
+        valleys->idx[cntValley + 1] = -1;
+        valleys->mag[cntValley + 1] = sigPointer[k];
     }
-    else if (valleyPair == 1){
-        rangeLow  = cntValley;
-        rangeHigh = cntValley + 1;
-        
-        valleys->idx[rangeLow]  = valleys->idx[cntValley];
-        valleys->idx[rangeHigh] = k;
-        
-        valleys->mag[rangeLow]  = valleys->mag[cntValley];
-        valleys->mag[rangeHigh] = sigPointer[k];
-        
-        valleyPair = valleyPair + 1;
-    }
-    else if (valleyPair == 2){
-        valleyPair = 1;
-        cntValley  = cntValley + 2;
-        
-        rangeLow  = cntValley;
-        rangeHigh = cntValley + 1;
-        
-        valleys->idx[rangeLow]  = k;
-        valleys->idx[rangeHigh] = -1;
-        
-        valleys->mag[rangeLow]  = sigPointer[k];
-        valleys->mag[rangeHigh] = -1;
-    }
+    cntValley += 1;
 }
 
 void PeaksAndValleys::postFiltering(){
@@ -785,7 +746,6 @@ void PeaksAndValleys::postFiltering(){
     for (int i = 0; i < (cntPeak + 1); i++){
         magSum += valleys->mag[i];
     }
-    noiseFloor = magSum/(cntPeak+1);
     
     // Compute noise floor
     noiseFloor = computeMean(valleys->mag, cntPeak+1);
