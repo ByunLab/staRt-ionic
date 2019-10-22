@@ -26,7 +26,7 @@ function _scramble(array) {
 // -----------------------------------------------------------------------
 // Object to hold state of user's progress thru the protocol
 
-var AutoState = function (profile, currentStates, onShow, initialState) {
+var AutoState = function (profile, currentStats, onShow, initialState) {
 	this.onShow = onShow;
 	this.currentStep = null;
 	this.restrictions = {};
@@ -34,10 +34,10 @@ var AutoState = function (profile, currentStates, onShow, initialState) {
 	this.state = Object.assign({}, initialState ? initialState : {});
 };
 AutoState.prototype = {
-	currentMessage: function (profile, currentStates, changeList) {
+	currentMessage: function (profile, currentStats, changeList) {
 		if (this.currentStep) {
 			if (typeof (this.currentStep.dialog) === 'function') {
-				return this.currentStep.dialog(profile, currentStates, changeList);
+				return this.currentStep.dialog(profile, currentStats, changeList);
 			} else {
 				return this.currentStep.dialog;
 			}
@@ -48,20 +48,20 @@ AutoState.prototype = {
 	getState: function() {
 		return Object.assign({}, this.state);
 	},
-	processUpdate: function (profile, currentStates, changeList) {
+	processUpdate: function (profile, currentStats, changeList) {
 
 		var oldStep = this.currentStep;
 		if (!this.currentStep) this.currentStep = this.firstStep;
 		if (!this.currentStep) return;
 
 		while (!!this.currentStep.next) {
-			var nextStep = this.currentStep.next(profile, currentStates, changeList);
+			var nextStep = this.currentStep.next(profile, currentStats, changeList);
 			if (!nextStep) break;
 			this.currentStep = nextStep;
 		}
 
 		if (oldStep !== this.currentStep) {
-			if (this.onShow) this.onShow(this.currentMessage(profile, currentStates), !this.currentStep.next);
+			if (this.onShow) this.onShow(this.currentMessage(profile, currentStats), !this.currentStep.next);
 		}
 	}
 };
@@ -73,13 +73,13 @@ AutoState.prototype = {
 /* NOTE: AutoState.call takes 'this' (IntroAuto state) and essentially initialises it with the AutoState prototype.
 	 In this case, .call populates a new AutoState object (IntroAuto), with the data provided to IntroAuto constructor fn. The next assignment sets the IntroAuto.prototype as a descendant of AutoState.prototype -- it will inherit all methods from the AutoState.prototype.
 */
-var IntroAuto = function (profile, currentStates, onShow, initialState) {
+var IntroAuto = function (profile, currentStats, onShow, initialState) {
 
-	AutoState.call(this, profile, currentStates, onShow, initialState);
+	AutoState.call(this, profile, currentStats, onShow, initialState);
 
 	var steps = {};
 	steps.welcome = {
-		next: function (profile, currentStates, changeList) {
+		next: function (profile, currentStats, changeList) {
 			if (profile.nWordQuizComplete >= 1) return steps.syllable;
 			return null;
 		},
@@ -91,7 +91,7 @@ var IntroAuto = function (profile, currentStates, onShow, initialState) {
 	};
 
 	steps.syllable = {
-		next: function (profile, currentStates, changeList) {
+		next: function (profile, currentStats, changeList) {
 			if (profile.nSyllableQuizComplete >= 1) return steps.tutorial;
 			return null;
 		},
@@ -103,7 +103,7 @@ var IntroAuto = function (profile, currentStates, onShow, initialState) {
 	};
 
 	steps.tutorial = {
-		next: function (profile, currentStates, changeList) {
+		next: function (profile, currentStats, changeList) {
 			if (profile.nTutorialComplete >= 1) return steps.freePlay;
 			return null;
 		},
@@ -115,9 +115,9 @@ var IntroAuto = function (profile, currentStates, onShow, initialState) {
 	};
 
 	steps.freePlay = {
-		next: function (profile, currentStates, changeList) {
+		next: function (profile, currentStats, changeList) {
 			var timeThreshold = profile.name === 'Speedy' ? SPEEDY_INTRO_FREEPLAY_TIME : INTRO_FREEPLAY_TIME;
-			if (currentStates.thisFreeplayTime >= timeThreshold) return steps.complete;
+			if (currentStats.thisFreeplayTime >= timeThreshold) return steps.complete;
 		},
 		dialog: {
 			text: "You will be taken to Free Play to try out the wave for approximately five minutes.",
@@ -147,8 +147,8 @@ IntroAuto.shouldBegin = function (profile) {
 
 // -----------------------------------------------------------------------
 // One of the sixteen guided runs through the app
-var SessionAuto = function (profile, currentStates, onShow, initialState) {
-	AutoState.call(this, profile, currentStates, onShow, initialState);
+var SessionAuto = function (profile, currentStats, onShow, initialState) {
+	AutoState.call(this, profile, currentStats, onShow, initialState);
 
 	if (initialState && initialState.categoryRestrictions) {
 		this.restrictions.categoryRestrictions = Object.assign(initialState.categoryRestrictions);
@@ -201,7 +201,7 @@ var SessionAuto = function (profile, currentStates, onShow, initialState) {
 			if (this.state.wantsToDoItLater) return steps.laterPrompt;
 			return null;
 		}).bind(this),
-		dialog: (function (profile, currentStates, changeList) {
+		dialog: (function (profile, currentStats, changeList) {
 			return {
 				title: ordinals[sessionIndex] + " Session",
 				text: "Welcome back. Would you like to complete your " + ordinals[sessionIndex].toLowerCase() + " session now?",
@@ -213,7 +213,7 @@ var SessionAuto = function (profile, currentStates, onShow, initialState) {
 					if (index === 2) {
 						this.state.hasAcceptedSessionPrompt = true;
 					}
-					this.processUpdate(profile, currentStates, []);
+					this.processUpdate(profile, currentStats, []);
 				}).bind(this)
 			};
 		}).bind(this)
@@ -231,7 +231,7 @@ var SessionAuto = function (profile, currentStates, onShow, initialState) {
 			if (this.state.hasAcceptedBiofeedbackPrompt) return steps.freePlay;
 			return null;
 		}).bind(this),
-		dialog: (function (profile, currentStates, changeList) {
+		dialog: (function (profile, currentStats, changeList) {
 			var text = this.state.biofeedback === "BF" ?
 				"Please complete this session with biofeedback." :
 				"Please complete this session using traditional (no-biofeedback) practice.";
@@ -241,16 +241,16 @@ var SessionAuto = function (profile, currentStates, onShow, initialState) {
 				button: "Okay",
 				callback: (function () {
 					this.state.hasAcceptedBiofeedbackPrompt = true;
-					this.processUpdate(profile, currentStates, []);
+					this.processUpdate(profile, currentStats, []);
 				}).bind(this)
 			};
 		}).bind(this)
 	};
 
 	steps.freePlay = {
-		next: function (profile, currentStates) {
+		next: function (profile, currentStats) {
 			var timeThreshold = profile.name === 'Speedy' ? SPEEDY_SESSION_FREEPLAY_TIME : SESSION_FREEPLAY_TIME;
-			if (currentStates.thisFreeplayTime >= timeThreshold) return steps.quest;
+			if (currentStats.thisFreeplayTime >= timeThreshold) return steps.quest;
 			return null;
 		},
 		dialog: {
@@ -262,18 +262,18 @@ var SessionAuto = function (profile, currentStates, onShow, initialState) {
 	};
 
 	steps.quest = {
-		next: (function (profile, currentStates) {
-			if (this.state.hasAcceptedQuestPrompt && currentStates.thisCurrentView === "words") return steps.whichQuest;
+		next: (function (profile, currentStats) {
+			if (this.state.hasAcceptedQuestPrompt && currentStats.thisCurrentView === "words") return steps.whichQuest;
 			return null;
 		}).bind(this),
-		dialog: (function (profile, currentStates, changeList) {
+		dialog: (function (profile, currentStats, changeList) {
 			return {
 				text: "You are ready to get started! You will be taken to the quest page to begin.",
 				title: "Quest Time",
 				navto: "root.words",
 				callback: (function () {
 					this.state.hasAcceptedQuestPrompt = true;
-					this.processUpdate(profile, currentStates, []);
+					this.processUpdate(profile, currentStats, []);
 				}).bind(this)
 			};
 		}).bind(this)
@@ -281,14 +281,14 @@ var SessionAuto = function (profile, currentStates, onShow, initialState) {
 
 	var goal = profile.name === "Speedy" ? SPEEDY_TRIALS_PER_SESSION : TRIALS_PER_SESSION;
 	steps.whichQuest = {
-		next: (function (profile, currentStates) {
-			if (currentStates.thisQuestTrialsCompleted >= goal) {
+		next: (function (profile, currentStats) {
+			if (currentStats.thisQuestTrialsCompleted >= goal) {
 				this.state.didFinishSession = true;
 				return steps.allDone;
 			}
 			return null;
 		}).bind(this),
-		dialog: (function (profile, currentStates, changeList) {
+		dialog: (function (profile, currentStats, changeList) {
 			var text;
 			if (profile.allTrialsCorrect < 100) {
 				text = "Please choose Syllable Quest to practice at the syllable level. Each Quest is 100 " +
@@ -309,16 +309,16 @@ var SessionAuto = function (profile, currentStates, onShow, initialState) {
 	};
 
 	steps.allDone = {
-		dialog: function (profile, currentStates) {
+		dialog: function (profile, currentStats) {
 			var text;
 			if (sessionIndex === (TOTAL_SESSION_COUNT - 1)) {
 				var percentCorrectStr = profile.percentTrialsCorrect.toString().split(".")[0];
 				text = "Congratulations, you finished your sixteen quests! Your total accuracy was approximately " + percentCorrectStr +
-          "% correct. Your accuracy in your final session was approximatedly " + currentStates.thisQuestPercentTrialsCorrect + "% correct." +
+          "% correct. Your accuracy in your final session was approximatedly " + currentStats.thisQuestPercentTrialsCorrect + "% correct." +
           " To complete your tasks as a formal pilot tester, please schedule one more visit to complete the Word Quiz and the Syllable Quiz " +
           "at the post-treatment time point.";
 			} else {
-				var percentCorrectStr = currentStates.thisQuestPercentTrialsCorrect.toString().split(".")[0];
+				var percentCorrectStr = currentStats.thisQuestPercentTrialsCorrect.toString().split(".")[0];
 				text = "Congratulations, you have completed this quest! You scored approximately " +
         percentCorrectStr + "% correct. " +
           "Please come back soon to complete your next session.";
@@ -345,8 +345,8 @@ SessionAuto.shouldBegin = function (profile) {
 };
 
 // The concluding guided auto run, which measures syllable and word performance at the end of the series
-var ConclusionAuto = function (profile, currentStates, onShow, initialState) {
-	AutoState.call(this, profile, currentStates, onShow, initialState);
+var ConclusionAuto = function (profile, currentStats, onShow, initialState) {
+	AutoState.call(this, profile, currentStats, onShow, initialState);
 
 	this.state = Object.assign({
 		hasAcceptedSessionPrompt: false,
@@ -365,7 +365,7 @@ var ConclusionAuto = function (profile, currentStates, onShow, initialState) {
 			if (this.state.wantsToDoItLater) return steps.laterPrompt;
 			return null;
 		}).bind(this),
-		dialog: (function (profile, currentStates, changeList) {
+		dialog: (function (profile, currentStats, changeList) {
 			return {
 				title: "Post-Treatment Assessment",
 				text: "Welcome back. Would you like to complete your post-treatment assessment now?",
@@ -377,7 +377,7 @@ var ConclusionAuto = function (profile, currentStates, onShow, initialState) {
 					if (index === 2) {
 						this.hasAcceptedSessionPrompt = true;
 					}
-					this.processUpdate(profile, currentStates, []);
+					this.processUpdate(profile, currentStats, []);
 				}).bind(this)
 			};
 		}).bind(this)
@@ -391,7 +391,7 @@ var ConclusionAuto = function (profile, currentStates, onShow, initialState) {
 	};
 
 	steps.wordQuizPrompt = {
-		next: function (profile, currentStates) {
+		next: function (profile, currentStats) {
 			if (initialWordQuizCount < profile.nWordQuizComplete) return steps.syllableQuizPrompt;
 			return null;
 		},
@@ -404,7 +404,7 @@ var ConclusionAuto = function (profile, currentStates, onShow, initialState) {
 	};
 
 	steps.syllableQuizPrompt = {
-		next: (function (profile, currentStates) {
+		next: (function (profile, currentStats) {
 			if (initialSyllableQuizCount < profile.nSyllableQuizComplete) {
 				this.state.didFinishSession = true;
 				return steps.conclusionPrompt;
@@ -420,7 +420,7 @@ var ConclusionAuto = function (profile, currentStates, onShow, initialState) {
 	};
 
 	steps.conclusionPrompt = {
-		dialog: function (profile, currentStates) {
+		dialog: function (profile, currentStats) {
 			var text = "Thank you again for supporting our research! " +
         "You are free to keep using the staRt app, but your time as a formal pilot tester is complete.";
 			return {
@@ -481,12 +481,12 @@ autoService.factory('AutoService', function ($rootScope, $ionicPlatform, Notifyi
 		}
 	}
 
-	function _checkForAuto(profile, currentStates, changeList, initialState) {
+	function _checkForAuto(profile, currentStats, changeList, initialState) {
 		if (!currentAuto) {
 
 			// Intro session
 			if (!currentAuto && IntroAuto.shouldBegin(profile)) {
-				_setCurrentAuto(new IntroAuto(profile, currentStates, function (message, completed) {
+				_setCurrentAuto(new IntroAuto(profile, currentStats, function (message, completed) {
 					if (message) _showMessage(message);
 					if (completed) {
 						NotifyingService.notify('intro-completed', profile);
@@ -496,8 +496,8 @@ autoService.factory('AutoService', function ($rootScope, $ionicPlatform, Notifyi
 			}
 
 			// Subsequent sessions
-			if (!currentAuto && SessionAuto.shouldBegin(profile, currentStates)) {
-				_setCurrentAuto(new SessionAuto(profile, currentStates, function (message, completed) {
+			if (!currentAuto && SessionAuto.shouldBegin(profile, currentStats)) {
+				_setCurrentAuto(new SessionAuto(profile, currentStats, function (message, completed) {
 					if (message) _showMessage(message);
 					if (completed) {
 						if (currentAuto.state.didFinishSession) {
@@ -512,8 +512,8 @@ autoService.factory('AutoService', function ($rootScope, $ionicPlatform, Notifyi
 			}
 
 			// Conclusion session
-			if (!currentAuto && ConclusionAuto.shouldBegin(profile, currentStates)) {
-				_setCurrentAuto(new ConclusionAuto(profile, currentStates, function (message, completed) {
+			if (!currentAuto && ConclusionAuto.shouldBegin(profile, currentStats)) {
+				_setCurrentAuto(new ConclusionAuto(profile, currentStats, function (message, completed) {
 					if (message) _showMessage(message);
 					if (completed) {
 						if (currentAuto.state.didFinishSession) {
@@ -526,7 +526,7 @@ autoService.factory('AutoService', function ($rootScope, $ionicPlatform, Notifyi
 				}, initialState));
 			}
 
-			if (currentAuto) currentAuto.processUpdate(profile, currentStates, changeList);
+			if (currentAuto) currentAuto.processUpdate(profile, currentStats, changeList);
 		}
 	}
 
@@ -632,7 +632,7 @@ autoService.factory('AutoService', function ($rootScope, $ionicPlatform, Notifyi
 		console.log("Starting session");
 		ProfileService.getCurrentProfile().then(function (profile) {
 			if (profile) {
-				var currentStates = SessionStatsService.getCurrentProfileStats() || {};
+				var currentStats = SessionStatsService.getCurrentProfileStats() || {};
 				var changeList = ['resume'];
 
 				if (profile.inProcessSession) {
@@ -642,16 +642,16 @@ autoService.factory('AutoService', function ($rootScope, $ionicPlatform, Notifyi
 						["Resume", "Start over"]
 					).then(function(index) {
 						if (index === 1) {
-							_checkForAuto(profile, currentStates, changeList, profile.inProcessSessionState);
+							_checkForAuto(profile, currentStats, changeList, profile.inProcessSessionState);
 						} else {
 							ProfileService.clearInProgressSessionForCurrentProfile().then(function() {
-								_checkForAuto(profile, currentStates, changeList, {});
+								_checkForAuto(profile, currentStats, changeList, {});
 							});
 						}
 					});
 				} else {
 					ProfileService.clearInProgressSessionForCurrentProfile().then(function() {
-						_checkForAuto(profile, currentStates, changeList, {});
+						_checkForAuto(profile, currentStats, changeList, {});
 					});
 				}
 			}
@@ -691,11 +691,11 @@ autoService.factory('AutoService', function ($rootScope, $ionicPlatform, Notifyi
 
 	NotifyingService.subscribe('profile-stats-updated', $rootScope, function (msg, data) {
 		var profile = data[0];
-		var currentStates = data[1];
+		var currentStats = data[1];
 		var changeList = data[2];
 
 		if (currentAuto) {
-			currentAuto.processUpdate(profile, currentStates, changeList);
+			currentAuto.processUpdate(profile, currentStats, changeList);
 		} else if (changeList.indexOf('brandNew') !== -1) {
 			_promptForFormalParticipation(profile);
 		} else if (changeList.indexOf('formalTester') !== -1) {
