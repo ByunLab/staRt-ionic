@@ -509,7 +509,7 @@ practiceDirective.controller( 'PracticeDirectiveController',
 	      $scope.isFeedbacking = true;
 	      if (navigator.notification) {
 	        // will not trigger if serving
-	        navigator.notification.confirm('Pausing for feedback',
+	        navigator.notification.confirm("Please provide qualitative feedback on the participant's performance over the last ten trials.",
 	          function () {
 	            $scope.$apply(function () {
 								// Current word was not properly being updated.
