@@ -8,6 +8,8 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
   Ref: See https://github.com/ByunLab/staRt-ionic/wiki/Quest-Scoring
 	*/
 
+	// used if an existing account does not already have
+	// a highscoreQuest object
 	function NewQuestHighScores() { // for new accts
 		return  {
 			mgibHx: [ {score: 0, date: Date.now()} ],
@@ -16,39 +18,6 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 			hsiqHx: [ {score: 0, date: Date.now()} ],
 			streakHx: [ {score: 0, date: Date.now()} ],
 			perfectBlockHx: [ {score: 0, date: Date.now()} ],
-		};
-	}
-
-	// example data: will eventually be read in from fb user profile
-	function FakeIn_questHighScores() {
-		return  {
-			mgibHx: [
-				{score: 3, date: 1558537200 },
-				{score: 4, date: 1554363300 },
-				{score: 5, date: 1551855360 }
-			],
-			hsibHx: [
-				{score: 6, date: 1539454440 },
-				{score: 8, date: 1545427500 },
-				{score: 10, date: 1562916120 }
-			],
-			mgiqHx: [
-				{score: 44, date: 1539454440 },
-				{score: 49, date: 1539454440 },
-				{score: 50, date: 1539454440 }
-			],
-			hsiqHx: [
-				{score: 140, date: 1539454440 },
-				{score: 148, date: 1539454440 },
-				{score: 150, date: 1539454440 }
-			],
-			streakHx: [
-				{score: 4, date: 1539454440 },
-				{score: 6, date: 1539454440 }
-			],
-			perfectBlockHx: [
-				{ score: 1, date: 1539454440 }
-			]
 		};
 	}
 
@@ -96,13 +65,17 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 	}
 
 	function Badges() {
-		// perfectBlock: false,
 		// incrDiff: false
 		return {
-			flags: {
-				questNewRecord: false,
-				blockNewRecord: false,
-				onARoll: false,
+			onARoll: {
+				flag: false,
+				trials: 0,
+				visible: false
+			},
+			newRecord: {
+				flag: false,
+				trials: 0,
+				visible: false
 			},
 			endBlockSum: {
 				mgib: false,
@@ -114,7 +87,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 				perfectBlock: false,
 				perfectBlockCount: 0
 			},
-			endQuestSum: []
+			endQuestSum: {}
 		};
 	}
 
@@ -127,13 +100,6 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 			var stack = { id: i };
 			questCoins.push(stack);
 		}
-	};
-
-	var initFakeHighScores = function(highscores) {
-		highscores = undefined;
-		highscores = new FakeIn_questHighScores();
-
-		return highscores;
 	};
 
 	var initNewHighScores = function(highscores) {
@@ -222,18 +188,47 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		//console.log(stackID + ', ' + coinID);
 	};
 
-	// -- called by checkUpdateMilestones() (each block)---
-	var resetForNewBlock = function(scores, badges) {
+	function resetBadges(badges, badge) {
+		badges[badge].flag = false;
+		badges[badge].trials = 0;
+		badges[badge].visible = false;
+		//console.log(badges);
+	}
+
+	function displayBadgeOnARoll(badges) {
+		badges.newRecord.visible = false;
+		badges.onARoll.flag = true;
+		badges.onARoll.visible = true;
+		badges.onARoll.trials++;
+		//console.log('ON A ROLL!!');
+		console.log(badges);
+	}
+
+	function displayBadgeNewRecord(badges) {
+		if(badges.onARoll.flag === false ||
+			badges.onARoll.trials > 2)
+		{ // switch badges
+			badges.onARoll.visible = false;
+			badges.newRecord.flag = true;
+			badges.newRecord.visible = true;
+			badges.newRecord.trials++;
+		} else {
+			badges.newRecord.flag = true;
+		}
+		console.log(badges);
+	}
+
+	// -- called by checkUpdateMilestones() ---
+	function resetForNewBlock(scores, badges) {
 		scores.block_score = 0;
 		scores.block_display_score = 0;
-		badges.blockNewRecord = false;
-
+		scores.block_goldCount = 0;
+		resetBadges(badges, 'newRecord');
 		badges.endBlockSum.mgib = false;
 		badges.endBlockSum.hsib = false;
 		badges.endBlockSum.streak = false;
 		badges.endBlockSum.perfectBlock = false;
 	};
-
 
 	function updateMilestone(scores, milestones, msProp, scoresProp, scoresPropOpt) {
 		if(scoresPropOpt) {
@@ -256,11 +251,19 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 	var checkUpdateMilestones = function(scores, milestones, endOfBlock, badges) {
 
 		// checked every trial -----------------------------
-		if( scores.block_goldCount > milestones.highscores.mgib) {
+		if(scores.streak > 2)	{
+			displayBadgeOnARoll(badges);
+		} else {
+			resetBadges(badges, 'onARoll');
+		}
+		if(scores.streak < 2 && badges.newRecord.flag)	{
+			badges.newRecord.visible = true;
+		}
+
+		if( scores.block_goldCount >= milestones.highscores.mgib) {
 			milestones.highscores.mgib = scores.block_goldCount;
 			console.log('NEW RECORD: MOST GOLD IN BLOCK');
-			badges.flags.onARoll = false;
-			badges.flags.blockNewRecord = true;
+			displayBadgeNewRecord(badges);
 			badges.endBlockSum.mgib = true;
 			badges.endBlockSum.mgibCount = scores.block_goldCount;
 			updateMilestone(scores, milestones, 'mgibHx', 'block_goldCount');
@@ -269,8 +272,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		if( scores.block_display_score > milestones.highscores.hsib) {
 			milestones.highscores.hsib = scores.block_display_score;
 			console.log('NEW RECORD: HIGH SCORE IN BLOCK');
-			badges.flags.onARoll = false;
-			badges.flags.blockNewRecord = true;
+			displayBadgeNewRecord(badges);
 			badges.endBlockSum.hsib = true;
 			badges.endBlockSum.hsibCount = scores.block_display_score;
 			updateMilestone(scores, milestones, 'hsibHx', 'block_display_score');
@@ -279,34 +281,25 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		if( scores.display_score > milestones.highscores.hsiq) {
 			milestones.highscores.hsiq = scores.display_score;
 			console.log('NEW RECORD: HIGH SCORE IN QUEST');
-			badges.flags.onARoll = false;
-			badges.flags.questNewRecord = true;
-			// queque endOfQuest milestone
-			// queque endOfQuest milestoneCount
+			displayBadgeNewRecord(badges);
+			// badges.endBlockSum.hsiq = true;
+			// badges.endBlockSum.hsiqCount = scores.display_score;
 			updateMilestone(scores, milestones, 'hsiqHx', 'display_score');
 		}
 
 		if( scores.session_coins.gold > milestones.highscores.mgiq) {
 			milestones.highscores.mgiq = scores.session_coins.gold;
 			console.log('NEW RECORD: MOST GOLD IN QUEST');
-			badges.flags.onARoll = false;
-			badges.flags.questNewRecord = true;
-			// queque endOfQuest milestone
-			// queque endOfQuest milestoneCount
+			displayBadgeNewRecord(badges);
+			// badges.endBlockSum.mgiq = true;
+			// badges.endBlockSum.mgiqCount = milestones.highscores.mgiq;
 			updateMilestone(scores, milestones, 'mgiqHx', 'session_coins', 'gold');
 		}
 
-		if(scores.streak > 3) {
-			badges.onARoll = true;
-			console.log('ON A ROLL!!');
-		} else {
-			badges.onARoll = false;
-		}
 		if( scores.streak > milestones.highscores.streak ) {
 			milestones.highscores.streak = scores.streak;
 			console.log('NEW RECORD: STREAK');
-			badges.flags.onARoll = false;
-			badges.flags.blockNewRecord = true;
+			displayBadgeNewRecord(badges);
 			badges.endBlockSum.streak = true;
 			badges.endBlockSum.streakCount = scores.streak;
 			updateMilestone(scores, milestones, 'streakHx', 'streak');
@@ -315,6 +308,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		if(scores.block_goldCount === 10) {
 			milestones.highscores.perfectBlock++;
 			console.log('PERFECT BLOCK');
+			// no badge, achieved at end of block
 			badges.endBlockSum.perfectBlock = true,
 			badges.endBlockSum.perfectBlockCount = milestones.highscores.perfectBlock;
 
@@ -367,6 +361,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 			scores.streak++;
 		} else {
 			scores.streak = 0;
+			resetBadges(badges, 'onARoll');
 		}
 
 		// check for end of block
@@ -378,10 +373,8 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 	}; // end questRating()
 
 	return {
-		hello: function() { console.log('Hello from Score!'); },
 		initCoinCounter: initCoinCounter,
 		initNewHighScores: initNewHighScores,
-		initFakeHighScores: initFakeHighScores,
 		initMilestones: initMilestones,
 		initScores: initScores,
 		initBadges: initBadges,

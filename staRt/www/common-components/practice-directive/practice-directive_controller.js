@@ -96,7 +96,7 @@ practiceDirective.controller( 'PracticeDirectiveController',
 		// WIP Helpers --------------------------- //#hc
 		$scope.qtScoreDebug = true;
 		$scope.qtAdaptDiffDebug = true;
-		$scope.qtBadgesDebug = false;
+		$scope.qtBadgesDebug = true;
 		$scope.qzGraphicsMode = false;
 		$scope.qzDialogsMode = false;
 
@@ -137,7 +137,9 @@ practiceDirective.controller( 'PracticeDirectiveController',
 
 			if (!$scope.probe) { //quest
 				QuestScore.questRating(data, $scope.scores, $scope.milestones, $scope.currentWordIdx, $scope.badges);
+
 				console.log($scope.milestones);
+				//console.log($scope.badges);
 
 				// if Quest end-of-block, check Adaptive Difficulty
 				if ($scope.currentWordIdx % 10 == 0 &&
