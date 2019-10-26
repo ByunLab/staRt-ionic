@@ -531,29 +531,25 @@ practiceDirective.controller( 'PracticeDirectiveController',
 
 		  }
 
-		  if ($scope.pauseEvery && $scope.pauseEvery > 0 && $scope.currentWordIdx > 0) {
-		    if ($scope.currentWordIdx % $scope.pauseEvery === 0) {
-		      $scope.isFeedbacking = true;
-		      if (navigator.notification) {
-		        // will not trigger if serving
-		        navigator.notification.confirm('Pausing for feedback',
-		          function () {
-		            $scope.$apply(function () {
-									// Current word was not properly being updated.
-										lookupIdx = $scope.currentWordIdx % $scope.wordOrder.length;
-										$scope.currentWord = $scope.wordList[$scope.wordOrder[lookupIdx]];
-		              $scope.isFeedbacking = false;
-		            });
-		          }, '',
-		          ['Done']);
-		      }
-		    }
-			}
-
-			if ((1 + $scope.currentWordIdx - $scope.reorderOffset) % $scope.wordOrder.length == 0) {
-				$scope.reorderWords(true);
-			}
-	 	} // advanceWord()
+	  if ($scope.pauseEvery && $scope.pauseEvery > 0 && $scope.currentWordIdx > 0) {
+	    if ($scope.currentWordIdx % $scope.pauseEvery === 0) {
+	      $scope.isFeedbacking = true;
+	      if (navigator.notification) {
+	        // will not trigger if serving
+	        navigator.notification.confirm("Please provide qualitative feedback on the participant's performance over the last ten trials.",
+	          function () {
+	            $scope.$apply(function () {
+								// Current word was not properly being updated.
+									lookupIdx = $scope.currentWordIdx % $scope.wordOrder.length;
+									$scope.currentWord = $scope.wordList[$scope.wordOrder[lookupIdx]];
+	              $scope.isFeedbacking = false;
+	            });
+	          }, '',
+	          ['Done']);
+	      }
+	    }
+		}
+	} // end advanceWord()
 
 
 		// ================================
