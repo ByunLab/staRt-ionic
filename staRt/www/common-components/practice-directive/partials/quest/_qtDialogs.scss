@@ -44,9 +44,37 @@
 }
 
 .dia-body {
-
+  display: flex;
+  flex-flow: row nowrap;
+  position: relative;
+  height: $row-h * 2;
 }
 
 .dia-foot {
+  display: flex;
+  flex-flow: row nowrap;
+  position: relative;
+  align-items: center;
+  justify-content: space-around;
+  height: $row-h;
+  width: 100%;
+  padding: 0 1em;
+  background-color: #3d6d84; //3d6d84
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
 
+  .footBtn {
+    display: flex;
+    position: relative;
+    font-size: 1.25em;
+    font-weight: 700;
+    align-items: center;
+    justify-content: center;
+    background-color: #4ec7d7;
+    color: white;
+    padding: 1em;
+    min-width: 175px;
+    height: 64px;
+    border-radius: 2em;
+  }
 }

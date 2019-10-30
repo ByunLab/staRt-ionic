@@ -5,9 +5,17 @@
   </div>
 
   <!-- BADGES ------------------------------- -->
-  <div ng-if="isPracticing && !probe"
-    ng-include=" './common-components/practice-directive/partials/quest/badges.html' ">
-  </div> <!-- end .badge-container -->
+  <div ng-if="isPracticing && !probe">
+    <div class="badge-container" ng-if="qtBadgesDebug">
+      <div class="badge" ng-if="badges.newRecord.visible"
+        ng-include=" './img/practDir/badge_newRec.svg' ">
+      </div>
+
+      <div class="badge" ng-if="badges.onARoll.visible"
+        ng-include=" './img/practDir/badge_conseq.svg' ">
+      </div>
+    </div> <!-- end badge-container -->
+  </div>
 
 
   <!-- TOOLBAR ------------------------------- -->
@@ -61,6 +69,12 @@
   ng-if="isPracticing && !probe"
   ng-include=" './common-components/practice-directive/partials/quest/qtDebug.html' ">
     <!-- DELETE AFTER TESTING SCORING SCRIPTS -->
+  </div> <!-- end .profiles-layout_drawer-left -->
+
+  <!-- PROMPT BOX ------------------------------- -->
+  <div class="badge-container"
+  ng-if="isPracticing && !probe"
+  ng-include=" './common-components/practice-directive/partials/quest/badges.html' ">
   </div> <!-- end .profiles-layout_drawer-left -->
 
 

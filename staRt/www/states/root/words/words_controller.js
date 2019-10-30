@@ -119,6 +119,13 @@
 			$scope.practicing = true;
 			$scope.configuring = false;
 			$scope.order = "random";
+			$rootScope.finalSelectedCategories = $scope.data.selectedCategories;
+
+
+			// TODO: Test that if we resume a formal session, then quit out, and then try to resume the formal session again by clicking quest, that
+			// it does ~not~ actually resume the formal session.
+			$rootScope.categoryRestrictions = false;
+
 
 			// Start a timer to log the time spend in quest mode play
 			NotifyingService.notify("quest-start");
@@ -143,7 +150,7 @@
 			var idx = $scope.data.selectedCategories.indexOf(wordCategoryIdx);
 			if (idx === -1) {
 				$scope.data.selectedCategories.push(wordCategoryIdx)
-        $scope.data.selectedCategories.sort();
+				$scope.data.selectedCategories.sort();
         AutoService.toggleCategoryRestriction(wordCategoryIdx, 1);
 			} else {
         $scope.data.selectedCategories.splice(idx, 1);
@@ -164,6 +171,23 @@
 		$scope.$on('$destroy', function() {
 			clearTimeLogger();
     });
+
+		if ($rootScope.sessionToResume){
+			$rootScope.categoryRestrictions = $rootScope.sessionToResume.categoryRestrictions;
+			// previously, sessions were not saving categoryRestrictions. So we need to consider the posibility that there
+			// are no categoryRestrictions remmebered for a quest, in which case we allow all categories. There's no better
+			// fix I can think of, in any case this line of code should not be executed for any session that begins
+			// after the update that includes this comment.
+			if (!$rootScope.categoryRestrictions) {
+				$rootScope.categoryRestrictions = [0, 1, 2, 3, 4];
+			}
+			if ($rootScope.sessionToResume.type === 'Word') {
+				$scope.beginWordQuestConfiguration();
+			} else {
+				$scope.beginSyllableQuestConfiguration();
+			}
+			$scope.beginQuest();
+		}
 
 	});
 
