@@ -1,6 +1,6 @@
 var profileService = angular.module('profileService', [ 'firebaseService', 'notifyingService', 'utilitiesService' ]);
 
-profileService.factory('ProfileService', function($rootScope, $localForage, $http, FirebaseService, NotifyingService, StartServerService, UtilitiesService)
+profileService.factory('ProfileService', function($rootScope, $state, $localForage, $http, $cordovaDialogs, FirebaseService, NotifyingService, StartServerService, UtilitiesService)
 {
 	function newUserProfile() {
 		if (!FirebaseService.loggedIn()) { return null; }
@@ -42,8 +42,10 @@ profileService.factory('ProfileService', function($rootScope, $localForage, $htt
 			lastSessionTimestamp: null, // Unix timestamp of most recent trial
 			creationTimestamp: Date.now(), // Unix timestamp profile creation
       lastLoginTimestamp: Date.now(), // Unix time of last login
-      inProcessSession: null, // Ratings etc. in the current recording
-      inProcessSessionState: null, // The state of the resumed session
+      inProcessSession: null, // Ratings etc. in the current recording for a formal on-protocol session
+			inProcessSessionState: null, // Extra data for the state of the resumed on protocol session
+
+			recordingSessionHistory: [],
 		};
 	};
 
@@ -164,7 +166,48 @@ profileService.factory('ProfileService', function($rootScope, $localForage, $htt
 		profilesInterfaceState = loadProfilesInterfaceState();
 	}
 
+	function _getRecordingSessionDataById(profile, sessionid) {
+		var recordingSessions = profile.recordingSessionHistory.filter(function (recordingSession) {return recordingSession.id === sessionid});
+		if (recordingSessions.length == 0) {
+			console.log("ERROR: Recording session with id " + sessionid + " not found.");
+		}
+		else if (recordingSessions.length > 1) {
+			console.log("ERROR: There should only be one recording session per id.");
+		}
+		else {
+			return recordingSessions[0];
+		}
+	}
+
+
+	function _resumeNormalRecordingSession(profile, sessionid) {
+		var recordingSession = _getRecordingSessionDataById(profile, sessionid);
+		if (recordingSession.count <= recordingSession.ratings.length) {
+				// Ideally though we don't even show the resume button for completed sessions.
+				$cordovaDialogs.alert(
+					'You cannot resume a session that has already been completed.',
+					'Cannot resume session.',
+					'Okay'
+				);
+				return;
+		}
+		var is_quest = recordingSession.probe == 'quest';
+		var is_quiz = recordingSession.probe && !is_quest; // probe is set to true if its a quiz, and 'quest' if its a quest.
+		$rootScope.sessionToResume = recordingSession;
+		if (is_quest) {
+			$state.go('root.words');
+		}
+		if (is_quiz) {
+			$state.go('root.auto');
+		}
+	}
+
 	return {
+
+		resumeNormalRecordingSession: function(profile, sessionid) {
+			return _resumeNormalRecordingSession(profile, sessionid);
+		},
+
     clearInProgressSessionForCurrentProfile: function()
     {
       return this.runTransactionForCurrentProfile(function(handle, doc, t) {

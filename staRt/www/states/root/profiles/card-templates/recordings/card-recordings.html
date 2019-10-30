@@ -12,6 +12,7 @@
 					<div>{{ recording.totalTimeString }} </div>
 					<div ng-if=recording.uploaded class="upload_badge uploaded">Uploaded</div>
 					<div ng-if=!recording.uploaded class="upload_badge not_uploaded">Not Uploaded</div>
+					<button class="button buttcon-calm" ng-click="resumeRecording(recording)">Resume</button>
 				</ion-item>
 			</ion-list>
 			

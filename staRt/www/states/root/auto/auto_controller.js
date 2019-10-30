@@ -54,6 +54,15 @@
 			$scope.csvs = null;
 			$scope.data.navTitle = "Quiz";
 		};
+
+		if ($rootScope.sessionToResume){
+			console.log("We're resuming a session in quiz");
+			if ($rootScope.sessionToResume.type === 'Word') {
+				$scope.beginWordProbe($rootScope.sessionToResume.count);
+			} else {
+				$scope.beginSyllableProbe();
+			}
+		}
 	});
 
 } )(  );

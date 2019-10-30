@@ -202,7 +202,6 @@ practiceDirective.controller( 'PracticeDirectiveController',
 						return update_difficulty(-1);
 					}
 				} // end-of-block AdaptDiff check
-
 				return Promise.resolve();
 
 			} else { //if quiz, no adapt Diff
@@ -277,12 +276,14 @@ practiceDirective.controller( 'PracticeDirectiveController',
 		}
 
 		function storeRecordingSession() {
+			// We need to create a copy of $scope.currentPracticeSession to avoid race conditions.
+			var savedPracticeSession =  Object.assign({}, $scope.currentPracticeSession);
 			ProfileService.runTransactionForCurrentProfile(function(handle, doc, t) {
 				var recordingSessionHistory = doc.data().recordingSessionHistory;
 				if (recordingSessionHistory == null) {
-					recordingSessionHistory = [$scope.currentPracticeSession];
+					recordingSessionHistory = [savedPracticeSession];
 				} else {
-					recordingSessionHistory.push($scope.currentPracticeSession);
+					recordingSessionHistory.push(savedPracticeSession);
 				}
 				t.update(handle, {recordingSessionHistory: recordingSessionHistory});
 			});
@@ -291,8 +292,8 @@ practiceDirective.controller( 'PracticeDirectiveController',
 		function recordingDidStop(files) {
 	  console.log('Finished recording');
 	  console.log('Metadata: ' + files.Metadata);
-	  console.log('LPC: ' + files.LPC);
-	  console.log('Audio: ' + files.Audio);
+	console.log('LPC: ' + files.LPC);
+	console.log('Audio: ' + files.Audio);
 	  var jsonPath = files.Metadata.replace('-meta.csv', '-ratings.json');
 	  $scope.currentPracticeSession.count = $scope.count;
 			$scope.currentPracticeSession.endTimestamp = Date.now();
@@ -306,71 +307,66 @@ practiceDirective.controller( 'PracticeDirectiveController',
 
 	  ProfileService.getCurrentProfile().then(function (profile) {
 				var doUpload = ($scope.currentPracticeSession.ratings.length > 0);
-				var doStoreSession = false;
-	    // If the user is not done yet, we should save all the data that we need
+				var doStoreFormalSession = false;
+				// If the user is not done yet, we should save all the data that we need
 				// to restore the practice session.
+				var didNotFinish = $scope.currentPracticeSession.ratings.length > 0 && $scope.currentPracticeSession.count > $scope.currentPracticeSession.ratings.length;
+
 				if (profile.formalTester) {
-					doStoreSession = (
-						$scope.currentPracticeSession.ratings.length > 0 &&
-          $scope.currentPracticeSession.count > $scope.currentPracticeSession.ratings.length &&
-          AutoService.isSessionActive()
-					);
+					doStoreFormalSession = didNotFinish && AutoService.isSessionActive();
 				}
 
 				var storeTask = Promise.resolve();
-				if (doStoreSession) {
-					storeTask = $cordovaDialogs.confirm(
-						'Do you want to resume this recording session later?',
-						'Continue Later',
-						['Okay', 'Not really']
-					).then(function(index) {
-						if (index === 1) {
-							AutoService.pauseSession();
-							ProfileService.runTransactionForCurrentProfile(function(handle, doc, t) {
-								var res = t.update(handle, { inProcessSession: $scope.currentPracticeSession });
-								console.log(res);
-							});
-						} else {
-							ProfileService.runTransactionForCurrentProfile(function(handle, doc, t) {
-								t.update(handle, { inProcessSession: null });
-							});
-						}
+				if (doStoreFormalSession) {
+					AutoService.pauseSession(); // TODO: Perhaps set category restrictions to null.
+					$cordovaDialogs.alert(
+						"You quit midway through a session. You can resume the formal session by going to the Profiles->profile page and clicking Start Session.",
+						"Resume Session",
+						"Okay"
+					);
+					var currentPracticeSessionCopy = Object.assign({}, $scope.currentPracticeSession);
+					ProfileService.runTransactionForCurrentProfile(function(handle, doc, t) {
+						t.update(handle, { inProcessSession: currentPracticeSessionCopy });
 					});
-				} else {
+				} 
+				else {
 					ProfileService.runTransactionForCurrentProfile(function(handle, doc, t) {
 						t.update(handle, { inProcessSession: null });
 					});
 				}
 
-				storeTask.then(function() {
-					if (doUpload) {
-						saveJSON($scope.currentPracticeSession.ratings, jsonPath, function () {
-							files.Ratings = jsonPath;
-							$scope.currentPracticeSession.files = files;
-							var practiceTypeStr = sessionDisplayString();
-							var session = $scope.currentPracticeSession;
-							navigator.notification.confirm('Would you like to upload this ' + practiceTypeStr + ' session?',
-								function (index) {
-									NotifyingService.notify('recording-completed', session);
-									if (index === 1) {
-										session.uploadProgress = [0, 0, 0, 0];
-										UploadService.uploadPracticeSessionFiles(
-											files,
-											session.id,
-											uploadCallbackForSession(session),
-											completeCallback,
-											errorCallback
-										);
-										$scope.uploadStatus.isUploading = true;
-									}
-								}, 'Upload',
-								['Okay', 'Later']);
-						});
-					}
-				});
+				storeRecordingSession();
+
+				if (!$scope.skipUploadQuestion) {
+					storeTask.then(function() {
+						if (doUpload) {
+							saveJSON($scope.currentPracticeSession.ratings, jsonPath, function () {
+								files.Ratings = jsonPath;
+								$scope.currentPracticeSession.files = files;
+								var practiceTypeStr = sessionDisplayString();
+								var session = $scope.currentPracticeSession;
+								navigator.notification.confirm('Would you like to upload this ' + practiceTypeStr + ' session?',
+									function (index) {
+										NotifyingService.notify('recording-completed', session);
+										if (index === 1) {
+											session.uploadProgress = [0, 0, 0, 0];
+											UploadService.uploadPracticeSessionFiles(
+												files,
+												session.id,
+												uploadCallbackForSession(session),
+												completeCallback,
+												errorCallback
+											);
+											$scope.uploadStatus.isUploading = true;
+										}
+									}, 'Upload',
+									['Okay', 'Later']);
+							});
+						}
+					});
+			}
 
 	  });
-		storeRecordingSession();
 	  $rootScope.isRecording = false;
   }
 
@@ -407,13 +403,26 @@ practiceDirective.controller( 'PracticeDirectiveController',
 
 			var sessionPrepTask = Promise.resolve();
 			$scope.currentWordIdx = 0;
+			var needToReload = false;
 
-			if (user.inProcessSession) { // only happens if !probe
-				console.log('SESSION IN PROGRESS');
+			// Looks at certain fields in the previous session, whether it's on protocol or not, and then
+			// reconstructs the current state in the quest.
 
+			if (user.inProcessSession && AutoService.isSessionActive()) {
+				needToReload = true;
 				$scope.currentPracticeSession = Object.assign({}, user.inProcessSession);
+			}
 
-				QuestScore.initCoinCounter(user.inProcessSession.count, $scope.questCoins);
+			if ($rootScope.sessionToResume && !AutoService.isSessionActive()) {
+				needToReload = true;
+				$scope.currentPracticeSession = Object.assign({}, $rootScope.sessionToResume);
+			}
+
+			// TODO: Check to see if there's a better way to clear out the current session we're ressuming.
+			$rootScope.sessionToResume = null;
+
+			if (needToReload) {
+				QuestScore.initCoinCounter($scope.currentPracticeSession.count, $scope.questCoins);
 				$scope.scores = QuestScore.initScores();
 				$scope.highscores = QuestScore.initFakeHighScores; //#hc
 				$scope.badges = QuestScore.initBadges($scope.badges); // #hc - should save this with session dat in the future
@@ -421,7 +430,6 @@ practiceDirective.controller( 'PracticeDirectiveController',
 				//console.log($scope.csvs);
 				//$scope.reloadCSVData();
 				var previousRatings = $scope.currentPracticeSession.ratings;
-				//console.log(previousRatings);
 
 				sessionPrepTask = forEachPromise(previousRatings, function (rating) {
 					$scope.currentWordIdx++;
@@ -430,7 +438,8 @@ practiceDirective.controller( 'PracticeDirectiveController',
 					$scope.currentWordIdx = $scope.currentPracticeSession.ratings.length - 1;
 				});
 
-			} else { // if no previously saved mid-session data
+			}
+			else { // if no previously saved mid-session data
 				$scope.currentWordIdx = -1;
 				$scope.currentPracticeSession = initialPracticeSession(
 					Date.now(),
@@ -458,6 +467,9 @@ practiceDirective.controller( 'PracticeDirectiveController',
 					//$scope.carrier_phrases = AdaptDifficulty.phrases[0];
 				} // if quest
 			}
+
+			$scope.currentPracticeSession.categoryRestrictions = $rootScope.finalSelectedCategories;
+			$rootScope.finalSelectedCategories = null;
 			// -----------------------------------------------------
 			// Even if this is a continuation of a previous session, it still needs
 			// a unique recording ID
@@ -562,6 +574,39 @@ practiceDirective.controller( 'PracticeDirectiveController',
 	    }
 	  );
 		};
+
+
+		// BEGIN PAUSE-SETUP
+
+		if ($rootScope.pauseListenersSet) {
+			document.removeEventListener("pause", $rootScope.onPause);
+			document.removeEventListener("resume", $rootScope.onResume);
+		}
+
+		$rootScope.onPause = function () {
+			$scope.active = false;
+			$scope.skipUploadQuestion = true;
+			$scope.endWordPractice();
+			$state.go("root.profiles");
+			if (!AutoService.isSessionActive()) {
+				$cordovaDialogs.alert(
+					"Hey, looks like you quit staRt mid session! You can resume quizzes and quests by going to the recordings section on the Profiles page.",
+					"Session Interrupted",
+					"Got it!"
+				);
+			}
+		}
+
+		$rootScope.onResume = function () {
+			console.log("Resuming app, we should be switching states to profiles.,");
+		}
+
+		document.addEventListener("pause", $rootScope.onPause);
+		document.addEventListener("resume", $rootScope.onResume);
+		$rootScope.pauseListenersSet = true;
+
+		// END PAUSE-SETUP
+
 
 		$scope.endWordPractice = function () {
 
