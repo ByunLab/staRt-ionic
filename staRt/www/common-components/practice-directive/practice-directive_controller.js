@@ -138,7 +138,7 @@ practiceDirective.controller( 'PracticeDirectiveController',
 			if (!$scope.probe) { //quest
 				QuestScore.questRating(data, $scope.scores, $scope.milestones, $scope.currentWordIdx, $scope.badges);
 
-				console.log($scope.milestones);
+				//console.log($scope.milestones);
 				//console.log($scope.badges);
 
 				// if Quest end-of-block, check Adaptive Difficulty
@@ -180,7 +180,7 @@ practiceDirective.controller( 'PracticeDirectiveController',
 
 				return Promise.resolve();
 
-			} else { //if quiz, no adapt Diff
+			} else { //else if quiz, no adapt Diff
 				// I only have the qzSW svg at the moment
 				if($scope.quizType === 'qzSW') {
 					QuizScore.quizRating(data, $scope.quizType, $scope.currentWordIdx, $scope.qzGraphicsMode);
@@ -304,9 +304,13 @@ practiceDirective.controller( 'PracticeDirectiveController',
 		} // end updateHighscores()
 
 		/* called at the end of recordingDidStop()
+
 			purpose: updates session hx and highscores firebase data
 				this is the session data that is saved for ALL recording sessions, not just the 'resume progress' session */
 		function storeRecordingSession() {
+
+
+
 			ProfileService.runTransactionForCurrentProfile(function(handle, doc, t) {
 				var recordingSessionHistory = doc.data().recordingSessionHistory;
 
@@ -326,6 +330,8 @@ practiceDirective.controller( 'PracticeDirectiveController',
 		  console.log('Metadata: ' + files.Metadata);
 		  console.log('LPC: ' + files.LPC);
 		  console.log('Audio: ' + files.Audio);
+
+
 		  var jsonPath = files.Metadata.replace('-meta.csv', '-ratings.json');
 		  $scope.currentPracticeSession.count = $scope.count;
 			$scope.currentPracticeSession.endTimestamp = Date.now();
@@ -344,7 +350,7 @@ practiceDirective.controller( 'PracticeDirectiveController',
 					// to restore the practice session.
 					if (profile.formalTester) {
 						doStoreSession = (
-							$scope.currentPracticeSession.ratings.length > 0 &&
+						$scope.currentPracticeSession.ratings.length > 0 &&
 	          $scope.currentPracticeSession.count > $scope.currentPracticeSession.ratings.length &&
 	          AutoService.isSessionActive()
 						);
@@ -425,7 +431,8 @@ practiceDirective.controller( 'PracticeDirectiveController',
 			var sessionPrepTask = Promise.resolve();
 			$scope.currentWordIdx = 0;
 
-			if (user.inProcessSession) { // only happens if !probe, and user is on protocol
+			// only happens if !probe, and user is on-protocol
+			if (user.inProcessSession) {
 				console.log('SESSION IN PROGRESS');
 
 				$scope.currentPracticeSession = Object.assign({}, user.inProcessSession);
@@ -440,10 +447,10 @@ practiceDirective.controller( 'PracticeDirectiveController',
 				}
 				$scope.milestones = QuestScore.initMilestones($scope.highscores);
 
-				$scope.badges = QuestScore.initBadges($scope.badges); // #hc - need to save this with session data in the future
+				// #hc - should this be saved with currentPracticeSession data in the future???
+				$scope.badges = QuestScore.initBadges($scope.badges);
 
 				var previousRatings = $scope.currentPracticeSession.ratings;
-				//console.log(previousRatings);
 
 				sessionPrepTask = forEachPromise(previousRatings, function (rating) {
 					$scope.currentWordIdx++;
@@ -464,24 +471,20 @@ practiceDirective.controller( 'PracticeDirectiveController',
 					// init for new scores and coin row graphics
 					// $scope.questCoins = []; //holds stacks of Quest Coins
 					QuestScore.initCoinCounter($scope.count, $scope.questCoins);
-
 					$scope.scores = QuestScore.initScores($scope.scores);
 
 					if (user.highscoresQuest) {
 						$scope.highscores = Object.assign({}, user.highscoresQuest);
-						// console.log(user.highscoresQuest);
 					} else {
 						$scope.highscores = QuestScore.initNewHighScores($scope.highscores);
-						// console.log($scope.highscores);
 					}
 					$scope.milestones = QuestScore.initMilestones($scope.highscores);
-					console.log($scope.milestones);
+					//console.log($scope.milestones);
 
 					$scope.badges = QuestScore.initBadges();
 
 					// check for stored AdaptDiff level?????? or
 					$scope.difficulty = 1;
-					//$scope.carrier_phrases = AdaptDifficulty.phrases[0];
 				} // if quest
 			} // end if no previously saved mid-session data
 
@@ -528,7 +531,6 @@ practiceDirective.controller( 'PracticeDirectiveController',
 					$scope.carrier_phrase = $scope.carrier_phrases[Math.floor(Math.random() * $scope.carrier_phrases.length)];
 					$scope.smallFont = $scope.carrier_phrase.length >= 16;
 					$scope.tinyFont = $scope.carrier_phrase.length >= 32;
-
 		  }
 
 	  if ($scope.pauseEvery && $scope.pauseEvery > 0 && $scope.currentWordIdx > 0) {
@@ -593,6 +595,7 @@ practiceDirective.controller( 'PracticeDirectiveController',
 		$scope.endWordPractice = function () {
 
 		  if (!$scope.probe) {
+
 	      $scope.currentPracticeSession.numberTrialsCorrect = $scope.scores.session_coins.gold;
 
 	      $scope.currentPracticeSession.percentTrialsCorrect = $scope.currentPracticeSession.numberTrialsCorrect/$scope.currentWordIdx;
