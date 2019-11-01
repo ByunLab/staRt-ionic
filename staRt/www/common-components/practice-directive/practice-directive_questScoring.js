@@ -103,17 +103,14 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 	};
 
 	var initNewHighScores = function(highscores) {
-		// not currently in use
 		highscores = undefined;
 		highscores = new NewQuestHighScores();
-
 		return highscores;
 	};
 
 	var initMilestones = function(highscores) {
 		milestones = undefined;
 		milestones = new Milestones();
-		//console.log(highscores);
 
 		function mapHighscores(milestone) {
 			var highscoresArr = highscores[milestone + 'Hx'].map(function(item) {
@@ -127,21 +124,18 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 			milestones.highscores[key] = mapHighscores(key);
 		}
 		//console.log(milestones);
-
 		return milestones;
 	};
 
 	var initScores = function(scores) {
 		scores = undefined;
 		scores = new QuestScores();
-
 		return scores;
 	};
 
 	var initBadges = function(badges) {
 		badges = undefined;
 		badges = new Badges();
-
 		return badges;
 	};
 
@@ -224,11 +218,15 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		scores.block_display_score = 0;
 		scores.block_goldCount = 0;
 		resetBadges(badges, 'newRecord');
+	};
+
+	// #TEMP
+	function resetEndBlockBadges(badges) {
 		badges.endBlockSum.mgib = false;
 		badges.endBlockSum.hsib = false;
 		badges.endBlockSum.streak = false;
 		badges.endBlockSum.perfectBlock = false;
-	};
+	}
 
 	function updateMilestone(scores, milestones, msProp, scoresProp, scoresPropOpt) {
 		if(scoresPropOpt) {
@@ -320,9 +318,8 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 
 		// checked at end of block -----------------------------
 		if( endOfBlock ) {
-			console.log(milestones);
-			scores.performance = scores.block_score/10;
 			console.log(badges.endBlockSum);
+			scores.performance = scores.block_score/10;
 			// queque endBlockSum Seq
 			resetForNewBlock(scores, badges);
 			endOfBlock = false;
@@ -368,6 +365,15 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		if (currentWordIdx % 10 == 0 && currentWordIdx != 0) {
 			endOfBlock = true;
 		}
+
+		// #HMC TEMP -- Change this when dialogs are ready
+		if (currentWordIdx % 10 == 1 && currentWordIdx > 10) {
+			// endOfBlock = true;
+			console.log(badges.endBlockSum);
+			console.log('RESET END OF BLOCK BADGES')
+			resetEndBlockBadges(badges);
+		}
+
 
 		checkUpdateMilestones(scores, milestones, endOfBlock, badges);
 	}; // end questRating()

@@ -1,6 +1,6 @@
 var profileService = angular.module('profileService', [ 'firebaseService', 'notifyingService', 'utilitiesService' ]);
 
-profileService.factory('ProfileService', function($rootScope, $localForage, $http, FirebaseService, NotifyingService, StartServerService, UtilitiesService)
+profileService.factory('ProfileService', function($rootScope, $state, $localForage, $http, FirebaseService, NotifyingService, StartServerService, UtilitiesService)
 {
 	function newUserProfile() {
 		if (!FirebaseService.loggedIn()) { return null; }
@@ -53,8 +53,10 @@ profileService.factory('ProfileService', function($rootScope, $localForage, $htt
 			lastSessionTimestamp: null, // Unix timestamp of most recent trial
 			creationTimestamp: Date.now(), // Unix timestamp profile creation
       lastLoginTimestamp: Date.now(), // Unix time of last login
-      inProcessSession: null, // Ratings etc. in the current recording
-      inProcessSessionState: null, // The state of the resumed session
+      inProcessSession: null, // Ratings etc. in the current recording for a formal ON-protocol session
+      inProcessSessionState: null, // Extra data for the state of the resumed on protocol session
+			inProcessNormalSession: null, // Ratings etc. in the current recording for an OFF-protocol session.
+			recordingSessionHistory: [],
 		};
 	};
 

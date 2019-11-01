@@ -3,5 +3,11 @@
   <div class="sandbank-score">
     <span ng-if="isPracticing">{{scores.display_score}} pts</span>
     <span class="sandbank-sandDollar"></span>
+    <button
+      ng-if="isPracticing && !probe"
+      ng-click="resetQuestHighscores()">
+      Reset Highscores
+    </button>
   </div>
+
 </div>
