@@ -163,8 +163,9 @@ var SessionAuto = function (profile, currentStats, onShow, initialState) {
 	}, this.state);
 
 	var steps = {};
-	var ordinals = ["First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth", "Thirteenth", "Fourteenth", "Fifteenth", "Sixteenth"];
-	var sessionIndex = profile.nBiofeedbackSessionsCompleted + profile.nNonBiofeedbackSessionsCompleted;
+    var ordinals = ["Zeroeth", "First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth", "Thirteenth", "Fourteenth", "Fifteenth", "Sixteenth"];
+    // start sessionIndex at 1 for better human readability
+	var sessionIndex = profile.nBiofeedbackSessionsCompleted + profile.nNonBiofeedbackSessionsCompleted + 1;
 
 	// Re-use the biofeedback constraint, if you have one saved
 	if (!this.state.biofeedback) {
@@ -311,7 +312,7 @@ var SessionAuto = function (profile, currentStats, onShow, initialState) {
 	steps.allDone = {
 		dialog: function (profile, currentStats) {
 			var text;
-			if (sessionIndex === (TOTAL_SESSION_COUNT - 1)) {
+			if (sessionIndex === (TOTAL_SESSION_COUNT)) {
 				var percentCorrectStr = profile.percentTrialsCorrect.toString().split(".")[0];
 				text = "Congratulations, you finished your sixteen quests! Your total accuracy was approximately " + percentCorrectStr +
           "% correct. Your accuracy in your final session was approximatedly " + currentStats.thisQuestPercentTrialsCorrect + "% correct." +

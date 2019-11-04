@@ -38,7 +38,7 @@ function _mimeTypeForFile(value) {
 	return null;
 }
 
-uploadService.factory('UploadService', function($localForage, $http, $cordovaDialogs, StartServerService)
+uploadService.factory('UploadService', function($localForage, $http, $cordovaDialogs, StartServerService, SessionStatsService)
 {
 	function saveUploadStatusForSessionKey(sessionKey, status) {
 		var item = downloadStatusCache[sessionKey];
@@ -55,7 +55,9 @@ uploadService.factory('UploadService', function($localForage, $http, $cordovaDia
 
 	// Returns a promise that resolves when the upload is complete (or fails)
 	function uploadFile(absolutePath, destURL, mimeType, sessionID, progressCb, $http, $cordovaDialogs)
-	{
+    {
+	var stats = SessionStatsService.getCurrentProfileStats();
+	var session = stats ? stats.thisContextString : '';
 		return new Promise(function (resolve, reject) {
 			var win = function (r) {
 				console.log("Code = " + r.responseCode);
@@ -78,7 +80,7 @@ uploadService.factory('UploadService', function($localForage, $http, $cordovaDia
 					// call getCredentials and set http headers with username and password
 					StartServerService.getCredentials(function(credentials) {
 						var headers = {
-							'filename':options.fileName,
+							'filename':options.fileName + '-' + session,
 						};
 						if (credentials) {
 							headers['Authorization'] = 'Basic ' + btoa(credentials.username + ':' + credentials.password);
