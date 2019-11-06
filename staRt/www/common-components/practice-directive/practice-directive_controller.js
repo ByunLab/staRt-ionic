@@ -455,9 +455,9 @@ practiceDirective.controller( 'PracticeDirectiveController',
 
 			if (needToReload) {
 				QuestScore.initCoinCounter($scope.currentPracticeSession.count, $scope.questCoins);
-				$scope.scores = QuestScore.initScores();
-				$scope.highscores = QuestScore.initFakeHighScores; //#hc
-				$scope.badges = QuestScore.initBadges($scope.badges); // #hc - should save this with session dat in the future
+				$scope.scores = QuestScore.initScores($scope.scores); // always new
+				$scope.milestones = QuestScore.initMilestones($scope.highscores); // built from highscores
+				$scope.badges = QuestScore.initBadges($scope.badges); // always new
 			// CHECK SAVED QUEST SESSION STATUS & GET user.highscoresQuest ---------------------------
 				if(!$scope.probe) { //TODO: were we going to update to include saved quizzes????
 					// On-Protocol Resume: checks fb for inProcessSession & local protocol-status
