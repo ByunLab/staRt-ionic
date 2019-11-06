@@ -5,32 +5,6 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 
 	/* ---------------------------------------
   Purpose: Handles Quest scoring, milestone, and badging logic
-  Specs: See qtScoring.md, altho this may be out-of-date
-
-  Process:
-    on each rating:
-    - update data: scores, coin, streaks
-    - check for new highscores, which triggers badges
-    - check for end of block
-
-    on end-of-block
-      - queque and run end-of-block seq
-
-    on end-of-block seq: TODO
-    end-of-quest seq: TODO
---------------------------------------- */
-
-	// ==============================================
-	// DATA ----
-	// leaderboard or sticker???
-	// ability to reset Milestone?
-
-	// ----------------------------------------------
-	/* qtHighScores ---------------------------------
-  - this is what should be saved on fb
-  - it persists across quest recording sessions (Highscores achieved over time)
-  - it is req'd to create the in-game inGameMilestones obj, against which badges and milestones are checked after each rating
-
   Ref: See https://github.com/ByunLab/staRt-ionic/wiki/Quest-Scoring
 	*/
 
@@ -38,12 +12,12 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 	// a highscoreQuest object
 	function NewQuestHighScores() { // for new accts
 		return  {
-			mgibHx: [],
-			hsibHX: [],
-			mgiqHx: [],
-			hsiqHx: [],
-			streakHx: [],
-			perfectBlockHx: [],
+			mgibHx: [ {score: 0, date: Date.now()} ],
+			hsibHx: [ {score: 0, date: Date.now()} ],
+			mgiqHx: [ {score: 0, date: Date.now()} ],
+			hsiqHx: [ {score: 0, date: Date.now()} ],
+			streakHx: [ {score: 0, date: Date.now()} ],
+			perfectBlockHx: [ {score: 0, date: Date.now()} ],
 		};
 	}
 
@@ -63,6 +37,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 				mgibHx: {},
 				hsibHx: {},
 				mgiqHx: {},
+				hsiqHx: {},
 				streakHx: {},
 				perfectBlockHx: {},
 			},
@@ -84,6 +59,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 				bronze: 0
 			},
 			streak: 0,
+			perfectBlock: 0,
 			performance: 0 // req'd for difficulty score
 		};
 	}
@@ -115,12 +91,6 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		};
 	}
 
-	// qtSeshScore
-	// count
-	// difficulty
-	// cat restrictions
-
-
 	// ==============================================
 	// INITS ------------------------
 	var initCoinCounter = function(count, questCoins){
@@ -142,13 +112,13 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		milestones = undefined;
 		milestones = new Milestones();
 
-		var mapHighscores = function(milestone) {
+		function mapHighscores(milestone) {
 			var highscoresArr = highscores[milestone + 'Hx'].map(function(item) {
 				return item.score;
 			});
-			//return(Math.max(...highscoresArr)); (won't work on iOS9)
+			//return(Math.max(...highscoresArr)); (won't work on iOS9?)
 			return(Math.max.apply(Math, highscoresArr));
-		};
+		}
 
 		for (var key in milestones.highscores) {
 			milestones.highscores[key] = mapHighscores(key);
@@ -276,7 +246,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 	var endOfBlock = false;
 
 	//called by questRating()
-	var checkUpdateMilestones = function(scores, highscores, endOfBlock, badges) {
+	var checkUpdateMilestones = function(scores, milestones, endOfBlock, badges) {
 
 		// checked every trial -----------------------------
 		if(scores.streak > 2)	{
@@ -294,10 +264,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 			displayBadgeNewRecord(badges);
 			badges.endBlockSum.mgib = true;
 			badges.endBlockSum.mgibCount = scores.block_goldCount;
-
-			milestones.update.mgibHx.score = scores.block_goldCount;
-			milestones.update.mgibHx.date = Date.now();
-			milestones.shouldUpdateFirebase = true;
+			updateMilestone(scores, milestones, 'mgibHx', 'block_goldCount');
 		}
 
 		if( scores.block_display_score > milestones.highscores.hsib) {
@@ -306,10 +273,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 			displayBadgeNewRecord(badges);
 			badges.endBlockSum.hsib = true;
 			badges.endBlockSum.hsibCount = scores.block_display_score;
-
-			milestones.update.hsibHx.score = scores.block_display_score;
-			milestones.update.hsibHx.date = Date.now();
-			milestones.shouldUpdateFirebase = true;
+			updateMilestone(scores, milestones, 'hsibHx', 'block_display_score');
 		}
 
 		if( scores.display_score > milestones.highscores.hsiq) {
@@ -336,10 +300,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 			displayBadgeNewRecord(badges);
 			badges.endBlockSum.streak = true;
 			badges.endBlockSum.streakCount = scores.streak;
-
-			milestones.update.streakHx.score = scores.streak;
-			milestones.update.streakHx.date = Date.now();
-			milestones.shouldUpdateFirebase = true;
+			updateMilestone(scores, milestones, 'streakHx', 'streak');
 		}
 
 		if(scores.block_goldCount === 10) {
@@ -349,8 +310,9 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 			badges.endBlockSum.perfectBlock = true,
 			badges.endBlockSum.perfectBlockCount = milestones.highscores.perfectBlock;
 
-			milestones.update.perfectBlockHx.score = milestones.highscores.perfectBlock;
+			milestones.update.perfectBlockHx.score= milestones.highscores.perfectBlock;
 			milestones.update.perfectBlockHx.date = Date.now();
+			milestones.update.perfectBlockHx.sessionID = scores.sessionID;
 			milestones.shouldUpdateFirebase = true;
 		}
 
@@ -367,17 +329,11 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 
 	//--------------------------------------------------
 	//called by each rating button press
-	var questRating = function(data, scores, highscores, currentWordIdx, badges) {
-		/*
-  update coin graphic
-  update scores
-  check for end of block
-  call milestone update
-  */
-		// console.log('quest rating called');
-		// console.log(data);
-		// console.log(currentWordIdx);
-
+	var questRating = function(data, scores, milestones, currentWordIdx, badges) {
+	  // update coin graphic
+	  // update scores
+	  // check for end of block
+	  // call milestone update
 
 		endOfBlock = false;
 
