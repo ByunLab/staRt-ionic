@@ -101,6 +101,10 @@ practiceDirective.controller( 'PracticeDirectiveController',
 	    uploadProgress: 0
 		};
 
+	    // CHANGE
+	    $scope.word_list_type = 'blocked'; // or random
+	    $scope.blocked_word_list_size = 2; // required only if word_list_type === 'blocked'
+	    
 		// We should rerandomize the word list when we've completed a cycle through all the words.
 		// But this gets tricky when we add new words to our list from a difficulty change, and our currentWordIdx
 		// is some value other than 0. So when we get a wordlist of a new length L we set reorderOffset to
@@ -423,8 +427,8 @@ practiceDirective.controller( 'PracticeDirectiveController',
 				var previousRatings = $scope.currentPracticeSession.ratings;
 				//console.log(previousRatings);
 
-				sessionPrepTask = forEachPromise(previousRatings, function (rating) {
-					$scope.currentWordIdx++;
+			    sessionPrepTask = forEachPromise(previousRatings, function (rating) {
+				$scope.currentWordIdx++;
 					return handleRatingData($scope, rating.rating);
 				}).then(function () {
 					$scope.currentWordIdx = $scope.currentPracticeSession.ratings.length - 1;
@@ -485,14 +489,25 @@ practiceDirective.controller( 'PracticeDirectiveController',
 	    $scope.rating = 0;
 	    $scope.$broadcast('resetRating');
 	  }
-
-			$scope.currentWordIdx++;
+		    $scope.currentWordIdx++;
 
 	  if ($scope.count && $scope.currentWordIdx >= $scope.count) {
 	    $scope.endWordPractice();
 	  } else {
-				var lookupIdx = $scope.currentWordIdx % $scope.wordOrder.length;
-				$scope.currentWord = $scope.wordList[$scope.wordOrder[lookupIdx]];
+	      // select word based on word_list_type
+	      var lookupIdx = $scope.currentWordIdx % $scope.wordOrder.length;
+	      switch($scope.word_list_type){
+	      case 'random':
+		  // just leave it as is
+		  break;
+	      case 'blocked':
+		  // level it off based on block size
+		  lookupIdx = Math.floor(lookupIdx / $scope.blocked_word_list_size);
+		  break;
+	      }
+	      
+	      
+	      $scope.currentWord = $scope.wordList[$scope.wordOrder[lookupIdx]];
 
 				//console.log($scope.currentWord);
 
