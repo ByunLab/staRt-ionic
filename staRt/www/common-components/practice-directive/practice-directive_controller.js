@@ -320,7 +320,13 @@ practiceDirective.controller( 'PracticeDirectiveController',
 					console.log("Pushing saved practiced session");
 					recordingSessionHistory.push(savedPracticeSession);
 				}
-				t.update(handle, {recordingSessionHistory: recordingSessionHistory});
+				try {
+					t.update(handle, {recordingSessionHistory: recordingSessionHistory});
+					console.log("successful update");
+				} 
+				catch (err) {
+					console.log("failed update: %o", err);
+				}
 				console.log("finished update");
 			});
 			if(!$scope.probe) updateQuestHighscores();
