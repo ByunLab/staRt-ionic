@@ -169,7 +169,11 @@ profileService.factory('ProfileService', function($rootScope, $state, $localFora
 	function _getRecordingSessionDataById(profile, sessionid) {
 		var recordingSessions = profile.recordingSessionHistory.filter(function (recordingSession) {return recordingSession.id === sessionid});
 		if (recordingSessions.length == 0) {
-			console.log("ERROR: Recording session with id " + sessionid + " not found.");
+			$cordovaDialogs.alert(
+				'This recording session cannot be resumed.',
+				'Cannot resume session.',
+				'Okay'
+			);
 		}
 		else if (recordingSessions.length > 1) {
 			console.log("ERROR: There should only be one recording session per id.");
