@@ -518,7 +518,11 @@ practiceDirective.controller( 'PracticeDirectiveController',
 				} // if quest
 			}
 
-			$scope.currentPracticeSession.categoryRestrictions = $rootScope.finalSelectedCategories;
+			if (!$scope.probe) {
+				$scope.currentPracticeSession.categoryRestrictions = $rootScope.finalSelectedCategories;
+			} else { // We explicitly set this to null so practice sessions stored in recordingHistory have a consistent set of keys.
+				$scope.currentPracticeSession.categoryRestrictions = null;
+			}
 			$rootScope.finalSelectedCategories = null;
 
 			// TODO: Check to see if we need to do Object.assign instead.
