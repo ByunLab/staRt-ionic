@@ -311,23 +311,14 @@ practiceDirective.controller( 'PracticeDirectiveController',
 		function storeRecordingSession(resolve, reject) {
 			// We need to create a copy of $scope.currentPracticeSession to avoid race conditions.		
 			var savedPracticeSession =  Object.assign({}, $scope.currentPracticeSession);
-			console.log("saved Practice Session : %o", savedPracticeSession);
 			ProfileService.runTransactionForCurrentProfile(function(handle, doc, t) {
 				var recordingSessionHistory = doc.data().recordingSessionHistory;
 				if (recordingSessionHistory == null) {
 					recordingSessionHistory = [savedPracticeSession];
 				} else {
-					console.log("Pushing saved practiced session");
 					recordingSessionHistory.push(savedPracticeSession);
 				}
-				try {
-					t.update(handle, {recordingSessionHistory: recordingSessionHistory});
-					console.log("successful update");
-				} 
-				catch (err) {
-					console.log("failed update: %o", err);
-				}
-				console.log("finished update");
+				t.update(handle, {recordingSessionHistory: recordingSessionHistory});
 			});
 			if(!$scope.probe) updateQuestHighscores();
 		}
