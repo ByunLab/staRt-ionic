@@ -6,12 +6,14 @@
 				ng-repeat="recording in data.currentProfileRecordings track by recording.Metadata"
 				ng-class="{uploaded:recording.uploaded, not_uploaded:!recording.uploaded}"
 			>
-				<ion-item ng-click="recordingClicked(recording)" ng-class="{ selected: recording.selected }">
+				<ion-item ng-class="{ selected: recording.selected }">
 					<div>{{ recording.date }} </div>
 					<div>{{ recording.userString }} </div>
 					<div>{{ recording.totalTimeString }} </div>
 					<div ng-if=recording.uploaded class="upload_badge uploaded">Uploaded</div>
 					<div ng-if=!recording.uploaded class="upload_badge not_uploaded">Not Uploaded</div>
+					<button class="button buttcon-calm" ng-click="resumeRecording(recording)">Resume</button>
+					<button class="button buttcon-calm" ng-click="recordingClicked(recording)">Queue Upload</button>
 				</ion-item>
 			</ion-list>
 			

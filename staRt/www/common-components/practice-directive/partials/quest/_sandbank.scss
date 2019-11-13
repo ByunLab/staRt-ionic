@@ -22,7 +22,8 @@
     flex-flow: column nowrap;
     justify-content: space-between;
     align-items: center;
-    height: $row-h * 0.9;
+    //height: $row-h * 0.9;
+    height: $row-h * 1.1; //TEMP adjusted for reset btn
     width: $col-w * 2;
     bottom: $row-h * 0.2;
     //padding-bottom: $row-h * 0.1;
@@ -43,6 +44,10 @@
       background-position: center;
       background-repeat: no-repeat;
       //border: 1px solid red;
+    }
+    button {
+      margin: 3px;
+      padding: 3px;
     }
   } // .sandbank-score
 } // .sandbank-container

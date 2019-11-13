@@ -290,18 +290,20 @@ function compareRecordings(ra, rb) {
 		// CARD: RECORDINGS
 		// ===========================================================
 
+		var sessionIDForRecording = function (recording) {
+			return recording.Metadata.split('/').pop().substr(0, 36);
+		}
+
 		$scope.updateRecordingsList = function()
 		{
-			function sessionKeyForRecording(recording) {
-				return recording.Metadata.split('/').pop().substr(0, 36);
-			}
+
 			$scope.data.selectedProfileRecordings = [];
 			ProfileService.getRecordingsForProfile($scope.data.currentProfile, function(recordings) {
 				var statusesToFetch = [];
 				recordings.sort(compareRecordings); // Prefer the recordings sorted from present to past
 				recordings.forEach(function(recording) {
 					statusesToFetch.push(
-						UploadService.getUploadStatusForSessionKey(sessionKeyForRecording(recording))
+						UploadService.getUploadStatusForSessionKey(sessionIDForRecording(recording))
 							.then(function(status) {
 								recording.uploaded = !!status.uploaded;
 								if (recording.endDate && recording.endDate.length > 0) {
@@ -327,6 +329,13 @@ function compareRecordings(ra, rb) {
 				$scope.data.selectedProfileRecordings.push(member);
 				member.selected = true;
 			}
+		}
+
+		$scope.resumeRecording = function (member) {
+			var sessionid = sessionIDForRecording(member);
+			ProfileService.getCurrentProfile().then(function(res) {
+				ProfileService.resumeNormalRecordingSession(res, sessionid);
+			});
 		}
 
 		$scope.deleteSelectedRecordings = function() {
