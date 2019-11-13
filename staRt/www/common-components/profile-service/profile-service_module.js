@@ -187,7 +187,7 @@ profileService.factory('ProfileService', function($rootScope, $state, $localFora
 	function _resumeNormalRecordingSession(profile, sessionid) {
 		var recordingSession = _getRecordingSessionDataById(profile, sessionid);
 		if (recordingSession.count <= recordingSession.ratings.length) {
-				// Ideally though we don't even show the resume button for completed sessions.
+				// Ideally we don't even show the resume button for completed sessions.
 				$cordovaDialogs.alert(
 					'You cannot resume a session that has already been completed.',
 					'Cannot resume session.',
@@ -195,6 +195,14 @@ profileService.factory('ProfileService', function($rootScope, $state, $localFora
 				);
 				return;
 		}
+		if (recordingSession.isFormalSession) {
+			$cordovaDialogs.alert(
+				'You cannot resume an on protocol session through this page. You must resume on protocol sessions by going to Profiles->profile and clicking start session.',
+				'Cannot resume session.',
+				'Okay'
+			);
+			return;
+	}
 		var is_quest = recordingSession.probe == 'quest';
 		var is_quiz = recordingSession.probe && !is_quest; // probe is set to true if its a quiz, and 'quest' if its a quest.
 		$rootScope.sessionToResume = recordingSession;

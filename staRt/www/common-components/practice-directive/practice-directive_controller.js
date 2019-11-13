@@ -308,9 +308,10 @@ practiceDirective.controller( 'PracticeDirectiveController',
 			$scope.endWordPractice();
 		}
 
-		function storeRecordingSession(resolve, reject) {
+		function storeRecordingSession() {
 			// We need to create a copy of $scope.currentPracticeSession to avoid race conditions.		
 			var savedPracticeSession =  Object.assign({}, $scope.currentPracticeSession);
+			savedPracticeSession.isFormalSession = AutoService.isSessionActive();
 			ProfileService.runTransactionForCurrentProfile(function(handle, doc, t) {
 				var recordingSessionHistory = doc.data().recordingSessionHistory;
 				if (recordingSessionHistory == null) {
@@ -341,25 +342,26 @@ practiceDirective.controller( 'PracticeDirectiveController',
 			});
 
 			var doUpload = ($scope.currentPracticeSession.ratings.length > 0);
-			var doStoreFormalSession = false;
 			// If the user is not done yet, we should save all the data that we need
 			// to restore the practice session.
 			var didNotFinish = $scope.currentPracticeSession.ratings.length > 0 && $scope.currentPracticeSession.count > $scope.currentPracticeSession.ratings.length;			
 
-	  	ProfileService.getCurrentProfile().then(function (profile) {
-				if (profile.formalTester) {
-					doStoreFormalSession = didNotFinish && AutoService.isSessionActive();
-				}
-			});
+			var doStoreFormalSession = didNotFinish && AutoService.isSessionActive();
+			var storeTask = Promise.resolve();
 
-				var storeTask = Promise.resolve();
-				if (doStoreFormalSession) {
+
+			storeRecordingSession();
+
+			if (doStoreFormalSession) {
+					console.log("storing formal session");
 					AutoService.pauseSession(); // TODO: Perhaps set category restrictions to null.
-					$cordovaDialogs.alert(
-						"You quit midway through a session. You can resume the formal session by going to the Profiles->profile page and clicking Start Session.",
-						"Resume Session",
-						"Okay"
-					);
+					if ($scope.skipUploadQuestion) {
+						$cordovaDialogs.alert(
+							"You quit midway through a session. You can resume the formal session by going to the Profiles->profile page and clicking Start Session.",
+							"Resume Session",
+							"Okay"
+						);
+					}
 					var currentPracticeSessionCopy = Object.assign({}, $scope.currentPracticeSession);
 					ProfileService.runTransactionForCurrentProfile(function(handle, doc, t) {
 						t.update(handle, { inProcessSession: currentPracticeSessionCopy });
@@ -371,9 +373,7 @@ practiceDirective.controller( 'PracticeDirectiveController',
 					});
 				}
 
-				storeRecordingSession();
-				console.log("after store recording session");
-				//$scope.skipUploadQuestion = true;
+
 				if (!$scope.skipUploadQuestion) {
 					storeTask.then(function() {
 						if (doUpload) {
