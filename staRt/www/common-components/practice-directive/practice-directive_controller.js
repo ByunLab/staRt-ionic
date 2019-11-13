@@ -439,7 +439,6 @@ practiceDirective.controller( 'PracticeDirectiveController',
 
 
 			var sessionPrepTask = Promise.resolve();
-			var needToReload = false;
 			$scope.currentWordIdx = 0;
 			var needToReload = false;
 
@@ -648,7 +647,7 @@ practiceDirective.controller( 'PracticeDirectiveController',
 		}
 
 		$rootScope.onResume = function () {
-			console.log("Resuming app, we should be switching states to profiles.,");
+			console.log("Resuming app, we should be switching states to profiles.");
 		}
 
 		document.addEventListener("pause", $rootScope.onPause);
