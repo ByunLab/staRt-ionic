@@ -160,12 +160,10 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 	};
 
 
-	// ADAPTIVE DIFFICULTY HELPERS ---------------------------------------------------
-
-
 	// RATINGS ---------------------------------------------------
 	function handleRatingData($scope, data) {
 
+		// adative difficulty helpers
 		function should_increase_difficulty() {return performance >= increase_difficulty_threshold && $scope.difficulty < 5;}
 		function should_decrease_difficulty() {return performance <= decrease_difficulty_threshold && $scope.difficulty > 1;}
 
@@ -185,6 +183,7 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 			return Promise.resolve();
 		}
 
+		// process new rating
 		if (!$scope.probe) { //quest
 			QuestScore.questRating(data, $scope.scores, $scope.milestones, $scope.currentWordIdx, $scope.badges);
 
@@ -213,8 +212,8 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 		}
 	} // end handleRatingData
 
-	// ----------------------------------------------
 
+	// ----------------------------------------------
 	// eslint-disable-next-line no-unused-vars
 	function recordingDidStart(profileDescArray) {
 		console.log('Recording did start');
