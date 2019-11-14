@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 /*global Promise resolveLocalFileSystemURL */
 'use strict';
 
@@ -215,6 +214,7 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 	} // end handleRatingData
 
 	// ----------------------------------------------
+
 	// eslint-disable-next-line no-unused-vars
 	function recordingDidStart(profileDescArray) {
 		console.log('Recording did start');
@@ -783,6 +783,7 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 		}
 	});
 
+	// eslint-disable-next-line no-unused-vars
 	$scope.$on('stopPractice', function (event) {
 	  if ($scope.isPracticing) {
 	    $scope.endWordPractice();
