@@ -303,7 +303,7 @@ function compareRecordings(ra, rb) {
 				recordings.sort(compareRecordings); // Prefer the recordings sorted from present to past
 				recordings.forEach(function(recording) {
 					statusesToFetch.push(
-						UploadService.getUploadStatusForSessionKey(sessionIDForRecording(recording))
+						UploadService.getUploadStatusForRecordingSessionID(sessionIDForRecording(recording))
 							.then(function(status) {
 								recording.uploaded = !!status.uploaded;
 								if (recording.endDate && recording.endDate.length > 0) {
