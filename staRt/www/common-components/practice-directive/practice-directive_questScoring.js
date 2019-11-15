@@ -218,7 +218,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		scores.block_display_score = 0;
 		scores.block_goldCount = 0;
 		resetBadges(badges, 'newRecord');
-	};
+	}
 
 	// #TEMP
 	function resetEndBlockBadges(badges) {
@@ -370,7 +370,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		if (currentWordIdx % 10 == 1 && currentWordIdx > 10) {
 			// endOfBlock = true;
 			console.log(badges.endBlockSum);
-			console.log('RESET END OF BLOCK BADGES')
+			console.log('RESET END OF BLOCK BADGES');
 			resetEndBlockBadges(badges);
 		}
 
