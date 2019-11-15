@@ -8,7 +8,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
   Ref: See https://github.com/ByunLab/staRt-ionic/wiki/Quest-Scoring
 	*/
 
-	// used if an existing account does not already have
+	// used if an existing fb profile does not already have
 	// a highscoreQuest object
 	function NewQuestHighScores() { // for new accts
 		return  {
@@ -21,8 +21,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		};
 	}
 
-	// ----------------------------------------------
-	// USED FOR IN GAME STATE -----------------------------
+	// handles state for active profile's highscores and milestone thresholds
 	function Milestones() {
 		return  {
 			highscores: {
@@ -45,6 +44,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		};
 	}
 
+	// handles state for active Quest score counters
 	function QuestScores() {
 		return {
 			block_display_score: 0, //user val
@@ -60,10 +60,12 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 			},
 			streak: 0,
 			perfectBlock: 0,
-			performance: 0 // req'd for difficulty score
+			performance: 0, // req'd for difficulty score
+			endOfBlock: false,
 		};
 	}
 
+	//handles state for Badges and Milestone Dialog Sequences
 	function Badges() {
 		// incrDiff: false
 		return {
@@ -87,7 +89,41 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 				perfectBlock: false,
 				perfectBlockCount: 0
 			},
-			endQuestSum: {}
+			endBlockSum_new: {
+				newRecordBanner: false,
+				mgib: {
+					flag: false,
+					title: 'Most Gold in Block!',
+					count: 0,
+					imgUrl: ''
+				},
+				hsib: {
+					flag: false,
+					title: 'High Score in Block!',
+					count: 0,
+					imgUrl: ''
+				},
+				streak: {
+					flag: false,
+					title: 'Gold Streak!',
+					count: 0,
+					imgUrl: ''
+				},
+				perfectBlock: {
+					flag: false,
+					title: 'Perfect Block!',
+					count: 0,
+					imgUrl: ''
+				}
+			},
+			endQuestSum: {},
+			qtDialog: {
+				isVisible: false, // is the Dialog Box Visible
+				isBlockEnd: false, // holds 'End of Block' Sequence
+				isBreak: false, // holds "Take a Break"
+				isQuestEnd: false, // holds End-of-Quest Sequence
+				isFinalScore: false // hold 'Final Score' graphic
+			}
 		};
 	}
 
@@ -240,13 +276,42 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		//console.log(milestones);
 	}
 
+
+	// ==============================================
+	// DIALOG BOX HELPERS ------------------------
+	// var qtDialog_close;
+	// var qtDialog_next;
+	// var qtDialog_resume;
+
+	var runEndOfBlock = function(scores, badges) {
+		console.log(badges.endBlockSum);
+
+		badges.qtDialog.isBlockEnd = true;
+		badges.qtDialog.isVisible = true;
+
+		console.log('runEndOfBlock called');
+		// TODO: badges.endBlockSum display
+		// TODO: reset badges.endBlockSum
+
+		// resets badges display
+		resetEndBlockBadges(badges);
+
+		// resets score counters & New Record counters
+		resetForNewBlock(scores, badges);
+
+		scores.endOfBlock = false;
+	};
+
+
+
+
 	// ==============================================
 	// MAIN PROCS ===================================
 
-	var endOfBlock = false;
+	//var endOfBlock = false;
 
 	//called by questRating()
-	var checkUpdateMilestones = function(scores, milestones, endOfBlock, badges) {
+	var checkUpdateMilestones = function(scores, milestones, badges, currentWordIdx) {
 
 		// checked every trial -----------------------------
 		if(scores.streak > 2)	{
@@ -317,12 +382,11 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		}
 
 		// checked at end of block -----------------------------
-		if( endOfBlock ) {
-			console.log(badges.endBlockSum);
+		if( scores.endOfBlock ) {
 			scores.performance = scores.block_score/10;
-			// queque endBlockSum Seq
-			resetForNewBlock(scores, badges);
-			endOfBlock = false;
+			console.log('END OF BLOCK IS TRUE');
+			//console.log('Current Word Index: ' + currentWordIdx);
+			runEndOfBlock(scores, badges);
 		}
 	}; //end checkUpdateMilestones
 
@@ -330,12 +394,6 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 	//--------------------------------------------------
 	//called by each rating button press
 	var questRating = function(data, scores, milestones, currentWordIdx, badges) {
-	  // update coin graphic
-	  // update scores
-	  // check for end of block
-	  // call milestone update
-
-		endOfBlock = false;
 
 		// update the coin
 		updateCoinGraphic(data, currentWordIdx);
@@ -362,20 +420,12 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		}
 
 		// check for end of block
-		if (currentWordIdx % 10 == 0 && currentWordIdx != 0) {
-			endOfBlock = true;
+		if (currentWordIdx % 10 == 0 && currentWordIdx >= 10) {
+			console.log('Current Word Index: ' + currentWordIdx);
+			scores.endOfBlock = true;
 		}
 
-		// #HMC TEMP -- Change this when dialogs are ready
-		if (currentWordIdx % 10 == 1 && currentWordIdx > 10) {
-			// endOfBlock = true;
-			console.log(badges.endBlockSum);
-			console.log('RESET END OF BLOCK BADGES');
-			resetEndBlockBadges(badges);
-		}
-
-
-		checkUpdateMilestones(scores, milestones, endOfBlock, badges);
+		checkUpdateMilestones(scores, milestones, badges);
 	}; // end questRating()
 
 	return {

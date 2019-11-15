@@ -125,7 +125,7 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 	$scope.qtAdaptDiffDebug = true;
 	$scope.qtBadgesDebug = true;
 	$scope.qzGraphicsMode = true;
-	$scope.qzDialogsMode = false;
+	// $scope.qzDialogsMode = false;
 
 	// TOOLBAR ----------------------------------------------------
 	// TO BE IMPLEMENTED IN THE FUTURE / NOT CURRENTLY IN USE
@@ -788,6 +788,20 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 	    $scope.endWordPractice();
 	  }
 	});
+
+	// DIALOG SEQUENCE HANDLERS ---------------------
+	$scope.dialogClose = function() {
+		$scope.badges.qtDialog.isVisible = false;
+	};
+	$scope.dialogResume = function() {
+		console.log('resume Quest callled');
+		$scope.badges.qtDialog.isVisible = false;
+	};
+	$scope.dialogNext = function() {
+		console.log('Next Card callled');
+		$scope.badges.qtDialog.isVisible = false;
+	};
+
 
 	$scope.$watch('csvs', function () {
 		$scope.hasValidWordList = false;
