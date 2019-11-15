@@ -1,5 +1,6 @@
 /* exported svgLoaderToMesh */
 
+// eslint-disable-next-line no-unused-vars
 var svgLoaderToMesh = function(fileUrl, meshName, groupName, cb) {
 
 	var loader = new THREE.SVGLoader();
