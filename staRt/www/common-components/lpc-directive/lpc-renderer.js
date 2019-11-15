@@ -70,7 +70,7 @@ lpcDirective.factory('LPCRenderer', function ( Draw, Mesh )
 	{
 		// Designed on a 12:6 grid of 1024px x 748px
 		this.dim.row_H = 128; //this.dim.H / 4;
-		this.dim.col_W = 85.33 //this.dim.W / 12;
+		this.dim.col_W = 85.33; //this.dim.W / 12;
 		this.dim.canvas = {};
 
 		this.dim.canvas.width = this.parentElement.clientWidth;
@@ -88,7 +88,7 @@ lpcDirective.factory('LPCRenderer', function ( Draw, Mesh )
 			bottom: this.dim.canvas.bottom,
 			left: this.dim.canvas.left,
 			yOffset: 0
-		}
+		};
 
 		if (this._beachScene) {
 			//console.log( 'this is beachScene');
@@ -221,7 +221,7 @@ lpcDirective.factory('LPCRenderer', function ( Draw, Mesh )
 		if (this.waveGeometry === undefined) {
 			var tmpGeometry = new THREE.Geometry();
 
-			for (var i=1; i<emptyShapeArr.length; i++) {
+			for ( i=1; i<emptyShapeArr.length; i++) {
 				// tmpGeometry.vertices.push(new THREE.Vector3(
 				// 	emptyShapeArr[i-1][0], this.dim.wave.edgeBottom, 0));
 				tmpGeometry.vertices.push(new THREE.Vector3(
@@ -306,7 +306,7 @@ lpcDirective.factory('LPCRenderer', function ( Draw, Mesh )
 		//var waveBottom = this.dim.wave.edgeBottomWithOffset;
 		var waveBottom = this.dim.graph.bottom;
 
-		for (var i=1; i<shapeArr.length; i++) {
+		for ( i=1; i<shapeArr.length; i++) {
 
 			var p = this.waveGeometry.attributes.position.array;
 			var idx = (i-1) * 18;

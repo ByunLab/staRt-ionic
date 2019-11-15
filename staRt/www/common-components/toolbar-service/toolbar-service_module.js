@@ -86,7 +86,7 @@ toolbarService.factory('ToolbarService', function()
 		} else if(!probe) { // quests
 			(forceWaveHidden) ? initTB_questNoBF() : initTB_questBF();
 		} //end if !probe
-	} // end practice_initTB
+	}; // end practice_initTB
 
 	// SERVICE EXPORT ------------------------------------------
 	return {

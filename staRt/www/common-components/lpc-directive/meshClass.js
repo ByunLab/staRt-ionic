@@ -314,7 +314,7 @@ Mesh.prototype.createRightTailGroup = function(dim, graphicsGroup) {
 	loadRightTail();
 
 	graphicsGroup.add(rightTailGroup);
-}
+};
 
 Mesh.prototype.createFoamGroup = function(dim, graphicsGroup, materials) {
 	// console.log( 'create Foam Group');

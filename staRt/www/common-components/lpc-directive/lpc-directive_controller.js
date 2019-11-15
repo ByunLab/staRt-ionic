@@ -1,9 +1,6 @@
-/*globals console:false, angular:false, window:false, alert:false */
-/*globals THREE:false, AudioPlugin:false */
+/*globals console:false, angular:false, window:false, AudioPlugin:false */
 
 'use strict';
-
-var maxTargetTextUpdateCount = 2;
 
 // requestAnim shim layer by Paul Irish
 window.requestAnimFrame = (function(){
@@ -12,6 +9,7 @@ window.requestAnimFrame = (function(){
 	window.mozRequestAnimationFrame    ||
 	window.oRequestAnimationFrame      ||
 	window.msRequestAnimationFrame     ||
+	// eslint-disable-next-line no-unused-vars
 	function(/* function */ callback, /* DOMElement */ element){
 		window.setTimeout(callback, 1000 / 60);
 	};
@@ -77,7 +75,7 @@ lpcDirective.controller( 'LpcDirectiveController',
 					dummyPoints[i] = dummyPoints[i] + p;
 				}
 			}
-			for (var i=0; i<pointCount; i++) {
+			for (i=0; i<pointCount; i++) {
 				if (i==0 || i==(pointCount-1))
 					msg.coefficients.push(dummyPoints[i]);
 				else {
@@ -85,7 +83,7 @@ lpcDirective.controller( 'LpcDirectiveController',
 					msg.coefficients.push(vrg/3);
 				}
 			}
-			for (var i=0; i<pointCount; i++) {
+			for (i=0; i<pointCount; i++) {
 				if (i>0 && i<(pointCount-1)) {
 					if (dummyPoints[i-1] > dummyPoints[i] && dummyPoints[i] < dummyPoints[i+1]) {
 						msg.freqPeaks.push({
@@ -118,8 +116,10 @@ lpcDirective.controller( 'LpcDirectiveController',
 
 		function positionForTouch( t )
 		{
+			var point;
+
 			if (t.layerX && t.layerY) {
-				var point = {
+				point = {
 					x: t.layerX - $scope.lpcRenderer.dim.canvas.width / 2,
 					y: t.layerY - $scope.lpcRenderer.dim.canvas.height / 2
 				};
@@ -127,7 +127,7 @@ lpcDirective.controller( 'LpcDirectiveController',
 
 			} else {
 				var rect = $scope.lpcRenderer.canvas.getBoundingClientRect();
-				var point = {
+				point = {
 					x: t.pageX - rect.left - $scope.lpcRenderer.dim.canvas.width / 2,
 					y: t.pageY - rect.top - $scope.lpcRenderer.dim.canvas.height / 2
 				};
@@ -241,6 +241,7 @@ lpcDirective.controller( 'LpcDirectiveController',
 		///////////////////////////////////
 		//  RENDER
 		///////////////////////////////////
+		// var maxTargetTextUpdateCount = 2; //could be used to slow render, if needed
 
 		$scope.animate = function () {
 			if ($scope.active) {
@@ -415,7 +416,7 @@ lpcDirective.controller( 'LpcDirectiveController',
 		$scope.myURL = $state.current.name;
 
 		$scope.onPause = function () {
-			console.log("Pausing LPC.");
+			console.log('Pausing LPC.');
 			$scope.active = false;
 		};
 
@@ -426,8 +427,8 @@ lpcDirective.controller( 'LpcDirectiveController',
 
 		// The "pause" event triggers when the home button is pressed on an ios device.
 		// The "resume" event triggers when an app is reopened on an ios device.
-		document.addEventListener("pause", $scope.onPause);
-		document.addEventListener("resume", $scope.onResume);
+		document.addEventListener('pause', $scope.onPause);
+		document.addEventListener('resume', $scope.onResume);
 
 		var unsubscribe = $rootScope.$on('$urlChangeStart', function(event, next) {
 			if (next === $scope.myURL) {
@@ -441,8 +442,8 @@ lpcDirective.controller( 'LpcDirectiveController',
 			}
 
 			// The event listeners will persist even when the LPC closes, so we need to explicitly remove them.
-			document.removeEventListener("pause", $scope.onPause);
-			document.removeEventListener("resume", $scope.onResume);
+			document.removeEventListener('pause', $scope.onPause);
+			document.removeEventListener('resume', $scope.onResume);
 		});
 
 		$scope.$on('$destroy', function() {
