@@ -2,11 +2,26 @@
   <div class="dia-head">
     <div class="banner">New Record!</div>
     <div class="title">
-        Name of Milestone
+        {{badges.endBlockDisplay.title}}
+        <div ng-if="badges.qtDialog.isBreak">
+            {{badges.endBlockSeq.subtitle}}
+        </div>
     </div>
   </div>
 
   <div class="dia-body">
+    <!-- <div ng-if="badges.qtDialog.""></div> -->
+    <div ng-if="badges.qtDialog.isBlockEnd && !badges.qtDialog.isBreak">
+        Score:
+        {{badges.endBlockDisplay.count}}
+    </div>
+
+    <div ng-if="badges.qtDialog.isBlockEnd && badges.qtDialog.isBreak">
+        Gold: {{badges.endBlockDisplay.gold}}
+        Silver: {{badges.endBlockDisplay.silver}}
+        Bronze: {{badges.endBlockDisplay.bronze}}
+    </div>
+
 
   </div>
 

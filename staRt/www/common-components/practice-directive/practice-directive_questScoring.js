@@ -62,6 +62,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 			perfectBlock: 0,
 			performance: 0, // req'd for difficulty score
 			endOfBlock: false,
+			totalTrials: 0,
 		};
 	}
 
@@ -79,7 +80,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 				trials: 0,
 				visible: false
 			},
-			endBlockSum: {
+			endBlockSum_old: {
 				mgib: false,
 				mgibCount: 0,
 				hsib: false,
@@ -89,8 +90,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 				perfectBlock: false,
 				perfectBlockCount: 0
 			},
-			endBlockSum_new: {
-				newRecordBanner: false,
+			endBlockSum: {
 				mgib: {
 					flag: false,
 					title: 'Most Gold in Block!',
@@ -116,13 +116,26 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 					imgUrl: ''
 				}
 			},
+			endBlockSeq: [],
+			endBlockDisplay: {},
 			endQuestSum: {},
 			qtDialog: {
 				isVisible: false, // is the Dialog Box Visible
 				isBlockEnd: false, // holds 'End of Block' Sequence
 				isBreak: false, // holds "Take a Break"
 				isQuestEnd: false, // holds End-of-Quest Sequence
-				isFinalScore: false // hold 'Final Score' graphic
+				isFinalScore: false, // hold 'Final Score' graphic
+			},
+			qtDialogTemplate: {
+				cardNumber: -1,
+				break: {},
+				blockEnd: {
+					title: '',
+					count: '',
+					imgUrl: '',
+				},
+				questEnd: {},
+				finalScore: {}
 			}
 		};
 	}
@@ -132,7 +145,6 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 	var initCoinCounter = function(count, questCoins){
 		var numStack = count/10;
 		for(var i=0; i<numStack; i++) {
-			// let rotation =
 			var stack = { id: i };
 			questCoins.push(stack);
 		}
@@ -152,7 +164,6 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 			var highscoresArr = highscores[milestone + 'Hx'].map(function(item) {
 				return item.score;
 			});
-			//return(Math.max(...highscoresArr)); (won't work on iOS9?)
 			return(Math.max.apply(Math, highscoresArr));
 		}
 
@@ -163,9 +174,10 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		return milestones;
 	};
 
-	var initScores = function(scores) {
+	var initScores = function(scores, sessionCount) {
 		scores = undefined;
 		scores = new QuestScores();
+		scores.totalTrials = sessionCount;
 		return scores;
 	};
 
@@ -245,7 +257,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		} else {
 			badges.newRecord.flag = true;
 		}
-		console.log(badges);
+		//console.log(badges);
 	}
 
 	// -- called by checkUpdateMilestones() ---
@@ -258,13 +270,21 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 
 	// #TEMP
 	function resetEndBlockBadges(badges) {
-		badges.endBlockSum.mgib = false;
-		badges.endBlockSum.hsib = false;
-		badges.endBlockSum.streak = false;
-		badges.endBlockSum.perfectBlock = false;
+		badges.endBlockSum.mgib.flag = false;
+		badges.endBlockSum.hsib.flag = false;
+		badges.endBlockSum.streak.flag = false;
+		badges.endBlockSum.perfectBlock.flag = false;
 	}
 
-	function updateMilestone(scores, milestones, msProp, scoresProp, scoresPropOpt) {
+	// updates prop in badges.endBlockSum[milestone] to be displayed at the end of the block
+	function updateMilestoneCard(badges, msProp, count) {
+		badges.endBlockSum[msProp].flag = true;
+		badges.endBlockSum[msProp].count = count;
+		//console.log(badges);
+	}
+
+	// updates milestone obj record to be saved to firebase at end of Quest
+	function updateMilestoneRecord(scores, milestones, msProp, scoresProp, scoresPropOpt) {
 		if(scoresPropOpt) {
 			milestones.update[msProp].score = scores[scoresProp][scoresPropOpt];
 		} else {
@@ -283,23 +303,85 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 	// var qtDialog_next;
 	// var qtDialog_resume;
 
-	var runEndOfBlock = function(scores, badges) {
-		console.log(badges.endBlockSum);
+	var advanceEndOfBlock = function(badges) {
+		badges.qtDialogTemplate.cardNumber++;
+
+		var template = badges.endBlockSeq[badges.qtDialogTemplate.cardNumber].template;
+
+		var card = badges.endBlockSeq[badges.qtDialogTemplate.cardNumber];
+
+		if(template === 'blockEnd') {
+			badges.endBlockDisplay.title = badges.endBlockSeq[badges.qtDialogTemplate.cardNumber].title;
+			badges.endBlockDisplay.count = badges.endBlockSeq[badges.qtDialogTemplate.cardNumber].count;
+		} else if (template === 'break') {
+			badges.qtDialog.isBreak = true;
+			badges.endBlockDisplay.title = card.title;
+			badges.endBlockDisplay.subtitle = card.subtitle;
+			badges.endBlockDisplay.gold = card.gold;
+			badges.endBlockDisplay.silver = card.silver;
+			badges.endBlockDisplay.bronze = card.bronze;
+		}
+	};
+
+	// var resumeAfterBreak = function() {
+	/*
+		will be called from the dialog interface
+		- unpause the wave
+		- clear badges.endBlockSeq, badges.endBlockDisplay
+		- reset for badges.endBlockSum
+		- qtDialog: set all to F
+		- qtDialogTemplate.cardNumber = -1;
+
+
+	// resets badges display
+	//resetEndBlockBadges(badges);
+
+	// resets score counters & New Record counters
+	//resetForNewBlock(scores, badges);
+
+	//scores.endOfBlock = false;
+	*/
+	// };
+
+	// called by
+	var prepEndOfBlock = function(scores, badges, currentWordIdx) {
+		//console.log('runEndOfBlock called');
 
 		badges.qtDialog.isBlockEnd = true;
+
+		var sumTemp = badges.endBlockSum;
+		//badges.endBlockSeq = new EndBlockSeqObj();
+
+		for (var key in sumTemp) {
+			if (sumTemp[key].flag) {
+				badges.endBlockSeq.push({
+					template: 'blockEnd',
+					title: sumTemp[key].title,
+					count: sumTemp[key].count,
+					imgUrl: sumTemp[key].imgUrl,
+				});
+			}
+		}
+		badges.endBlockSeq.push({
+			template: 'break',
+			title: 'Take a break!',
+			subtitle: currentWordIdx + ' / ' + scores.totalTrials + ' completed',
+			gold: scores.session_coins.gold,
+			silver: scores.session_coins.silver,
+			bronze: scores.session_coins.bronze
+		});
+
+
+		if(badges.endBlockSeq.length > 0){
+			badges.qtDialog.isBlockEnd = true;
+		} else {
+			badges.qtDialog.isBreak = true;
+		}
+		badges.qtDialogTemplate.cardNumber = -1;
+
+		advanceEndOfBlock(badges);
+
 		badges.qtDialog.isVisible = true;
-
-		console.log('runEndOfBlock called');
-		// TODO: badges.endBlockSum display
-		// TODO: reset badges.endBlockSum
-
-		// resets badges display
-		resetEndBlockBadges(badges);
-
-		// resets score counters & New Record counters
-		resetForNewBlock(scores, badges);
-
-		scores.endOfBlock = false;
 	};
 
 
@@ -323,58 +405,67 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 			badges.newRecord.visible = true;
 		}
 
-		if( scores.block_goldCount >= milestones.highscores.mgib) {
-			milestones.highscores.mgib = scores.block_goldCount;
-			console.log('NEW RECORD: MOST GOLD IN BLOCK');
-			displayBadgeNewRecord(badges);
-			badges.endBlockSum.mgib = true;
-			badges.endBlockSum.mgibCount = scores.block_goldCount;
-			updateMilestone(scores, milestones, 'mgibHx', 'block_goldCount');
+		// mgib: most gold in block
+		if(scores.block_goldCount > 0) {
+			if( scores.block_goldCount >= milestones.highscores.mgib) {
+				milestones.highscores.mgib = scores.block_goldCount;
+				console.log('NEW RECORD: MOST GOLD IN BLOCK');
+				displayBadgeNewRecord(badges);
+				updateMilestoneCard(badges, 'mgib', milestones.highscores.mgib);
+				updateMilestoneRecord(scores, milestones, 'mgibHx', 'block_goldCount');
+			}
 		}
 
-		if( scores.block_display_score > milestones.highscores.hsib) {
-			milestones.highscores.hsib = scores.block_display_score;
-			console.log('NEW RECORD: HIGH SCORE IN BLOCK');
-			displayBadgeNewRecord(badges);
-			badges.endBlockSum.hsib = true;
-			badges.endBlockSum.hsibCount = scores.block_display_score;
-			updateMilestone(scores, milestones, 'hsibHx', 'block_display_score');
+		// hsib: high score in block
+		if(scores.block_goldCount > 0) {
+			if( scores.block_display_score > milestones.highscores.hsib) {
+				milestones.highscores.hsib = scores.block_display_score;
+				console.log('NEW RECORD: HIGH SCORE IN BLOCK');
+				displayBadgeNewRecord(badges);
+				updateMilestoneCard(badges, 'hsib', milestones.highscores.hsib);
+				updateMilestoneRecord(scores, milestones, 'hsibHx', 'block_display_score');
+			}
 		}
 
-		if( scores.display_score > milestones.highscores.hsiq) {
-			milestones.highscores.hsiq = scores.display_score;
-			console.log('NEW RECORD: HIGH SCORE IN QUEST');
-			displayBadgeNewRecord(badges);
-			// badges.endBlockSum.hsiq = true;
-			// badges.endBlockSum.hsiqCount = scores.display_score;
-			updateMilestone(scores, milestones, 'hsiqHx', 'display_score');
+		// hsiq: high score in quest
+		if(scores.display_score > 0) {
+			if( scores.display_score > milestones.highscores.hsiq) {
+				milestones.highscores.hsiq = scores.display_score;
+				console.log('NEW RECORD: HIGH SCORE IN QUEST');
+				displayBadgeNewRecord(badges);
+				// badges.endBlockSum.hsiq = true;
+				// badges.endBlockSum.hsiqCount = scores.display_score;
+				updateMilestoneRecord(scores, milestones, 'hsiqHx', 'display_score');
+			}
 		}
 
-		if( scores.session_coins.gold > milestones.highscores.mgiq) {
-			milestones.highscores.mgiq = scores.session_coins.gold;
-			console.log('NEW RECORD: MOST GOLD IN QUEST');
-			displayBadgeNewRecord(badges);
-			// badges.endBlockSum.mgiq = true;
-			// badges.endBlockSum.mgiqCount = milestones.highscores.mgiq;
-			updateMilestone(scores, milestones, 'mgiqHx', 'session_coins', 'gold');
+		// mgiq: most gold in quest
+		if(scores.session_coins.gold > 0) {
+			if( scores.session_coins.gold > milestones.highscores.mgiq) {
+				milestones.highscores.mgiq = scores.session_coins.gold;
+				console.log('NEW RECORD: MOST GOLD IN QUEST');
+				displayBadgeNewRecord(badges);
+				// badges.endBlockSum.mgiq = true;
+				// badges.endBlockSum.mgiqCount = milestones.highscores.mgiq;
+				updateMilestoneRecord(scores, milestones, 'mgiqHx', 'session_coins', 'gold');
+			}
 		}
 
 		if( scores.streak > milestones.highscores.streak ) {
 			milestones.highscores.streak = scores.streak;
 			console.log('NEW RECORD: STREAK');
 			displayBadgeNewRecord(badges);
-			badges.endBlockSum.streak = true;
-			badges.endBlockSum.streakCount = scores.streak;
-			updateMilestone(scores, milestones, 'streakHx', 'streak');
+			updateMilestoneCard(badges, 'streak', milestones.highscores.streak);
+			// badges.endBlockSum_old.streak = true;
+			// badges.endBlockSum_old.streakCount = scores.streak;
+			updateMilestoneRecord(scores, milestones, 'streakHx', 'streak');
 		}
 
 		if(scores.block_goldCount === 10) {
 			milestones.highscores.perfectBlock++;
 			console.log('PERFECT BLOCK');
 			// no badge, achieved at end of block
-			badges.endBlockSum.perfectBlock = true,
-			badges.endBlockSum.perfectBlockCount = milestones.highscores.perfectBlock;
-
+			updateMilestoneCard(badges, 'perfectBlock', milestones.highscores.perfectBlock);
 			milestones.update.perfectBlockHx.score= milestones.highscores.perfectBlock;
 			milestones.update.perfectBlockHx.date = Date.now();
 			milestones.update.perfectBlockHx.sessionID = scores.sessionID;
@@ -386,7 +477,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 			scores.performance = scores.block_score/10;
 			console.log('END OF BLOCK IS TRUE');
 			//console.log('Current Word Index: ' + currentWordIdx);
-			runEndOfBlock(scores, badges);
+			prepEndOfBlock(scores, badges, currentWordIdx);
 		}
 	}; //end checkUpdateMilestones
 
@@ -425,7 +516,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 			scores.endOfBlock = true;
 		}
 
-		checkUpdateMilestones(scores, milestones, badges);
+		checkUpdateMilestones(scores, milestones, badges, currentWordIdx);
 	}; // end questRating()
 
 	return {
@@ -435,5 +526,6 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		initScores: initScores,
 		initBadges: initBadges,
 		questRating: questRating,
+		dialogNext: advanceEndOfBlock
 	};
 });

@@ -463,7 +463,7 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 		if (needToReload) {
 			if (!$scope.probe) {
 				QuestScore.initCoinCounter($scope.currentPracticeSession.count, $scope.questCoins);
-				$scope.scores = QuestScore.initScores($scope.scores); // always new
+				$scope.scores = QuestScore.initScores($scope.scores, $scope.currentPracticeSession.count); // always new
 				$scope.milestones = QuestScore.initMilestones($scope.highscores); // built from highscores
 				$scope.badges = QuestScore.initBadges($scope.badges); // always new
 			}
@@ -799,7 +799,8 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 	};
 	$scope.dialogNext = function() {
 		console.log('Next Card callled');
-		$scope.badges.qtDialog.isVisible = false;
+		QuestScore.dialogNext($scope.badges);
+		//$scope.badges.qtDialog.isVisible = false;
 	};
 
 
