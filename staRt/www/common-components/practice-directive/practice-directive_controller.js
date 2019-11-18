@@ -272,18 +272,39 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 	}
 
 
+	function createQuestHighscoresOnFB() {
+		// should only be called from w/in beginPracticeForUser(user)
+		// inits a new highscoresQuest object on firebase, if no  highscores found in user profile
+		var newHighScores = QuestScore.initNewHighScores();
+
+		ProfileService.runTransactionForCurrentProfile(function(handle, doc, t) {
+			var highscoresFB = doc.data().highscoresQuest;
+			// console.log(highscoresFB); should always be null
+			if (highscoresFB === null) highscoresFB = newHighScores;
+			t.update(handle, {highscoresQuest: highscoresFB});
+		}); // runTransaction
+	}
+
 	function updateQuestHighscores() {
+		/*
+		Called by:
+			storeRecordingSession():
+				Saves highscores only if the recording session is complete
+		or by:
+			endPractice(): if no recording session (window.AudioPlugin === undefined)
+				Saves incomplete session highscores
+				Purpose: debugging highscores logic
+		*/
 		if($scope.shouldUpdateHighscores) {
-			var highScoresCopy = Object.assign({}, $scope.highscores);
-			var highscoresUpdateDataCopy = Object.assign({}, $scope.highscoresUpdateDataKey);
+			// console.log('Should update fb? ' + $scope.shouldUpdateHighscores);
+			var highscoresUpdateData = $scope.highscoresUpdateData;
+			//console.log(highscoresUpdateData);
 
 			ProfileService.runTransactionForCurrentProfile(function(handle, doc, t) {
 				var highscoresFB = doc.data().highscoresQuest;
 
-				if (highscoresFB == null) highscoresFB = highScoresCopy;
-
-				for (var key in $scope.highscoresUpdateData) {
-					highscoresFB[key].push(highscoresUpdateDataCopy[key]);
+				for (var key in highscoresUpdateData) {
+					highscoresFB[key].push(highscoresUpdateData[key]);
 				}
 				t.update(handle, {highscoresQuest: highscoresFB});
 			}); // runTransaction
@@ -298,14 +319,14 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 		$scope.highscores = QuestScore.initNewHighScores($scope.highscores);
 
 		ProfileService.runTransactionForCurrentProfile(function(handle, doc, t) {
-			// is this even the right way to do this?
 			t.update(handle, {highscoresQuest: null});
 		});
 		$scope.endWordPractice();
 	}
 
+
 	function storeRecordingSession() {
-		// We need to create a copy of $scope.currentPracticeSession to avoid race conditions.
+		// Should only be called from w/in recordingDidStop()
 		var savedPracticeSession =  Object.assign({}, $scope.currentPracticeSession);
 		savedPracticeSession.isFormalSession = AutoService.isSessionActive();
 		ProfileService.runTransactionForCurrentProfile(function(handle, doc, t) {
@@ -457,8 +478,9 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 			} else {
 				console.log('User has NO saved Highscores');
 				$scope.highscores = QuestScore.initNewHighScores($scope.highscores);
+				createQuestHighscoresOnFB();
 			}
-			console.log($scope.highscores);
+			//console.log($scope.highscores);
 		}
 
 		// TODO: Check to see if there's a better way to clear out the current session we're ressuming.
@@ -472,7 +494,6 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 			$scope.milestones = QuestScore.initMilestones($scope.highscores); // built from highscores
 			$scope.badges = QuestScore.initBadges($scope.badges); // always new
 			$scope.difficulty = 1;
-			// #WH: why aren't we setting
 
 			if (needToReload) {
 				var previousRatings = $scope.currentPracticeSession.ratings;
@@ -646,7 +667,19 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 
 	// END PAUSE-SETUP
 
+	// END WORD PRACTICE SESSION ---------------------------------------
+	// If you need to prompt the user to confirm ending the session, it should be done before $scope.endWordPractice runs.
 
+	/* $scope.endWordPractice can be called by:
+
+		$scope.$on('stopPractice': This is the 'Stop' button in the UI
+
+		$rootScope.$on('$urlChangeStart',: This is when someone tries to navigate away during an active session
+
+		$scope.resetQuestHighscores: This is the 'Reset Highscores' button in the temp UI
+
+		$rootScope.onPause: #Q
+	*/
 	$scope.endWordPractice = function () {
 
 	  if (!$scope.probe) {
@@ -668,7 +701,6 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 						}
 					}
 				}
-				//console.log(scoresPrep);
 				$scope.highscoresUpdateData = scoresPrep;
 			}
 		} // (!$scope.probe)
@@ -762,9 +794,7 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 		}
 	};
 
-	$scope.resetQuestHighscores = function() {
-		resetQuestHighscores();
-	};
+	$scope.resetQuestHighscores = function() { resetQuestHighscores(); };
 
 	$scope.$on('ratingChange', function (event, data) {
 		console.log('rating change! ' + data);
