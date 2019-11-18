@@ -436,69 +436,69 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 		$scope.currentWordIdx = 0;
 		var needToReload = false;
 
+		// COLLECT SAVED-SESSION DATA ($scope.currentPracticeSession) AND HIGHSCORE DATA ($scope.highscores)
+
+		// on-protocol quest && saved session
 		if (user.inProcessSession && AutoService.isSessionActive()) {
 			needToReload = true;
 			$scope.currentPracticeSession = Object.assign({}, user.inProcessSession);
 		}
+		// off-protocol quest and saved session
 		if ($rootScope.sessionToResume && !AutoService.isSessionActive()) {
 			needToReload = true;
 			$scope.currentPracticeSession = Object.assign({}, $rootScope.sessionToResume);
 		}
+		// quest highscores: same for all, regardless of resumed-sesh and protocol status
 		if (!$scope.probe) {
 			if (user.highscoresQuest) {
+				console.log('User has saved Highscores');
 				$scope.highscores = Object.assign({}, user.highscoresQuest);
+
 			} else {
+				console.log('User has NO saved Highscores');
 				$scope.highscores = QuestScore.initNewHighScores($scope.highscores);
 			}
+			console.log($scope.highscores);
 		}
 
 		// TODO: Check to see if there's a better way to clear out the current session we're ressuming.
 		$rootScope.sessionToResume = null;
 
-		if (needToReload) {
-			if (!$scope.probe) {
-				QuestScore.initCoinCounter($scope.currentPracticeSession.count, $scope.questCoins);
-				$scope.scores = QuestScore.initScores($scope.scores); // always new
-				$scope.milestones = QuestScore.initMilestones($scope.highscores); // built from highscores
-				$scope.badges = QuestScore.initBadges($scope.badges); // always new
+		// INIT QUEST SESSION DATA
+		if (!$scope.probe) {
+			// Quest: same starting value for all, regardless of resume-session status. For saved sessions, these will be updated during the sessionPrepTask process
+			QuestScore.initCoinCounter($scope.count, $scope.questCoins); // always new
+			$scope.scores = QuestScore.initScores($scope.scores); // always new
+			$scope.milestones = QuestScore.initMilestones($scope.highscores); // built from highscores
+			$scope.badges = QuestScore.initBadges($scope.badges); // always new
+			$scope.difficulty = 1;
+			// #WH: why aren't we setting
+
+			if (needToReload) {
+				var previousRatings = $scope.currentPracticeSession.ratings;
+				console.log('previous ratings: %o', previousRatings);
+
+				sessionPrepTask = forEachPromise(previousRatings, function (rating) {
+					console.log('giving rating: %o', rating);
+					$scope.currentWordIdx++;
+					return handleRatingData($scope, rating.rating);
+				}).then(function () {
+					$scope.currentWordIdx = $scope.currentPracticeSession.ratings.length - 1;
+				});
+			} else if (!needToReload) {
+				$scope.currentWordIdx = -1;
+				$scope.currentPracticeSession = initialPracticeSession(
+					Date.now(),
+					$scope.type || 'word',
+					$scope.probe || 'quest',
+					$scope.count
+				);
 			}
-			//console.log($scope.csvs);
-			//$scope.reloadCSVData();
-			var previousRatings = $scope.currentPracticeSession.ratings;
-			console.log('previous ratings: %o', previousRatings);
-
-			sessionPrepTask = forEachPromise(previousRatings, function (rating) {
-				console.log('giving rating: %o', rating);
-				$scope.currentWordIdx++;
-				return handleRatingData($scope, rating.rating);
-			}).then(function () {
-				$scope.currentWordIdx = $scope.currentPracticeSession.ratings.length - 1;
-			});
-		} // if (needToReload)
-
-		// IF THERE IS NO SAVED SESSION, INIT A NEW QUEST OR QUIZ
-		if (!needToReload) {
-			$scope.currentWordIdx = -1;
-			$scope.currentPracticeSession = initialPracticeSession(
-				Date.now(),
-				$scope.type || 'word',
-				$scope.probe || 'quest',
-				$scope.count
-			);
-			// TODO I think there is some come redundancy here with the above initialization in needToReload.
-			if(!$scope.probe) { // QUEST-ONLY Setup
-				// builds milestones frome user's highscores
-				$scope.milestones = QuestScore.initMilestones($scope.highscores);
-				QuestScore.initCoinCounter($scope.count, $scope.questCoins);
-				$scope.scores = QuestScore.initScores($scope.scores);
-				$scope.badges = QuestScore.initBadges();
-
-				// check for stored AdaptDiff level?????? or
-				$scope.difficulty = 1;
-			} // if quest
-		}
+			//console.log($scope.currentPracticeSession);
+		} //if (!$scope.probe)
 
 		if (!$scope.probe) {
+			// Q: #WH does this need to be set sooner
 			$scope.currentPracticeSession.categoryRestrictions = $rootScope.finalSelectedCategories;
 		} else { // We explicitly set this to null so practice sessions stored in recordingHistory have a consistent set of keys.
 			$scope.currentPracticeSession.categoryRestrictions = null;
