@@ -60,11 +60,6 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 		}
 	});
 
-	// used by UI
-	ProfileService.getCurrentProfile().then(function(profile) {
-		$scope.participant_name = profile.name;
-	});
-
 	function initialPracticeSession(startTimestamp, type, probe, count) {
 		return {
 			id: UtilitiesService.guid(),
