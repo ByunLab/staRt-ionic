@@ -159,10 +159,10 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 	function handleRatingData($scope, data) {
 
 		// adative difficulty helpers
-		function should_increase_difficulty() {return performance >= increase_difficulty_threshold && $scope.difficulty < 5;}
-		function should_decrease_difficulty() {return performance <= decrease_difficulty_threshold && $scope.difficulty > 1;}
+		var should_increase_difficulty = function() {return performance >= increase_difficulty_threshold && $scope.difficulty < 5;};
+		var should_decrease_difficulty = function() {return performance <= decrease_difficulty_threshold && $scope.difficulty > 1;};
 
-		function update_difficulty(increment) {
+		var update_difficulty = function(increment) {
 			$scope.difficulty += increment;
 			console.log($scope.difficulty);
 			if (!($scope.type == 'Syllable' || $scope.probe)) {
@@ -176,7 +176,7 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 				return $scope.reloadCSVData();
 			}
 			return Promise.resolve();
-		}
+		};
 
 		// process new rating
 		if (!$scope.probe) { //quest
