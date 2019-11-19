@@ -112,13 +112,13 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		milestones = undefined;
 		milestones = new Milestones();
 
-		function mapHighscores(milestone) {
+		var mapHighscores = function(milestone) {
 			var highscoresArr = highscores[milestone + 'Hx'].map(function(item) {
 				return item.score;
 			});
 			//return(Math.max(...highscoresArr)); (won't work on iOS9?)
 			return(Math.max.apply(Math, highscoresArr));
-		}
+		};
 
 		for (var key in milestones.highscores) {
 			milestones.highscores[key] = mapHighscores(key);
