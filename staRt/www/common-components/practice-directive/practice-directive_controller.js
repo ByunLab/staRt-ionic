@@ -276,11 +276,10 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 		// should only be called by beginPracticeForUser(user)
 		// inits a new highscoresQuest object on firebase, if no  highscores found in user profile
 		var newHighScores = QuestScore.initNewHighScores();
-
 		ProfileService.runTransactionForCurrentProfile(function(handle, doc, t) {
 			var highscoresFB = doc.data().highscoresQuest;
 			// console.log(highscoresFB); should always be null
-			if (highscoresFB === null) highscoresFB = newHighScores;
+			if (!highscoresFB) highscoresFB = newHighScores;
 			t.update(handle, {highscoresQuest: highscoresFB});
 		}); // runTransaction
 	}
@@ -299,10 +298,8 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 			// console.log('Should update fb? ' + $scope.shouldUpdateHighscores);
 			var highscoresUpdateData = $scope.highscoresUpdateData;
 			//console.log(highscoresUpdateData);
-
 			ProfileService.runTransactionForCurrentProfile(function(handle, doc, t) {
 				var highscoresFB = doc.data().highscoresQuest;
-
 				for (var key in highscoresUpdateData) {
 					highscoresFB[key].push(highscoresUpdateData[key]);
 				}
