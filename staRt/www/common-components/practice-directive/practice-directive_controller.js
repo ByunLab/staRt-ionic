@@ -491,29 +491,29 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 			$scope.milestones = QuestScore.initMilestones($scope.highscores); // built from highscores
 			$scope.badges = QuestScore.initBadges($scope.badges); // always new
 			$scope.difficulty = 1;
-
-			if (needToReload) {
-				var previousRatings = $scope.currentPracticeSession.ratings;
-				console.log('previous ratings: %o', previousRatings);
-
-				sessionPrepTask = forEachPromise(previousRatings, function (rating) {
-					console.log('giving rating: %o', rating);
-					$scope.currentWordIdx++;
-					return handleRatingData($scope, rating.rating);
-				}).then(function () {
-					$scope.currentWordIdx = $scope.currentPracticeSession.ratings.length - 1;
-				});
-			} else if (!needToReload) {
-				$scope.currentWordIdx = -1;
-				$scope.currentPracticeSession = initialPracticeSession(
-					Date.now(),
-					$scope.type || 'word',
-					$scope.probe || 'quest',
-					$scope.count
-				);
-			}
 			//console.log($scope.currentPracticeSession);
 		} //if (!$scope.probe)
+
+		if (needToReload) {
+			var previousRatings = $scope.currentPracticeSession.ratings;
+			console.log('previous ratings: %o', previousRatings);
+
+			sessionPrepTask = forEachPromise(previousRatings, function (rating) {
+				console.log('giving rating: %o', rating);
+				$scope.currentWordIdx++;
+				return handleRatingData($scope, rating.rating);
+			}).then(function () {
+				$scope.currentWordIdx = $scope.currentPracticeSession.ratings.length - 1;
+			});
+		} else if (!needToReload) {
+			$scope.currentWordIdx = -1;
+			$scope.currentPracticeSession = initialPracticeSession(
+				Date.now(),
+				$scope.type || 'word',
+				$scope.probe || 'quest',
+				$scope.count
+			);
+		}
 
 		if (!$scope.probe) {
 			$scope.currentPracticeSession.categoryRestrictions = $rootScope.finalSelectedCategories;
