@@ -1,3 +1,4 @@
+/* eslint-disable no-extra-boolean-cast */
 var autoService = angular.module('autoService', []);
 
 var INTRO_FREEPLAY_TIME = 300000; // Five minutes
@@ -30,7 +31,7 @@ var AutoState = function (profile, currentStats, onShow, initialState) {
 	this.onShow = onShow;
 	this.currentStep = null;
 	this.restrictions = {};
-	this.contextString = "abstact";
+	this.contextString = 'abstact';
 	this.state = Object.assign({}, initialState ? initialState : {});
 };
 AutoState.prototype = {
@@ -84,8 +85,8 @@ var IntroAuto = function (profile, currentStats, onShow, initialState) {
 			return null;
 		},
 		dialog: {
-			text: "Welcome to the staRt app! You will be taken to the Quiz section, please choose Long Word Quiz once there.",
-			title: "Welcome",
+			text: 'Welcome to the staRt app! You will be taken to the Quiz section, please choose Long Word Quiz once there.',
+			title: 'Welcome',
 			navto: 'root.auto'
 		}
 	};
@@ -96,9 +97,9 @@ var IntroAuto = function (profile, currentStats, onShow, initialState) {
 			return null;
 		},
 		dialog: {
-			text: "Now please complete our Syllable Quiz measure.",
-			title: "Syllable Quiz",
-			navto: "root.auto"
+			text: 'Now please complete our Syllable Quiz measure.',
+			title: 'Syllable Quiz',
+			navto: 'root.auto'
 		}
 	};
 
@@ -108,8 +109,8 @@ var IntroAuto = function (profile, currentStats, onShow, initialState) {
 			return null;
 		},
 		dialog: {
-			text: "You will be taken to the Tutorial.",
-			title: "Tutorial",
+			text: 'You will be taken to the Tutorial.',
+			title: 'Tutorial',
 			navto: 'root.tutorial.p01s1'
 		}
 	};
@@ -120,21 +121,21 @@ var IntroAuto = function (profile, currentStats, onShow, initialState) {
 			if (currentStats.thisFreeplayTime >= timeThreshold) return steps.complete;
 		},
 		dialog: {
-			text: "You will be taken to Free Play to try out the wave for approximately five minutes.",
-			title: "Free Play",
+			text: 'You will be taken to Free Play to try out the wave for approximately five minutes.',
+			title: 'Free Play',
 			navto: 'root.free-play'
 		}
 	};
 
 	steps.complete = {
 		dialog: {
-			text: "You are done with your first session! Please come back soon to complete your first Quest.",
-			title: "All done"
+			text: 'You are done with your first session! Please come back soon to complete your first Quest.',
+			title: 'All done'
 		}
 	};
 
 	this.firstStep = steps.welcome;
-	this.contextString = "introduction";
+	this.contextString = 'introduction';
 };
 
 // IntroAuto.prototype inherits all methods from from AutoState.prototype
@@ -163,8 +164,8 @@ var SessionAuto = function (profile, currentStats, onShow, initialState) {
 	}, this.state);
 
 	var steps = {};
-    var ordinals = ["Zeroeth", "First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth", "Thirteenth", "Fourteenth", "Fifteenth", "Sixteenth"];
-    // start sessionIndex at 1 for better human readability
+	var ordinals = ['Zeroeth', 'First', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth', 'Seventh', 'Eighth', 'Ninth', 'Tenth', 'Eleventh', 'Twelfth', 'Thirteenth', 'Fourteenth', 'Fifteenth', 'Sixteenth'];
+	// start sessionIndex at 1 for better human readability
 	var sessionIndex = profile.nBiofeedbackSessionsCompleted + profile.nNonBiofeedbackSessionsCompleted + 1;
 
 	// Re-use the biofeedback constraint, if you have one saved
@@ -172,12 +173,12 @@ var SessionAuto = function (profile, currentStats, onShow, initialState) {
 		var biofeedback = [];
 		for (var i = 0; i < (TOTAL_SESSION_COUNT / 2); i++) {
 			if (i >= profile.nBiofeedbackSessionsCompleted) {
-				biofeedback.push("BF");
+				biofeedback.push('BF');
 			}
 		}
 		for (var i = 0; i < (TOTAL_SESSION_COUNT / 2); i++) {
 			if (i >= profile.nNonBiofeedbackSessionsCompleted) {
-				biofeedback.push("TRAD");
+				biofeedback.push('TRAD');
 			}
 		}
 		_scramble(biofeedback);
@@ -185,7 +186,7 @@ var SessionAuto = function (profile, currentStats, onShow, initialState) {
 		this.state.biofeedback = biofeedback.pop();
 	}
 
-	if (this.state.biofeedback === "BF") {
+	if (this.state.biofeedback === 'BF') {
 		this.restrictions.rootWaveForced = true;
 		this.restrictions.rootWaveHidden = false;
 	} else {
@@ -204,9 +205,9 @@ var SessionAuto = function (profile, currentStats, onShow, initialState) {
 		}).bind(this),
 		dialog: (function (profile, currentStats, changeList) {
 			return {
-				title: ordinals[sessionIndex] + " Session",
-				text: "Welcome back. Would you like to complete your " + ordinals[sessionIndex].toLowerCase() + " session now?",
-				buttons: ["Later", "Okay"],
+				title: ordinals[sessionIndex] + ' Session',
+				text: 'Welcome back. Would you like to complete your ' + ordinals[sessionIndex].toLowerCase() + ' session now?',
+				buttons: ['Later', 'Okay'],
 				callback: (function (index) {
 					if (index === 0 || index === 1) {
 						this.state.wantsToDoItLater = true;
@@ -222,8 +223,8 @@ var SessionAuto = function (profile, currentStats, onShow, initialState) {
 
 	steps.laterPrompt = {
 		dialog: {
-			title: "See You Later",
-			text: "You'll be prompted to begin your session the next time you pick this profile."
+			title: 'See You Later',
+			text: 'You\'ll be prompted to begin your session the next time you pick this profile.'
 		}
 	};
 
@@ -233,13 +234,13 @@ var SessionAuto = function (profile, currentStats, onShow, initialState) {
 			return null;
 		}).bind(this),
 		dialog: (function (profile, currentStats, changeList) {
-			var text = this.state.biofeedback === "BF" ?
-				"Please complete this session with biofeedback." :
-				"Please complete this session using traditional (no-biofeedback) practice.";
+			var text = this.state.biofeedback === 'BF' ?
+				'Please complete this session with biofeedback.' :
+				'Please complete this session using traditional (no-biofeedback) practice.';
 			return {
 				text: text,
-				title: "Biofeedback",
-				button: "Okay",
+				title: 'Biofeedback',
+				button: 'Okay',
 				callback: (function () {
 					this.state.hasAcceptedBiofeedbackPrompt = true;
 					this.processUpdate(profile, currentStats, []);
@@ -255,23 +256,23 @@ var SessionAuto = function (profile, currentStats, onShow, initialState) {
 			return null;
 		},
 		dialog: {
-			text: "You will be taken to Free Play to practice in any way you like for five minutes.",
-			title: "Free Play",
-			button: "Okay",
+			text: 'You will be taken to Free Play to practice in any way you like for five minutes.',
+			title: 'Free Play',
+			button: 'Okay',
 			navto: 'root.free-play'
 		}
 	};
 
 	steps.quest = {
 		next: (function (profile, currentStats) {
-			if (this.state.hasAcceptedQuestPrompt && currentStats.thisCurrentView === "words") return steps.whichQuest;
+			if (this.state.hasAcceptedQuestPrompt && currentStats.thisCurrentView === 'words') return steps.whichQuest;
 			return null;
 		}).bind(this),
 		dialog: (function (profile, currentStats, changeList) {
 			return {
-				text: "You are ready to get started! You will be taken to the quest page to begin.",
-				title: "Quest Time",
-				navto: "root.words",
+				text: 'You are ready to get started! You will be taken to the quest page to begin.',
+				title: 'Quest Time',
+				navto: 'root.words',
 				callback: (function () {
 					this.state.hasAcceptedQuestPrompt = true;
 					this.processUpdate(profile, currentStats, []);
@@ -280,7 +281,7 @@ var SessionAuto = function (profile, currentStats, onShow, initialState) {
 		}).bind(this)
 	};
 
-	var goal = profile.name === "Speedy" ? SPEEDY_TRIALS_PER_SESSION : TRIALS_PER_SESSION;
+	var goal = profile.name === 'Speedy' ? SPEEDY_TRIALS_PER_SESSION : TRIALS_PER_SESSION;
 	steps.whichQuest = {
 		next: (function (profile, currentStats) {
 			if (currentStats.thisQuestTrialsCompleted >= goal) {
@@ -292,19 +293,19 @@ var SessionAuto = function (profile, currentStats, onShow, initialState) {
 		dialog: (function (profile, currentStats, changeList) {
 			var text;
 			if (profile.allTrialsCorrect < 100) {
-				text = "Please choose Syllable Quest to practice at the syllable level. Each Quest is 100 " +
-          "syllables long, but you can break your Quest into shorter sessions if " +
-          "you need to. Remember that the clinician should provide a model before " +
-          "each syllable.";
+				text = 'Please choose Syllable Quest to practice at the syllable level. Each Quest is 100 ' +
+          'syllables long, but you can break your Quest into shorter sessions if ' +
+          'you need to. Remember that the clinician should provide a model before ' +
+          'each syllable.';
 			} else {
-				text = "Please choose Word Quest to practice at the word level. Each Quest is 100 " +
-          "words long, but you can break your Quest into shorter sessions if you need to. " +
-          "Remember that the clinician should provide a model only at the start of each " +
-          "block of 10 words.";
+				text = 'Please choose Word Quest to practice at the word level. Each Quest is 100 ' +
+          'words long, but you can break your Quest into shorter sessions if you need to. ' +
+          'Remember that the clinician should provide a model only at the start of each ' +
+          'block of 10 words.';
 			}
 			return {
 				text: text,
-				title: "Quest"
+				title: 'Quest'
 			};
 		}).bind(this)
 	};
@@ -313,26 +314,26 @@ var SessionAuto = function (profile, currentStats, onShow, initialState) {
 		dialog: function (profile, currentStats) {
 			var text;
 			if (sessionIndex === (TOTAL_SESSION_COUNT)) {
-				var percentCorrectStr = profile.percentTrialsCorrect.toString().split(".")[0];
-				text = "Congratulations, you finished your sixteen quests! Your total accuracy was approximately " + percentCorrectStr +
-          "% correct. Your accuracy in your final session was approximatedly " + currentStats.thisQuestPercentTrialsCorrect + "% correct." +
-          " To complete your tasks as a formal pilot tester, please schedule one more visit to complete the Word Quiz and the Syllable Quiz " +
-          "at the post-treatment time point.";
+				var percentCorrectStr = profile.percentTrialsCorrect.toString().split('.')[0];
+				text = 'Congratulations, you finished your sixteen quests! Your total accuracy was approximately ' + percentCorrectStr +
+          '% correct. Your accuracy in your final session was approximatedly ' + currentStats.thisQuestPercentTrialsCorrect + '% correct.' +
+          ' To complete your tasks as a formal pilot tester, please schedule one more visit to complete the Word Quiz and the Syllable Quiz ' +
+          'at the post-treatment time point.';
 			} else {
-				var percentCorrectStr = currentStats.thisQuestPercentTrialsCorrect.toString().split(".")[0];
-				text = "Congratulations, you have completed this quest! You scored approximately " +
-        percentCorrectStr + "% correct. " +
-          "Please come back soon to complete your next session.";
+				var percentCorrectStr = currentStats.thisQuestPercentTrialsCorrect.toString().split('.')[0];
+				text = 'Congratulations, you have completed this quest! You scored approximately ' +
+        percentCorrectStr + '% correct. ' +
+          'Please come back soon to complete your next session.';
 			}
 			return {
 				text: text,
-				title: "All done"
+				title: 'All done'
 			};
 		}
 	};
 
 	this.firstStep = steps.confirm;
-	this.contextString = this.state.biofeedback + "-" + sessionIndex;
+	this.contextString = this.state.biofeedback + '-' + sessionIndex;
 };
 SessionAuto.prototype = Object.create(AutoState.prototype);
 SessionAuto.shouldBegin = function (profile) {
@@ -368,9 +369,9 @@ var ConclusionAuto = function (profile, currentStats, onShow, initialState) {
 		}).bind(this),
 		dialog: (function (profile, currentStats, changeList) {
 			return {
-				title: "Post-Treatment Assessment",
-				text: "Welcome back. Would you like to complete your post-treatment assessment now?",
-				buttons: ["Later", "Okay"],
+				title: 'Post-Treatment Assessment',
+				text: 'Welcome back. Would you like to complete your post-treatment assessment now?',
+				buttons: ['Later', 'Okay'],
 				callback: (function (index) {
 					if (index === 0 || index === 1) {
 						this.wantsToDoItLater = true;
@@ -386,8 +387,8 @@ var ConclusionAuto = function (profile, currentStats, onShow, initialState) {
 
 	steps.laterPrompt = {
 		dialog: {
-			title: "See You Later",
-			text: "You'll be prompted to complete your post-treatment assessment the next time you pick this profile."
+			title: 'See You Later',
+			text: 'You\'ll be prompted to complete your post-treatment assessment the next time you pick this profile.'
 		}
 	};
 
@@ -397,9 +398,9 @@ var ConclusionAuto = function (profile, currentStats, onShow, initialState) {
 			return null;
 		},
 		dialog: {
-			text: "You will be taken to the Quiz section to complete the final Long Word Quiz measure.",
-			title: "Word Quiz",
-			button: "Okay",
+			text: 'You will be taken to the Quiz section to complete the final Long Word Quiz measure.',
+			title: 'Word Quiz',
+			button: 'Okay',
 			navto: 'root.auto'
 		}
 	};
@@ -413,26 +414,26 @@ var ConclusionAuto = function (profile, currentStats, onShow, initialState) {
 			return null;
 		}).bind(this),
 		dialog: {
-			text: "Now please complete the final Syllable Quiz measure.",
-			title: "Syllable Quiz",
-			button: "Okay",
+			text: 'Now please complete the final Syllable Quiz measure.',
+			title: 'Syllable Quiz',
+			button: 'Okay',
 			navto: 'root.auto'
 		}
 	};
 
 	steps.conclusionPrompt = {
 		dialog: function (profile, currentStats) {
-			var text = "Thank you again for supporting our research! " +
-        "You are free to keep using the staRt app, but your time as a formal pilot tester is complete.";
+			var text = 'Thank you again for supporting our research! ' +
+        'You are free to keep using the staRt app, but your time as a formal pilot tester is complete.';
 			return {
 				text: text,
-				title: "All done"
+				title: 'All done'
 			};
 		}
 	};
 
 	this.firstStep = steps.confirm;
-	this.contextString = "assessment";
+	this.contextString = 'assessment';
 };
 ConclusionAuto.prototype = Object.create(AutoState.prototype);
 ConclusionAuto.shouldBegin = function (profile) {
@@ -460,7 +461,7 @@ autoService.factory('AutoService', function ($rootScope, $ionicPlatform, Notifyi
 
 			if (currentAuto) {
 				SessionStatsService.endContext();
-				NotifyingService.notify("session-did-end", currentAuto);
+				NotifyingService.notify('session-did-end', currentAuto);
 			}
 		}
 
@@ -478,7 +479,7 @@ autoService.factory('AutoService', function ($rootScope, $ionicPlatform, Notifyi
 			}
 
 			SessionStatsService.beginContext(currentAuto.contextString);
-			NotifyingService.notify("session-did-begin", currentAuto);
+			NotifyingService.notify('session-did-begin', currentAuto);
 		}
 	}
 
@@ -545,7 +546,7 @@ autoService.factory('AutoService', function ($rootScope, $ionicPlatform, Notifyi
 			$cordovaDialogs.alert(
 				message.text,
 				message.title,
-				message.button || "Okay"
+				message.button || 'Okay'
 			).then(function () {
 				if (message.callback) message.callback();
 				if (message.navto) $state.go(message.navto);
@@ -554,25 +555,25 @@ autoService.factory('AutoService', function ($rootScope, $ionicPlatform, Notifyi
 	}
 
 	function _presentFormalPasswordChallenge(profile) {
-		var weblink = "https://wp.nyu.edu/byunlab/projects/start/participate/";
+		var weblink = 'https://wp.nyu.edu/byunlab/projects/start/participate/';
 		$cordovaDialogs.prompt(
-			"To initiate formal testing mode, please enter the code that you received after completion of the consent process.",
-			"Formal Research Pilot",
-			["Cancel", "Confirm"]
+			'To initiate formal testing mode, please enter the code that you received after completion of the consent process.',
+			'Formal Research Pilot',
+			['Cancel', 'Confirm']
 		).then(function (result) {
 			if (result.buttonIndex <= 1) {
 				$cordovaDialogs.alert(
-					"If you decide later that you want to be a formal tester, you can opt in from the profiles page.",
-					"Formal Research Pilot"
+					'If you decide later that you want to be a formal tester, you can opt in from the profiles page.',
+					'Formal Research Pilot'
 				);
 			} else {
-				if (result.input1 !== "biofeedback") {
+				if (result.input1 !== 'biofeedback') {
 					$cordovaDialogs.confirm(
-						"Please see our website for information on formal study participation, and to receive a code to begin testing.",
-						"Invalid Password",
-						["Okay", "Visit Website"]
+						'Please see our website for information on formal study participation, and to receive a code to begin testing.',
+						'Invalid Password',
+						['Okay', 'Visit Website']
 					).then(function (idx) {
-						if (idx === 2) window.open(weblink, "_blank", 'location=yes');
+						if (idx === 2) window.open(weblink, '_blank', 'location=yes');
 					});
 				} else {
 					NotifyingService.notify('formal-testing-validated', profile);
@@ -585,30 +586,30 @@ autoService.factory('AutoService', function ($rootScope, $ionicPlatform, Notifyi
 
 		if (profile.formalTester) {
 			$cordovaDialogs.alert(
-				profile.name + " is already participating as a formal pilot tester",
-				"Formal Research Pilot"
+				profile.name + ' is already participating as a formal pilot tester',
+				'Formal Research Pilot'
 			);
 
 			return;
 		}
 
-		var weblink = "https://wp.nyu.edu/byunlab/projects/start/participate/";
-		var text = "Do you want to participate as a formal pilot tester in our research study? " +
-      "Please note that we must obtain informed consent from the clinician, client, and client’s " +
-      "family before formal participation is possible. Please see our website " +
-      "or email nyuchildspeech@gmail.com for more information.";
+		var weblink = 'https://wp.nyu.edu/byunlab/projects/start/participate/';
+		var text = 'Do you want to participate as a formal pilot tester in our research study? ' +
+      'Please note that we must obtain informed consent from the clinician, client, and client’s ' +
+      'family before formal participation is possible. Please see our website ' +
+      'or email nyuchildspeech@gmail.com for more information.';
 		$cordovaDialogs.confirm(
 			text,
-			"Formal Research Pilot",
-			["No", "Visit Website", "Yes"]
+			'Formal Research Pilot',
+			['No', 'Visit Website', 'Yes']
 		).then(function (idx) {
 			if (idx === 0 || idx === 1) {
 				$cordovaDialogs.alert(
-					"If you decide later that you want to be a formal tester, you can opt in from the profiles page.",
-					"Formal Research Pilot"
+					'If you decide later that you want to be a formal tester, you can opt in from the profiles page.',
+					'Formal Research Pilot'
 				);
 			} else if (idx === 2) {
-				window.open(weblink, "_blank", 'location=yes');
+				window.open(weblink, '_blank', 'location=yes');
 			} else if (idx === 3) {
 				_presentFormalPasswordChallenge(profile);
 			}
@@ -630,7 +631,7 @@ autoService.factory('AutoService', function ($rootScope, $ionicPlatform, Notifyi
 	}
 
 	function _doStartSession() {
-		console.log("Starting session");
+		console.log('Starting session');
 		ProfileService.getCurrentProfile().then(function (profile) {
 			if (profile) {
 				var currentStats = SessionStatsService.getCurrentProfileStats() || {};
@@ -638,9 +639,9 @@ autoService.factory('AutoService', function ($rootScope, $ionicPlatform, Notifyi
 
 				if (profile.inProcessSession) {
 					$cordovaDialogs.confirm(
-						"It looks like you were in the middle of a session. Would you like to pick up where you left off, or start over?",
-						"Resume Session",
-						["Resume", "Start over"]
+						'It looks like you were in the middle of a session. Would you like to pick up where you left off, or start over?',
+						'Resume Session',
+						['Resume', 'Start over']
 					).then(function(index) {
 						if (index === 1) {
 							_checkForAuto(profile, currentStats, changeList, profile.inProcessSessionState);
@@ -660,7 +661,7 @@ autoService.factory('AutoService', function ($rootScope, $ionicPlatform, Notifyi
 	}
 
 	function _doStopSession() {
-		console.log("Stopping session");
+		console.log('Stopping session');
 		ProfileService.getCurrentProfile().then(function (profile) {
 			if (profile) {
 				var state = currentAuto.getState();
@@ -680,9 +681,9 @@ autoService.factory('AutoService', function ($rootScope, $ionicPlatform, Notifyi
 		ProfileService.getProfileWithUUID(profileUUID).then(function (profile) {
 			if (profile && profile.formalTester && (profile.nFormalTreatmentComplete === 0)) {
 				$cordovaDialogs.alert(
-					"Welcome back! Please press the purple \"start session\" button to begin your next session",
-					"Introduction",
-					"Okay"
+					'Welcome back! Please press the purple "start session" button to begin your next session',
+					'Introduction',
+					'Okay'
 				).then(function () {
 					// no-op
 				});
@@ -702,9 +703,9 @@ autoService.factory('AutoService', function ($rootScope, $ionicPlatform, Notifyi
 		} else if (changeList.indexOf('formalTester') !== -1) {
 
 			$cordovaDialogs.alert(
-				"Welcome to the formal testing program! Please press the purple \"start session\" button at any time to begin",
-				"Introduction",
-				"Okay"
+				'Welcome to the formal testing program! Please press the purple "start session" button at any time to begin',
+				'Introduction',
+				'Okay'
 			).then(function () {
 				// no-op
 			});
@@ -715,7 +716,7 @@ autoService.factory('AutoService', function ($rootScope, $ionicPlatform, Notifyi
 
 	return {
 		init: function () {
-			console.log("Auto Service initialized");
+			console.log('Auto Service initialized');
 		},
 
 		isSessionActive: function () {
