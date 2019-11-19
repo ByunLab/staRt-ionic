@@ -273,7 +273,7 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 
 
 	function createQuestHighscoresOnFB() {
-		// should only be called from w/in beginPracticeForUser(user)
+		// should only be called by beginPracticeForUser(user)
 		// inits a new highscoresQuest object on firebase, if no  highscores found in user profile
 		var newHighScores = QuestScore.initNewHighScores();
 
@@ -313,8 +313,9 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 		} // if if($scope.shouldUpdateHighscores)
 	} // end updateHighscores()
 
-	// USE WITH CAUTION!!!!
+
 	function resetQuestHighscores() {
+		// USE WITH CAUTION!!!!
 		console.log('OBLITERATING HIGHSCORES OBJ');
 		$scope.highscores = QuestScore.initNewHighScores($scope.highscores);
 
@@ -458,7 +459,6 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 		var needToReload = false;
 
 		// COLLECT SAVED-SESSION DATA ($scope.currentPracticeSession) AND HIGHSCORE DATA ($scope.highscores)
-
 		// on-protocol quest && saved session
 		if (user.inProcessSession && AutoService.isSessionActive()) {
 			needToReload = true;
@@ -519,19 +519,11 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 		} //if (!$scope.probe)
 
 		if (!$scope.probe) {
-			// Q: #WH does this need to be set sooner
 			$scope.currentPracticeSession.categoryRestrictions = $rootScope.finalSelectedCategories;
 		} else { // We explicitly set this to null so practice sessions stored in recordingHistory have a consistent set of keys.
 			$scope.currentPracticeSession.categoryRestrictions = null;
 		}
 		$rootScope.finalSelectedCategories = null;
-
-		// TODO: Check to see if we need to do Object.assign instead.
-		// console.log("final selected categories: %o", $rootScope.finalSelectedCategories);
-		// $scope.currentPracticeSession.categoryRestrictions = $rootScope.finalSelectedCategories;
-		// $rootScope.finalSelectedCategories = null;
-		// console.log("currentPracticeSession.ctaegyroRestrictions: %o", $scope.currentPracticeSession.categoryRestrictions);
-		// console.log("$rootscope.finalSelectedCategories: %o", $rootScope.finalSelectedCategories);
 		// -----------------------------------------------------
 		//IMPORTANT: Even if this is a continuation of a previous session, it still needs a unique recording ID; so you set/overwrite-the-old-one here.
 		$scope.currentPracticeSession.id = UtilitiesService.guid();
@@ -664,22 +656,9 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 	document.addEventListener('pause', $rootScope.onPause);
 	document.addEventListener('resume', $rootScope.onResume);
 	$rootScope.pauseListenersSet = true;
-
 	// END PAUSE-SETUP
 
 	// END WORD PRACTICE SESSION ---------------------------------------
-	// If you need to prompt the user to confirm ending the session, it should be done before $scope.endWordPractice runs.
-
-	/* $scope.endWordPractice can be called by:
-
-		$scope.$on('stopPractice': This is the 'Stop' button in the UI
-
-		$rootScope.$on('$urlChangeStart',: This is when someone tries to navigate away during an active session
-
-		$scope.resetQuestHighscores: This is the 'Reset Highscores' button in the temp UI
-
-		$rootScope.onPause: #Q
-	*/
 	$scope.endWordPractice = function () {
 
 	  if (!$scope.probe) {
