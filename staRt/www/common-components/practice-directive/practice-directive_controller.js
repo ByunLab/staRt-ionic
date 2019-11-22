@@ -796,17 +796,17 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 	});
 
 	// DIALOG SEQUENCE HANDLERS ---------------------
-	$scope.dialogClose = function() {
-		$scope.badges.qtDialog.isVisible = false;
-	};
+	// $scope.dialogClose = function() {
+	// 	$scope.badges.qtDialog.isVisible = false;
+	// };
 	$scope.dialogResume = function() {
-		console.log('resume Quest callled');
-		$scope.badges.qtDialog.isVisible = false;
+		// calls reset to start new trial block
+		QuestScore.dialogResume($scope.scores, $scope.badges);
+		// TODO unpause wave
+		// TODO enable rating btns
 	};
 	$scope.dialogNext = function() {
-		console.log('Next Card callled');
 		QuestScore.dialogNext($scope.badges);
-		//$scope.badges.qtDialog.isVisible = false;
 	};
 
 
