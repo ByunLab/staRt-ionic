@@ -466,7 +466,7 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 			needToReload = true;
 			$scope.currentPracticeSession = Object.assign({}, $rootScope.sessionToResume);
 		}
-		// quest highscores: same for all, regardless of resumed-sesh and protocol status
+		// QUEST-ONLY: same for all, regardless of resumed-sesh and on-protocol status
 		if (!$scope.probe) {
 			if (user.highscoresQuest) {
 				console.log('User has saved Highscores');
@@ -483,18 +483,30 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 		// TODO: Check to see if there's a better way to clear out the current session we're ressuming.
 		$rootScope.sessionToResume = null;
 
-		// INIT QUEST SESSION DATA
+		// QUEST AND QUIZ: INIT SESSION, if there is no saved session
+		if (!needToReload) {
+			$scope.currentWordIdx = -1;
+			$scope.currentPracticeSession = initialPracticeSession(
+				Date.now(),
+				$scope.type || 'word',
+				$scope.probe || 'quest',
+				$scope.count
+			);
+		}
+
+		// QUEST-ONLY: ADDITIONAL SESSION DATA INIT
 		if (!$scope.probe) {
 			// Quest: same starting value for all, regardless of resume-session status. For saved sessions, these will be updated during the sessionPrepTask process
 			QuestScore.initCoinCounter($scope.count, $scope.questCoins); // always new
-			$scope.scores = QuestScore.initScores($scope.scores); // always new
-			//$scope.currentPracticeSession.count #HC
+			$scope.scores = QuestScore.initScores($scope.scores, $scope.currentPracticeSession.count); // always new
 			$scope.milestones = QuestScore.initMilestones($scope.highscores); // built from highscores
 			$scope.badges = QuestScore.initBadges($scope.badges); // always new
 			$scope.difficulty = 1;
+			//$scope.currentPracticeSession.categoryRestrictions = $rootScope.finalSelectedCategories;
 			//console.log($scope.currentPracticeSession);
 		} //if (!$scope.probe)
 
+		// QUEST AND QUIZ: RESUME STATE PROCESS
 		if (needToReload) {
 			var previousRatings = $scope.currentPracticeSession.ratings;
 			console.log('previous ratings: %o', previousRatings);
@@ -506,14 +518,6 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 			}).then(function () {
 				$scope.currentWordIdx = $scope.currentPracticeSession.ratings.length - 1;
 			});
-		} else if (!needToReload) {
-			$scope.currentWordIdx = -1;
-			$scope.currentPracticeSession = initialPracticeSession(
-				Date.now(),
-				$scope.type || 'word',
-				$scope.probe || 'quest',
-				$scope.count
-			);
 		}
 
 		if (!$scope.probe) {
