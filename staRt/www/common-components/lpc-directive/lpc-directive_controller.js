@@ -401,10 +401,6 @@ lpcDirective.controller( 'LpcDirectiveController',
 
 		// ---------------------------------------
 
-		$scope.stopPractice = function() {
-			$scope.$emit('stopPractice');
-		};
-
 		$scope.$on('resetRating', function() {
 			$scope.data.rating = 0;
 		});
