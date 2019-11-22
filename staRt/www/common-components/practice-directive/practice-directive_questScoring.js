@@ -44,7 +44,14 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		};
 	}
 
-	// handles state for active Quest score counters
+	// SCORES OBJECT: handles state for active Quest score counters
+	/*
+		scores.endOfBlock:
+			True: Set by conditionals w/in questRating().
+				  Checked on every trial.
+			False: Set by ...
+				   Checked on every trial.
+	*/
 	function QuestScores() {
 		return {
 			block_display_score: 0, //user val
@@ -117,8 +124,9 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 				}
 			},
 			endBlockSeq: [],
-			endBlockDisplay: {},
+			endBlockDisplay: {}, // Holds the content to be displayed in the html template. This is the object at badges.endBlockSeq[badges.dialogCardNumber].
 			endQuestSum: {},
+			dialogCardNumber: -1,
 			qtDialog: {
 				isVisible: false, // is the Dialog Box Visible
 				isBlockEnd: false, // holds 'End of Block' Sequence
@@ -127,7 +135,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 				isFinalScore: false, // hold 'Final Score' graphic
 			},
 			qtDialogTemplate: {
-				cardNumber: -1,
+				//cardNumber: -1,
 				break: {},
 				blockEnd: {
 					title: '',
@@ -230,6 +238,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		//console.log(stackID + ', ' + coinID);
 	};
 
+	// used for badges.onARoll & badges.newRecord only
 	function resetBadges(badges, badge) {
 		badges[badge].flag = false;
 		badges[badge].trials = 0;
@@ -260,16 +269,26 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		//console.log(badges);
 	}
 
-	// -- called by checkUpdateMilestones() ---
+	// called by resumeAfterBlockBreak()
 	function resetForNewBlock(scores, badges) {
+		// clear dialog box flags & close dialog box
+		for (var prop in badges.qtDialog) {
+			if (badges.qtDialog.hasOwnProperty(prop)) {
+				badges.qtDialog[prop] = false;
+			}
+		}
+		// scoresObj
 		scores.block_score = 0;
 		scores.block_display_score = 0;
 		scores.block_goldCount = 0;
+		scores.endOfBlock = false;
+		// milestones: no need to reset
+		// badges: in-game stickers
 		resetBadges(badges, 'newRecord');
-	}
-
-	// #TEMP
-	function resetEndBlockBadges(badges) {
+		// badges: achievement cards
+		badges.dialogCardNumber = -1;
+		badges.endBlockSeq = [];
+		badges.endBlockDisplay = {};
 		badges.endBlockSum.mgib.flag = false;
 		badges.endBlockSum.hsib.flag = false;
 		badges.endBlockSum.streak.flag = false;
@@ -299,20 +318,17 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 
 	// ==============================================
 	// DIALOG BOX HELPERS ------------------------
-	// var qtDialog_close;
-	// var qtDialog_next;
-	// var qtDialog_resume;
-
 	var advanceEndOfBlock = function(badges) {
-		badges.qtDialogTemplate.cardNumber++;
+		badges.dialogCardNumber++;
+		badges.qtDialog.isVisible = true;
 
-		var template = badges.endBlockSeq[badges.qtDialogTemplate.cardNumber].template;
+		var template = badges.endBlockSeq[badges.dialogCardNumber].template;
 
-		var card = badges.endBlockSeq[badges.qtDialogTemplate.cardNumber];
+		var card = badges.endBlockSeq[badges.dialogCardNumber];
 
 		if(template === 'blockEnd') {
-			badges.endBlockDisplay.title = badges.endBlockSeq[badges.qtDialogTemplate.cardNumber].title;
-			badges.endBlockDisplay.count = badges.endBlockSeq[badges.qtDialogTemplate.cardNumber].count;
+			badges.endBlockDisplay.title = badges.endBlockSeq[badges.dialogCardNumber].title;
+			badges.endBlockDisplay.count = badges.endBlockSeq[badges.dialogCardNumber].count;
 		} else if (template === 'break') {
 			badges.qtDialog.isBreak = true;
 			badges.endBlockDisplay.title = card.title;
@@ -323,31 +339,14 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		}
 	};
 
-	// var resumeAfterBreak = function() {
-	/*
-		will be called from the dialog interface
-		- unpause the wave
-		- clear badges.endBlockSeq, badges.endBlockDisplay
-		- reset for badges.endBlockSum
-		- qtDialog: set all to F
-		- qtDialogTemplate.cardNumber = -1;
-
-
-	// resets badges display
-	//resetEndBlockBadges(badges);
-
-	// resets score counters & New Record counters
-	//resetForNewBlock(scores, badges);
-
-	//scores.endOfBlock = false;
-	*/
-	// };
 
 	// called by
 	var prepEndOfBlock = function(scores, badges, currentWordIdx) {
 		//console.log('runEndOfBlock called');
-
 		badges.qtDialog.isBlockEnd = true;
+
+		// this should already be set by clear fn
+		// badges.dialogCardNumber = -1;
 
 		var sumTemp = badges.endBlockSum;
 		//badges.endBlockSeq = new EndBlockSeqObj();
@@ -372,16 +371,15 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		});
 
 
+
 		if(badges.endBlockSeq.length > 0){
 			badges.qtDialog.isBlockEnd = true;
 		} else {
 			badges.qtDialog.isBreak = true;
 		}
-		badges.qtDialogTemplate.cardNumber = -1;
 
+		console.log(badges.endBlockSeq);
 		advanceEndOfBlock(badges);
-
-		badges.qtDialog.isVisible = true;
 	};
 
 
@@ -511,9 +509,13 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		}
 
 		// check for end of block
-		if (currentWordIdx % 10 == 0 && currentWordIdx >= 10) {
-			console.log('Current Word Index: ' + currentWordIdx);
+		if (currentWordIdx % 10 === 0 && currentWordIdx >= 10) {
 			scores.endOfBlock = true;
+			console.log('Current Word Index: ' + currentWordIdx);
+			console.log('EndOfBlock is: ' + scores.endOfBlock);
+		} else {
+			scores.endOfBlock = false;
+			console.log('EndOfBlock is: ' + scores.endOfBlock);
 		}
 
 		checkUpdateMilestones(scores, milestones, badges, currentWordIdx);
@@ -526,6 +528,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		initScores: initScores,
 		initBadges: initBadges,
 		questRating: questRating,
-		dialogNext: advanceEndOfBlock
+		dialogNext: advanceEndOfBlock,
+		dialogResume: resetForNewBlock
 	};
 });
