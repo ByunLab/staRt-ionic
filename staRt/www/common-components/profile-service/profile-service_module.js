@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 var profileService = angular.module('profileService', [ 'firebaseService', 'notifyingService', 'utilitiesService' ]);
 
 profileService.factory('ProfileService', function($rootScope, $state, $localForage, $http, $cordovaDialogs, FirebaseService, NotifyingService, StartServerService, UtilitiesService)
@@ -7,13 +8,13 @@ profileService.factory('ProfileService', function($rootScope, $state, $localFora
 
 		return {
 			accountId: FirebaseService.userId(),
-      name: undefined,
-      email: FirebaseService.userEmail(),
+			name: undefined,
+			email: FirebaseService.userEmail(),
 			age: undefined,
 			heightFeet: undefined,
 			heightInches: undefined,
 			gender: undefined,
-      uuid: UtilitiesService.guid(),
+			uuid: UtilitiesService.guid(),
 
 			// Profile cumulative statistics
 			allSessionTime: 0, // Milliseconds logged in for this profile
@@ -41,13 +42,13 @@ profileService.factory('ProfileService', function($rootScope, $state, $localFora
 			firstSessionTimestamp: null, // Unix timestamp of first trial
 			lastSessionTimestamp: null, // Unix timestamp of most recent trial
 			creationTimestamp: Date.now(), // Unix timestamp profile creation
-      lastLoginTimestamp: Date.now(), // Unix time of last login
-      inProcessSession: null, // Ratings etc. in the current recording for a formal on-protocol session
+			lastLoginTimestamp: Date.now(), // Unix time of last login
+			inProcessSession: null, // Ratings etc. in the current recording for a formal on-protocol session
 			inProcessSessionState: null, // Extra data for the state of the resumed on protocol session
 
 			recordingSessionHistory: [],
 		};
-	};
+	}
 
 	var normsData;
 	var filterOrderData;
@@ -78,9 +79,10 @@ profileService.factory('ProfileService', function($rootScope, $state, $localFora
 			if (profilePromises.length === 0) {
 				return {
 					currentProfileUUID : null
-				}
+				};
 			}
 
+			// eslint-disable-next-line no-undef
 			return Promise.all(profilePromises).then( function(result) {
 				var retVal = {};
 				for (var i=0; i<result.length; i++) {
@@ -93,8 +95,8 @@ profileService.factory('ProfileService', function($rootScope, $state, $localFora
 
 	function _getAllProfiles() {
 		if (!FirebaseService.loggedIn()) { return Promise.resolve(null); }
-		return FirebaseService.db().collection("profiles")
-			.where("accountId", "==", FirebaseService.userId())
+		return FirebaseService.db().collection('profiles')
+			.where('accountId', '==', FirebaseService.userId())
 			.get()
 			.then(function (querySnapshot) {
 				var profiles = [];
@@ -104,7 +106,7 @@ profileService.factory('ProfileService', function($rootScope, $state, $localFora
 				return profiles;
 			})
 			.catch(function (error) {
-				console.log("Error fetching profiles data");
+				console.log('Error fetching profiles data');
 				return null;
 			});
 	}
@@ -114,8 +116,8 @@ profileService.factory('ProfileService', function($rootScope, $state, $localFora
 			var currentId = res['currentProfileUUID'];
 			var currentProfile = null;
 			if (currentId) {
-				return FirebaseService.db().collection("profiles")
-					.where("uuid", "==", currentId)
+				return FirebaseService.db().collection('profiles')
+					.where('uuid', '==', currentId)
 					.get()
 					.then(function (querySnapshot) {
 						querySnapshot.forEach(function (doc) {
@@ -135,30 +137,30 @@ profileService.factory('ProfileService', function($rootScope, $state, $localFora
 
 	function _saveProfile(profile) {
 		NotifyingService.notify('profile-saved', profile);
-		return FirebaseService.db().collection("profiles")
+		return FirebaseService.db().collection('profiles')
 			.doc(profile.uuid)
 			.set(profile);
-  }
+	}
 
-  function _lookupDefaultFilterOrder(profile) {
-    if (profile.age !== undefined &&
+	function _lookupDefaultFilterOrder(profile) {
+		if (profile.age !== undefined &&
       profile.heightFeet !== undefined &&
       profile.heightInches !== undefined &&
       profile.age !== undefined) {
-      var gender = profile.gender;
-      gender = gender === 'Male' ? 'M' : 'F';
-      var ageBit = profile.age >= 15 ? '1' : '0';
-      var heightBit = profile.heightFeet * 12 + profile.heightInches >= 64 ? '1' : '0';
+			var gender = profile.gender;
+			gender = gender === 'Male' ? 'M' : 'F';
+			var ageBit = profile.age >= 15 ? '1' : '0';
+			var heightBit = profile.heightFeet * 12 + profile.heightInches >= 64 ? '1' : '0';
 
-      var filterRow = filterOrder.find(function (row) {
-        return row[0] === gender && row[1] === ageBit && row[2] === heightBit;
-      });
-      if (filterRow) return parseInt(filterRow[3]);
-      return 35;
-    } else {
-      return 35;
-    }
-  }
+			var filterRow = filterOrder.find(function (row) {
+				return row[0] === gender && row[1] === ageBit && row[2] === heightBit;
+			});
+			if (filterRow) return parseInt(filterRow[3]);
+			return 35;
+		} else {
+			return 35;
+		}
+	}
 
 	profilesInterfaceState = loadProfilesInterfaceState();
 
@@ -167,7 +169,7 @@ profileService.factory('ProfileService', function($rootScope, $state, $localFora
 	}
 
 	function _getRecordingSessionDataById(profile, sessionid) {
-		var recordingSessions = profile.recordingSessionHistory.filter(function (recordingSession) {return recordingSession.id === sessionid});
+		var recordingSessions = profile.recordingSessionHistory.filter(function (recordingSession) {return recordingSession.id === sessionid;});
 		if (recordingSessions.length == 0) {
 			$cordovaDialogs.alert(
 				'This recording session cannot be resumed.',
@@ -176,7 +178,7 @@ profileService.factory('ProfileService', function($rootScope, $state, $localFora
 			);
 		}
 		else if (recordingSessions.length > 1) {
-			console.log("ERROR: There should only be one recording session per id.");
+			console.log('ERROR: There should only be one recording session per id.');
 		}
 		else {
 			return recordingSessions[0];
@@ -187,13 +189,13 @@ profileService.factory('ProfileService', function($rootScope, $state, $localFora
 	function _resumeNormalRecordingSession(profile, sessionid) {
 		var recordingSession = _getRecordingSessionDataById(profile, sessionid);
 		if (recordingSession.count <= recordingSession.ratings.length) {
-				// Ideally we don't even show the resume button for completed sessions.
-				$cordovaDialogs.alert(
-					'You cannot resume a session that has already been completed.',
-					'Cannot resume session.',
-					'Okay'
-				);
-				return;
+			// Ideally we don't even show the resume button for completed sessions.
+			$cordovaDialogs.alert(
+				'You cannot resume a session that has already been completed.',
+				'Cannot resume session.',
+				'Okay'
+			);
+			return;
 		}
 		if (recordingSession.isFormalSession) {
 			$cordovaDialogs.alert(
@@ -202,7 +204,7 @@ profileService.factory('ProfileService', function($rootScope, $state, $localFora
 				'Okay'
 			);
 			return;
-	}
+		}
 		var is_quest = recordingSession.probe == 'quest';
 		var is_quiz = recordingSession.probe && !is_quest; // probe is set to true if its a quiz, and 'quest' if its a quest.
 		$rootScope.sessionToResume = recordingSession;
@@ -220,15 +222,15 @@ profileService.factory('ProfileService', function($rootScope, $state, $localFora
 			return _resumeNormalRecordingSession(profile, sessionid);
 		},
 
-    clearInProgressSessionForCurrentProfile: function()
-    {
-      return this.runTransactionForCurrentProfile(function(handle, doc, t) {
-        t.update(handle, {
-          inProcessSession: null,
-          inProcessSessionState: null
-        });
-      });
-    },
+		clearInProgressSessionForCurrentProfile: function()
+		{
+			return this.runTransactionForCurrentProfile(function(handle, doc, t) {
+				t.update(handle, {
+					inProcessSession: null,
+					inProcessSessionState: null
+				});
+			});
+		},
 
 		reloadProfilesInterfaceState : function () {return  _reloadProfilesInterfaceState(); },
 
@@ -241,8 +243,8 @@ profileService.factory('ProfileService', function($rootScope, $state, $localFora
 		{
 			if (!FirebaseService.loggedIn()) { return Promise.resolve(null); }
 
-			return FirebaseService.db().collection("profiles")
-				.where("accountId", "==", FirebaseService.userId())
+			return FirebaseService.db().collection('profiles')
+				.where('accountId', '==', FirebaseService.userId())
 				.get()
 				.then(function (querySnapshot) {
 					var deletes = [];
@@ -256,17 +258,17 @@ profileService.factory('ProfileService', function($rootScope, $state, $localFora
 		getCurrentProfile: function()
 		{
 			return _getCurrentProfile();
-    },
+		},
 
-    getProfileTransactionHandle(profileData)
-    {
-      var profileUUID = profileData.uuid;
-      return FirebaseService.db().collection("profiles").doc(profileUUID);
-    },
+		getProfileTransactionHandle: function(profileData)
+		{
+			var profileUUID = profileData.uuid;
+			return FirebaseService.db().collection('profiles').doc(profileUUID);
+		},
 
 		getProfileWithUUID: function(profileUUID) {
-			return FirebaseService.db().collection("profiles")
-				.where("uuid", "==", profileUUID)
+			return FirebaseService.db().collection('profiles')
+				.where('uuid', '==', profileUUID)
 				.get()
 				.then(function (querySnapshot) {
 					var currentProfile = null;
@@ -285,11 +287,11 @@ profileService.factory('ProfileService', function($rootScope, $state, $localFora
 			if (window.AudioPlugin !== undefined) {
 				var pluginRecordingsCallback = function(recordings) {
 					cb(recordings);
-				}
+				};
 				window.AudioPlugin.recordingsForProfile (
 					profile,
 					pluginRecordingsCallback,
-					function() {cb([])}
+					function() {cb([]);}
 				);
 			} else {
 				cb([]);
@@ -308,48 +310,48 @@ profileService.factory('ProfileService', function($rootScope, $state, $localFora
 			});
 		},
 
-    // @param profileHandle - A proflie handle as returned by getProfileTransactionHandle
-    // @param transactionFunction - A function that takes as its first argument a profile
-    //  handle (profileHandle), as its second argument the profile doc itself (profileDoc)
-    //  and as its third the transaction that can be used with the handle to update the
-    //  profile. Call transaction.update(profileHandle, { <key>: <value> }) for each update
-    //  transaction. As an example:
-    //    ProfileService.runTransactionFor(profileHandle, function(handle, doc, t) {
-    //      t.update(handle, { counter: doc.data().counter + 1 });
-    //    });
-    runTransaction: function(profileHandle, transactionFunction) {
-      return FirebaseService.db().runTransaction(function(transaction) {
-        return transaction.get(profileHandle).then(function(profileDoc) {
-          return transactionFunction(profileHandle, profileDoc, transaction);
-        });
-      });
-    },
+		// @param profileHandle - A proflie handle as returned by getProfileTransactionHandle
+		// @param transactionFunction - A function that takes as its first argument a profile
+		//  handle (profileHandle), as its second argument the profile doc itself (profileDoc)
+		//  and as its third the transaction that can be used with the handle to update the
+		//  profile. Call transaction.update(profileHandle, { <key>: <value> }) for each update
+		//  transaction. As an example:
+		//    ProfileService.runTransactionFor(profileHandle, function(handle, doc, t) {
+		//      t.update(handle, { counter: doc.data().counter + 1 });
+		//    });
+		runTransaction: function(profileHandle, transactionFunction) {
+			return FirebaseService.db().runTransaction(function(transaction) {
+				return transaction.get(profileHandle).then(function(profileDoc) {
+					return transactionFunction(profileHandle, profileDoc, transaction);
+				});
+			});
+		},
 
-    // @param transactionFunction - A function that takes as its first argument a profile
-    //  handle (profileHandle), as its second argument the profile doc itself (profileDoc)
-    //  and as its third the transaction that can be used with the handle to update the
-    //  profile. Call transaction.update(profileHandle, { <key>: <value> }) for each update
-    //  transaction. As an example:
-    //    ProfileService.runTransactionForCurrentProfile(function(handle, doc, t) {
-    //      t.update(handle, { counter: doc.data().counter + 1 });
-    //    });
-    runTransactionForCurrentProfile(transactionFunction) {
-      return this.getCurrentProfile().then((function(profile) {
-        if (profile) {
-          var handle = this.getProfileTransactionHandle(profile);
-          if (handle) {
-            return this.runTransaction(handle, transactionFunction);
-          }
-        }
-        return Promise.reject("No current profile to run a transaction for.");
-      }).bind(this));
-    },
+		// @param transactionFunction - A function that takes as its first argument a profile
+		//  handle (profileHandle), as its second argument the profile doc itself (profileDoc)
+		//  and as its third the transaction that can be used with the handle to update the
+		//  profile. Call transaction.update(profileHandle, { <key>: <value> }) for each update
+		//  transaction. As an example:
+		//    ProfileService.runTransactionForCurrentProfile(function(handle, doc, t) {
+		//      t.update(handle, { counter: doc.data().counter + 1 });
+		//    });
+		runTransactionForCurrentProfile: function(transactionFunction) {
+			return this.getCurrentProfile().then((function(profile) {
+				if (profile) {
+					var handle = this.getProfileTransactionHandle(profile);
+					if (handle) {
+						return this.runTransaction(handle, transactionFunction);
+					}
+				}
+				return Promise.reject('No current profile to run a transaction for.');
+			}).bind(this));
+		},
 
 		saveProfile: function(profile)
 		{
-      if (!profile.lpcOrder) {
-        profile.lpcOrder = _lookupDefaultFilterOrder(profile);
-      }
+			if (!profile.lpcOrder) {
+				profile.lpcOrder = _lookupDefaultFilterOrder(profile);
+			}
 			return _saveProfile(profile);
 		},
 
@@ -360,7 +362,7 @@ profileService.factory('ProfileService', function($rootScope, $state, $localFora
 
 		deleteProfile: function(profile)
 		{
-			return FirebaseService.db().collection("profiles")
+			return FirebaseService.db().collection('profiles')
 				.doc(profile.uuid)
 				.delete()
 				.then(_getAllProfiles);
@@ -370,7 +372,7 @@ profileService.factory('ProfileService', function($rootScope, $state, $localFora
 			if (profile.age && profile.gender) {
 				var age = profile.age;
 				age = age <= 5 ? 5 : age;
-				age = age >= 19 ? "19+" : age;
+				age = age >= 19 ? '19+' : age;
 				age = age.toString();
 				var gender = profile.gender;
 				gender = gender === 'Male' ? 'M' : 'F';
@@ -388,6 +390,6 @@ profileService.factory('ProfileService', function($rootScope, $state, $localFora
 		lookupDefaultFilterOrder: function(profile) {
 			return _lookupDefaultFilterOrder(profile);
 		}
-	}
+	};
 
 });

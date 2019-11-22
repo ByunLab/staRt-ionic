@@ -60,11 +60,6 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 		}
 	});
 
-	// used by UI
-	ProfileService.getCurrentProfile().then(function(profile) {
-		$scope.participant_name = profile.name;
-	});
-
 	function initialPracticeSession(startTimestamp, type, probe, count) {
 		return {
 			id: UtilitiesService.guid(),
@@ -164,10 +159,10 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 	function handleRatingData($scope, data) {
 
 		// adative difficulty helpers
-		function should_increase_difficulty() {return performance >= increase_difficulty_threshold && $scope.difficulty < 5;}
-		function should_decrease_difficulty() {return performance <= decrease_difficulty_threshold && $scope.difficulty > 1;}
+		var should_increase_difficulty = function() {return performance >= increase_difficulty_threshold && $scope.difficulty < 5;};
+		var should_decrease_difficulty = function() {return performance <= decrease_difficulty_threshold && $scope.difficulty > 1;};
 
-		function update_difficulty(increment) {
+		var update_difficulty = function(increment) {
 			$scope.difficulty += increment;
 			console.log($scope.difficulty);
 			if (!($scope.type == 'Syllable' || $scope.probe)) {
@@ -181,7 +176,7 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 				return $scope.reloadCSVData();
 			}
 			return Promise.resolve();
-		}
+		};
 
 		// process new rating
 		if (!$scope.probe) { //quest
@@ -277,18 +272,36 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 	}
 
 
-	function updateQuestHighscores() {
-		if($scope.shouldUpdateHighscores) {
-			var highScoresCopy = Object.assign({}, $scope.highscores);
-			var highscoresUpdateDataCopy = Object.assign({}, $scope.highscoresUpdateDataKey);
+	function createQuestHighscoresOnFB() {
+		// should only be called by beginPracticeForUser(user)
+		// inits a new highscoresQuest object on firebase, if no  highscores found in user profile
+		var newHighScores = QuestScore.initNewHighScores();
+		ProfileService.runTransactionForCurrentProfile(function(handle, doc, t) {
+			var highscoresFB = doc.data().highscoresQuest;
+			// console.log(highscoresFB); should always be null
+			if (!highscoresFB) highscoresFB = newHighScores;
+			t.update(handle, {highscoresQuest: highscoresFB});
+		}); // runTransaction
+	}
 
+	function updateQuestHighscores() {
+		/*
+		Called by:
+			storeRecordingSession():
+				Saves highscores only if the recording session is complete
+		or by:
+			endPractice(): if no recording session (window.AudioPlugin === undefined)
+				Saves incomplete session highscores
+				Purpose: debugging highscores logic
+		*/
+		if($scope.shouldUpdateHighscores) {
+			// console.log('Should update fb? ' + $scope.shouldUpdateHighscores);
+			var highscoresUpdateData = $scope.highscoresUpdateData;
+			//console.log(highscoresUpdateData);
 			ProfileService.runTransactionForCurrentProfile(function(handle, doc, t) {
 				var highscoresFB = doc.data().highscoresQuest;
-
-				if (highscoresFB == null) highscoresFB = highScoresCopy;
-
-				for (var key in $scope.highscoresUpdateData) {
-					highscoresFB[key].push(highscoresUpdateDataCopy[key]);
+				for (var key in highscoresUpdateData) {
+					highscoresFB[key].push(highscoresUpdateData[key]);
 				}
 				t.update(handle, {highscoresQuest: highscoresFB});
 			}); // runTransaction
@@ -297,20 +310,21 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 		} // if if($scope.shouldUpdateHighscores)
 	} // end updateHighscores()
 
-	// USE WITH CAUTION!!!!
+
 	function resetQuestHighscores() {
+		// USE WITH CAUTION!!!!
 		console.log('OBLITERATING HIGHSCORES OBJ');
 		$scope.highscores = QuestScore.initNewHighScores($scope.highscores);
 
 		ProfileService.runTransactionForCurrentProfile(function(handle, doc, t) {
-			// is this even the right way to do this?
 			t.update(handle, {highscoresQuest: null});
 		});
 		$scope.endWordPractice();
 	}
 
+
 	function storeRecordingSession() {
-		// We need to create a copy of $scope.currentPracticeSession to avoid race conditions.
+		// Should only be called from w/in recordingDidStop()
 		var savedPracticeSession =  Object.assign({}, $scope.currentPracticeSession);
 		savedPracticeSession.isFormalSession = AutoService.isSessionActive();
 		ProfileService.runTransactionForCurrentProfile(function(handle, doc, t) {
@@ -441,34 +455,47 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 		$scope.currentWordIdx = 0;
 		var needToReload = false;
 
+		// COLLECT SAVED-SESSION DATA ($scope.currentPracticeSession) AND HIGHSCORE DATA ($scope.highscores)
+		// on-protocol quest && saved session
 		if (user.inProcessSession && AutoService.isSessionActive()) {
 			needToReload = true;
 			$scope.currentPracticeSession = Object.assign({}, user.inProcessSession);
 		}
+		// off-protocol quest and saved session
 		if ($rootScope.sessionToResume && !AutoService.isSessionActive()) {
 			needToReload = true;
 			$scope.currentPracticeSession = Object.assign({}, $rootScope.sessionToResume);
 		}
+		// quest highscores: same for all, regardless of resumed-sesh and protocol status
 		if (!$scope.probe) {
 			if (user.highscoresQuest) {
+				console.log('User has saved Highscores');
 				$scope.highscores = Object.assign({}, user.highscoresQuest);
+
 			} else {
+				console.log('User has NO saved Highscores');
 				$scope.highscores = QuestScore.initNewHighScores($scope.highscores);
+				createQuestHighscoresOnFB();
 			}
+			//console.log($scope.highscores);
 		}
 
 		// TODO: Check to see if there's a better way to clear out the current session we're ressuming.
 		$rootScope.sessionToResume = null;
 
+		// INIT QUEST SESSION DATA
+		if (!$scope.probe) {
+			// Quest: same starting value for all, regardless of resume-session status. For saved sessions, these will be updated during the sessionPrepTask process
+			QuestScore.initCoinCounter($scope.count, $scope.questCoins); // always new
+			$scope.scores = QuestScore.initScores($scope.scores); // always new
+			//$scope.currentPracticeSession.count #HC
+			$scope.milestones = QuestScore.initMilestones($scope.highscores); // built from highscores
+			$scope.badges = QuestScore.initBadges($scope.badges); // always new
+			$scope.difficulty = 1;
+			//console.log($scope.currentPracticeSession);
+		} //if (!$scope.probe)
+
 		if (needToReload) {
-			if (!$scope.probe) {
-				QuestScore.initCoinCounter($scope.currentPracticeSession.count, $scope.questCoins);
-				$scope.scores = QuestScore.initScores($scope.scores, $scope.currentPracticeSession.count); // always new
-				$scope.milestones = QuestScore.initMilestones($scope.highscores); // built from highscores
-				$scope.badges = QuestScore.initBadges($scope.badges); // always new
-			}
-			//console.log($scope.csvs);
-			//$scope.reloadCSVData();
 			var previousRatings = $scope.currentPracticeSession.ratings;
 			console.log('previous ratings: %o', previousRatings);
 
@@ -479,10 +506,7 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 			}).then(function () {
 				$scope.currentWordIdx = $scope.currentPracticeSession.ratings.length - 1;
 			});
-		} // if (needToReload)
-
-		// IF THERE IS NO SAVED SESSION, INIT A NEW QUEST OR QUIZ
-		if (!needToReload) {
+		} else if (!needToReload) {
 			$scope.currentWordIdx = -1;
 			$scope.currentPracticeSession = initialPracticeSession(
 				Date.now(),
@@ -490,17 +514,6 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 				$scope.probe || 'quest',
 				$scope.count
 			);
-			// TODO I think there is some come redundancy here with the above initialization in needToReload.
-			if(!$scope.probe) { // QUEST-ONLY Setup
-				// builds milestones frome user's highscores
-				$scope.milestones = QuestScore.initMilestones($scope.highscores);
-				QuestScore.initCoinCounter($scope.count, $scope.questCoins);
-				$scope.scores = QuestScore.initScores($scope.scores);
-				$scope.badges = QuestScore.initBadges();
-
-				// check for stored AdaptDiff level?????? or
-				$scope.difficulty = 1;
-			} // if quest
 		}
 
 		if (!$scope.probe) {
@@ -509,13 +522,6 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 			$scope.currentPracticeSession.categoryRestrictions = null;
 		}
 		$rootScope.finalSelectedCategories = null;
-
-		// TODO: Check to see if we need to do Object.assign instead.
-		// console.log("final selected categories: %o", $rootScope.finalSelectedCategories);
-		// $scope.currentPracticeSession.categoryRestrictions = $rootScope.finalSelectedCategories;
-		// $rootScope.finalSelectedCategories = null;
-		// console.log("currentPracticeSession.ctaegyroRestrictions: %o", $scope.currentPracticeSession.categoryRestrictions);
-		// console.log("$rootscope.finalSelectedCategories: %o", $rootScope.finalSelectedCategories);
 		// -----------------------------------------------------
 		//IMPORTANT: Even if this is a continuation of a previous session, it still needs a unique recording ID; so you set/overwrite-the-old-one here.
 		$scope.currentPracticeSession.id = UtilitiesService.guid();
@@ -648,10 +654,9 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 	document.addEventListener('pause', $rootScope.onPause);
 	document.addEventListener('resume', $rootScope.onResume);
 	$rootScope.pauseListenersSet = true;
-
 	// END PAUSE-SETUP
 
-
+	// END WORD PRACTICE SESSION ---------------------------------------
 	$scope.endWordPractice = function () {
 
 	  if (!$scope.probe) {
@@ -673,7 +678,6 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 						}
 					}
 				}
-				//console.log(scoresPrep);
 				$scope.highscoresUpdateData = scoresPrep;
 			}
 		} // (!$scope.probe)
@@ -767,9 +771,7 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 		}
 	};
 
-	$scope.resetQuestHighscores = function() {
-		resetQuestHighscores();
-	};
+	$scope.resetQuestHighscores = function() { resetQuestHighscores(); };
 
 	$scope.$on('ratingChange', function (event, data) {
 		console.log('rating change! ' + data);
