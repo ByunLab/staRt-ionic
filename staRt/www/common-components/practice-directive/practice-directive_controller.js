@@ -783,13 +783,6 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 		}
 	});
 
-	// eslint-disable-next-line no-unused-vars
-	$scope.$on('stopPractice', function (event) {
-	  if ($scope.isPracticing) {
-	    $scope.endWordPractice();
-	  }
-	});
-
 	$scope.$watch('csvs', function () {
 		$scope.hasValidWordList = false;
 		if ($scope.csvs) {
