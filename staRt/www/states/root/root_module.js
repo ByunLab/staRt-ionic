@@ -21,7 +21,6 @@
 		'freePlay',
 		'profiles',
 		'resources',
-		'syllables',
 		'tutorial',
 		'words'
 	] );

@@ -126,11 +126,11 @@ When you need to bump the application version, change the appropriate value in `
 - ```open platforms/ios/staRt.xcodeproj```
 - Build and run the app for the simulator or device
 
-#### Linting  
-To lint before submitting a PR,  
+#### Linting
+To lint before submitting a PR,
 `$ ./node_modules/.bin/eslint /www/path-to-your-component/*.js`
 
-or, if installed globally: 
+or, if installed globally:
 `$ eslint ./www/path-to-your-component/*.js`
 
 [eslint rules reference](https://eslint.org/docs/rules/)
@@ -160,4 +160,3 @@ or, if installed globally:
 				- words
 				- tutorial
 				- auto
-				- syllables   
