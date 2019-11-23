@@ -4,10 +4,10 @@
   <ion-nav-bar hide-nav-bar="true" class="root-ion-nav-bar"></ion-nav-bar>
 
   <!-- Content -->
-  <ion-nav-view name="content-view" id="content-container">
-      <ion-view ng-if="!state.loggedIn">
-          <div id="firebaseui-auth-container"></div>
-      </ion-view>
+  <ion-view ng-if="!loggedIn">
+      <div id="firebaseui-auth-container"></div>
+  </ion-view>
+  <ion-nav-view ng-if="loggedIn" name="content-view" id="content-container">
   </ion-nav-view>
 
   <!-- Tabs -->
