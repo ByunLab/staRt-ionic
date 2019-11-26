@@ -310,7 +310,6 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 		} // if if($scope.shouldUpdateHighscores)
 	} // end updateHighscores()
 
-
 	function resetQuestHighscores() {
 		// USE WITH CAUTION!!!!
 		console.log('OBLITERATING HIGHSCORES OBJ');
@@ -556,14 +555,13 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 
 		$scope.currentWordIdx++;
 
+		// #hc Trigger end-of-quest Seq
 		if ($scope.count && $scope.currentWordIdx >= $scope.count) {
 			$scope.endWordPractice();
 		} else {
 			var lookupIdx = $scope.currentWordIdx % $scope.wordOrder.length;
 			$scope.currentWord = $scope.wordList[$scope.wordOrder[lookupIdx]];
-
 			// also select a random carrier phrase
-			// $scope.carrier_phrase = carrier_phrases[Math.floor(Math.random() * carrier_phrases.length)];
 			$scope.carrier_phrase = $scope.carrier_phrases[Math.floor(Math.random() * $scope.carrier_phrases.length)];
 			$scope.smallFont = $scope.carrier_phrase.length >= 16;
 			$scope.tinyFont = $scope.carrier_phrase.length >= 32;
@@ -571,7 +569,7 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 
 		if ($scope.pauseEvery && $scope.pauseEvery > 0 && $scope.currentWordIdx > 0) {
 			if ($scope.currentWordIdx % $scope.pauseEvery === 0) {
-				$scope.isFeedbacking = true;
+				//$scope.isFeedbacking = true;
 				if (navigator.notification) {
 					// will not trigger if serving
 					navigator.notification.confirm('Please provide qualitative feedback on the participant\'s performance over the last ten trials.', function () {
@@ -615,6 +613,7 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 			function (res) {
 				if (res) {
 					beginPracticeForUser(res);
+					if ($scope.startPracticeCallback) $scope.startPracticeCallback();
 				} else {
 					if (navigator.notification) {
 						navigator.notification.alert('Can\'t start ' + sessionDisplayString() + ' -- create a profile first', null, 'No profile');
@@ -700,6 +699,7 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 		} else if (window.AudioPlugin !== undefined) {
 			AudioPlugin.stopRecording(recordingDidStop, recordingDidFail);
 		}
+		if ($scope.endPracticeCallback) $scope.endPracticeCallback();
 	};
 
 	$scope.nextWord = function() {
@@ -777,6 +777,7 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 
 	$scope.$on('ratingChange', function (event, data) {
 		console.log('rating change! ' + data);
+		console.log($scope.rating);
 		$scope.rating = data === undefined ? 0 : data;
 		if ($scope.rating) {
 			$scope.nextWord();
@@ -787,15 +788,15 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 	});
 
 	// DIALOG SEQUENCE HANDLERS ---------------------
-	// $scope.dialogClose = function() {
-	// 	$scope.badges.qtDialog.isVisible = false;
-	// };
 	$scope.dialogResume = function() {
 		// calls reset to start new trial block
 		QuestScore.dialogResume($scope.scores, $scope.badges);
 		// TODO unpause wave
 		// TODO enable rating btns
+		// $scope.nextWord();
 	};
+
+	// advances dialog card sequence
 	$scope.dialogNext = function() {
 		QuestScore.dialogNext($scope.badges);
 	};
@@ -811,6 +812,13 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 			});
 		}
 	});
+
+	// eslint-disable-next-line no-unused-vars
+	// $scope.$on('stopPractice', function (event) {
+	// 	if ($scope.isPracticing) {
+	// 		$scope.endWordPractice();
+	// 	}
+	// });
 
 	$scope.myURL = $state.current.name;
 
