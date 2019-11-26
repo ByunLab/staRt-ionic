@@ -615,7 +615,6 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 			function (res) {
 				if (res) {
 					beginPracticeForUser(res);
-					if ($scope.startPracticeCallback) $scope.startPracticeCallback();
 				} else {
 					if (navigator.notification) {
 						navigator.notification.alert('Can\'t start ' + sessionDisplayString() + ' -- create a profile first', null, 'No profile');
@@ -701,7 +700,6 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 		} else if (window.AudioPlugin !== undefined) {
 			AudioPlugin.stopRecording(recordingDidStop, recordingDidFail);
 		}
-		if ($scope.endPracticeCallback) $scope.endPracticeCallback();
 	};
 
 	$scope.nextWord = function() {
