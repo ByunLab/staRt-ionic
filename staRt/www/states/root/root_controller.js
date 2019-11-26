@@ -24,19 +24,19 @@
 		$scope.state = $state;
 		$scope.state.loggedIn = !!firebase.auth().currentUser;
 
-		 $rootScope.safelySwitchStates = function(destination) {
+		$rootScope.safelySwitchStates = function(destination) {
 			if (navigator.notification && !!$rootScope.isRecording) {
-				navigator.notification.confirm("Are you sure you would like to leave this session?",
+				navigator.notification.confirm('Are you sure you would like to leave this session?',
 					function (index) {
 						if (index === 1 ) {
 							$state.go('root.' + destination);
-						}}, "Quit Session?",
-					["Leave Session", "Stay"]);
-					}
+						}}, 'Quit Session?',
+					['Leave Session', 'Stay']);
+			}
 			else {
 				$state.go('root.' + destination);
 			}
-		}
+		};
 
 		// Initialize UI
 		StartUIState.getLastActiveIndex($localForage).then(function(data)
@@ -44,7 +44,7 @@
 			$scope.startUIState = data;
 			firebase.auth().onAuthStateChanged(function (user) {
 				if (user) {
-					console.log("Logged in as " + user);
+					console.log('Logged in as ' + user);
 				}
 
 				var wasLoggedIn = $scope.state.loggedIn;
@@ -59,15 +59,15 @@
 						// I have no idea why the navbar hides itself after login. I promise to
 						// investigate this an fix it later—removing this extremely gross hack—
 						// later when other more important things are done
-						console.log("Gross (but hopefully harmless) hack still at play");
-						$ionicNavBarDelegate.title("Profiles");
+						console.log('Gross (but hopefully harmless) hack still at play');
+						$ionicNavBarDelegate.title('Profiles');
 						$ionicNavBarDelegate.showBar(true);
 					}
 				}
 			});
 
 			if (firebase.auth().currentUser === null) {
-				console.log("Prompting for login");
+				console.log('Prompting for login');
 				FirebaseService.startUi();
 			}
 		});

@@ -24,9 +24,7 @@ practiceDirective.directive( 'practiceDirective', function()
 			smallFont: '=',
 			suppressStartButton: '=',
 			tinyFont: '=',
-			type: '=',
-			startPracticeCallback: '&startPracticeCallback',
-			endPracticeCallback: '&endPracticeCallback'
+			type: '='
 		},
 		transclude: true,
 		templateUrl: 'common-components/practice-directive/practice-directive_template.html',

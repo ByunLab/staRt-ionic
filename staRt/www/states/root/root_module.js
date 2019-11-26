@@ -3,35 +3,34 @@
 ( function(  )
 {
 	var root = angular.module( 'root',
-	[
-		'LocalForageModule',
-		'autoService',
-		'firebaseService',
-		'notifyingService',
-		'profileService',
-		'sessionStatsService',
-		'startServerService',
+		[
+			'LocalForageModule',
+			'autoService',
+			'firebaseService',
+			'notifyingService',
+			'profileService',
+			'sessionStatsService',
+			'startServerService',
 	    'startStateService',
 	    'uploadService',
-        'utilitiesService',
-		'toolbarService',
-		'lpcDirective',
-		'ngCordova',
-		'auto',
-		'freePlay',
-		'profiles',
-		'resources',
-		'syllables',
-		'tutorial',
-		'words'
-	] );
+			'utilitiesService',
+			'toolbarService',
+			'lpcDirective',
+			'ngCordova',
+			'auto',
+			'freePlay',
+			'profiles',
+			'resources',
+			'tutorial',
+			'words'
+		] );
 
 	root.config( function( $stateProvider )
 	{
 		$stateProvider.state( 'root',
-		{
-			url: '/',
-			views:
+			{
+				url: '/',
+				views:
 			{
 				'app-view':
 				{
@@ -40,7 +39,7 @@
 				}
 			}
 			//abstract: true
-		});
+			});
 	} );
 
 } )(  );
