@@ -68,8 +68,8 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 			streak: 0,
 			perfectBlock: 0,
 			performance: 0, // req'd for difficulty score
-			endOfBlock: false,
-			totalTrials: 0,
+			endOfBlock: false, // req'd by prepEndOfBlock()
+			totalTrials: 0, // // req'd by prepEndOfBlock()
 		};
 	}
 
@@ -86,16 +86,6 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 				flag: false,
 				trials: 0,
 				visible: false
-			},
-			endBlockSum_old: {
-				mgib: false,
-				mgibCount: 0,
-				hsib: false,
-				hsibCount: 0,
-				streak: false,
-				streakCount: 0,
-				perfectBlock: false,
-				perfectBlockCount: 0
 			},
 			endBlockSum: {
 				mgib: {
@@ -247,7 +237,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		badges.onARoll.visible = true;
 		badges.onARoll.trials++;
 		//console.log('ON A ROLL!!');
-		console.log(badges);
+		//console.log(badges);
 	}
 
 	function displayBadgeNewRecord(badges) {
@@ -264,29 +254,37 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		//console.log(badges);
 	}
 
-	// called by resumeAfterBlockBreak()
+
+	// called by advanceEndOfBlock() & resetForNewBlock()
+	function clearDialogTemplateFlags(badges) {
+		for (var prop in badges.qtDialogTemplate) {
+			if (badges.qtDialogTemplate.hasOwnProperty(prop)) {
+				badges.qtDialogTemplate[prop] = false;
+			}
+		}
+	}
+
+	// called by controller: $scope.dialogResume()
 	function resetForNewBlock(scores, badges) {
-		//console.log(scores);
-		console.log(badges);
 		//clear dialog box flags & close dialog box
 		for (var prop in badges.qtDialog) {
 			if (badges.qtDialog.hasOwnProperty(prop)) {
 				badges.qtDialog[prop] = false;
 			}
 		}
-		for (var prop in badges.qtDialogTemplate) {
-			if (badges.qtDialogTemplate.hasOwnProperty(prop)) {
-				badges.qtDialogTemplate[prop] = false;
-			}
-		}
+		clearDialogTemplateFlags(badges);
+
 		// scoresObj
 		scores.block_score = 0;
 		scores.block_display_score = 0;
 		scores.block_goldCount = 0;
 		scores.endOfBlock = false;
+
 		// milestones: no need to reset
+
 		// badges: in-game stickers
 		resetBadges(badges, 'newRecord');
+
 		// badges: achievement cards
 		badges.dialogCardNumber = -1;
 		badges.endBlockSeq = [];
@@ -315,15 +313,6 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		milestones.update[msProp].sessionID = scores.sessionID;
 		milestones.shouldUpdateFirebase = true;
 		//console.log(milestones);
-	}
-
-	// called by advanceEndOfBlock
-	function clearDialogTemplateFlags(badges) {
-		for (var prop in badges.qtDialogTemplate) {
-			if (badges.qtDialogTemplate.hasOwnProperty(prop)) {
-				badges.qtDialogTemplate[prop] = false;
-			}
-		}
 	}
 
 
@@ -366,14 +355,15 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 	var prepEndOfBlock = function(scores, badges, currentWordIdx) {
 		//console.log('runEndOfBlock called');
 		badges.qtDialog.isBlockEnd = true;
-		// TODO: Check for isBlockEnd || isFinal
+		if(currentWordIdx <= (scores.totalTrials -10)) {
+			badges.qtDialog.isFinal = true;
+		}
 
 		// this should already be set by clear fn
 		// badges.dialogCardNumber = -1;
 
-
 		var sumTemp = badges.endBlockSum;
-		//badges.endBlockSeq = new EndBlockSeqObj();
+		//console.log(sumTemp);
 
 		for (var key in sumTemp) {
 			if (sumTemp[key].flag) {
@@ -389,16 +379,18 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		}
 		badges.endBlockSeq.push({
 			template: 'note',
-			title: 'Checkpoint:',
+			title: 'Checkpoint',
 			subtitle: '',
 			imgUrl: '',
 			bodyText: 'Please provide qualitative feedback on the participant\'s performance over the last ten trials.',
 			btnText: 'See Scores',
 			btnFn: 'dialogNext()'
 		});
+		// if end-of-block
+		//if(!badges.qtDialog.isFinal) {
 		badges.endBlockSeq.push({
 			template: 'progSum',
-			title: 'Progress Summary:',
+			title: 'Progress Summary',
 			subtitle: currentWordIdx + ' / ' + scores.totalTrials + ' complete',
 			gold: scores.session_coins.gold,
 			silver: scores.session_coins.silver,
@@ -406,26 +398,39 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 			btnText: 'Resume Quest',
 			btnFn: 'dialogResume()',
 		});
-
-		// if(badges.endBlockSeq.length > 1){
-		// 	badges.qtDialog.isBlockEnd = true;
-		// } else {
-		// 	badges.qtDialog.isBreak = true;
-		// }
-
+		//}
+		/* TODO
+		// if end-of-quest
+		if(badges.qtDialog.isFinal) {
+			badges.endBlockSeq.push({
+				template: 'endSum',
+				title: 'Quest Complete!',
+				subtitle: '',
+				gold: scores.session_coins.gold,
+				silver: scores.session_coins.silver,
+				bronze: scores.session_coins.bronze,
+				btnText: 'See Score',
+				btnFn: 'dialogNext()'
+			});
+			badges.endBlockSeq.push({
+				template: 'finalScore',
+				title: 'Quest Complete!',
+				subtitle: '',
+				count: 0,
+				btnText: 'Close',
+				// btnFn: 'endPractice()'
+			});
+		}
+		*/
 		console.log(badges.endBlockSeq);
 		advanceEndOfBlock(badges);
 	};
 
 
-
-
 	// ==============================================
 	// MAIN PROCS ===================================
 
-	//var endOfBlock = false;
-
-	//called by questRating()
+	//called by questRating() only
 	var checkUpdateMilestones = function(scores, milestones, badges, currentWordIdx) {
 
 		// checked every trial -----------------------------
@@ -444,8 +449,8 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 				milestones.highscores.mgib = scores.block_goldCount;
 				console.log('NEW RECORD: MOST GOLD IN BLOCK');
 				displayBadgeNewRecord(badges);
-				updateMilestoneCard(badges, 'mgib', milestones.highscores.mgib);
 				updateMilestoneRecord(scores, milestones, 'mgibHx', 'block_goldCount');
+				updateMilestoneCard(badges, 'mgib', milestones.highscores.mgib);
 			}
 		}
 
@@ -455,8 +460,8 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 				milestones.highscores.hsib = scores.block_display_score;
 				console.log('NEW RECORD: HIGH SCORE IN BLOCK');
 				displayBadgeNewRecord(badges);
-				updateMilestoneCard(badges, 'hsib', milestones.highscores.hsib);
 				updateMilestoneRecord(scores, milestones, 'hsibHx', 'block_display_score');
+				updateMilestoneCard(badges, 'hsib', milestones.highscores.hsib);
 			}
 		}
 
@@ -488,21 +493,19 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 			milestones.highscores.streak = scores.streak;
 			console.log('NEW RECORD: STREAK');
 			displayBadgeNewRecord(badges);
-			updateMilestoneCard(badges, 'streak', milestones.highscores.streak);
-			// badges.endBlockSum_old.streak = true;
-			// badges.endBlockSum_old.streakCount = scores.streak;
 			updateMilestoneRecord(scores, milestones, 'streakHx', 'streak');
+			updateMilestoneCard(badges, 'streak', milestones.highscores.streak);
 		}
 
 		if(scores.block_goldCount === 10) {
 			milestones.highscores.perfectBlock++;
 			console.log('PERFECT BLOCK');
 			// no badge, achieved at end of block
-			updateMilestoneCard(badges, 'perfectBlock', milestones.highscores.perfectBlock);
 			milestones.update.perfectBlockHx.score= milestones.highscores.perfectBlock;
 			milestones.update.perfectBlockHx.date = Date.now();
 			milestones.update.perfectBlockHx.sessionID = scores.sessionID;
 			milestones.shouldUpdateFirebase = true;
+			updateMilestoneCard(badges, 'perfectBlock', milestones.highscores.perfectBlock);
 		}
 
 		// checked at end of block -----------------------------
@@ -511,6 +514,8 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 			console.log('END OF BLOCK IS TRUE');
 			//console.log('Current Word Index: ' + currentWordIdx);
 			prepEndOfBlock(scores, badges, currentWordIdx);
+
+			//return scores;
 		}
 	}; //end checkUpdateMilestones
 
@@ -544,9 +549,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		}
 
 		// check for end of block
-		console.log('currentWordIdx: ' + currentWordIdx);
-
-		if ((currentWordIdx) % 10 === 0 && currentWordIdx >= 9) {
+		if (currentWordIdx % 10 === 0 && currentWordIdx >= 9) {
 			scores.endOfBlock = true;
 			console.log('Current Word Index: ' + currentWordIdx);
 			console.log('EndOfBlock is: ' + scores.endOfBlock);
