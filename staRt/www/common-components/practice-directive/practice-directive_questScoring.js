@@ -546,7 +546,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		// check for end of block
 		console.log('currentWordIdx: ' + currentWordIdx);
 
-		if ((currentWordIdx + 1) % 10 === 0 && currentWordIdx >= 9) {
+		if ((currentWordIdx) % 10 === 0 && currentWordIdx >= 9) {
 			scores.endOfBlock = true;
 			console.log('Current Word Index: ' + currentWordIdx);
 			console.log('EndOfBlock is: ' + scores.endOfBlock);
