@@ -22,9 +22,9 @@ practiceDirective.directive( 'practiceDirective', function()
 			smallFont: '=',
 			suppressStartButton: '=',
 			tinyFont: '=',
+			type: '=',
 			startPracticeCallback: '&startPracticeCallback',
-			endPracticeCallback: '&endPracticeCallback',
-			type: '='
+			endPracticeCallback: '&endPracticeCallback'
 		},
 		transclude: true,
 		templateUrl: 'common-components/practice-directive/practice-directive_template.html',
