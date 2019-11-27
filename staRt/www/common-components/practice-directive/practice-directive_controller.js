@@ -790,6 +790,7 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 	// DIALOG SEQUENCE HANDLERS ---------------------
 	$scope.dialogResume = function() {
 		// calls reset to start new trial block
+
 		QuestScore.dialogResume($scope.scores, $scope.badges);
 		// TODO unpause wave
 		// TODO enable rating btns
@@ -798,6 +799,7 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 
 	// advances dialog card sequence
 	$scope.dialogNext = function() {
+		// calls advanceEndOfBlock() in _questScoring.js
 		QuestScore.dialogNext($scope.badges);
 	};
 

@@ -129,24 +129,19 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 			dialogCardNumber: -1,
 			qtDialog: {
 				isVisible: false, // is the Dialog Box Visible
-				isBlockEnd: false, // holds 'End of Block' Sequence
-				isBreak: false, // holds "Take a Break"
-				isQuestEnd: false, // holds End-of-Quest Sequence
-				isFinalScore: false, // hold 'Final Score' graphic
+				isBlockEnd: false, // used for Block-End seq
+				isFinal: false // used for Quest-End sequence
 			},
 			qtDialogTemplate: {
-				//cardNumber: -1,
-				break: {},
-				blockEnd: {
-					title: '',
-					count: '',
-					imgUrl: '',
-				},
-				questEnd: {},
-				finalScore: {}
+				achievement: false, // used by end-of-block 'New Record' sequence
+				note: false, // used by Qualitative Feedback Reminder note
+				progSum: false, // used by "Progress Summary" card
+				endSum: false, // used by 'Quest Complete Summary'
+				finalScore: false, // used by 'Final Score'
 			}
 		};
 	}
+
 
 	// ==============================================
 	// INITS ------------------------
@@ -271,10 +266,17 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 
 	// called by resumeAfterBlockBreak()
 	function resetForNewBlock(scores, badges) {
-		// clear dialog box flags & close dialog box
+		//console.log(scores);
+		console.log(badges);
+		//clear dialog box flags & close dialog box
 		for (var prop in badges.qtDialog) {
 			if (badges.qtDialog.hasOwnProperty(prop)) {
 				badges.qtDialog[prop] = false;
+			}
+		}
+		for (var prop in badges.qtDialogTemplate) {
+			if (badges.qtDialogTemplate.hasOwnProperty(prop)) {
+				badges.qtDialogTemplate[prop] = false;
 			}
 		}
 		// scoresObj
@@ -315,10 +317,20 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		//console.log(milestones);
 	}
 
+	// called by advanceEndOfBlock
+	function clearDialogTemplateFlags(badges) {
+		for (var prop in badges.qtDialogTemplate) {
+			if (badges.qtDialogTemplate.hasOwnProperty(prop)) {
+				badges.qtDialogTemplate[prop] = false;
+			}
+		}
+	}
+
 
 	// ==============================================
 	// DIALOG BOX HELPERS ------------------------
 	var advanceEndOfBlock = function(badges) {
+		console.log('dialogNext is callled');
 		badges.dialogCardNumber++;
 		badges.qtDialog.isVisible = true;
 
@@ -326,27 +338,39 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 
 		var card = badges.endBlockSeq[badges.dialogCardNumber];
 
-		if(template === 'blockEnd') {
-			badges.endBlockDisplay.title = badges.endBlockSeq[badges.dialogCardNumber].title;
+		// common template fields
+		badges.endBlockDisplay.title = badges.endBlockSeq[badges.dialogCardNumber].title;
+		badges.endBlockDisplay.btnText = badges.endBlockSeq[badges.dialogCardNumber].btnText;
+		badges.endBlockDisplay.btnFn = badges.endBlockSeq[badges.dialogCardNumber].btnFn;
+
+		if(template === 'achievement') {
+			clearDialogTemplateFlags(badges);
+			badges.qtDialogTemplate.achievement = true;
 			badges.endBlockDisplay.count = badges.endBlockSeq[badges.dialogCardNumber].count;
-		} else if (template === 'break') {
-			badges.qtDialog.isBreak = true;
-			badges.endBlockDisplay.title = card.title;
+		} else if (template === 'note') {
+			clearDialogTemplateFlags(badges);
+			badges.qtDialogTemplate.note = true;
+			badges.endBlockDisplay.bodyText = badges.endBlockSeq[badges.dialogCardNumber].bodyText;
+
+		} else if (template === 'progSum') {
+			clearDialogTemplateFlags(badges);
+			badges.qtDialogTemplate.progSum = true;
 			badges.endBlockDisplay.subtitle = card.subtitle;
 			badges.endBlockDisplay.gold = card.gold;
 			badges.endBlockDisplay.silver = card.silver;
 			badges.endBlockDisplay.bronze = card.bronze;
 		}
-	};
-
+	}; // advanceEndOfBlock
 
 	// called by
 	var prepEndOfBlock = function(scores, badges, currentWordIdx) {
 		//console.log('runEndOfBlock called');
 		badges.qtDialog.isBlockEnd = true;
+		// TODO: Check for isBlockEnd || isFinal
 
 		// this should already be set by clear fn
 		// badges.dialogCardNumber = -1;
+
 
 		var sumTemp = badges.endBlockSum;
 		//badges.endBlockSeq = new EndBlockSeqObj();
@@ -354,29 +378,40 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		for (var key in sumTemp) {
 			if (sumTemp[key].flag) {
 				badges.endBlockSeq.push({
-					template: 'blockEnd',
+					template: 'achievement',
 					title: sumTemp[key].title,
 					count: sumTemp[key].count,
 					imgUrl: sumTemp[key].imgUrl,
+					btnText: 'Next',
+					btnFn: 'dialogNext()'
 				});
 			}
 		}
 		badges.endBlockSeq.push({
-			template: 'break',
-			title: 'Take a break!',
-			subtitle: currentWordIdx + ' / ' + scores.totalTrials + ' completed',
+			template: 'note',
+			title: 'Checkpoint:',
+			subtitle: '',
+			imgUrl: '',
+			bodyText: 'Please provide qualitative feedback on the participant\'s performance over the last ten trials.',
+			btnText: 'See Scores',
+			btnFn: 'dialogNext()'
+		});
+		badges.endBlockSeq.push({
+			template: 'progSum',
+			title: 'Progress Summary:',
+			subtitle: currentWordIdx + ' / ' + scores.totalTrials + ' complete',
 			gold: scores.session_coins.gold,
 			silver: scores.session_coins.silver,
-			bronze: scores.session_coins.bronze
+			bronze: scores.session_coins.bronze,
+			btnText: 'Resume Quest',
+			btnFn: 'dialogResume()',
 		});
 
-
-
-		if(badges.endBlockSeq.length > 0){
-			badges.qtDialog.isBlockEnd = true;
-		} else {
-			badges.qtDialog.isBreak = true;
-		}
+		// if(badges.endBlockSeq.length > 1){
+		// 	badges.qtDialog.isBlockEnd = true;
+		// } else {
+		// 	badges.qtDialog.isBreak = true;
+		// }
 
 		console.log(badges.endBlockSeq);
 		advanceEndOfBlock(badges);
@@ -509,7 +544,9 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		}
 
 		// check for end of block
-		if (currentWordIdx % 10 === 0 && currentWordIdx >= 10) {
+		console.log('currentWordIdx: ' + currentWordIdx);
+
+		if ((currentWordIdx + 1) % 10 === 0 && currentWordIdx >= 9) {
 			scores.endOfBlock = true;
 			console.log('Current Word Index: ' + currentWordIdx);
 			console.log('EndOfBlock is: ' + scores.endOfBlock);

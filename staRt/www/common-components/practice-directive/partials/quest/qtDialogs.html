@@ -1,50 +1,63 @@
 <div class="qtDialog-container">
   <div class="dia-head">
-    <div class="banner">New Record!</div>
-    <div class="title">
-        {{badges.endBlockDisplay.title}}
-        <div ng-if="badges.qtDialog.isBreak">
-            {{badges.endBlockSeq.subtitle}}
+
+    <div ng-if="badges.qtDialogTemplate.achievement">
+        <div class="subtitle">
+            <i class="icon ion-star"></i>
+            New Record!
+            <i class="icon ion-star"></i>
+          </div>
+    </div>
+
+    <div ng-if="badges.qtDialogTemplate.progSum">
+        <div class="subtitle">
+            {{badges.endBlockDisplay.subtitle}}
         </div>
     </div>
+
+    <div class="title">
+        {{badges.endBlockDisplay.title}}
+    </div>
   </div>
+  <!-- end of .dia-head -->
 
   <div class="dia-body">
-    <!-- <div ng-if="badges.qtDialog.""></div> -->
-    <div ng-if="badges.qtDialog.isBlockEnd && !badges.qtDialog.isBreak">
-        Score:
+
+    <div ng-if="badges.qtDialogTemplate.achievement"
+        class="achievementCount">
         {{badges.endBlockDisplay.count}}
     </div>
 
-    <div ng-if="badges.qtDialog.isBlockEnd && badges.qtDialog.isBreak">
-        Gold: {{badges.endBlockDisplay.gold}}
-        Silver: {{badges.endBlockDisplay.silver}}
-        Bronze: {{badges.endBlockDisplay.bronze}}
+    <div ng-if="badges.qtDialogTemplate.note"
+        class="note">
+        {{badges.endBlockDisplay.bodyText}}
     </div>
 
+    <div ng-if="badges.qtDialogTemplate.progSum"
+        class="progSum">
+        <p>Gold: {{badges.endBlockDisplay.gold}}</p>
+        <p>Silver: {{badges.endBlockDisplay.silver}}</p>
+        <p>Bronze: {{badges.endBlockDisplay.bronze}}</p>
+    </div>
 
   </div>
+  <!-- end of .dia-body -->
+
 
   <div class="dia-foot">
     <div class="footBtn"
-      ng-if="badges.qtDialog.isBlockEnd && !badges.qtDialog.isBreak"
-      ng-click="dialogNext()">
-      Next
+    ng-if="!badges.qtDialogTemplate.progSum"
+      ng-click="{{badges.endBlockDisplay.btnFn}}">
+      {{badges.endBlockDisplay.btnText}}
     </div>
+
     <div class="footBtn"
-      ng-if="badges.qtDialog.isBlockEnd && badges.qtDialog.isBreak"
+      ng-if="badges.qtDialogTemplate.progSum"
       ng-click="dialogResume()">
-      Resume Quest
-    </div>
-    <div class="footBtn"
-      ng-if="badges.qtDialog.isQuestEnd && !badges.qtDialog.isFinalScore"
-      ng-click="dialogNext()">
-      Next
-    </div>
-    <div class="footBtn"
-      ng-if="badges.qtDialog.isQuestEnd && badges.qtDialog.isFinalScore"
-      ng-click="dialogClose()">
-      Close
-    </div>
+    {{badges.endBlockDisplay.btnText}}
   </div>
+
+  </div>
+  <!-- end of .dia-foot -->
+
 </div>
