@@ -31,10 +31,10 @@
 # Example/My value:
 # BUILD_OUTPUT_FOLDER=~/Library/Developer/Xcode/DerivedData/staRt-bdydtgivrwfgvpgbxtkzobweqjzf/Build/Products/Debug-iphonesimulator/staRt.app
 
-if  [[ -z "${DEVICE_HEX}" ]] || [["${BUILD_OUTPUT_FOLDER}"]]
-then	
+if  [[ -z "${DEVICE_HEX}" ]] || [[ -z "${BUILD_OUTPUT_FOLDER}" ]]
+then
 		echo "DEVICE_HEX and/or BUILD_OUTPUT_FOLDER env variables not set. Please read the build_ios.sh script for more details"
-		exit(1)
+		exit 1;
 fi
 
 ionic build;
