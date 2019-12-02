@@ -122,11 +122,7 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 	$scope.qzGraphicsMode = true;
 	// $scope.qzDialogsMode = false;
 
-	// TOOLBAR ----------------------------------------------------
-	// TO BE IMPLEMENTED IN THE FUTURE / NOT CURRENTLY IN USE
-
-	// holds toolbar content for the current practice state
-	$scope.toolbar;
+	// TOOLBAR (buttons in upper right) --------------------------
 
 	// called by $scope.beginWordPractice()
 	$scope.setupToolbar = function() {
