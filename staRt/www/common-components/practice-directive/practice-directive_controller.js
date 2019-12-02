@@ -482,31 +482,17 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 		// TODO: Check to see if there's a better way to clear out the current session we're ressuming.
 		$rootScope.sessionToResume = null;
 
-		// QUEST AND QUIZ: INIT SESSION, if there is no saved session
-		if (!needToReload) {
-			$scope.currentWordIdx = -1;
-			$scope.currentPracticeSession = initialPracticeSession(
-				Date.now(),
-				$scope.type || 'word',
-				$scope.probe || 'quest',
-				$scope.count
-			);
-		}
-
-		// QUEST-ONLY: ADDITIONAL SESSION DATA INIT
+		// QUEST-ONLY: ADDITIONAL INIT VALUES
 		if (!$scope.probe) {
-			// Quest: same starting value for all, regardless of resume-session status. For saved sessions, these will be updated during the sessionPrepTask process
+			// Same for all quests, regardless of resume-session status. For saved sessions, these vals are updated during the sessionPrepTask process
 			QuestScore.initCoinCounter($scope.count, $scope.questCoins); // always new
-			$scope.scores = QuestScore.initScores($scope.scores, $scope.currentPracticeSession.count); // always new
+			$scope.scores = QuestScore.initScores($scope.scores, $scope.count); // always new
 			$scope.milestones = QuestScore.initMilestones($scope.highscores); // built from highscores
 			$scope.badges = QuestScore.initBadges($scope.badges); // always new
 			$scope.difficulty = 1;
-			//$scope.currentPracticeSession.categoryRestrictions = $rootScope.finalSelectedCategories;
-			//console.log($scope.currentPracticeSession);
 		} //if (!$scope.probe)
 
-		// QUEST AND QUIZ: RESUME STATE PROCESS
-		if (needToReload) {
+		if (needToReload) { // QUEST & QUIZ: RESUME SESSION STATE
 			var previousRatings = $scope.currentPracticeSession.ratings;
 			console.log('previous ratings: %o', previousRatings);
 
@@ -517,6 +503,14 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 			}).then(function () {
 				$scope.currentWordIdx = $scope.currentPracticeSession.ratings.length - 1;
 			});
+		} else if (!needToReload) { // QUEST & QUIZ: INIT NEW SESSION
+			$scope.currentWordIdx = -1;
+			$scope.currentPracticeSession = initialPracticeSession(
+				Date.now(),
+				$scope.type || 'word',
+				$scope.probe || 'quest',
+				$scope.count
+			);
 		}
 
 		if (!$scope.probe) {
@@ -555,7 +549,6 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 
 		$scope.currentWordIdx++;
 
-		// #hc Trigger end-of-quest Seq
 		if ($scope.count && $scope.currentWordIdx >= $scope.count) {
 			$scope.endWordPractice();
 		} else {
@@ -566,25 +559,6 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 			$scope.smallFont = $scope.carrier_phrase.length >= 16;
 			$scope.tinyFont = $scope.carrier_phrase.length >= 32;
 		}
-
-		// TEMP reminder #hc will remove this soon
-		// if ($scope.pauseEvery && $scope.pauseEvery > 0 && $scope.currentWordIdx > 0) {
-		// 	if ($scope.currentWordIdx % $scope.pauseEvery === 0) {
-		// 		//$scope.isFeedbacking = true;
-		// 		if (navigator.notification) {
-		// 			// will not trigger if serving
-		// 			navigator.notification.confirm('Please provide qualitative feedback on the participant\'s performance over the last ten trials.', function () {
-		// 				$scope.$apply(function () {
-		// 					// Current word was not properly being updated.
-		// 					lookupIdx = $scope.currentWordIdx % $scope.wordOrder.length;
-		// 					$scope.currentWord = $scope.wordList[$scope.wordOrder[lookupIdx]];
-		// 					$scope.isFeedbacking = false;
-		// 				});
-		// 			}, '',
-		// 			['Done']);
-		// 		}
-		// 	}
-		// }
 
 		if ((1 + $scope.currentWordIdx - $scope.reorderOffset) % $scope.wordOrder.length == 0) {
 			$scope.reorderWords(true);
@@ -778,7 +752,6 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 
 	$scope.$on('ratingChange', function (event, data) {
 		console.log('rating change! ' + data);
-		console.log($scope.rating);
 		$scope.rating = data === undefined ? 0 : data;
 		if ($scope.rating) {
 			$scope.nextWord();
