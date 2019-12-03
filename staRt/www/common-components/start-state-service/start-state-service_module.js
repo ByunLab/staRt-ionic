@@ -3,13 +3,6 @@ var startStateService = angular.module('startStateService', []);
 startStateService.factory('StartUIState', function()
 {
 	return {
-		getLastActiveIndex: function(lf) {
-			return lf.getItem('lastActiveIndex');
-			// return parseInt(window.localStorage.lastActiveIndex) || 0;
-		},
-		setLastActiveIndex: function(lf, index) {
-			return lf.setItem('lastActiveIndex', index);
-		},
 		tabData: [
 			{
 				title: 'Profiles',

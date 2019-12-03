@@ -22,7 +22,7 @@
 		}
 
 		$scope.state = $state;
-		$scope.state.loggedIn = !!firebase.auth().currentUser;
+		$rootScope.loggedIn = !!firebase.auth().currentUser;
 
 		$rootScope.safelySwitchStates = function(destination) {
 			if (navigator.notification && !!$rootScope.isRecording) {
@@ -38,47 +38,36 @@
 			}
 		};
 
-		// Initialize UI
-		StartUIState.getLastActiveIndex($localForage).then(function(data)
-		{
-			$scope.startUIState = data;
+
+		// Please note that this function is notoriously buggy on firebase's end. https://github.com/firebase/quickstart-android/issues/80
+		if (!$rootScope.firebaseCallbackSet) {
+			$rootScope.firebaseCallbackSet = true;
 			firebase.auth().onAuthStateChanged(function (user) {
+				var wasLoggedIn = $rootScope.loggedIn;
+				$rootScope.loggedIn = !!user;
 				if (user) {
-					console.log('Logged in as ' + user);
-				}
-
-				var wasLoggedIn = $scope.state.loggedIn;
-				$scope.state.loggedIn == !!user;
-
-				if (!user) {
-					if (wasLoggedIn) $state.go('root', {}, { reload: true });
-				} else {
+					$rootScope.needToPromptLogin = false;
 					if (!wasLoggedIn) {
-						$state.go('root.profiles', {}, { reload: true });
-					} else {
-						// I have no idea why the navbar hides itself after login. I promise to
-						// investigate this an fix it later—removing this extremely gross hack—
-						// later when other more important things are done
-						console.log('Gross (but hopefully harmless) hack still at play');
-						$ionicNavBarDelegate.title('Profiles');
-						$ionicNavBarDelegate.showBar(true);
+						$state.go('root.profiles', {}, {reload: false});
+					}
+				} else {
+					if (!$rootScope.needToPromptLogin) {
+						$rootScope.needToPromptLogin = true;
+						$state.go('root', {}, {reload: true});
 					}
 				}
 			});
+		}
 
-			if (firebase.auth().currentUser === null) {
-				console.log('Prompting for login');
-				FirebaseService.startUi();
+
+		$scope.$on('$ionicView.afterEnter', function () {
+			if ($rootScope.needToPromptLogin) {
+				setTimeout(function() {
+					FirebaseService.startUi();
+				}, 100);
 			}
 		});
 
-		//console.log($scope.state);
-
-		$scope.selectIndex = function(index)
-		{
-			StartUIState.setLastActiveIndex($localForage, index);
-			$scope.content = StartUIState.content[index];
-		};
 
 		$scope.tabData = StartUIState.tabData;
 
@@ -104,5 +93,4 @@
 		*/
 
 	});
-
-} )(  );
+})();
