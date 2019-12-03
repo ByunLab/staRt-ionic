@@ -1,10 +1,10 @@
 // Ionic Starter App
 
 var start = angular.module('start',
-[
+	[
 		'ionic',
 		'root'
-]);
+	]);
 
 start.config(function($urlRouterProvider, $locationProvider, $ionicConfigProvider)
 {
@@ -19,16 +19,16 @@ start.config(function($urlRouterProvider, $locationProvider, $ionicConfigProvide
 // running the program. But it says not to disable it, so...
 start.run(function($ionicPlatform, $rootScope, $state) {
 
-	$rootScope.$on("$stateChangeStart", function(event, next, prev) {
+	$rootScope.$on('$stateChangeStart', function(event, next, prev) {
 		if (next.name !== prev.name) {
-			$rootScope.$broadcast("$urlChangeStart", next.name);
+			$rootScope.$broadcast('$urlChangeStart', next.name);
 		}
 	});
 
 	$ionicPlatform.ready(function() {
 
 		if (window.AudioPlugin)
-			window.AudioPlugin.startAudio()
+			window.AudioPlugin.startAudio();
 
 		if(window.cordova && window.cordova.plugins.Keyboard) {
 
@@ -45,6 +45,6 @@ start.run(function($ionicPlatform, $rootScope, $state) {
 			StatusBar.styleDefault();
 		}
 
-		console.log('start app running')
+		console.log('start app running');
 	});
 });
