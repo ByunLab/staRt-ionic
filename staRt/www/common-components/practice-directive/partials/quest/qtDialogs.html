@@ -11,12 +11,12 @@
 
     <div ng-if="badges.qtDialogTemplate.progSum">
         <div class="subtitle">
-            {{badges.endBlockDisplay.subtitle}}
+            {{badges.card.subtitle}}
         </div>
     </div>
 
     <div class="title">
-        {{badges.endBlockDisplay.title}}
+        {{badges.card.title}}
     </div>
   </div>
   <!-- end of .dia-head -->
@@ -25,19 +25,19 @@
 
     <div ng-if="badges.qtDialogTemplate.achievement"
         class="achievementCount">
-        {{badges.endBlockDisplay.count}}
+        {{badges.card.count}}
     </div>
 
     <div ng-if="badges.qtDialogTemplate.note"
         class="note">
-        {{badges.endBlockDisplay.bodyText}}
+        {{badges.card.bodyText}}
     </div>
 
     <div ng-if="badges.qtDialogTemplate.progSum"
         class="progSum">
-        <p>Gold: {{badges.endBlockDisplay.gold}}</p>
-        <p>Silver: {{badges.endBlockDisplay.silver}}</p>
-        <p>Bronze: {{badges.endBlockDisplay.bronze}}</p>
+        <p>Gold: {{badges.card.gold}}</p>
+        <p>Silver: {{badges.card.silver}}</p>
+        <p>Bronze: {{badges.card.bronze}}</p>
     </div>
 
   </div>
@@ -47,14 +47,14 @@
   <div class="dia-foot">
     <div class="footBtn"
     ng-if="!badges.qtDialogTemplate.progSum"
-      ng-click="{{badges.endBlockDisplay.btnFn}}">
-      {{badges.endBlockDisplay.btnText}}
+      ng-click="dialogNext()">
+      {{badges.card.btnText}}
     </div>
 
     <div class="footBtn"
       ng-if="badges.qtDialogTemplate.progSum"
       ng-click="dialogResume()">
-    {{badges.endBlockDisplay.btnText}}
+    {{badges.card.btnText}}
   </div>
 
   </div>

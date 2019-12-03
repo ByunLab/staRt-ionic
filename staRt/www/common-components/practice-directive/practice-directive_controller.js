@@ -759,18 +759,14 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 
 	// DIALOG SEQUENCE HANDLERS ---------------------
 	$scope.dialogResume = function() {
-		// calls reset to start new trial block
-
-		QuestScore.dialogResume($scope.scores, $scope.badges);
-		// TODO unpause wave
-		// TODO enable rating btns
-		// $scope.nextWord();
+		QuestScore.resetForNewBlock($scope.scores, $scope.badges);
+		// #TODO #464 unpause wave
+		// #TODO #464 enable rating btns
+		// #TODO #464 $scope.nextWord(); ???
 	};
 
-	// advances dialog card sequence
 	$scope.dialogNext = function() {
-		// calls advanceEndOfBlock() in _questScoring.js
-		QuestScore.dialogNext($scope.badges);
+		QuestScore.nextCard($scope.badges);
 	};
 
 
@@ -784,13 +780,6 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 			});
 		}
 	});
-
-	// eslint-disable-next-line no-unused-vars
-	// $scope.$on('stopPractice', function (event) {
-	// 	if ($scope.isPracticing) {
-	// 		$scope.endWordPractice();
-	// 	}
-	// });
 
 	$scope.myURL = $state.current.name;
 

@@ -87,7 +87,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 				trials: 0,
 				visible: false
 			},
-			endBlockSum: {
+			endBlockSum: { // holds info about each 'achievement' milestone type
 				mgib: {
 					flag: false,
 					title: 'Most Gold in Block!',
@@ -113,8 +113,8 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 					imgUrl: ''
 				}
 			},
-			endBlockSeq: [],
-			endBlockDisplay: {}, // Holds the content to be displayed in the html template. This is the object at badges.endBlockSeq[badges.dialogCardNumber].
+			endBlockSeq: [], // array of milestones achieved in current block, based on endBlockSum[milestone].flag
+			card: {}, // Holds the content to be displayed in the html template from badges.endBlockSeq[badges.dialogCardNumber]
 			endQuestSum: {},
 			dialogCardNumber: -1,
 			qtDialog: {
@@ -163,7 +163,6 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		for (var key in milestones.highscores) {
 			milestones.highscores[key] = mapHighscores(key);
 		}
-		//console.log(milestones);
 		return milestones;
 	};
 
@@ -228,7 +227,6 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		badges[badge].flag = false;
 		badges[badge].trials = 0;
 		badges[badge].visible = false;
-		//console.log(badges);
 	}
 
 	function displayBadgeOnARoll(badges) {
@@ -236,8 +234,6 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		badges.onARoll.flag = true;
 		badges.onARoll.visible = true;
 		badges.onARoll.trials++;
-		//console.log('ON A ROLL!!');
-		//console.log(badges);
 	}
 
 	function displayBadgeNewRecord(badges) {
@@ -251,28 +247,22 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		} else {
 			badges.newRecord.flag = true;
 		}
-		//console.log(badges);
 	}
 
-
-	// called by advanceEndOfBlock() & resetForNewBlock()
-	function clearDialogTemplateFlags(badges) {
-		for (var prop in badges.qtDialogTemplate) {
-			if (badges.qtDialogTemplate.hasOwnProperty(prop)) {
-				badges.qtDialogTemplate[prop] = false;
-			}
+	function clearFlags(flagObj) {
+		var clearedObj = Object.assign({}, flagObj);
+		for (var prop in flagObj) {
+		  if (flagObj.hasOwnProperty(prop)) {
+			  clearedObj[prop] = false;
+		  }
 		}
+		return clearedObj;
 	}
 
 	// called by controller: $scope.dialogResume()
 	function resetForNewBlock(scores, badges) {
-		//clear dialog box flags & close dialog box
-		for (var prop in badges.qtDialog) {
-			if (badges.qtDialog.hasOwnProperty(prop)) {
-				badges.qtDialog[prop] = false;
-			}
-		}
-		clearDialogTemplateFlags(badges);
+		badges.qtDialog = clearFlags(badges.qtDialog);
+		badges.qtDialogTemplate = clearFlags(badges.qtDialogTemplate);
 
 		// scoresObj
 		scores.block_score = 0;
@@ -288,7 +278,8 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		// badges: achievement cards
 		badges.dialogCardNumber = -1;
 		badges.endBlockSeq = [];
-		badges.endBlockDisplay = {};
+		badges.card = {};
+		// #hc #TODO // make better flag index
 		badges.endBlockSum.mgib.flag = false;
 		badges.endBlockSum.hsib.flag = false;
 		badges.endBlockSum.streak.flag = false;
@@ -299,7 +290,6 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 	function updateMilestoneCard(badges, msProp, count) {
 		badges.endBlockSum[msProp].flag = true;
 		badges.endBlockSum[msProp].count = count;
-		//console.log(badges);
 	}
 
 	// updates milestone obj record to be saved to firebase at end of Quest
@@ -312,58 +302,53 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		milestones.update[msProp].date = Date.now();
 		milestones.update[msProp].sessionID = scores.sessionID;
 		milestones.shouldUpdateFirebase = true;
-		//console.log(milestones);
 	}
 
 
 	// ==============================================
 	// DIALOG BOX HELPERS ------------------------
-	var advanceEndOfBlock = function(badges) {
-		console.log('dialogNext is callled');
+	var nextCard = function(badges) {
+		console.log('nextCard is callled');
 		badges.dialogCardNumber++;
+		badges.qtDialogTemplate = clearFlags(badges.qtDialogTemplate);
 		badges.qtDialog.isVisible = true;
 
-		var template = badges.endBlockSeq[badges.dialogCardNumber].template;
+		var cardIndex = badges.endBlockSeq[badges.dialogCardNumber];
+		var template = cardIndex.template;
 
-		var card = badges.endBlockSeq[badges.dialogCardNumber];
-
-		// common template fields
-		badges.endBlockDisplay.title = badges.endBlockSeq[badges.dialogCardNumber].title;
-		badges.endBlockDisplay.btnText = badges.endBlockSeq[badges.dialogCardNumber].btnText;
-		badges.endBlockDisplay.btnFn = badges.endBlockSeq[badges.dialogCardNumber].btnFn;
+		var populateCard = function(fieldArr) {
+			fieldArr.forEach(function(field) {
+				badges.card[field] = cardIndex[field];
+			});
+		};
+		//add common template fields here
+		var commonFields = ['title', 'btnText'];
+		populateCard(commonFields);
 
 		if(template === 'achievement') {
-			clearDialogTemplateFlags(badges);
 			badges.qtDialogTemplate.achievement = true;
-			badges.endBlockDisplay.count = badges.endBlockSeq[badges.dialogCardNumber].count;
+			badges.card.count = cardIndex.count;
 		} else if (template === 'note') {
-			clearDialogTemplateFlags(badges);
 			badges.qtDialogTemplate.note = true;
-			badges.endBlockDisplay.bodyText = badges.endBlockSeq[badges.dialogCardNumber].bodyText;
-
+			badges.card.bodyText = cardIndex.bodyText;
 		} else if (template === 'progSum') {
-			clearDialogTemplateFlags(badges);
 			badges.qtDialogTemplate.progSum = true;
-			badges.endBlockDisplay.subtitle = card.subtitle;
-			badges.endBlockDisplay.gold = card.gold;
-			badges.endBlockDisplay.silver = card.silver;
-			badges.endBlockDisplay.bronze = card.bronze;
+			var progSumFields = ['subtitle', 'gold', 'silver', 'bronze'];
+			populateCard(progSumFields);
 		}
 	}; // advanceEndOfBlock
 
-	// called by
+	// called by checkUpdateMilestones()
 	var prepEndOfBlock = function(scores, badges, currentWordIdx) {
-		//console.log('runEndOfBlock called');
 		badges.qtDialog.isBlockEnd = true;
 		if(currentWordIdx <= (scores.totalTrials -10)) {
 			badges.qtDialog.isFinal = true;
 		}
-
 		// this should already be set by clear fn
 		// badges.dialogCardNumber = -1;
 
 		var sumTemp = badges.endBlockSum;
-		//console.log(sumTemp);
+		// badges.endBlockSeq = [];
 
 		for (var key in sumTemp) {
 			if (sumTemp[key].flag) {
@@ -386,7 +371,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 			btnText: 'See Scores',
 			btnFn: 'dialogNext()'
 		});
-		// if end-of-block
+		// if end-of-block TODO #hc #430
 		//if(!badges.qtDialog.isFinal) {
 		badges.endBlockSeq.push({
 			template: 'progSum',
@@ -398,8 +383,8 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 			btnText: 'Resume Quest',
 			btnFn: 'dialogResume()',
 		});
-		//}
-		/* TODO
+		//} TODO #hc #430
+		/* TODO #hc #430 End-of-Quest card logic WIP
 		// if end-of-quest
 		if(badges.qtDialog.isFinal) {
 			badges.endBlockSeq.push({
@@ -423,7 +408,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		}
 		*/
 		console.log(badges.endBlockSeq);
-		advanceEndOfBlock(badges);
+		nextCard(badges);
 	};
 
 
@@ -471,6 +456,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 				milestones.highscores.hsiq = scores.display_score;
 				console.log('NEW RECORD: HIGH SCORE IN QUEST');
 				displayBadgeNewRecord(badges);
+				// #TODO: #hc #430 End-of-Quest card logic WIP
 				// badges.endBlockSum.hsiq = true;
 				// badges.endBlockSum.hsiqCount = scores.display_score;
 				updateMilestoneRecord(scores, milestones, 'hsiqHx', 'display_score');
@@ -483,6 +469,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 				milestones.highscores.mgiq = scores.session_coins.gold;
 				console.log('NEW RECORD: MOST GOLD IN QUEST');
 				displayBadgeNewRecord(badges);
+				// #TODO: #hc #430 End-of-Quest card logic WIP
 				// badges.endBlockSum.mgiq = true;
 				// badges.endBlockSum.mgiqCount = milestones.highscores.mgiq;
 				updateMilestoneRecord(scores, milestones, 'mgiqHx', 'session_coins', 'gold');
@@ -497,7 +484,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 			updateMilestoneCard(badges, 'streak', milestones.highscores.streak);
 		}
 
-		if(scores.block_goldCount === 10) {
+		if(scores.block_goldCount == 10) {
 			milestones.highscores.perfectBlock++;
 			console.log('PERFECT BLOCK');
 			// no badge, achieved at end of block
@@ -511,11 +498,8 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		// checked at end of block -----------------------------
 		if( scores.endOfBlock ) {
 			scores.performance = scores.block_score/10;
-			console.log('END OF BLOCK IS TRUE');
-			//console.log('Current Word Index: ' + currentWordIdx);
+			// TODO: #356, #hc. Should Adapt Diff milestone be prepped here?
 			prepEndOfBlock(scores, badges, currentWordIdx);
-
-			//return scores;
 		}
 	}; //end checkUpdateMilestones
 
@@ -549,18 +533,13 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		}
 
 		// check for end of block
-		if (currentWordIdx % 10 === 0 && currentWordIdx >= 9) {
-			scores.endOfBlock = true;
-			console.log('Current Word Index: ' + currentWordIdx);
-			console.log('EndOfBlock is: ' + scores.endOfBlock);
-		} else {
-			scores.endOfBlock = false;
-			console.log('EndOfBlock is: ' + scores.endOfBlock);
-		}
+		scores.endOfBlock = (currentWordIdx % 10 == 0 && currentWordIdx > 0) ? true : false;
 
 		checkUpdateMilestones(scores, milestones, badges, currentWordIdx);
 	}; // end questRating()
 
+
+	// #hc keep the function names consistent
 	return {
 		initCoinCounter: initCoinCounter,
 		initNewHighScores: initNewHighScores,
@@ -568,7 +547,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		initScores: initScores,
 		initBadges: initBadges,
 		questRating: questRating,
-		dialogNext: advanceEndOfBlock,
-		dialogResume: resetForNewBlock
+		nextCard: nextCard,
+		resetForNewBlock: resetForNewBlock
 	};
 });
