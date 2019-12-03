@@ -9,7 +9,7 @@
 		console.log('FreePlayController here!');
 
 		$scope.data = {
-			navTitle: "Free Play",
+			navTitle: 'Free Play',
 			waveHidden: false,
 			researchSession: false
 		};
@@ -26,10 +26,10 @@
 		}
 
 		ProfileService.getCurrentProfile().then(function (profile) {
-				$scope.data.participant_name = profile.name;
-				if (profile.nIntroComplete >= 1) {
-					$scope.data.session_number = profile.nBiofeedbackSessionsCompleted + profile.nNonBiofeedbackSessionsCompleted + 1;
-				}
+			$scope.data.participant_name = profile.name;
+			if (profile.nIntroComplete >= 1) {
+				$scope.data.session_number = profile.nBiofeedbackSessionsCompleted + profile.nNonBiofeedbackSessionsCompleted + 1;
+			}
 		});
 
 		var lastChronoTime = Date.now();
@@ -37,9 +37,9 @@
 		var logInterval = function() {
 			var nextChronoTime = Date.now();
 			var duration = nextChronoTime - lastChronoTime;
-			NotifyingService.notify("freeplay-tick", duration);
+			NotifyingService.notify('freeplay-tick', duration);
 			lastChronoTime = nextChronoTime;
-		}
+		};
 
 
 		// Start a timer to log the time spend in free play

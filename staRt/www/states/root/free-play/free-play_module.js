@@ -3,14 +3,14 @@
 ( function(  )
 {
 	var freePlay = angular.module( 'freePlay',
-	[ ] );
+		[ ] );
 
 	freePlay.config( function( $stateProvider )
 	{
 		$stateProvider.state( 'root.free-play',
-		{
-			url: 'free-play',
-			views:
+			{
+				url: 'free-play',
+				views:
 			{
 				'content-view':
 				{
@@ -19,7 +19,7 @@
 				}
 			}
 			// abstract: true,
-		} );
+			} );
 	} );
 
 } )(  );
