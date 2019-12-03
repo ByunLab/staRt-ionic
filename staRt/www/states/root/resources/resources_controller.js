@@ -17,7 +17,7 @@
 		if (window.AudioPlugin !== undefined) {
 	     cordova.getAppVersion.getVersionNumber().then(function (version) {
 	       $scope.data.version = `${version}`;
-	       $scope.data.platform = `${device.platform} ${device.version}`
+	       $scope.data.platform = `${device.platform} ${device.version}`;
 	     });
 		};
 
