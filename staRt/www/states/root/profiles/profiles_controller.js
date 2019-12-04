@@ -77,7 +77,7 @@ function compareRecordings(ra, rb) {
 			});
 
 			ProfileService.getAllProfiles().then( function(res) {
-				$scope.data.profiles = res;
+				$timeout(function() {$scope.data.profiles = res;});
 			});
 
 			ProfileService.getCurrentProfile().then(function(res) {
