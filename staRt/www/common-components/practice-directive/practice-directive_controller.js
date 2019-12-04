@@ -530,7 +530,7 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 			if (window.AudioPlugin !== undefined) {
 				AudioPlugin.startRecording(user, sessionDisplayString(),  $scope.currentPracticeSession.id, recordingDidStart, recordingDidFail);
 			}
-			advanceWord();
+			$timeout(advanceWord);
 		});
 	}
 
