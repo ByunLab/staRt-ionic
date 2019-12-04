@@ -411,13 +411,16 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 									);
 									$scope.uploadStatus.isUploading = true;
 								}
+								if ($scope.redirectAfterSession) {
+									$state.go($scope.recordingStoppedDestination);
+								}
 							}, 'Upload',
 							['Okay', 'Later']);
 					});
 				}
 			});
 		}
-	  $rootScope.isRecording = false;
+		$rootScope.isRecording = false;
 	}
 
 	function setQuizType_graphics() {
@@ -795,6 +798,12 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 	});
 
 	$scope.myURL = $state.current.name;
+
+	$rootScope.endSessionAndGo = function (destination) {
+		$scope.redirectAfterSession = true;
+		$scope.recordingStoppedDestination = destination;
+		$scope.endWordPractice();
+	};
 
 	var unsubscribe = $rootScope.$on('$urlChangeStart', function (event, next) {
 		if (next === $scope.myURL) {

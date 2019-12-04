@@ -29,8 +29,9 @@
 				navigator.notification.confirm('Are you sure you would like to leave this session?',
 					function (index) {
 						if (index === 1 ) {
-							$state.go('root.' + destination);
-						}}, 'Quit Session?',
+							$rootScope.endSessionAndGo('root.' + destination);
+						}
+					}, 'Quit Session?',
 					['Leave Session', 'Stay']);
 			}
 			else {
