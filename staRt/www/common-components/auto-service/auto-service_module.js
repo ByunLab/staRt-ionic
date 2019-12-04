@@ -374,10 +374,10 @@ var ConclusionAuto = function (profile, currentStats, onShow, initialState) {
 				buttons: ['Later', 'Okay'],
 				callback: (function (index) {
 					if (index === 0 || index === 1) {
-						this.wantsToDoItLater = true;
+						this.state.wantsToDoItLater = true;
 					}
 					if (index === 2) {
-						this.hasAcceptedSessionPrompt = true;
+						this.state.hasAcceptedSessionPrompt = true;
 					}
 					this.processUpdate(profile, currentStats, []);
 				}).bind(this)
