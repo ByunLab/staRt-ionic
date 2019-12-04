@@ -374,7 +374,7 @@ lpcDirective.controller( 'LpcDirectiveController',
 			$scope.lpcRenderer.updateCameraSize();
 			$scope.lpcRenderer.clearScene();
 			$scope.lpcRenderer.drawScene();
-			setInitialTarget();
+			$scope.updateTarget();
 		};
 
 		{
