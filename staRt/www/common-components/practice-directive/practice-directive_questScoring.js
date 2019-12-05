@@ -13,9 +13,9 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 	function NewQuestHighScores() { // for new accts
 		return  {
 			mgibHx: [ {score: 0, date: Date.now()} ],
-			hsibHx: [ {score: 0, date: Date.now()} ],
+			hsibHx: [ {score: 10, date: Date.now()} ],
 			mgiqHx: [ {score: 0, date: Date.now()} ],
-			hsiqHx: [ {score: 0, date: Date.now()} ],
+			hsiqHx: [ {score: 15, date: Date.now()} ],
 			streakHx: [ {score: 0, date: Date.now()} ],
 			perfectBlockHx: [ {score: 0, date: Date.now()} ],
 		};
@@ -493,53 +493,46 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		}
 
 		// mgib: most gold in block
-		if(scores.block_goldCount > 0) {
-			if( scores.block_goldCount > milestones.highscores.mgib) {
-				console.log('NEW RECORD: MOST GOLD IN BLOCK');
-				displayBadgeNewRecord(badges);
-				var mgibNew = scores.block_goldCount;
-				milestones = updateMilestoneRecord(milestones, 'mgib', mgibNew);
-				badges = updateMilestoneCard('block', badges, 'mgib', mgibNew);
-				console.log(milestones);
-			}
+		if( scores.block_goldCount > milestones.highscores.mgib) {
+			console.log('NEW RECORD: MOST GOLD IN BLOCK');
+			displayBadgeNewRecord(badges);
+			var mgibNew = scores.block_goldCount;
+			milestones = updateMilestoneRecord(milestones, 'mgib', mgibNew);
+			badges = updateMilestoneCard('block', badges, 'mgib', mgibNew);
+			console.log(milestones);
 		}
 
 		// hsib: high score in block
-		if(scores.block_display_score > 10) {
-			if( scores.block_display_score > milestones.highscores.hsib) {
-				console.log('NEW RECORD: HIGH SCORE IN BLOCK');
-				displayBadgeNewRecord(badges);
-				var hsibNew = scores.block_display_score;
-				milestones = updateMilestoneRecord(milestones, 'hsib', hsibNew);
-				badges = updateMilestoneCard('block', badges, 'hsib', hsibNew);
-				console.log(milestones);
-			}
+		if( scores.block_display_score > milestones.highscores.hsib) {
+			console.log('NEW RECORD: HIGH SCORE IN BLOCK');
+			displayBadgeNewRecord(badges);
+			var hsibNew = scores.block_display_score;
+			milestones = updateMilestoneRecord(milestones, 'hsib', hsibNew);
+			badges = updateMilestoneCard('block', badges, 'hsib', hsibNew);
+			console.log(milestones);
 		}
+
 
 		// hsiq: high score in quest
-		if(scores.display_score > 15) {
-			if( scores.display_score > milestones.highscores.hsiq) {
-				console.log('NEW RECORD: HIGH SCORE IN QUEST');
-				displayBadgeNewRecord(badges);
-				var hsiqNew = scores.display_score;
-				milestones = updateMilestoneRecord(milestones, 'hsiq', hsiqNew);
-				badges = updateMilestoneCard('quest', badges, 'hsiq', hsiqNew);
-			}
+		if( scores.display_score > milestones.highscores.hsiq) {
+			console.log('NEW RECORD: HIGH SCORE IN QUEST');
+			displayBadgeNewRecord(badges);
+			var hsiqNew = scores.display_score;
+			milestones = updateMilestoneRecord(milestones, 'hsiq', hsiqNew);
+			badges = updateMilestoneCard('quest', badges, 'hsiq', hsiqNew);
 		}
+
 
 		// mgiq: most gold in quest
-		if(scores.session_coins.gold > 0) {
-			if( scores.session_coins.gold > milestones.highscores.mgiq) {
-				console.log('NEW RECORD: MOST GOLD IN QUEST');
-				displayBadgeNewRecord(badges);
-				var mgiqNew = scores.session_coins.gold;
-				milestones = updateMilestoneRecord(milestones, 'mgiq', mgiqNew);
-				badges = updateMilestoneCard('quest', badges, 'mgiq', mgiqNew);
-			}
+		if( scores.session_coins.gold > milestones.highscores.mgiq) {
+			console.log('NEW RECORD: MOST GOLD IN QUEST');
+			displayBadgeNewRecord(badges);
+			var mgiqNew = scores.session_coins.gold;
+			milestones = updateMilestoneRecord(milestones, 'mgiq', mgiqNew);
+			badges = updateMilestoneCard('quest', badges, 'mgiq', mgiqNew);
 		}
 
-		// streak: consequtive golds
-		//if ( scores.streak > 2 ) {
+		// streak: consecutive golds
 		if( scores.streak > milestones.highscores.streak ) {
 			console.log('NEW RECORD: STREAK');
 			displayBadgeNewRecord(badges);
@@ -547,7 +540,6 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 			milestones = updateMilestoneRecord(milestones, 'streak', streakNew);
 			badges = updateMilestoneCard('block', badges, 'streak', streakNew);
 		}
-		//}
 
 		if(scores.block_goldCount == 10) {
 			console.log('PERFECT BLOCK');
