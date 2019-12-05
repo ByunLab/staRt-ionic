@@ -3,15 +3,15 @@
 ( function(  )
 {
 	var tutorial = angular.module( 'tutorial',
-	['ui.router'] );
+		['ui.router'] );
 
 	tutorial.config( function($stateProvider, $urlRouterProvider) {
 
 		$stateProvider
 		// this is the parent of all other views
-		.state('root.tutorial', {
-			url: 'tutorial',
-			views:
+			.state('root.tutorial', {
+				url: 'tutorial',
+				views:
 			{
 				'content-view':
 				{
@@ -19,19 +19,19 @@
 					controller: 'TutorialController as tutorial'
 				}
 			},
-			resolve:
+				resolve:
 			{
 				firstPanelData:  function($http)
 				{
-            		// $http returns a promise for the url data
-            		return $http.get('states/root/tutorial/tutorialData/p01data.json');
-            	}
-         	}
-		}) //end root template
+				// $http returns a promise for the url data
+					return $http.get('states/root/tutorial/tutorialData/p01data.json');
+				}
+			}
+			}) //end root template
 
 		// ============================================================================
 		// STATES & SUBPAGE CONTROLLERS
-			/*
+		/*
 				NOTES:
 				I'm using the state urls as reference during dev.
 				They currently are not serving any functional purpose (like routing).
@@ -52,7 +52,7 @@
 							$scope.currStep = $scope.p01s1;
 							$scope.updateParentScope($scope.currStep);
 							//$scope.setActivePage($scope.currStep.page);
-								// I think this is running before the setActivePage obj is created, so I moved it to p01s2. (fortunately, the ui-router will set 'active' for p01s1 (1st sref in page set)
+							// I think this is running before the setActivePage obj is created, so I moved it to p01s2. (fortunately, the ui-router will set 'active' for p01s1 (1st sref in page set)
 						}
 					}
 				}
@@ -173,7 +173,7 @@
 			}) //end p03s2 state def
 
 			.state('root.tutorial.p03s3', {
-			url: '/p03s3',
+				url: '/p03s3',
 				views: {
 					'pageView': {
 						templateUrl: 'states/root/tutorial/partialTemplates/default.html',
@@ -217,7 +217,7 @@
 
 			// NOT CURRENTLY IN USE
 			.state('root.tutorial.p04s3', {
-			url: '/p04s3',
+				url: '/p04s3',
 				views: {
 					'pageView': {
 						templateUrl: 'states/root/tutorial/partialTemplates/imgTemplate.html',
@@ -261,7 +261,7 @@
 			}) //end p05s2 state def
 
 			.state('root.tutorial.p05s3', {
-			url: '/p05s3',
+				url: '/p05s3',
 				views: {
 					'pageView': {
 						templateUrl: 'states/root/tutorial/partialTemplates/default.html',
@@ -287,7 +287,7 @@
 			}) //end p05s4 state def
 
 			.state('root.tutorial.p05s5', {
-			url: '/p05s5',
+				url: '/p05s5',
 				views: {
 					'pageView': {
 						templateUrl: 'states/root/tutorial/partialTemplates/default.html',
@@ -300,7 +300,7 @@
 			}) //end p05s5 state def
 
 			.state('root.tutorial.p05s6', {
-			url: '/p05s6',
+				url: '/p05s6',
 				views: {
 					'pageView': {
 						templateUrl: 'states/root/tutorial/partialTemplates/default.html',
@@ -310,7 +310,7 @@
 						}
 					}
 				}
-			}) //end p05s6 state def
+			}); //end p05s6 state def
 
 		// end of subState defs -------------------------------------------
 

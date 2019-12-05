@@ -1,16 +1,17 @@
+/* eslint-disable no-undef */
 /*globals console:false, angular:false, window:false, alert:false */
 
 'use strict';
 
 var UploadStatus = Object.freeze({
-	INCOMPLETE: "INCOMPLETE",
-	ERROR: "ERROR",
-	COMPLETE: "COMPLETE"
+	INCOMPLETE: 'INCOMPLETE',
+	ERROR: 'ERROR',
+	COMPLETE: 'COMPLETE'
 });
 
 function dateFromString(str) {
 	var a = str.split(/[^0-9]/);
-	a = a.map(function (s) { return parseInt(s, 10) });
+	a = a.map(function (s) { return parseInt(s, 10); });
 	return new Date(a[0], a[1]-1 || 0, a[2] || 1, a[3] || 0, a[4] || 0, a[5] || 0, a[6] || 0);
 }
 
@@ -48,25 +49,25 @@ function compareRecordings(ra, rb) {
 
 			// use: to change display state of card
 			//values: recordings || progress || profile || settings || home || slp
-			$scope.cardState = "profile";
+			$scope.cardState = 'profile';
 			$scope.slpView = false;
 
 			$scope.data = {};
-			$scope.data.uploadMessage = "";
+			$scope.data.uploadMessage = '';
 			$scope.data.selectedProfileRecordings = [];
 			$scope.data.sessionIsActive = AutoService.isSessionActive();
 			$scope.data.lpcOrder = 0; //Card-Settings: Sets init val for adjust-lpc slider. Will be overwritten once currentProfile lpcOrder data arrives.
 
 
-			NotifyingService.subscribe("session-did-begin", $scope, function() {
+			NotifyingService.subscribe('session-did-begin', $scope, function() {
 				$scope.data.sessionIsActive = true;
 			});
 
-			NotifyingService.subscribe("session-did-end", $scope, function() {
+			NotifyingService.subscribe('session-did-end', $scope, function() {
 				$scope.data.sessionIsActive = false;
 			});
 
-			NotifyingService.subscribe("profile-stats-updated", $scope, function(msg, updateData) {
+			NotifyingService.subscribe('profile-stats-updated', $scope, function(msg, updateData) {
 				var profile = updateData[0];
 				var currentProfileStats = updateData[1];
 				var updateKeys = updateData[2];
@@ -76,7 +77,7 @@ function compareRecordings(ra, rb) {
 			});
 
 			ProfileService.getAllProfiles().then( function(res) {
-				$scope.data.profiles = res;
+				$timeout(function() {$scope.data.profiles = res;});
 			});
 
 			ProfileService.getCurrentProfile().then(function(res) {
@@ -116,7 +117,7 @@ function compareRecordings(ra, rb) {
 
 							if (window.AudioPlugin !== undefined) {
 								console.log('watchCollection calls AudioPlugin with:' + $scope.data.lpcOrder);
-								AudioPlugin.setLPCOrder("" + $scope.data.currentProfile.lpcOrder, $scope.logPluginLPCOrder);
+								AudioPlugin.setLPCOrder('' + $scope.data.currentProfile.lpcOrder, $scope.logPluginLPCOrder);
 							} else {
 								console.log('dude no audio');
 							}
@@ -131,7 +132,7 @@ function compareRecordings(ra, rb) {
 			});
 
 
-			$scope.$on( "$ionicView.enter", function( scopes, states ) {
+			$scope.$on( '$ionicView.enter', function( scopes, states ) {
 				$scope.updateRecordingsList();
 			});
 		}
@@ -176,15 +177,15 @@ function compareRecordings(ra, rb) {
 		// ===========================================================
 		$scope.setCardState = function(navState) {
 			$scope.cardState = navState;
-		}
+		};
 		$scope.openSlpView = function() {
 			$scope.slpView = true;
-			$scope.cardState = "slp";
-		}
+			$scope.cardState = 'slp';
+		};
 		$scope.closeSlpView = function() {
 			$scope.slpView = false;
-			$scope.cardState = "profile";
-		}
+			$scope.cardState = 'profile';
+		};
 
 
 		// ===========================================================
@@ -192,7 +193,7 @@ function compareRecordings(ra, rb) {
 		// ===========================================================
 		$scope.setIsEditing = function(isEditing) {
 			$scope.isEditing = isEditing; // bool. state var.
-			$scope.editing = isEditing ? "editing" : ""; // ng-class var
+			$scope.editing = isEditing ? 'editing' : ''; // ng-class var
 		};
 
 		$scope.cancelEdit = function()
@@ -221,7 +222,7 @@ function compareRecordings(ra, rb) {
 					});
 				});
 			} else {
-				alert("Profile is missing some data");
+				alert('Profile is missing some data');
 			}
 		};
 
@@ -258,25 +259,25 @@ function compareRecordings(ra, rb) {
 			// Check if we're in the browser or in iOS
 			if(navigator.notification)
 			{
-				navigator.notification.confirm("Are you sure you want to delete " + profile.name + "?" , function(i)
+				navigator.notification.confirm('Are you sure you want to delete ' + profile.name + '?' , function(i)
 				{
 					if(i == 1)
 					{
 						doDelete();
 					}
-				}, "Delete All", ["OK", "Cancel"]);
+				}, 'Delete All', ['OK', 'Cancel']);
 			}
 			else
 			{
 				doDelete();
 			}
-		}
+		};
 
 		$scope.optInFormalTesting = function() {
 			ProfileService.getCurrentProfile().then(function (profile) {
 				if (profile) AutoService.promptForFormalParticipation(profile);
 			});
-		}
+		};
 
 		$scope.startSession = function() {
 			AutoService.startSession();
@@ -292,7 +293,7 @@ function compareRecordings(ra, rb) {
 
 		var sessionIDForRecording = function (recording) {
 			return recording.Metadata.split('/').pop().substr(0, 36);
-		}
+		};
 
 		$scope.updateRecordingsList = function()
 		{
@@ -308,7 +309,7 @@ function compareRecordings(ra, rb) {
 								recording.uploaded = !!status.uploaded;
 								if (recording.endDate && recording.endDate.length > 0) {
 									recording.totalTime = dateFromString(recording.endDate) - dateFromString(recording.date);
-									recording.totalTimeString = Math.floor(recording.totalTime / 60000) + " min, " + ((recording.totalTime % 60000) / 1000) + " sec";
+									recording.totalTimeString = Math.floor(recording.totalTime / 60000) + ' min, ' + ((recording.totalTime % 60000) / 1000) + ' sec';
 								}
 							})
 					);
@@ -318,7 +319,7 @@ function compareRecordings(ra, rb) {
 					$timeout(function() {});
 				});
 			});
-		}
+		};
 
 		$scope.recordingClicked = function (member) {
 			var index = $scope.data.selectedProfileRecordings.indexOf(member);
@@ -329,14 +330,14 @@ function compareRecordings(ra, rb) {
 				$scope.data.selectedProfileRecordings.push(member);
 				member.selected = true;
 			}
-		}
+		};
 
 		$scope.resumeRecording = function (member) {
 			var sessionid = sessionIDForRecording(member);
 			ProfileService.getCurrentProfile().then(function(res) {
 				ProfileService.resumeNormalRecordingSession(res, sessionid);
 			});
-		}
+		};
 
 		$scope.deleteSelectedRecordings = function() {
 			if (window.AudioPlugin) {
@@ -365,7 +366,7 @@ function compareRecordings(ra, rb) {
 
 			$scope.data.selectedProfileRecordings.forEach(function (recording) {
 
-				$scope.data.uploadMessage = "Uploading...";
+				$scope.data.uploadMessage = 'Uploading...';
 
 				function progress() {
 					// do something
@@ -373,23 +374,23 @@ function compareRecordings(ra, rb) {
 
 				function win() {
 					$cordovaDialogs.alert(
-						"Session uploaded successfully",
-						"Upload Complete",
-						"Okay"
+						'Session uploaded successfully',
+						'Upload Complete',
+						'Okay'
 					);
 					$scope.uploadCount -= 1;
-					if ($scope.uploadCount === 0) $scope.data.uploadMessage = "";
+					if ($scope.uploadCount === 0) $scope.data.uploadMessage = '';
 					$scope.updateRecordingsList();
 				}
 
 				function fail(err) {
 					$cordovaDialogs.alert(
-						"Session upload failed",
-						"Upload Error",
-						"Okay"
+						'Session upload failed',
+						'Upload Error',
+						'Okay'
 					);
 					$scope.uploadCount -= 1;
-					if ($scope.uploadCount === 0) $scope.data.uploadMessage = "";
+					if ($scope.uploadCount === 0) $scope.data.uploadMessage = '';
 				}
 
 				if (window.AudioPlugin) {
@@ -426,7 +427,7 @@ function compareRecordings(ra, rb) {
 		// #sjt: fx copied & pasted from Resources controller
 
 		$scope.logPluginLPCOrder = function(order) {
-			console.log("Plugin LPC order is now: " + order);
+			console.log('Plugin LPC order is now: ' + order);
 		};
 
 		$scope.resetPluginLPCOrder = function() {
@@ -472,13 +473,13 @@ function compareRecordings(ra, rb) {
 			}
 			if(navigator.notification)
 			{
-				navigator.notification.confirm("Are you sure you want to delete all profiles?", function(i)
+				navigator.notification.confirm('Are you sure you want to delete all profiles?', function(i)
 				{
 					if(i == 1)
 					{
 						doDelete();
 					}
-				}, "Delete All", ["OK", "Cancel"]);
+				}, 'Delete All', ['OK', 'Cancel']);
 			}
 			else
 			{
@@ -493,7 +494,7 @@ function compareRecordings(ra, rb) {
 			}, function (err) {
 				console.trace(err);
 			});
-		}
+		};
 
 
 

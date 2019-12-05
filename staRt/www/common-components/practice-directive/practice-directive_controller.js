@@ -365,13 +365,6 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 		if (doStoreFormalSession) {
 			console.log('storing formal session');
 			AutoService.pauseSession(); // TODO: Perhaps set category restrictions to null.
-			if ($scope.skipUploadQuestion) {
-				$cordovaDialogs.alert(
-					'You quit midway through a session. You can resume the formal session by going to the Profiles->profile page and clicking Start Session.',
-					'Resume Session',
-					'Okay'
-				);
-			}
 			var currentPracticeSessionCopy = Object.assign({}, $scope.currentPracticeSession);
 			ProfileService.runTransactionForCurrentProfile(function(handle, doc, t) {
 				t.update(handle, { inProcessSession: currentPracticeSessionCopy });
@@ -384,7 +377,17 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 		}
 
 
-		if (!$scope.skipUploadQuestion) {
+		if ($scope.homeScreenClicked) {
+			var resumeMessage = 'Hey, looks like you quit staRt mid session! You can resume quizzes and quests by going to the recordings section on the Profiles page.';
+			if (doStoreFormalSession) {
+				resumeMessage = 'You quit midway through a session. You can resume the formal session by going to the Profiles->profile page and clicking Start Session.';
+			}
+			$cordovaDialogs.alert(
+				resumeMessage,
+				'Session Interrupted',
+				'Got it!'
+			).then(function() {$state.go($scope.recordingStoppedDestination);});
+		} else {
 			storeTask.then(function() {
 				if (doUpload) {
 					saveJSON($scope.currentPracticeSession.ratings, jsonPath, function () {
@@ -406,13 +409,16 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 									);
 									$scope.uploadStatus.isUploading = true;
 								}
+								if ($scope.redirectAfterSession) {
+									$state.go($scope.recordingStoppedDestination);
+								}
 							}, 'Upload',
 							['Okay', 'Later']);
 					});
 				}
 			});
 		}
-	  $rootScope.isRecording = false;
+		$rootScope.isRecording = false;
 	}
 
 	function setQuizType_graphics() {
@@ -524,7 +530,7 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 			if (window.AudioPlugin !== undefined) {
 				AudioPlugin.startRecording(user, sessionDisplayString(),  $scope.currentPracticeSession.id, recordingDidStart, recordingDidFail);
 			}
-			advanceWord();
+			$timeout(advanceWord);
 		});
 	}
 
@@ -608,16 +614,8 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 
 	$rootScope.onPause = function () {
 		$scope.active = false;
-		$scope.skipUploadQuestion = true;
-		$scope.endWordPractice();
-		$state.go('root.profiles');
-		if (!AutoService.isSessionActive()) {
-			$cordovaDialogs.alert(
-				'Hey, looks like you quit staRt mid session! You can resume quizzes and quests by going to the recordings section on the Profiles page.',
-				'Session Interrupted',
-				'Got it!'
-			);
-		}
+		$scope.homeScreenClicked = true;
+		$rootScope.endSessionAndGo('root.profiles');
 	};
 
 	$rootScope.onResume = function () {
@@ -782,6 +780,12 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 	});
 
 	$scope.myURL = $state.current.name;
+
+	$rootScope.endSessionAndGo = function (destination) {
+		$scope.redirectAfterSession = true;
+		$scope.recordingStoppedDestination = destination;
+		$scope.endWordPractice();
+	};
 
 	var unsubscribe = $rootScope.$on('$urlChangeStart', function (event, next) {
 		if (next === $scope.myURL) {

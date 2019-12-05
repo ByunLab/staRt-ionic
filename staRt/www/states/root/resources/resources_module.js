@@ -3,14 +3,14 @@
 ( function(  )
 {
 	var resources = angular.module( 'resources',
-	[ ] );
+		[ ] );
 
 	resources.config( function( $stateProvider )
 	{
 		$stateProvider.state( 'root.resources',
-		{
-			url: 'resources',
-			views:
+			{
+				url: 'resources',
+				views:
 			{
 				'content-view':
 				{
@@ -19,7 +19,7 @@
 				}
 			}
 			// abstract: true,
-		} );
+			} );
 	} );
 
 } )(  );

@@ -3,14 +3,14 @@
 ( function(  )
 {
 	var auto = angular.module( 'auto',
-	[ ] );
+		[ ] );
 
 	auto.config( function( $stateProvider )
 	{
 		$stateProvider.state( 'root.auto',
-		{
-			url: 'auto',
-			views:
+			{
+				url: 'auto',
+				views:
 			{
 				'content-view':
 				{
@@ -19,7 +19,7 @@
 				}
 			}
 			// abstract: true,
-		} );
+			} );
 	} );
 
 } )(  );
