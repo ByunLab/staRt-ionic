@@ -76,13 +76,9 @@ function compareRecordings(ra, rb) {
 				});
 			});
 
-			ProfileService.getAllProfiles().then( function(res) {
-				$timeout(function() {$scope.data.profiles = res;});
-			});
-
 			ProfileService.getCurrentProfile().then(function(res) {
-
 				if (res) {
+					console.log('we have a current profile');
 					$scope.data.currentProfile = res;
 					$scope.data.currentProfileUUID = res.uuid;
 
@@ -99,7 +95,11 @@ function compareRecordings(ra, rb) {
 						console.log('hey AudioPlugin');
 					} // if window.AudioPlugin
 				} // if (res)
-			});
+			}).then(function () {
+				ProfileService.getAllProfiles().then( function(res) {
+					$timeout(function() {$scope.data.profiles = res;});
+				});}
+			);
 
 
 
@@ -315,8 +315,7 @@ function compareRecordings(ra, rb) {
 					);
 				});
 				Promise.all(statusesToFetch).then(function() {
-					$scope.data.currentProfileRecordings = recordings;
-					$timeout(function() {});
+					$timeout(function() {$scope.data.currentProfileRecordings = recordings;});
 				});
 			});
 		};
