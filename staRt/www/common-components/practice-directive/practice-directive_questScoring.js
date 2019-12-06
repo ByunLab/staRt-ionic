@@ -292,8 +292,8 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 	// MILESTONE HELPERS ---------------------------
 
 	// updates milestone props in badges object
-	function updateMilestoneCard(msType, badgesIn, msProp, count) {
-		var badgesOut = Object.assign({}, badgesIn);
+	function updateMilestoneCard(msType, badges, msProp, count) {
+		var badgesOut = badges;//Object.assign({}, badgesIn);
 
 		var hasFlag = badgesOut.cardFlags.includes(msProp);
 
@@ -305,31 +305,27 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 			badgesOut.cardsQuestEnd[msProp].count = count;
 		}
 
-		return badgesOut;
+		//return badgesOut;
 	}
 
 	// updates milestone props in badges object
-	function updateSummaryCards(badgesIn, typeProp, msProp, coinSum ) {
-		var badgesOut = Object.assign({}, badgesIn);
+	function updateSummaryCards(badges, typeProp, msProp, coinSum ) {
+		var badgesOut = badges; //Object.assign({}, badgesIn);
 		badgesOut[typeProp][msProp].gold = coinSum.gold;
 		badgesOut[typeProp][msProp].silver = coinSum.silver;
 		badgesOut[typeProp][msProp].bronze = coinSum.bronze;
 
-		return badgesOut;
+		//return badgesOut;
 	}
 
-	// updates milestone props in in milestone obj to be saved to firebase at end of Quest
-	function updateMilestoneRecord(milestonesIn, msProp, newMilestone) {
-		var milestonesOut = Object.assign({}, milestonesIn);
-
-		milestonesOut.highscores[msProp] = newMilestone;
+	// updates milestone props in in $scope.milestones to be saved to firebase at end of Quest
+	function updateMilestoneRecord(milestones, msProp, newMilestone) {
+		milestones.highscores[msProp] = newMilestone;
 		var msHx = [msProp] + 'Hx';
-		milestonesOut.update[msHx].score = newMilestone;
-		milestonesOut.update[msHx].date = Date.now();
+		milestones.update[msHx].score = newMilestone;
+		milestones.update[msHx].date = Date.now();
 		//milestones.update[msHx].sessionID = scores.sessionID;
-		milestonesOut.shouldUpdateFirebase = true;
-
-		return milestonesOut;
+		milestones.shouldUpdateFirebase = true;
 	}
 
 
@@ -379,39 +375,37 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 
 	// ==============================================
 	// DIALOG BOX HELPERS ------------------------
-	function prepEndOfBlock(badgesIn) {
-		var badgesOut = Object.assign({}, badgesIn);
-		//console.log(badgesOut);
+	function prepEndOfBlock(badges) {
+		//var badgesOut = Object.assign({}, badgesIn);
 
-		var msFlags = badgesOut.cardFlags; // array of milestones achieved in block
+		var msFlags = badges.cardFlags; // array of milestones achieved in block
 
 		// adds card template per milestone achieved in block + feedback card
 		msFlags.forEach( function(ms) {
-			var msCard = badgesOut.cardsBlockEnd[ms];
-			badgesOut.cardSeq.push(msCard);
+			var msCard = badges.cardsBlockEnd[ms];
+			badges.cardSeq.push(msCard);
 		});
 
-		if(badgesOut.qtDialog.isFinal) {
-			if(badgesOut.cardsQuestEnd.mgiq.flag) {
-				badgesOut.cardSeq.push( badgesOut.cardsQuestEnd.mgiq );
+		if(badges.qtDialog.isFinal) {
+			if(badges.cardsQuestEnd.mgiq.flag) {
+				badges.cardSeq.push( badges.cardsQuestEnd.mgiq );
 			}
-			if(badgesOut.cardsQuestEnd.hsiq.flag) {
-				badgesOut.cardSeq.push( badgesOut.cardsQuestEnd.hsiq );
+			if(badges.cardsQuestEnd.hsiq.flag) {
+				badges.cardSeq.push( badges.cardsQuestEnd.hsiq );
 			}
-			badgesOut.cardSeq.push( badgesOut.cardsBlockEnd.feedback );
-			badgesOut.cardSeq.push(badgesOut.cardsQuestEnd.endSum);
-			badgesOut.cardSeq.push( badgesOut.cardsQuestEnd.finalScore );
+			badges.cardSeq.push( badges.cardsBlockEnd.feedback );
+			badges.cardSeq.push(badges.cardsQuestEnd.endSum);
+			badges.cardSeq.push( badges.cardsQuestEnd.finalScore );
 
 		} else {
-			badgesOut.cardSeq.push( badgesOut.cardsBlockEnd.feedback );
-			badgesOut.cardSeq.push( badgesOut.cardsBlockEnd.progSum );
+			badges.cardSeq.push( badges.cardsBlockEnd.feedback );
+			badges.cardSeq.push( badges.cardsBlockEnd.progSum );
 		}
 
-		console.log(badgesOut.cardSeq);
-		console.log('Card number is: ' + badgesOut.cardNumber);
+		console.log(badges.cardSeq);
+		console.log('Card number is: ' + badges.cardNumber);
 
-		//nextCard(badges);
-		return badgesOut;
+		nextCard(badges);
 	}
 
 
@@ -478,8 +472,8 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 			populateCard(progSumFields);
 		} else if (template === 'endSum') {
 			badges.qtDialogTemplate.endSum = true;
-			var progSumFields = ['subtitle', 'gold', 'silver', 'bronze'];
-			populateCard(progSumFields);
+			var endSumFields = ['subtitle', 'gold', 'silver', 'bronze'];
+			populateCard(endSumFields);
 		} else if (template === 'finalScore') {
 			badges.qtDialogTemplate.finalScore = true;
 			badges.card.count = cardIndex.count;
@@ -513,9 +507,8 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 			console.log('NEW RECORD: MOST GOLD IN BLOCK');
 			displayBadgeNewRecord(badges);
 			var mgibNew = scores.block_goldCount;
-			milestones = updateMilestoneRecord(milestones, 'mgib', mgibNew);
-			badges = updateMilestoneCard('block', badges, 'mgib', mgibNew);
-			console.log(milestones);
+			updateMilestoneRecord(milestones, 'mgib', mgibNew);
+			updateMilestoneCard('block', badges, 'mgib', mgibNew);
 		}
 
 		// hsib: high score in block
@@ -523,29 +516,26 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 			console.log('NEW RECORD: HIGH SCORE IN BLOCK');
 			displayBadgeNewRecord(badges);
 			var hsibNew = scores.block_display_score;
-			milestones = updateMilestoneRecord(milestones, 'hsib', hsibNew);
-			badges = updateMilestoneCard('block', badges, 'hsib', hsibNew);
-			console.log(milestones);
+			updateMilestoneRecord(milestones, 'hsib', hsibNew);
+			updateMilestoneCard('block', badges, 'hsib', hsibNew);
 		}
-
 
 		// hsiq: high score in quest
 		if( scores.display_score > milestones.highscores.hsiq) {
 			console.log('NEW RECORD: HIGH SCORE IN QUEST');
 			displayBadgeNewRecord(badges);
 			var hsiqNew = scores.display_score;
-			milestones = updateMilestoneRecord(milestones, 'hsiq', hsiqNew);
-			badges = updateMilestoneCard('quest', badges, 'hsiq', hsiqNew);
+			updateMilestoneRecord(milestones, 'hsiq', hsiqNew);
+			updateMilestoneCard('quest', badges, 'hsiq', hsiqNew);
 		}
-
 
 		// mgiq: most gold in quest
 		if( scores.session_coins.gold > milestones.highscores.mgiq) {
 			console.log('NEW RECORD: MOST GOLD IN QUEST');
 			displayBadgeNewRecord(badges);
 			var mgiqNew = scores.session_coins.gold;
-			milestones = updateMilestoneRecord(milestones, 'mgiq', mgiqNew);
-			badges = updateMilestoneCard('quest', badges, 'mgiq', mgiqNew);
+			updateMilestoneRecord(milestones, 'mgiq', mgiqNew);
+			updateMilestoneCard('quest', badges, 'mgiq', mgiqNew);
 		}
 
 		// streak: consecutive golds
@@ -553,16 +543,16 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 			console.log('NEW RECORD: STREAK');
 			displayBadgeNewRecord(badges);
 			var streakNew = scores.streak;
-			milestones = updateMilestoneRecord(milestones, 'streak', streakNew);
-			badges = updateMilestoneCard('block', badges, 'streak', streakNew);
+			updateMilestoneRecord(milestones, 'streak', streakNew);
+			updateMilestoneCard('block', badges, 'streak', streakNew);
 		}
 
 		if(scores.block_goldCount == 10) {
 			console.log('PERFECT BLOCK');
 			// no badge, achieved at end of block
 			var perfectBlockNew = milestones.highscores.perfectBlock++;
-			milestones = updateMilestoneRecord(milestones, 'perfectBlock', perfectBlockNew);
-			badges = updateMilestoneCard('block', badges, 'perfectBlock', perfectBlockNew);
+			updateMilestoneRecord(milestones, 'perfectBlock', perfectBlockNew);
+			updateMilestoneCard('block', badges, 'perfectBlock', perfectBlockNew);
 		}
 
 		// checked at end of block -----------------------------
@@ -574,19 +564,17 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 			badges.qtDialog.isBlockEnd = true;
 			badges.cardsBlockEnd.progSum.subtitle = currentWordIdx + ' / ' + scores.totalTrials + ' complete';
 			var coinSum = scores.session_coins;
-			badges = updateSummaryCards(badges, 'cardsBlockEnd', 'progSum', coinSum );
+			updateSummaryCards(badges, 'cardsBlockEnd', 'progSum', coinSum );
 
 			// if FINAL end-of-block sequence
 			if(currentWordIdx > (scores.totalTrials -10)) {
 				// TODO: #hc case where user selects 15 trials
 				badges.qtDialog.isFinal = true;
-				badges = updateSummaryCards(badges, 'cardsQuestEnd', 'endSum', coinSum );
+				updateSummaryCards(badges, 'cardsQuestEnd', 'endSum', coinSum );
 				badges.cardsQuestEnd.finalScore.count = scores.display_score;
 			}
-
-			//prepEndOfBlock(scores, badges, currentWordIdx);
-			badges = prepEndOfBlock(badges);
-			nextCard(badges);
+			prepEndOfBlock(badges);
+			//nextCard(badges);
 		}
 	}; //end checkUpdateMilestones
 
