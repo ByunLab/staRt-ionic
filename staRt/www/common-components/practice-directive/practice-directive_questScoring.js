@@ -44,14 +44,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		};
 	}
 
-	// SCORES OBJECT: handles state for active Quest score counters
-	/*
-		scores.endOfBlock:
-			True: Set by conditionals w/in questRating().
-				  Checked on every trial.
-			False: Set by ...
-				   Checked on every trial.
-	*/
+	// handles state for active Quest score counters
 	function QuestScores() {
 		// sessionID is added by the controller
 		return {
@@ -77,7 +70,6 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 
 	//handles state for Badges and Milestone Dialog Sequences
 	function Badges() {
-		// incrDiff: false
 		return {
 			onARoll: {
 				flag: false,
@@ -89,7 +81,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 				trials: 0,
 				visible: false
 			},
-			cardsBlockEnd: { // holds info about each 'achievement' milestone type
+			cardsBlockEnd: {
 				mgib: {
 					template: 'achievement',
 					title: 'Most Gold in Block!',
@@ -187,8 +179,8 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 				isBlockEnd: false, // used for Block-End seq
 				isFinal: false // used for Quest-End sequence
 			},
-			qtDialogTemplate: {
-				achievement: false, // used by end-of-block 'New Record' sequence
+			qtDialogTemplate: { // used by html templates
+				achievement: false, // used by end-of-block 'New Record' card
 				note: false, // used by Qualitative Feedback Reminder note
 				progSum: false, // used by "Progress Summary" card
 				endSum: false, // used by 'Quest Complete Summary'
@@ -293,29 +285,22 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 
 	// updates milestone props in badges object
 	function updateMilestoneCard(msType, badges, msProp, count) {
-		var badgesOut = badges;//Object.assign({}, badgesIn);
-
-		var hasFlag = badgesOut.cardFlags.includes(msProp);
+		var hasFlag = badges.cardFlags.includes(msProp);
 
 		if (msType === 'block') {
-			if(!hasFlag) { badgesOut.cardFlags.push(msProp); }
-			badgesOut.cardsBlockEnd[msProp].count = count;
+			if(!hasFlag) { badges.cardFlags.push(msProp); }
+			badges.cardsBlockEnd[msProp].count = count;
 		} else if (msType === 'quest') {
-			badgesOut.cardsQuestEnd[msProp].flag = true;
-			badgesOut.cardsQuestEnd[msProp].count = count;
+			badges.cardsQuestEnd[msProp].flag = true;
+			badges.cardsQuestEnd[msProp].count = count;
 		}
-
-		//return badgesOut;
 	}
 
 	// updates milestone props in badges object
 	function updateSummaryCards(badges, typeProp, msProp, coinSum ) {
-		var badgesOut = badges; //Object.assign({}, badgesIn);
-		badgesOut[typeProp][msProp].gold = coinSum.gold;
-		badgesOut[typeProp][msProp].silver = coinSum.silver;
-		badgesOut[typeProp][msProp].bronze = coinSum.bronze;
-
-		//return badgesOut;
+		badges[typeProp][msProp].gold = coinSum.gold;
+		badges[typeProp][msProp].silver = coinSum.silver;
+		badges[typeProp][msProp].bronze = coinSum.bronze;
 	}
 
 	// updates milestone props in in $scope.milestones to be saved to firebase at end of Quest
@@ -324,7 +309,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		var msHx = [msProp] + 'Hx';
 		milestones.update[msHx].score = newMilestone;
 		milestones.update[msHx].date = Date.now();
-		//milestones.update[msHx].sessionID = scores.sessionID;
+		//milestones.update[msHx].sessionID = scores.sessionID; // #hc TODO
 		milestones.shouldUpdateFirebase = true;
 	}
 
@@ -334,13 +319,11 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 
 	// called by resetForNewBlock(), nextCard()
 	function clearFlags(flagObj) {
-		var clearedObj = Object.assign({}, flagObj);
 		for (var prop in flagObj) {
 		  if (flagObj.hasOwnProperty(prop)) {
-			  clearedObj[prop] = false;
+			  flagObj[prop] = false;
 		  }
 		}
-		return clearedObj;
 	}
 
 	// used for badges.onARoll & badges.newRecord only
@@ -376,8 +359,6 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 	// ==============================================
 	// DIALOG BOX HELPERS ------------------------
 	function prepEndOfBlock(badges) {
-		//var badgesOut = Object.assign({}, badgesIn);
-
 		var msFlags = badges.cardFlags; // array of milestones achieved in block
 
 		// adds card template per milestone achieved in block + feedback card
@@ -397,13 +378,10 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 			badges.cardSeq.push(badges.cardsQuestEnd.endSum);
 			badges.cardSeq.push( badges.cardsQuestEnd.finalScore );
 
-		} else {
+		} else { // normal end-of-block
 			badges.cardSeq.push( badges.cardsBlockEnd.feedback );
 			badges.cardSeq.push( badges.cardsBlockEnd.progSum );
 		}
-
-		console.log(badges.cardSeq);
-		console.log('Card number is: ' + badges.cardNumber);
 
 		nextCard(badges);
 	}
@@ -437,19 +415,13 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 
 	// called by checkUpdateMilestones() & $scope.nextCard()
 	var nextCard = function(badges) {
-		console.log('nextCard is callled');
+		//console.log('nextCard is callled');
 		badges.qtDialogTemplate = clearFlags(badges.qtDialogTemplate);
-		console.log(badges.qtDialogTemplate);
 
 		badges.cardNumber++;
-		console.log('Card number is: ' + badges.cardNumber);
 
 		var cardIndex = badges.cardSeq[badges.cardNumber];
 		var template = cardIndex.template;
-
-		console.log('cardIndex');
-		console.log(cardIndex);
-		console.log('template: ' + template);
 
 		var populateCard = function(fieldArr) {
 			fieldArr.forEach(function(field) {
@@ -479,14 +451,12 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 			badges.card.count = cardIndex.count;
 		}
 
-		console.log(badges.cardSeq);
-		console.log(badges.card);
-		console.log('Card number is: ' + badges.cardNumber);
+		// console.log('cardIndex');
+		// console.log(cardIndex);
 
 		if(badges.cardNumber >= 0) {
 			badges.qtDialog.isVisible = true;
 		}
-		//return badges;
 	}; // advanceEndOfBlock
 
 	//called by questRating() only
