@@ -333,6 +333,33 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 	}
 
 	// ==============================================
+	// ADAPTIVE DIFFICULTY HELPER
+	function checkDifficulty(scores, badges) {
+		// update performance
+		scores.performance = scores.block_score/10;
+
+		// update changeDiff
+		var increase_difficulty_threshold = 0.8;
+		var decrease_difficulty_threshold = 0.5;
+
+		var should_increase_difficulty = function() {
+			return scores.performance >= increase_difficulty_threshold;
+		};
+		var should_decrease_difficulty = function() {
+			return scores.performance <= decrease_difficulty_threshold;
+		};
+
+		if (should_increase_difficulty()) {
+			badges.cardFlags.push('incrDiff');
+			scores.changeDifficulty = 1;
+		} else if (should_decrease_difficulty()) {
+			scores.changeDifficulty = -1;
+		} else {
+			scores.changeDifficulty = 0;
+		}
+	}
+
+	// ==============================================
 	// BADGE HELPERS (in-game stickers) -------------
 	function displayBadgeOnARoll(badges) {
 		badges.newRecord.visible = false;
@@ -527,7 +554,11 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		// checked at end of block -----------------------------
 		if( scores.endOfBlock ) {
 			//TODO: #356, #hc. Should Adapt Diff milestone be prepped here?
-			scores.performance = scores.block_score/10;
+			//scores.performance = scores.block_score/10;
+			checkDifficulty(scores, badges);
+
+
+
 
 			//updateSummaryCards()
 			badges.qtDialog.isBlockEnd = true;
