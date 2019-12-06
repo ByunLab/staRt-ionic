@@ -120,7 +120,6 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 	$scope.qtAdaptDiffDebug = true;
 	$scope.qtBadgesDebug = true;
 	$scope.qzGraphicsMode = true;
-	// $scope.qzDialogsMode = false;
 
 	// TOOLBAR (buttons in upper right) --------------------------
 
@@ -167,7 +166,6 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 				} else {
 					$scope.carrier_phrases = AdaptDifficulty.phrases[0];
 				}
-				console.log($scope.difficulty);
 				return $scope.reloadCSVData();
 			}
 			return Promise.resolve();
@@ -264,7 +262,6 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 		var newHighScores = QuestScore.initNewHighScores();
 		ProfileService.runTransactionForCurrentProfile(function(handle, doc, t) {
 			var highscoresFB = doc.data().highscoresQuest;
-			// console.log(highscoresFB); should always be null
 			if (!highscoresFB) highscoresFB = newHighScores;
 			t.update(handle, {highscoresQuest: highscoresFB});
 		}); // runTransaction
@@ -281,7 +278,6 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 				Purpose: debugging highscores logic
 		*/
 		if($scope.shouldUpdateHighscores) {
-			console.log('Should update fb? ' + $scope.shouldUpdateHighscores);
 			var highscoresUpdateData = $scope.highscoresUpdateData;
 			// console.log(highscoresUpdateData);
 			ProfileService.runTransactionForCurrentProfile(function(handle, doc, t) {
@@ -297,7 +293,6 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 	} // end updateHighscores()
 
 	function resetQuestHighscores() {
-		// USE WITH CAUTION!!!!
 		console.log('OBLITERATING HIGHSCORES OBJ');
 		$scope.highscores = QuestScore.initNewHighScores($scope.highscores);
 
