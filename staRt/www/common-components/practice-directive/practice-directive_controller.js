@@ -552,7 +552,7 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 		$scope.currentWordIdx++;
 
 		if ($scope.count && $scope.currentWordIdx >= $scope.count) {
-			$scope.endWordPractice();
+			//$scope.endWordPractice();
 		} else {
 			var lookupIdx = $scope.currentWordIdx % $scope.wordOrder.length;
 			$scope.currentWord = $scope.wordList[$scope.wordOrder[lookupIdx]];
@@ -756,6 +756,11 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 	});
 
 	// DIALOG SEQUENCE HANDLERS ---------------------
+	$scope.dialogEnd = function() {
+		//if ($scope.currentWordIdx >= $scope.count) {}
+		$scope.endWordPractice();
+	};
+
 	$scope.dialogResume = function() {
 		QuestScore.resetForNewBlock($scope.scores, $scope.badges);
 		// #TODO #464 unpause wave

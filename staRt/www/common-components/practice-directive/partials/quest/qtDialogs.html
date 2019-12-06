@@ -45,17 +45,24 @@
 
 
   <div class="dia-foot">
+
     <div class="footBtn"
-    ng-if="!badges.qtDialogTemplate.progSum"
-      ng-click="dialogNext()">
+    ng-if="!(badges.qtDialogTemplate.progSum || badges.qtDialogTemplate.finalScore) "
+    ng-click="dialogNext()">
       {{badges.card.btnText}}
     </div>
 
     <div class="footBtn"
       ng-if="badges.qtDialogTemplate.progSum"
       ng-click="dialogResume()">
-    {{badges.card.btnText}}
-  </div>
+      {{badges.card.btnText}}
+    </div>
+
+    <div class="footBtn"
+      ng-if="badges.qtDialogTemplate.finalScore"
+      ng-click="dialogEnd()">
+      {{badges.card.btnText}}
+    </div>
 
   </div>
   <!-- end of .dia-foot -->
