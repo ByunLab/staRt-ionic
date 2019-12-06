@@ -321,7 +321,11 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 	function clearFlags(flagObj) {
 		for (var prop in flagObj) {
 		  if (flagObj.hasOwnProperty(prop)) {
+<<<<<<< HEAD
 				flagObj[prop] = false;
+=======
+			  flagObj[prop] = false;
+>>>>>>> 2bfe60bd3516668d98700b515487cea8ccb1da3c
 		  }
 		}
 	}
@@ -416,7 +420,11 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 	// called by checkUpdateMilestones() & $scope.nextCard()
 	var nextCard = function(badges) {
 		//console.log('nextCard is callled');
+<<<<<<< HEAD
 		clearFlags(badges.qtDialogTemplate);
+=======
+		badges.qtDialogTemplate = clearFlags(badges.qtDialogTemplate);
+>>>>>>> 2bfe60bd3516668d98700b515487cea8ccb1da3c
 
 		badges.cardNumber++;
 
