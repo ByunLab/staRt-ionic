@@ -291,9 +291,9 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 				Purpose: debugging highscores logic
 		*/
 		if($scope.shouldUpdateHighscores) {
-			// console.log('Should update fb? ' + $scope.shouldUpdateHighscores);
+			console.log('Should update fb? ' + $scope.shouldUpdateHighscores);
 			var highscoresUpdateData = $scope.highscoresUpdateData;
-			//console.log(highscoresUpdateData);
+			// console.log(highscoresUpdateData);
 			ProfileService.runTransactionForCurrentProfile(function(handle, doc, t) {
 				var highscoresFB = doc.data().highscoresQuest;
 				for (var key in highscoresUpdateData) {
@@ -641,6 +641,7 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 
 		  if($scope.milestones.shouldUpdateFirebase) {
 			  $scope.shouldUpdateHighscores = true;
+			  //console.log($scope.milestones);
 			  var scoresPrep = $scope.milestones.update;
 			  for (var key in scoresPrep) {
 				  if (scoresPrep.hasOwnProperty(key)) {

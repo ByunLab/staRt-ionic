@@ -50,6 +50,7 @@
 					$rootScope.needToPromptLogin = false;
 					if (!wasLoggedIn) {
 						$state.go('root.profiles', {}, {reload: false});
+						if ($rootScope.initParticipants) {$rootScope.initParticipants();}
 					}
 				} else {
 					if (!$rootScope.needToPromptLogin) {
