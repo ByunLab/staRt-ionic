@@ -321,7 +321,11 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 	function clearFlags(flagObj) {
 		for (var prop in flagObj) {
 		  if (flagObj.hasOwnProperty(prop)) {
+<<<<<<< HEAD
+				flagObj[prop] = false;
+=======
 			  flagObj[prop] = false;
+>>>>>>> 2bfe60b... Cleans up comments and updates documentation in partials/quest/ref_qtDialogs.md
 		  }
 		}
 	}
@@ -392,8 +396,8 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 
 	// called by controller: $scope.dialogResume()
 	var resetForNewBlock = function (scores, badges) {
-		badges.qtDialog = clearFlags(badges.qtDialog);
-		badges.qtDialogTemplate = clearFlags(badges.qtDialogTemplate);
+		clearFlags(badges.qtDialog);
+		clearFlags(badges.qtDialogTemplate);
 
 		// scoresObj
 		scores.block_score = 0;
@@ -416,7 +420,11 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 	// called by checkUpdateMilestones() & $scope.nextCard()
 	var nextCard = function(badges) {
 		//console.log('nextCard is callled');
+<<<<<<< HEAD
+		clearFlags(badges.qtDialogTemplate);
+=======
 		badges.qtDialogTemplate = clearFlags(badges.qtDialogTemplate);
+>>>>>>> 2bfe60b... Cleans up comments and updates documentation in partials/quest/ref_qtDialogs.md
 
 		badges.cardNumber++;
 
