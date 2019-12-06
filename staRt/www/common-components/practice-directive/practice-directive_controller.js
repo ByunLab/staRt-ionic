@@ -641,12 +641,13 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 
 		  if($scope.milestones.shouldUpdateFirebase) {
 			  $scope.shouldUpdateHighscores = true;
-			  //console.log($scope.milestones);
 			  var scoresPrep = $scope.milestones.update;
 			  for (var key in scoresPrep) {
 				  if (scoresPrep.hasOwnProperty(key)) {
 					  if(Object.keys(scoresPrep[key]).length < 1) {
 						  delete scoresPrep[key];
+						} else {
+							scoresPrep[key].sessionID = $scope.currentPracticeSession.id;
 						}
 					}
 				}
