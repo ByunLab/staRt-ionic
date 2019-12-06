@@ -60,7 +60,6 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 				bronze: 0
 			},
 			streak: 0,
-			perfectBlock: 0,
 			performance: 0, // req'd for difficulty score
 			changeDifficulty: 0, // req'd for difficulty score. #hc TODO: #480
 			endOfBlock: false, // req'd by prepEndOfBlock()
@@ -520,7 +519,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		if(scores.block_goldCount == 10) {
 			console.log('PERFECT BLOCK');
 			// no badge, achieved at end of block
-			var perfectBlockNew = milestones.highscores.perfectBlock++;
+			var perfectBlockNew = milestones.highscores.perfectBlock + 1;
 			updateMilestoneRecord(milestones, 'perfectBlock', perfectBlockNew);
 			updateMilestoneCard('block', badges, 'perfectBlock', perfectBlockNew);
 		}
