@@ -39,6 +39,31 @@ function compareRecordings(ra, rb) {
 		// "targetF3" (double, optional) the saved target F3 value
 		// "stdevF3" (double, optional) the saved stdeviation F3 value
 		// "targetLPCOrder" (int, optional) the saved target LPC order
+		$rootScope.initParticipants = function() {
+			ProfileService.getCurrentProfile().then(function(res) {
+				if (res) {
+					$scope.data.currentProfile = res;
+					$scope.data.currentProfileUUID = res.uuid;
+
+					if (res.lpcOrder) {
+						$scope.data.lpcOrder = res.lpcOrder;
+					} else {
+					// #stj Default just 35? Call the lookup fx?
+						$scope.data.lpcOrder = 0;
+					}
+
+					// #sjt: I'm always getting undefined at this point,
+					// so I moved the Plugin fx to the $watchCollection
+					if (window.AudioPlugin !== undefined) {
+						console.log('hey AudioPlugin');
+					} // if window.AudioPlugin
+				} // if (res)
+			}).then(function () {
+				ProfileService.getAllProfiles().then( function(res) {
+					$timeout(function() {$scope.data.profiles = res;});
+				});
+			});
+		};
 
 		function init()
 		{
@@ -76,32 +101,7 @@ function compareRecordings(ra, rb) {
 				});
 			});
 
-			ProfileService.getCurrentProfile().then(function(res) {
-				if (res) {
-					console.log('we have a current profile');
-					$scope.data.currentProfile = res;
-					$scope.data.currentProfileUUID = res.uuid;
-
-					if (res.lpcOrder) {
-						$scope.data.lpcOrder = res.lpcOrder;
-					} else {
-						// #stj Default just 35? Call the lookup fx?
-						$scope.data.lpcOrder = 0;
-					}
-
-					// #sjt: I'm always getting undefined at this point,
-					// so I moved the Plugin fx to the $watchCollection
-					if (window.AudioPlugin !== undefined) {
-						console.log('hey AudioPlugin');
-					} // if window.AudioPlugin
-				} // if (res)
-			}).then(function () {
-				ProfileService.getAllProfiles().then( function(res) {
-					$timeout(function() {$scope.data.profiles = res;});
-				});}
-			);
-
-
+			$rootScope.initParticipants();
 
 			//triggered when user selects a different profile from the drawer
 			$scope.$watchCollection('data.currentProfile', function(data)
@@ -501,7 +501,6 @@ function compareRecordings(ra, rb) {
 		// qs for #sjt
 
 		var selected = [];  // #sjt  I don't know which block this belongs to... any ideas?  SORRY!
-
 
 
 
