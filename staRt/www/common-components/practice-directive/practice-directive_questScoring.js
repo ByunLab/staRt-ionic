@@ -392,7 +392,16 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		});
 
 		if(badgesOut.qtDialog.isFinal) {
-			console.log( 'FINAL SEQ GOES HERE');
+			if(badgesOut.cardsQuestEnd.mgiq.flag) {
+				badgesOut.cardSeq.push( badgesOut.cardsQuestEnd.mgiq );
+			}
+			if(badgesOut.cardsQuestEnd.hsiq.flag) {
+				badgesOut.cardSeq.push( badgesOut.cardsQuestEnd.hsiq );
+			}
+			badgesOut.cardSeq.push( badgesOut.cardsBlockEnd.feedback );
+			badgesOut.cardSeq.push(badgesOut.cardsQuestEnd.endSum);
+			badgesOut.cardSeq.push( badgesOut.cardsQuestEnd.finalScore );
+
 		} else {
 			badgesOut.cardSeq.push( badgesOut.cardsBlockEnd.feedback );
 			badgesOut.cardSeq.push( badgesOut.cardsBlockEnd.progSum );
@@ -467,6 +476,13 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 			badges.qtDialogTemplate.progSum = true;
 			var progSumFields = ['subtitle', 'gold', 'silver', 'bronze'];
 			populateCard(progSumFields);
+		} else if (template === 'endSum') {
+			badges.qtDialogTemplate.endSum = true;
+			var progSumFields = ['subtitle', 'gold', 'silver', 'bronze'];
+			populateCard(progSumFields);
+		} else if (template === 'finalScore') {
+			badges.qtDialogTemplate.finalScore = true;
+			badges.card.count = cardIndex.count;
 		}
 
 		console.log(badges.cardSeq);
@@ -560,10 +576,12 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 			var coinSum = scores.session_coins;
 			badges = updateSummaryCards(badges, 'cardsBlockEnd', 'progSum', coinSum );
 
+			// if FINAL end-of-block sequence
 			if(currentWordIdx > (scores.totalTrials -10)) {
 				// TODO: #hc case where user selects 15 trials
 				badges.qtDialog.isFinal = true;
 				badges = updateSummaryCards(badges, 'cardsQuestEnd', 'endSum', coinSum );
+				badges.cardsQuestEnd.finalScore.count = scores.display_score;
 			}
 
 			//prepEndOfBlock(scores, badges, currentWordIdx);
