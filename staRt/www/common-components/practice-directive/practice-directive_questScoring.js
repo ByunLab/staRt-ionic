@@ -321,12 +321,6 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		for (var prop in flagObj) {
 		  if (flagObj.hasOwnProperty(prop)) {
 				flagObj[prop] = false;
-<<<<<<< HEAD
-=======
-			  flagObj[prop] = false;
->>>>>>> 2bfe60b... Cleans up comments and updates documentation in partials/quest/ref_qtDialogs.md
-=======
->>>>>>> 0a75286... merge conflict resolution
 		  }
 		}
 	}
@@ -449,12 +443,6 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 	var nextCard = function(badges) {
 		//console.log('nextCard is callled');
 		clearFlags(badges.qtDialogTemplate);
-<<<<<<< HEAD
-=======
-		badges.qtDialogTemplate = clearFlags(badges.qtDialogTemplate);
->>>>>>> 2bfe60b... Cleans up comments and updates documentation in partials/quest/ref_qtDialogs.md
-=======
->>>>>>> 0a75286... merge conflict resolution
 
 		badges.cardNumber++;
 

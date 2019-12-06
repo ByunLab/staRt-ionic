@@ -1,11 +1,4 @@
 ### hmc/qtDialog-endOfBlock-logic (branch)
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-Develop logic to queue the End of Block Sequence
->>>>>>> 2bfe60b... Cleans up comments and updates documentation in partials/quest/ref_qtDialogs.md
-=======
->>>>>>> 0a75286... merge conflict resolution
 last update: 12/06/19
 
 ............................
@@ -26,12 +19,7 @@ _purpose: update the $scope.milestones & $scope.badges_
      _- updates record that is saved to fb on completion of quest_
    - updateMilestoneCard()
      - sets milestone achievement flags and data in $scope.badges for use in end-of-block cards
-<<<<<<< HEAD
-=======
-     _- sets milestone achievement flags and data in $scope.badges for use in end-of-block cards
->>>>>>> 2bfe60b... Cleans up comments and updates documentation in partials/quest/ref_qtDialogs.md
-=======
->>>>>>> 0a75286... merge conflict resolution
+
 2. if (scores.endOfBlock)
    - performance (diff level) is calc'd #TODO
    - prepare progSum or endSum card data
