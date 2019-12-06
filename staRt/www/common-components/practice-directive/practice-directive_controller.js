@@ -154,21 +154,20 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 	// RATINGS ---------------------------------------------------
 	function handleRatingData($scope, data) {
 
-		// adative difficulty helpers
-		var should_increase_difficulty = function() {return performance >= increase_difficulty_threshold && $scope.difficulty < 5;};
-		var should_decrease_difficulty = function() {return performance <= decrease_difficulty_threshold && $scope.difficulty > 1;};
-
 		var update_difficulty = function(increment) {
 			$scope.difficulty += increment;
-			console.log($scope.difficulty);
+			if ($scope.difficulty > 5) $scope.difficulty = 5;
+			if ($scope.difficulty < 1) $scope.difficulty = 1;
+
 			if (!($scope.type == 'Syllable' || $scope.probe)) {
-				if($scope.difficulty === 5) {
+				if($scope.difficulty >= 5) {
 					$scope.carrier_phrases = AdaptDifficulty.phrases[2];
 				} else if($scope.difficulty === 4) {
 					$scope.carrier_phrases = AdaptDifficulty.phrases[1];
 				} else {
 					$scope.carrier_phrases = AdaptDifficulty.phrases[0];
 				}
+				console.log($scope.difficulty);
 				return $scope.reloadCSVData();
 			}
 			return Promise.resolve();
@@ -179,19 +178,10 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 			QuestScore.questRating(data, $scope.scores, $scope.milestones, $scope.currentWordIdx, $scope.badges);
 
 			// if Quest end-of-block, check Adaptive Difficulty
-			if ($scope.currentWordIdx % 10 == 0 && $scope.currentWordIdx != 0) {
-				var performance = $scope.scores.performance;
-				var increase_difficulty_threshold = 0.8;
-				var decrease_difficulty_threshold = 0.5;
-
-				if (should_increase_difficulty()) {
-					// HC trigger badge here
-					console.log('INCREASING DIFF - watch for new words!');
-					return update_difficulty(1);
-				} else if (should_decrease_difficulty()) {
-					return update_difficulty(-1);
-				}
-			} // end-of-block AdaptDiff check
+			if ($scope.currentWordIdx % 10 == 0 &&
+				$scope.currentWordIdx != 0 && $scope.scores.changeDifficulty != 0) {
+				update_difficulty($scope.scores.changeDifficulty);
+			}
 			return Promise.resolve();
 
 		} else { //else if quiz, no adapt Diff
