@@ -5,13 +5,15 @@
 
   <!-- Content -->
   <ion-view ng-if="!loggedIn">
+    <div id="firebaseui-auth-container-container">
       <div id="firebaseui-auth-container"></div>
+    </div>
   </ion-view>
   <ion-nav-view ng-if="loggedIn" name="content-view" id="content-container">
   </ion-nav-view>
 
   <!-- Tabs -->
-  <div id="nav-container">
+  <div id="nav-container" ng-if="loggedIn">
     <list class="navTabs">
 
       <item
