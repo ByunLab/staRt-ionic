@@ -15,7 +15,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 			mgibHx: [ {score: 0, date: Date.now()} ],
 			hsibHx: [ {score: 10, date: Date.now()} ],
 			mgiqHx: [ {score: 0, date: Date.now()} ],
-			hsiqHx: [ {score: 15, date: Date.now()} ],
+			hsiqHx: [ {score: 20, date: Date.now()} ],
 			streakHx: [ {score: 0, date: Date.now()} ],
 			perfectBlockHx: [ {score: 0, date: Date.now()} ],
 		};

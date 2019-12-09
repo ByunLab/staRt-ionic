@@ -51,7 +51,7 @@ profileService.factory('ProfileService', function($rootScope, $state, $localFora
 				mgibHx: [ {score: 0, date: Date.now()} ],
 				hsibHx: [ {score: 10, date: Date.now()} ],
 				mgiqHx: [ {score: 0, date: Date.now()} ],
-				hsiqHx: [ {score: 15, date: Date.now()} ],
+				hsiqHx: [ {score: 20, date: Date.now()} ],
 				streakHx: [ {score: 0, date: Date.now()} ],
 				perfectBlockHx: [ {score: 0, date: Date.now()} ],
 			},
