@@ -47,6 +47,14 @@ profileService.factory('ProfileService', function($rootScope, $state, $localFora
 			inProcessSessionState: null, // Extra data for the state of the resumed on protocol session
 
 			recordingSessionHistory: [],
+			highscoresQuest: { // used by practice-directive_questScoring.js
+				mgibHx: [ {score: 0, date: Date.now()} ],
+				hsibHx: [ {score: 10, date: Date.now()} ],
+				mgiqHx: [ {score: 0, date: Date.now()} ],
+				hsiqHx: [ {score: 20, date: Date.now()} ],
+				streakHx: [ {score: 0, date: Date.now()} ],
+				perfectBlockHx: [ {score: 0, date: Date.now()} ],
+			},
 		};
 	}
 

@@ -1,21 +1,70 @@
 <div class="qtDialog-container">
   <div class="dia-head">
-    <div class="title">
-      New Record!
+
+    <div ng-if="badges.qtDialogTemplate.achievement">
+        <div class="subtitle">
+            <i class="icon ion-star"></i>
+            New Record!
+            <i class="icon ion-star"></i>
+          </div>
     </div>
-    <div class="subtitle">
-      Name of Milestone
+
+    <div ng-if="badges.qtDialogTemplate.progSum">
+        <div class="subtitle">
+            {{badges.card.subtitle}}
+        </div>
+    </div>
+
+    <div class="title">
+        {{badges.card.title}}
     </div>
   </div>
+  <!-- end of .dia-head -->
 
-  <div class="dia-body"></div>
+  <div class="dia-body">
+
+    <div ng-if="badges.qtDialogTemplate.achievement || badges.qtDialogTemplate.finalScore"
+        class="achievementCount">
+        {{badges.card.count}}
+    </div>
+
+    <div ng-if="badges.qtDialogTemplate.note"
+        class="note">
+        {{badges.card.bodyText}}
+    </div>
+
+    <div ng-if="badges.qtDialogTemplate.progSum || badges.qtDialogTemplate.endSum"
+        class="progSum">
+        <p>Gold: {{badges.card.gold}}</p>
+        <p>Silver: {{badges.card.silver}}</p>
+        <p>Bronze: {{badges.card.bronze}}</p>
+    </div>
+
+  </div>
+  <!-- end of .dia-body -->
+
 
   <div class="dia-foot">
-    <div class="footBtn">
-      Continue
+
+    <div class="footBtn"
+    ng-if="!(badges.qtDialogTemplate.progSum || badges.qtDialogTemplate.finalScore) "
+    ng-click="dialogNext()">
+      {{badges.card.btnText}}
     </div>
-    <div class="footBtn">
-      Continue
+
+    <div class="footBtn"
+      ng-if="badges.qtDialogTemplate.progSum"
+      ng-click="dialogResume()">
+      {{badges.card.btnText}}
     </div>
+
+    <div class="footBtn"
+      ng-if="badges.qtDialogTemplate.finalScore"
+      ng-click="dialogEnd()">
+      {{badges.card.btnText}}
+    </div>
+
   </div>
+  <!-- end of .dia-foot -->
+
 </div>
