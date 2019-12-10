@@ -27,9 +27,14 @@ utilitiesService.factory('UtilitiesService', function() {
       s4() + '-' + s4() + s4() + s4();
 	};
 
+	var recordingSessionIsComplete = function(recordingSession) {
+		console.log('recourding session count : %o rating length: %o', recordingSession.count, recordingSession.ratings.length);
+		return recordingSession.count <= recordingSession.ratings.length;};
+
 	return {
 		guid: guid,
 		parseCSV: parseCSV,
+		recordingSessionIsComplete: recordingSessionIsComplete
 	};
 });
 

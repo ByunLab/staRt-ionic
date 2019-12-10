@@ -1,0 +1,9 @@
+.modal-backdrop {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    margin-left: $col-w * 1.4;
+    z-index: 10;
+    opacity: 1.0;
+    background-color: white;
+}

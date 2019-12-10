@@ -27,8 +27,9 @@ function compareRecordings(ra, rb) {
 {
 	var profiles = angular.module( 'profiles' );
 
-	profiles.controller('ProfilesController', function($scope, $timeout, $localForage, AutoService, FirebaseService, StartUIState, NotifyingService, ProfileService, UploadService, $rootScope, $state, $cordovaDialogs)
+	profiles.controller('ProfilesController', function($scope, $timeout, $localForage, AutoService, FirebaseService, StartUIState, NotifyingService, ProfileService, UploadService, UtilitiesService, $rootScope, $state, $cordovaDialogs)
 	{
+		console.log('profiles controller here');
 		// Nota Bene: A valid profile must have the following kv pairs:
 		// "name" (string) the name of the profile
 		// "uuid" (string) some string that is unique to each account
@@ -65,9 +66,21 @@ function compareRecordings(ra, rb) {
 			});
 		};
 
+		var getRecordingTimeString = function (recording) {
+			if (!recording) {
+				return 'Unknown';
+			}
+			var totalTime = dateFromString(recording.endDate) - dateFromString(recording.date);
+			return timeToMinutesSeconds(totalTime);
+		};
+
+		var timeToMinutesSeconds = function (totalTime) {
+			return Math.floor(totalTime / 60000) + ' min, ' + Math.floor((totalTime % 60000) / 1000) + ' sec';
+		};
+
 		function init()
 		{
-
+			$scope.displayParticipantColumn = true;
 			$scope.isEditing = false;
 			$scope.uploadCount = 0;
 			$scope.displayName = FirebaseService.userName();
@@ -103,6 +116,55 @@ function compareRecordings(ra, rb) {
 
 			$rootScope.initParticipants();
 
+			var handleEmptyRecordingHistory = function() {
+				// Switches the scope variable so that on the progress dashboard something such as "No Recording History Data For User, Start Your First Quest"
+			};
+
+
+			var isQuest = function (recordingSession) {return recordingSession.probe == 'quest';};
+
+			var isQuiz = function(recordingSession) {return isQuest(recordingSession);};
+
+			var setProgressDashboardData = function() {
+				console.log("spD called");
+				var dashboardDataPoints = [];
+				var recordingSessionHistory = $scope.data.currentProfile.recordingSessionHistory;
+
+				if (!recordingSessionHistory) {
+					console.log('its empty');
+					handleEmptyRecordingHistory();
+					return;
+				}
+
+				console.log('recording session history: %o', recordingSessionHistory);
+				var completedSessions = recordingSessionHistory.filter(function (recordingSession) {return UtilitiesService.recordingSessionIsComplete(recordingSession);});
+
+				if (completedSessions.length == 0) {
+					console.log('empty completed sessions');
+					handleEmptyRecordingHistory();
+					return;
+				}
+
+
+				completedSessions.forEach(function (recordingSession) {
+					//console.log(recordingSession);
+					var dataPoint = {};
+
+					dataPoint['isQuest'] = isQuest(recordingSession);
+					dataPoint['date'] = Date(recordingSession.endTimestamp); // TODO: Convert to datestring.
+
+					var timeSeconds = (recordingSession.endTimestamp - recordingSession.startTimestamp);
+					dataPoint['durationString'] = timeToMinutesSeconds(timeSeconds);
+
+					dataPoint['trialsCompleted'] = recordingSession.ratings.length;
+					var CORRECT_RATING = 3;
+					dataPoint['trialsScoredCorrect'] = recordingSession.ratings.filter(function(ratingData) {return ratingData.rating == CORRECT_RATING;}).length;
+					dataPoint['percentCorrect'] = Math.floor((dataPoint['trialsScoredCorrect'] / dataPoint['trialsCompleted'] * 100) + .5);
+					dashboardDataPoints.push(dataPoint);
+				});
+				$timeout($scope.dashboardDataPoints = dashboardDataPoints);
+			};
+
 			// Triggered when user selects a different profile from the drawer + on app startupp.
 			// Note this function normally fires twice. This is because when a user selects a profile, we immediately switch
 			// the currentProfile immediately, and then later switch it again once we update from firebase.
@@ -130,7 +192,10 @@ function compareRecordings(ra, rb) {
 						$scope.data.lpcOrder = 35; // updates display
 					}
 
+
+
 					$scope.updateRecordingsList();
+					setProgressDashboardData();
 				}
 			});
 
@@ -180,6 +245,11 @@ function compareRecordings(ra, rb) {
 		// ===========================================================
 		$scope.setCardState = function(navState) {
 			$scope.cardState = navState;
+			if (navState == 'progress') {
+				$scope.displayParticipantColumn = false;
+			} else {
+				$scope.displayParticipantColumn = true;
+			}
 		};
 		$scope.openSlpView = function() {
 			$scope.slpView = true;
@@ -311,8 +381,7 @@ function compareRecordings(ra, rb) {
 							.then(function(status) {
 								recording.uploaded = !!status.uploaded;
 								if (recording.endDate && recording.endDate.length > 0) {
-									recording.totalTime = dateFromString(recording.endDate) - dateFromString(recording.date);
-									recording.totalTimeString = Math.floor(recording.totalTime / 60000) + ' min, ' + ((recording.totalTime % 60000) / 1000) + ' sec';
+									recording.totalTimeString = getRecordingTimeString(recording);
 								}
 							})
 					);
