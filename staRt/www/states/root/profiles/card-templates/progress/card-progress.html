@@ -1,36 +1,32 @@
+
+<div class="modal-backdrop">
+	<div class="ion-scroll-container">
+		<ion-scroll direction="y" id="scroll-element">
+			<table class="progress-table">
+				<tr>
+					<th>Date</th>
+					<th>Duration</th>
+					<th>Performance</th>
+				</tr>
+				<tr ng-repeat="dataPoint in dashboardDataPoints">
+						<td>{{dataPoint.sessionDescription}} on {{dataPoint.date | date:"fullDate"}}</td>
+						<td>{{dataPoint.durationString}}</td>
+						<td>{{dataPoint.performanceString}}</td>
+				</tr>
+			</table>
+		</ion-scroll>
+	</div>
+</div>
+
+
 <div class="card-content">
-		<div class="modal-backdrop">
-			<ion-scroll direction="y">
-				<table class="progress-table">
-					<tr>
-						<th>Date</th>
-						<th>Duration</th>
-						<th>Trials Completed</th>
-						<th>Trials Scored Correct</th>
-						<th>Percent Correct</th>
-					</tr>
-					<tr ng-repeat="dataPoint in dashboardDataPoints">
-							<td>{{dataPoint.date}}</td>
-							<td>{{dataPoint.durationString}}</td>
-							<td>{{dataPoint.trialsCompleted}}</td>
-							<td>{{dataPoint.trialsScoredCorrect}}</td>
-							<td>{{dataPoint.percentCorrect}}</td>
-					</tr>
-				</table>
-			</ion-scroll>
-		</div>
+
 
 	<div class="card-body">
 
 		<h3>UNDER DEVELOPMENT</h3>
 		<p>Interactive chart and/or table of user progress will be displayed here.</p>
-		<div ng-repeat="dataPoint in dashboardDataPoints">
-				date: {{dataPoint.date}}
-				durationString: {{dataPoint.durationString}}
-				trialsCompleted: {{dataPoint.trialsCompleted}}
-				trialsScoredCorrect: {{dataPoint.trialsScoredCorrect}}
-				percentCorrect: {{dataPoint.percentCorrect}}
-		</div>
+
 	</div>
 
 	<div class="card-foot">

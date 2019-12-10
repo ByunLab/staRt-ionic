@@ -29,7 +29,8 @@ utilitiesService.factory('UtilitiesService', function() {
 
 	var recordingSessionIsComplete = function(recordingSession) {
 		console.log('recourding session count : %o rating length: %o', recordingSession.count, recordingSession.ratings.length);
-		return recordingSession.count <= recordingSession.ratings.length;};
+		return recordingSession.count <= recordingSession.ratings.length;
+	};
 
 	return {
 		guid: guid,

@@ -1,9 +1,19 @@
 .modal-backdrop {
     position: fixed;
-    width: 100vw;
+    width: 90vw;
     height: 100vh;
     margin-left: $col-w * 1.4;
     z-index: 10;
     opacity: 1.0;
     background-color: white;
+    overflow-y: auto;
+}
+
+#scroll-element {
+    height: 100vh;
+}
+
+.progress-table {
+    height: 100vh;
+    z-index: 11;
 }

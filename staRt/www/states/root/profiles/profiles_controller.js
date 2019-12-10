@@ -150,18 +150,30 @@ function compareRecordings(ra, rb) {
 					//console.log(recordingSession);
 					var dataPoint = {};
 
-					dataPoint['isQuest'] = isQuest(recordingSession);
-					dataPoint['date'] = Date(recordingSession.endTimestamp); // TODO: Convert to datestring.
+					var questOrQuizStr = isQuest(recordingSession) ? 'Quest' : 'Quiz';
+					dataPoint['sessionDescription'] = recordingSession.type.trim() + ' ' + questOrQuizStr;
+					dataPoint['date'] = new Date(recordingSession.endTimestamp); // TODO: Convert to datestring.UtilitiesService.formatDate(
 
 					var timeSeconds = (recordingSession.endTimestamp - recordingSession.startTimestamp);
 					dataPoint['durationString'] = timeToMinutesSeconds(timeSeconds);
 
-					dataPoint['trialsCompleted'] = recordingSession.ratings.length;
 					var CORRECT_RATING = 3;
+
+					var trialsCompleted = recordingSession.ratings.length;
+					var trialsCorrect = recordingSession.ratings.filter(function(ratingData) {return ratingData.rating == CORRECT_RATING;}).length;
+					var percentCorrect = Math.floor((trialsCorrect /trialsCompleted * 100) + .5);
+
+					dataPoint['trialsCompleted'] = recordingSession.ratings.length;
+
 					dataPoint['trialsScoredCorrect'] = recordingSession.ratings.filter(function(ratingData) {return ratingData.rating == CORRECT_RATING;}).length;
 					dataPoint['percentCorrect'] = Math.floor((dataPoint['trialsScoredCorrect'] / dataPoint['trialsCompleted'] * 100) + .5);
+
+					dataPoint['performanceString'] = trialsCorrect + '/' + trialsCompleted + ' - ' + percentCorrect + '%';
+
+
 					dashboardDataPoints.push(dataPoint);
 				});
+				dashboardDataPoints.sort(function(ra, rb) {return rb.date - ra.date;});
 				$timeout($scope.dashboardDataPoints = dashboardDataPoints);
 			};
 
