@@ -61,9 +61,10 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 			},
 			streak: 0,
 			performance: 0, // req'd for difficulty score
-			changeDifficulty: 0, // req'd for difficulty score. #hc TODO: #480
+			changeDifficulty: 0, // req'd for difficulty score
 			endOfBlock: false, // req'd by prepEndOfBlock()
 			totalTrials: 0, // // req'd by prepEndOfBlock()
+			isResumePrep: false // used by resume-session feature
 		};
 	}
 
@@ -553,12 +554,8 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 
 		// checked at end of block -----------------------------
 		if( scores.endOfBlock ) {
-			//TODO: #356, #hc. Should Adapt Diff milestone be prepped here?
-			//scores.performance = scores.block_score/10;
+
 			checkDifficulty(scores, badges);
-
-
-
 
 			//updateSummaryCards()
 			badges.qtDialog.isBlockEnd = true;
@@ -568,13 +565,17 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 
 			// if FINAL end-of-block sequence
 			if(currentWordIdx > (scores.totalTrials -10)) {
-				// TODO: #hc case where user selects 15 trials
 				badges.qtDialog.isFinal = true;
 				updateSummaryCards(badges, 'cardsQuestEnd', 'endSum', coinSum );
 				badges.cardsQuestEnd.finalScore.count = scores.display_score;
 			}
-			prepEndOfBlock(badges);
-			//nextCard(badges);
+
+			if(scores.isResumePrep){
+				// skips the dialog box prep if we are resuming a saved session
+				resetForNewBlock(scores, badges);
+			} else {
+				prepEndOfBlock(badges);
+			}
 		}
 	}; //end checkUpdateMilestones
 

@@ -482,6 +482,7 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 		if (needToReload) { // QUEST & QUIZ: RESUME SESSION STATE
 			var previousRatings = $scope.currentPracticeSession.ratings;
 			console.log('previous ratings: %o', previousRatings);
+			$scope.scores.isResumePrep = true;
 
 			sessionPrepTask = forEachPromise(previousRatings, function (rating) {
 				console.log('giving rating: %o', rating);
@@ -489,6 +490,7 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 				return handleRatingData($scope, rating.rating);
 			}).then(function () {
 				$scope.currentWordIdx = $scope.currentPracticeSession.ratings.length - 1;
+				$scope.scores.isResumePrep = false;
 			});
 		} else if (!needToReload) { // QUEST & QUIZ: INIT NEW SESSION
 			$scope.currentWordIdx = -1;
