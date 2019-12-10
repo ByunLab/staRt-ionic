@@ -688,9 +688,7 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 		$scope.quizType = undefined;
 
 		if (window.AudioPlugin === undefined) {
-			// #HC REMOVE THIS AFTER DEV
-			// in prod this should only be called by storeRecordingSession()
-			if(!$scope.probe) updateQuestHighscores();
+			storeRecordingSession();
 		} else if (window.AudioPlugin !== undefined) {
 			AudioPlugin.stopRecording(recordingDidStop, recordingDidFail);
 		}
