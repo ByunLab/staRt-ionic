@@ -537,7 +537,10 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 		$scope.currentWordIdx++;
 
 		if ($scope.count && $scope.currentWordIdx >= $scope.count) {
-			//$scope.endWordPractice();
+			if($scope.probe) {
+				$scope.endWordPractice();
+			}
+			// quest is ended via the end-of-block dialog boxes
 		} else {
 			var lookupIdx = $scope.currentWordIdx % $scope.wordOrder.length;
 			$scope.currentWord = $scope.wordList[$scope.wordOrder[lookupIdx]];
