@@ -114,7 +114,33 @@
   </div>
 
 
-  <!-- LPC DIRECTIVE: Wave & Rating Btns --------------- -->
+  <!-- RATING BUTTONS --------------- -->
+  <div class="rateBtn-container"
+  ng-if="!scores.endOfBlock">
+    <button
+      class="rateBtn rate-gold"
+      ng-click="onRating(3)"
+      ng-disabled="scores.endOfBlock">
+        <span class="rateBtn-textbox">Great</span>
+    </button>
+
+    <button
+      class="rateBtn rate-silver"
+      ng-click="onRating(2)"
+      ng-disabled="scores.endOfBlock">
+        <span class="rateBtn-textbox">Good</span>
+    </button>
+
+    <button
+      class="rateBtn rate-bronze"
+      ng-click="onRating(1)"
+      ng-disabled="scores.endOfBlock">
+        <span class="rateBtn-textbox">Try Again</span>
+    </button>
+  </div>
+
+
+<!-- LPC DIRECTIVE: Wave --------------- -->
   <div class="lpcDir-layout_quiz-quest">
 
     <lpc-directive

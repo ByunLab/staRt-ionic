@@ -56,6 +56,92 @@
 	//border: 1px solid red;
 }
 
+// RATING BUTTONS ------------------------------------
+.rateBtn-container {
+  position:absolute;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: space-between;
+  align-items: flex-end;
+  top: $row-h;
+  right: 0;
+  height: $row-h * 2;
+  width: $col-w * 2;
+  //border: 1px solid red;
+
+  button.rateBtn {
+    display: flex;
+    width: 100%;
+    height: $row-h * 0.64;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: flex-end;
+    user-select: none;
+    -webkit-appearance: none;
+    border: none;
+    background: none;
+    z-index: 50;
+    //border: 1px solid green;
+
+    .rateBtn-textbox {
+      display: flex;
+      flex-flow: column nowrap;
+      justify-content: center;
+      align-items: flex-start;
+      width: 76px;
+      height: 49px;
+      border-top-left-radius: 8px;
+      border-bottom-left-radius: 8px;
+      padding: 0 8px;
+      font-family: 'Quicksand', sans-serif;
+      font-size: 0.9em;
+      font-weight: 700;
+      line-height: 1.2em;
+      color: white;
+      //border: 1px solid red;
+    } //.rateBtn-textbox
+  } // .rateBtn
+
+  button.rate-gold {
+    background-image: url("../img/rateBtns/rate-gold--off.svg");
+    background-repeat: no-repeat;
+    background-position: right center;
+
+    &:active {
+      background-image: url("../img/rateBtns/rate-gold--on.svg");
+    }
+    .rateBtn-textbox {
+      background-color: #ffc95f;
+    }
+  }
+
+  button.rate-silver {
+    background-image: url("../img/rateBtns/rate-silver--off.svg");
+    background-repeat: no-repeat;
+    background-position: right center;
+    &:active {
+      background-image: url("../img/rateBtns/rate-silver--on.svg");
+    }
+    .rateBtn-textbox {
+      background-color: #f0f9fc;
+      color: #408BA2;
+    }
+  }
+
+   button.rate-bronze {
+    background-image: url("../img/rateBtns/rate-bronze--off.svg");
+    background-repeat: no-repeat;
+    background-position: right center;
+    &:active {
+      background-image: url("../img/rateBtns/rate-bronze--on.svg");
+    }
+    .rateBtn-textbox {
+      background-color: #efbd88;
+    }
+   }
+} // .rateBtn-container
+
 
 // LPC DIRECTIVE: Wave & Rating Btns -------------------------
 .lpcDir-layout_quiz-quest {
@@ -80,6 +166,7 @@
     } // .lpc-contentBox
   } // lpc-directive
 } // .lpcDir-layout_quiz-quest
+
 
 // PARTIALS -----------------------------
 @import 'partials/quest/qtDebug';

@@ -734,6 +734,18 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 
 	$scope.resetQuestHighscores = function() { resetQuestHighscores(); };
 
+	$scope.onRating = function(data) {
+		console.log('rating change! ' + data);
+		$scope.rating = data === undefined ? 0 : data;
+		if ($scope.rating) {
+			$scope.nextWord();
+		}
+		if (data) {
+			handleRatingData($scope, data);
+		}
+	};
+
+	/*
 	$scope.$on('ratingChange', function (event, data) {
 		console.log('rating change! ' + data);
 		$scope.rating = data === undefined ? 0 : data;
@@ -744,6 +756,7 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 			handleRatingData($scope, data);
 		}
 	});
+	*/
 
 	// DIALOG SEQUENCE HANDLERS ---------------------
 	$scope.dialogEnd = function() {
