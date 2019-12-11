@@ -151,7 +151,8 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 
 
 	// RATINGS ---------------------------------------------------
-	function handleRatingData($scope, data) {
+	// data is a value of: 1, 2, or 3.
+	function handleRatingData(data) {
 
 		var update_difficulty = function(increment) {
 			$scope.difficulty += increment;
@@ -487,7 +488,7 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 			sessionPrepTask = forEachPromise(previousRatings, function (rating) {
 				console.log('giving rating: %o', rating);
 				$scope.currentWordIdx++;
-				return handleRatingData($scope, rating.rating);
+				return handleRatingData(rating.rating);
 			}).then(function () {
 				$scope.currentWordIdx = $scope.currentPracticeSession.ratings.length - 1;
 				$scope.scores.isResumePrep = false;
@@ -735,28 +736,11 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 	$scope.resetQuestHighscores = function() { resetQuestHighscores(); };
 
 	$scope.onRating = function(data) {
-		console.log('rating change! ' + data);
-		$scope.rating = data === undefined ? 0 : data;
-		if ($scope.rating) {
-			$scope.nextWord();
-		}
-		if (data) {
-			handleRatingData($scope, data);
-		}
+		$scope.rating = data;
+		$scope.nextWord();
+		handleRatingData(data);
 	};
 
-	/*
-	$scope.$on('ratingChange', function (event, data) {
-		console.log('rating change! ' + data);
-		$scope.rating = data === undefined ? 0 : data;
-		if ($scope.rating) {
-			$scope.nextWord();
-		}
-		if (data) {
-			handleRatingData($scope, data);
-		}
-	});
-	*/
 
 	// DIALOG SEQUENCE HANDLERS ---------------------
 	$scope.dialogEnd = function() {

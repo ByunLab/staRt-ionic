@@ -440,7 +440,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		badges.card = {};
 	};
 
-	// called by checkUpdateMilestones() & $scope.nextCard()
+	// called by $scope.dialogNext();
 	var nextCard = function(badges) {
 		//console.log('nextCard is callled');
 		clearFlags(badges.qtDialogTemplate);
