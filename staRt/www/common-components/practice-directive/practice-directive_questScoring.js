@@ -49,7 +49,6 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		// sessionID is added by the controller
 		return {
 			block_display_score: 0, //user val
-			block_coins: [[]],
 			block_goldCount: 0,
 			block_score: 0, // lab val or difficulty score
 			session_score: 0,
