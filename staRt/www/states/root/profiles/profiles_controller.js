@@ -103,9 +103,12 @@ function compareRecordings(ra, rb) {
 
 			$rootScope.initParticipants();
 
-			//triggered when user selects a different profile from the drawer
+			// Triggered when user selects a different profile from the drawer + on app startupp.
+			// Note this function normally fires twice. This is because when a user selects a profile, we immediately switch
+			// the currentProfile immediately, and then later switch it again once we update from firebase.
 			$scope.$watchCollection('data.currentProfile', function(data)
 			{
+
 				if (data)
 				{
 					$scope.data.currentProfileUUID = $scope.data.currentProfile.uuid;
