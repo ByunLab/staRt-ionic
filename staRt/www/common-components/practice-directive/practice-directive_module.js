@@ -4,8 +4,6 @@
 
 var practiceDirective = angular.module( 'practiceDirective', [ 'firebaseService', 'toolbarService' ] );
 
-
-
 practiceDirective.directive( 'practiceDirective', function()
 {
 	return {

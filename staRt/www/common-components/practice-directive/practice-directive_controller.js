@@ -120,13 +120,8 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 	$scope.qtAdaptDiffDebug = true;
 	$scope.qtBadgesDebug = true;
 	$scope.qzGraphicsMode = true;
-	$scope.qzDialogsMode = false;
 
-	// TOOLBAR ----------------------------------------------------
-	// TO BE IMPLEMENTED IN THE FUTURE / NOT CURRENTLY IN USE
-
-	// holds toolbar content for the current practice state
-	$scope.toolbar;
+	// TOOLBAR (buttons in upper right) --------------------------
 
 	// called by $scope.beginWordPractice()
 	$scope.setupToolbar = function() {
@@ -156,17 +151,16 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 
 
 	// RATINGS ---------------------------------------------------
-	function handleRatingData($scope, data) {
-
-		// adative difficulty helpers
-		var should_increase_difficulty = function() {return performance >= increase_difficulty_threshold && $scope.difficulty < 5;};
-		var should_decrease_difficulty = function() {return performance <= decrease_difficulty_threshold && $scope.difficulty > 1;};
+	// data is a value of: 1, 2, or 3.
+	function handleRatingData(data) {
 
 		var update_difficulty = function(increment) {
 			$scope.difficulty += increment;
-			console.log($scope.difficulty);
+			if ($scope.difficulty > 5) $scope.difficulty = 5;
+			if ($scope.difficulty < 1) $scope.difficulty = 1;
+
 			if (!($scope.type == 'Syllable' || $scope.probe)) {
-				if($scope.difficulty === 5) {
+				if($scope.difficulty >= 5) {
 					$scope.carrier_phrases = AdaptDifficulty.phrases[2];
 				} else if($scope.difficulty === 4) {
 					$scope.carrier_phrases = AdaptDifficulty.phrases[1];
@@ -183,19 +177,10 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 			QuestScore.questRating(data, $scope.scores, $scope.milestones, $scope.currentWordIdx, $scope.badges);
 
 			// if Quest end-of-block, check Adaptive Difficulty
-			if ($scope.currentWordIdx % 10 == 0 && $scope.currentWordIdx != 0) {
-				var performance = $scope.scores.performance;
-				var increase_difficulty_threshold = 0.8;
-				var decrease_difficulty_threshold = 0.5;
-
-				if (should_increase_difficulty()) {
-					// HC trigger badge here
-					console.log('INCREASING DIFF - watch for new words!');
-					return update_difficulty(1);
-				} else if (should_decrease_difficulty()) {
-					return update_difficulty(-1);
-				}
-			} // end-of-block AdaptDiff check
+			if ($scope.currentWordIdx % 10 == 0 &&
+				$scope.currentWordIdx != 0 && $scope.scores.changeDifficulty != 0) {
+				update_difficulty($scope.scores.changeDifficulty);
+			}
 			return Promise.resolve();
 
 		} else { //else if quiz, no adapt Diff
@@ -278,7 +263,6 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 		var newHighScores = QuestScore.initNewHighScores();
 		ProfileService.runTransactionForCurrentProfile(function(handle, doc, t) {
 			var highscoresFB = doc.data().highscoresQuest;
-			// console.log(highscoresFB); should always be null
 			if (!highscoresFB) highscoresFB = newHighScores;
 			t.update(handle, {highscoresQuest: highscoresFB});
 		}); // runTransaction
@@ -295,9 +279,8 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 				Purpose: debugging highscores logic
 		*/
 		if($scope.shouldUpdateHighscores) {
-			// console.log('Should update fb? ' + $scope.shouldUpdateHighscores);
 			var highscoresUpdateData = $scope.highscoresUpdateData;
-			//console.log(highscoresUpdateData);
+			// console.log(highscoresUpdateData);
 			ProfileService.runTransactionForCurrentProfile(function(handle, doc, t) {
 				var highscoresFB = doc.data().highscoresQuest;
 				for (var key in highscoresUpdateData) {
@@ -310,9 +293,7 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 		} // if if($scope.shouldUpdateHighscores)
 	} // end updateHighscores()
 
-
 	function resetQuestHighscores() {
-		// USE WITH CAUTION!!!!
 		console.log('OBLITERATING HIGHSCORES OBJ');
 		$scope.highscores = QuestScore.initNewHighScores($scope.highscores);
 
@@ -472,7 +453,7 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 			needToReload = true;
 			$scope.currentPracticeSession = Object.assign({}, $rootScope.sessionToResume);
 		}
-		// quest highscores: same for all, regardless of resumed-sesh and protocol status
+		// QUEST-ONLY: same for all, regardless of resumed-sesh and on-protocol status
 		if (!$scope.probe) {
 			if (user.highscoresQuest) {
 				console.log('User has saved Highscores');
@@ -489,29 +470,30 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 		// TODO: Check to see if there's a better way to clear out the current session we're ressuming.
 		$rootScope.sessionToResume = null;
 
-		// INIT QUEST SESSION DATA
+		// QUEST-ONLY: ADDITIONAL INIT VALUES
 		if (!$scope.probe) {
-			// Quest: same starting value for all, regardless of resume-session status. For saved sessions, these will be updated during the sessionPrepTask process
+			// Same for all quests, regardless of resume-session status. For saved sessions, these vals are updated during the sessionPrepTask process
 			QuestScore.initCoinCounter($scope.count, $scope.questCoins); // always new
-			$scope.scores = QuestScore.initScores($scope.scores); // always new
+			$scope.scores = QuestScore.initScores($scope.scores, $scope.count); // always new
 			$scope.milestones = QuestScore.initMilestones($scope.highscores); // built from highscores
 			$scope.badges = QuestScore.initBadges($scope.badges); // always new
 			$scope.difficulty = 1;
-			//console.log($scope.currentPracticeSession);
 		} //if (!$scope.probe)
 
-		if (needToReload) {
+		if (needToReload) { // QUEST & QUIZ: RESUME SESSION STATE
 			var previousRatings = $scope.currentPracticeSession.ratings;
 			console.log('previous ratings: %o', previousRatings);
+			$scope.scores.isResumePrep = true;
 
 			sessionPrepTask = forEachPromise(previousRatings, function (rating) {
 				console.log('giving rating: %o', rating);
 				$scope.currentWordIdx++;
-				return handleRatingData($scope, rating.rating);
+				return handleRatingData(rating.rating);
 			}).then(function () {
 				$scope.currentWordIdx = $scope.currentPracticeSession.ratings.length - 1;
+				$scope.scores.isResumePrep = false;
 			});
-		} else if (!needToReload) {
+		} else if (!needToReload) { // QUEST & QUIZ: INIT NEW SESSION
 			$scope.currentWordIdx = -1;
 			$scope.currentPracticeSession = initialPracticeSession(
 				Date.now(),
@@ -558,34 +540,17 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 		$scope.currentWordIdx++;
 
 		if ($scope.count && $scope.currentWordIdx >= $scope.count) {
-			$scope.endWordPractice();
+			if($scope.probe) {
+				$scope.endWordPractice();
+			}
+			// quest is ended via the end-of-block dialog boxes
 		} else {
 			var lookupIdx = $scope.currentWordIdx % $scope.wordOrder.length;
 			$scope.currentWord = $scope.wordList[$scope.wordOrder[lookupIdx]];
-
 			// also select a random carrier phrase
-			// $scope.carrier_phrase = carrier_phrases[Math.floor(Math.random() * carrier_phrases.length)];
 			$scope.carrier_phrase = $scope.carrier_phrases[Math.floor(Math.random() * $scope.carrier_phrases.length)];
 			$scope.smallFont = $scope.carrier_phrase.length >= 16;
 			$scope.tinyFont = $scope.carrier_phrase.length >= 32;
-		}
-
-		if ($scope.pauseEvery && $scope.pauseEvery > 0 && $scope.currentWordIdx > 0) {
-			if ($scope.currentWordIdx % $scope.pauseEvery === 0) {
-				$scope.isFeedbacking = true;
-				if (navigator.notification) {
-					// will not trigger if serving
-					navigator.notification.confirm('Please provide qualitative feedback on the participant\'s performance over the last ten trials.', function () {
-						$scope.$apply(function () {
-							// Current word was not properly being updated.
-							lookupIdx = $scope.currentWordIdx % $scope.wordOrder.length;
-							$scope.currentWord = $scope.wordList[$scope.wordOrder[lookupIdx]];
-							$scope.isFeedbacking = false;
-						});
-					}, '',
-					['Done']);
-				}
-			}
 		}
 
 		if ((1 + $scope.currentWordIdx - $scope.reorderOffset) % $scope.wordOrder.length == 0) {
@@ -672,6 +637,8 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 				  if (scoresPrep.hasOwnProperty(key)) {
 					  if(Object.keys(scoresPrep[key]).length < 1) {
 						  delete scoresPrep[key];
+						} else {
+							scoresPrep[key].sessionID = $scope.currentPracticeSession.id;
 						}
 					}
 				}
@@ -768,16 +735,30 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 
 	$scope.resetQuestHighscores = function() { resetQuestHighscores(); };
 
-	$scope.$on('ratingChange', function (event, data) {
-		console.log('rating change! ' + data);
-		$scope.rating = data === undefined ? 0 : data;
-		if ($scope.rating) {
-			$scope.nextWord();
-		}
-		if (data) {
-			handleRatingData($scope, data);
-		}
-	});
+	$scope.onRating = function(data) {
+		$scope.rating = data;
+		$scope.nextWord();
+		handleRatingData(data);
+	};
+
+
+	// DIALOG SEQUENCE HANDLERS ---------------------
+	$scope.dialogEnd = function() {
+		//if ($scope.currentWordIdx >= $scope.count) {}
+		$scope.endWordPractice();
+	};
+
+	$scope.dialogResume = function() {
+		QuestScore.resetForNewBlock($scope.scores, $scope.badges);
+		// #TODO #464 unpause wave
+		// #TODO #464 enable rating btns
+		// #TODO #464 $scope.nextWord(); ???
+	};
+
+	$scope.dialogNext = function() {
+		QuestScore.nextCard($scope.badges);
+	};
+
 
 	$scope.$watch('csvs', function () {
 		$scope.hasValidWordList = false;
