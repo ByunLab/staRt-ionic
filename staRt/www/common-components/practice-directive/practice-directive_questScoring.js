@@ -172,8 +172,8 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 			},
 			cardFlags: [], // flagged when a blockEnd milestone is achieved
 			cardSeq: [],
-			card: {}, // Holds the content to be displayed in the html template from badges.cardSeq[badges.cardNumber]
-			cardNumber: -1,
+			card: {}, // Holds the content to be displayed in the html template from badges.cardSeq[badges.cardIndex]
+			cardIndex: -1,
 			qtDialog: {
 				isVisible: false, // is the Dialog Box Visible
 				isBlockEnd: false, // used for Block-End seq
@@ -309,7 +309,6 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		var msHx = [msProp] + 'Hx';
 		milestones.update[msHx].score = newMilestone;
 		milestones.update[msHx].date = Date.now();
-		//milestones.update[msHx].sessionID = scores.sessionID; // #hc TODO
 		milestones.shouldUpdateFirebase = true;
 	}
 
@@ -434,7 +433,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		resetBadges(badges, 'newRecord');
 
 		// badges: achievement cards
-		badges.cardNumber = -1;
+		badges.cardIndex = -1;
 		badges.cardFlags = [];
 		badges.cardSeq = [];
 		badges.card = {};
@@ -445,14 +444,14 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		//console.log('nextCard is callled');
 		clearFlags(badges.qtDialogTemplate);
 
-		badges.cardNumber++;
+		badges.cardIndex++;
 
-		var cardIndex = badges.cardSeq[badges.cardNumber];
-		var template = cardIndex.template;
+		var currentCard = badges.cardSeq[badges.cardIndex];
+		var template = currentCard.template;
 
 		var populateCard = function(fieldArr) {
 			fieldArr.forEach(function(field) {
-				badges.card[field] = cardIndex[field];
+				badges.card[field] = currentCard[field];
 			});
 		};
 		//add common template fields here
@@ -461,10 +460,10 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 
 		if(template === 'achievement') {
 			badges.qtDialogTemplate.achievement = true;
-			badges.card.count = cardIndex.count;
+			badges.card.count = currentCard.count;
 		} else if (template === 'note') {
 			badges.qtDialogTemplate.note = true;
-			badges.card.bodyText = cardIndex.bodyText;
+			badges.card.bodyText = currentCard.bodyText;
 		} else if (template === 'progSum') {
 			badges.qtDialogTemplate.progSum = true;
 			var progSumFields = ['subtitle', 'gold', 'silver', 'bronze'];
@@ -475,13 +474,11 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 			populateCard(endSumFields);
 		} else if (template === 'finalScore') {
 			badges.qtDialogTemplate.finalScore = true;
-			badges.card.count = cardIndex.count;
+			badges.card.count = currentCard.count;
 		}
 
-		// console.log('cardIndex');
-		// console.log(cardIndex);
 
-		if(badges.cardNumber >= 0) {
+		if(badges.cardIndex >= 0) {
 			badges.qtDialog.isVisible = true;
 		}
 	}; // advanceEndOfBlock
