@@ -750,9 +750,6 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 
 	$scope.dialogResume = function() {
 		QuestScore.resetForNewBlock($scope.scores, $scope.badges);
-		// #TODO #464 unpause wave
-		// #TODO #464 enable rating btns
-		// #TODO #464 $scope.nextWord(); ???
 	};
 
 	$scope.dialogNext = function() {
