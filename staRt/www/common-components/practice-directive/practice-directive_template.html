@@ -41,7 +41,8 @@
 
   <!-- Temp 'Stop Session' Button
       (will be replaced by toolbar in the future) -->
-  <div class="toolbar-container">
+  <div class="toolbar-container"
+    ng-hide="sandbank" ng-show="!sandbank">
     <div class="toolbar-tab-long"
       ng-click="tbStop()">
         <div class="tbTab-txt_temp">Stop<br/>{{probe ? "Quiz" : "Quest"}}</div>
