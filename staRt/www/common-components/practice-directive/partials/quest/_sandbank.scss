@@ -1,9 +1,20 @@
 // SANDBANK ------------------------------------
 .sandbank-container {
   position: absolute;
-  top: $row-h * 5;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-end;
   width: 100%;
-  height: $row-h;
+  height: $row-h * 6;
+  top: $row-h * 5;
+  transition: top 0.5s;
+  transition-timing-function: ease-in;
+  z-index: 90;
+  //border: 1px solid blue;
+
+  &.sandbankOpen {
+    top: 0;
+  }
 
   .sandbank-bg {
     position: absolute;
@@ -13,17 +24,17 @@
     background-image: url("../img/bgImg/bg_sandbank--handle.svg");
     background-position: right bottom;
     background-repeat: no-repeat;
-    z-index: 0;
-    //border: 1px solid blue;
+    z-index: 91;
+    //border: 1px solid lime;
   }
-  .sandbank-score {
+
+  .sandDollar-box {
     position: relative;
     display: flex;
     flex-flow: column nowrap;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
-    //height: $row-h * 0.9;
-    height: $row-h * 1.1; //TEMP adjusted for reset btn
+    height: $row-h * 0.9;
     width: $col-w * 2;
     bottom: $row-h * 0.2;
     //padding-bottom: $row-h * 0.1;
@@ -32,22 +43,129 @@
     font-weight: 600;
     text-align: center;
     color: #c7b299;
-    z-index: 50;
-    //border: 1px solid pink;
+    z-index: 92;
+
+    .sandbank-score {
+      display: flex;
+      flex-flow: column nowrap;
+      justify-content: center;
+      height: $row-h * 0.3;
+      //border: 1px solid pink;
+    } // .sandbank-score
 
     .sandbank-sandDollar {
       position: relative;
       display: flex;
       height: $row-h * 0.6;
       width: $col-w * 1.1;
+      top: 0;
       background-image: url("../img/ui/sandDollar.svg");
       background-position: center;
       background-repeat: no-repeat;
-      //border: 1px solid red;
+      //border: 1px solid pink;
     }
-    button {
-      margin: 3px;
-      padding: 3px;
-    }
-  } // .sandbank-score
+  } // sandDollar-box
+
+
 } // .sandbank-container
+
+
+.trophycase-container {
+  position: relative;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-start; //center; //space-between;
+  align-items: flex-start;
+  background-color: #FCF3DC;
+  height: $row-h * 5;
+  width: 100%;
+  //padding-top: $row-h * 0.5;
+  padding-left: $col-w * 2;
+  padding-right: $col-w;
+  //border: 1px solid red;
+
+  .sbRow {
+    position: relative;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    //align-items: center;
+    width: 100%;
+    padding-bottom: 2rem;
+    //min-height: $row-h;
+    //border: 1px solid pink;
+  }
+
+  .headBar {
+    height: $row-h * 0.75;
+    align-items: center;
+    //border: 1px solid pink;
+
+    h1 {
+      font-size: 2rem;
+      letter-spacing: 1px;
+      color: $c-text-main;
+      font-weight: 500;
+      //margin-bottom: 1rem;
+    }
+  } // .headBar
+
+
+  .row01 {
+    position: relative;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    //align-items: flex-start;
+
+    .statsTable {
+      display: flex;
+      flex-flow: column nowrap;
+      justify-content: flex-start;
+      align-items: flex-start;
+      width: 100%;
+      height: auto; //$row-h;
+      //padding-left: 0.5em;
+      color: $c-text-main;
+      font-weight: $bold;
+      //border-left: 1px solid pink;
+      //border-right: 1px solid pink;
+    }
+  }
+
+  .row02 {
+    position: relative;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    //align-items: flex-start;
+
+    .badgeBox {
+      display: flex;
+      flex-flow: column nowrap;
+      justify-content: flex-start;
+      align-items: flex-start;
+      min-height: $row-h;
+      width: 100%;
+      //border: 1px solid pink;
+
+      .title {
+        color: $c-text-main;
+        font-weight: $bold;
+      }
+      .score {
+        color: $c-text-main;
+        font-weight: $bold;
+      }
+      .currentScore {
+        color: $c-text-main
+      }
+    } // .badgeBox
+  } // .row02
+} // .trophycase-container
+
+
+// TEMP ----------------------------
+.sb-resetBtn {
+  padding: 1em;
+}
