@@ -1,13 +1,102 @@
-<div class="sandbank-container">
+<div class="sandbank-container"
+  ng-class="{'sandbankOpen': sandbank }">
   <div class="sandbank-bg"></div>
-  <div class="sandbank-score">
-    <span ng-if="isPracticing">{{scores.display_score}} pts</span>
-    <span class="sandbank-sandDollar"></span>
-    <button
-      ng-if="isPracticing && !probe && qtScoreDebug"
-      ng-click="resetQuestHighscores()">
-      Reset Highscores
-    </button>
-  </div>
+  <div class="sandDollar-box ">
+    <span
+      class="sandbank-score"
+      ng-if="isPracticing"
+      ng-show="!sandbank"
+      ng-hide="sandbank">
+        {{scores.display_score}} pts
+    </span>
+    <span
+      class="sandbank-sandDollar"
+      ng-click="toggleSandBank()">
+    </span>
+  </div> <!-- div.sandDollar-box -->
+
+  <div class=trophycase-container>
+    <div class="ripples-bg"></div>
+
+    <div class="sbRow headBar">
+        <h1>Achievements</h1>
+    </div>
+
+    <div class="sbRow row01">
+
+      <div class="statsTable">
+          <div>Total Quests Completed: ##</div>
+          <div>Average Points Per Quest: ##</div>
+          <div>Average Golds Per Quest: ##</div>
+          <div>Current Difficulty Level: {{difficulty}}</div>
+      </div>
+
+      <div class="statsTable">
+
+      </div>
+
+      <div class="statsTable">
+          <div>Current Score: {{scores.display_score}} pts</div>
+      </div>
+    </div>
+
+    <div class="sbRow row02">
+      <div class="badgeBox">
+        <div class="title">High Score in Block</div>
+        <div class="score">{{milestones.highscores.hsib}} points</div>
+        <div>Current Score:
+            <span>{{scores.block_display_score}}</span>
+          </div>
+      </div>
+
+      <div class="badgeBox">
+        <div class="title">Most Gold in Block</div>
+        <div class="score">{{milestones.highscores.mgib}} coins</div>
+        <div>Current Score:
+          <span>{{scores.block_goldCount}}</span>
+        </div>
+      </div>
+
+      <div class="badgeBox">
+        <div class="title">Most Gold in a Row</div>
+        <div class="score">{{milestones.highscores.streak}} coins</div>
+      </div>
+
+    </div> <!-- .row02 -->
+
+    <div class="sbRow row02">
+        <div class="badgeBox">
+          <div class="title">High Score in Quest</div>
+          <div class="score">{{milestones.highscores.hsiq}} points</div>
+          <div>Current Score:
+            <span>{{scores.display_score}}</span>
+          </div>
+        </div>
+
+        <div class="badgeBox">
+            <div class="title">Most Gold in Quest</div>
+            <div class="score">{{milestones.highscores.mgiq}} coins</div>
+            <div >Current Score:
+              <span>{{scores.session_coins.gold}}</span>
+            </div>
+        </div>
+
+        <div class="badgeBox">
+            <div class="title">Perfect Block</div>
+            <div class="score">Achieved {{milestones.highscores.perfectBlock}} times</div>
+        </div>
+
+      </div>  <!-- .row02 -->
+
+    <div class="sbRow">
+      <button class="sb-resetBtn"
+        ng-if="isPracticing && !probe"
+        ng-click="resetQuestHighscores()">
+        Reset Highscores
+      </button>
+    </div>
+    <!-- .row02 -->
+
+  </div> <!-- .trophycase-container -->
 
 </div>
