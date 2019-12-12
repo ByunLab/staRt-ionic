@@ -108,16 +108,16 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 	$scope.highscores;
 	$scope.milestones;
 	$scope.scores;
-	$scope.difficulty = 1; //
-	//$scope.carrier_phrases = [];
+	$scope.difficulty = 1;
 	$scope.carrier_phrases = AdaptDifficulty.phrases[0];
+	$scope.sandbank = false; // used to open and close botton drawer
 
 	// quiz-specific vars
 	$scope.quizType = undefined;
 
 	// WIP Helpers --------------------------- //#hc
 	$scope.qtScoreDebug = false;
-	$scope.qtAdaptDiffDebug = true;
+	$scope.qtAdaptDiffDebug = false;
 	$scope.qtBadgesDebug = true;
 	$scope.qzGraphicsMode = true;
 
@@ -734,6 +734,7 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 		}
 	};
 
+	// IN-GAME BUTTON HANDLERS (except for toolbar) -----------------
 	$scope.resetQuestHighscores = function() { resetQuestHighscores(); };
 
 	$scope.onRating = function(data) {
@@ -742,6 +743,11 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 		handleRatingData(data);
 	};
 
+	$scope.toggleSandBank = function() {
+		$scope.sandbank = !$scope.sandbank;
+		// console.log('Sand dollar pressed!');
+		// console.log($scope.sandbank);
+	};
 
 	// DIALOG SEQUENCE HANDLERS ---------------------
 	$scope.dialogEnd = function() {
