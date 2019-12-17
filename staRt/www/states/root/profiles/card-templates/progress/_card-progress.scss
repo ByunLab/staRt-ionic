@@ -1,19 +1,54 @@
+
+// TODO: Calculate dimensions so that the modal is centered properly on the screen.
+// TODO: Round out the edges of the modal.
 .modal-backdrop {
     position: fixed;
-    width: 90vw;
-    height: 100vh;
+    width: 85vw;
+    height: 90vh;
     margin-left: $col-w * 1.4;
+    margin-right: $col-w * 1.4;
+    margin-top: 20px;
     z-index: 10;
     opacity: 1.0;
     background-color: white;
     overflow-y: auto;
 }
 
+.card-progress { // parent ele
+	ion-item {
+		border-bottom: 1px solid lightgray;
+	}
+}
+
 #scroll-element {
     height: 100vh;
 }
 
+#display-modal-text {
+    text-align: center;
+}
+
+.datapoint-card-container {
+    position: absolute;
+}
+
+.datapoint-card-left {
+    position: relative;
+    float: left;
+    width: 50%;
+}
+
+.datapoint-card-right {
+    position: relative;
+    float: left;
+    text-align: right;
+    width: 50%;
+}
+// Legacy: This was used inside of the modal-backdrop. The height/width/z-index may be useful for when you try to setup the line graph.
+/*
 .progress-table {
-    height: 100vh;
+    height: 90vh;
+    width: 90vh;
     z-index: 11;
 }
+*/

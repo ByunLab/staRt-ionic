@@ -80,7 +80,8 @@ function compareRecordings(ra, rb) {
 
 		function init()
 		{
-			$scope.displayParticipantColumn = true;
+			$scope.displayingProgressModal = false;
+			$scope.displayLineGraph = false;
 			$scope.isEditing = false;
 			$scope.uploadCount = 0;
 			$scope.displayName = FirebaseService.userName();
@@ -250,6 +251,14 @@ function compareRecordings(ra, rb) {
 			$scope.setCardState('profile');
 		};
 
+		$scope.displayProgressModal = function () {$scope.displayingProgressModal = true;};
+
+		$scope.hideProgressModal = function () {$scope.displayingProgressModal = false;};
+
+		$scope.viewProgressLineGraph = function () {$scope.displayLineGraph = true;};
+
+		$scope.viewProgressTable = function () {$scope.displayLineGraph = false;};
+
 
 		// ===========================================================
 		// CARD STATE
@@ -257,11 +266,6 @@ function compareRecordings(ra, rb) {
 		// ===========================================================
 		$scope.setCardState = function(navState) {
 			$scope.cardState = navState;
-			if (navState == 'progress') {
-				$scope.displayParticipantColumn = false;
-			} else {
-				$scope.displayParticipantColumn = true;
-			}
 		};
 		$scope.openSlpView = function() {
 			$scope.slpView = true;

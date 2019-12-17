@@ -1,20 +1,29 @@
 
-<div class="modal-backdrop">
-	<div class="ion-scroll-container">
+<!-- TODO: Set displayProgressModal to true when viewing the entire table.-->
+<div ng-if="displayingProgressModal" class="modal-backdrop">
+	<a ng-click="hideProgressModal()">Close</a>&nbsp;
+	<a ng-if="!displayLineGraph" ng-click="viewProgressLineGraph()"> View Line Graph</a>
+	<a ng-if="displayLineGraph" ng-click="viewProgressTable()"> View Table </a>
+	<div ng-if="!displayLineGraph">
 		<ion-scroll direction="y" id="scroll-element">
 			<table class="progress-table">
 				<tr>
-					<th>Date</th>
-					<th>Duration</th>
+					<th>Session Type</th>
 					<th>Performance</th>
+					<th>Duration</th>
+					<th>Date</th>
 				</tr>
 				<tr ng-repeat="dataPoint in dashboardDataPoints">
-						<td>{{dataPoint.sessionDescription}} on {{dataPoint.date | date:"fullDate"}}</td>
-						<td>{{dataPoint.durationString}}</td>
+						<td>{{dataPoint.sessionDescription}}</td>
 						<td>{{dataPoint.performanceString}}</td>
+						<td>{{dataPoint.durationString}}</td>
+						<td>{{dataPoint.date | date:"fullDate"}}</td>
 				</tr>
 			</table>
 		</ion-scroll>
+	</div>
+	<div ng-if="displayLineGraph">
+		The Line Graph
 	</div>
 </div>
 
@@ -22,11 +31,18 @@
 <div class="card-content">
 
 
-	<div class="card-body">
-
-		<h3>UNDER DEVELOPMENT</h3>
-		<p>Interactive chart and/or table of user progress will be displayed here.</p>
-
+	<div class="card-body card-progress">
+		<div id="display-modal-text">
+			<a href="#" ng-click="displayProgressModal()">Enlarge</a>
+		</div>
+		<ion-scroll>
+			<ion-list ng-repeat="dataPoint in dashboardDataPoints">
+				<ion-item ng-class="datapoint-card-container">
+					<div class="datapoint-card-left">{{dataPoint.sessionDescription}}<br/>{{dataPoint.date | date:"EEE MMM d, yyyy"}}</div>
+					<div class="datapoint-card-right">{{dataPoint.performanceString}}<br/>{{dataPoint.durationString}}</div>
+				</ion-item>
+			</ion-list>
+		</ion-scroll>
 	</div>
 
 	<div class="card-foot">
