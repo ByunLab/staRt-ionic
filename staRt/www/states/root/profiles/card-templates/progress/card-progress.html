@@ -22,8 +22,8 @@
 			</table>
 		</ion-scroll>
 	</div>
-	<div ng-if="displayLineGraph">
-		The Line Graph
+	<div ng-hide="!displayLineGraph">
+		<canvas id="lineCanvas"></canvas>
 	</div>
 </div>
 
