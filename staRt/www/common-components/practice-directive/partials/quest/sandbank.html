@@ -16,87 +16,163 @@
   </div> <!-- div.sandDollar-box -->
 
   <div class=trophycase-container>
-    <div class="ripples-bg"></div>
 
-    <div class="sbRow headBar">
+    <div class="sbRow sbHead">
         <h1>Achievements</h1>
-    </div>
 
-    <div class="sbRow row01">
+        <div class="headInfo">
 
-      <div class="statsTable">
-          <div>Total Quests Completed: ##</div>
-          <div>Average Points Per Quest: ##</div>
-          <div>Average Golds Per Quest: ##</div>
-          <div>Current Difficulty Level: {{difficulty}}</div>
-      </div>
-
-      <div class="statsTable">
-
-      </div>
-
-      <div class="statsTable">
-          <div>Current Score: {{scores.display_score}} pts</div>
-      </div>
-    </div>
-
-    <div class="sbRow row02">
-      <div class="badgeBox">
-        <div class="title">High Score in Block</div>
-        <div class="score">{{milestones.highscores.hsib}} points</div>
-        <div>Current Score:
-            <span>{{scores.block_display_score}}</span>
-          </div>
-      </div>
-
-      <div class="badgeBox">
-        <div class="title">Most Gold in Block</div>
-        <div class="score">{{milestones.highscores.mgib}} coins</div>
-        <div>Current Score:
-          <span>{{scores.block_goldCount}}</span>
-        </div>
-      </div>
-
-      <div class="badgeBox">
-        <div class="title">Most Gold in a Row</div>
-        <div class="score">{{milestones.highscores.streak}} coins</div>
-      </div>
-
-    </div> <!-- .row02 -->
-
-    <div class="sbRow row02">
-        <div class="badgeBox">
-          <div class="title">High Score in Quest</div>
-          <div class="score">{{milestones.highscores.hsiq}} points</div>
-          <div>Current Score:
-            <span>{{scores.display_score}}</span>
-          </div>
-        </div>
-
-        <div class="badgeBox">
-            <div class="title">Most Gold in Quest</div>
-            <div class="score">{{milestones.highscores.mgiq}} coins</div>
-            <div >Current Score:
-              <span>{{scores.session_coins.gold}}</span>
+          <div class="headCol statsCol">
+            <div class="statsRow">
+              <div class="labelTxt">Total Quests Completed:</div>
+              <div class="statTxt">67</div>
             </div>
+
+            <div class="statsRow">
+              <span class="labelTxt">Average Points Per Quest:</span>
+              <span class="statTxt">145</span>
+            </div>
+
+            <div class="statsRow">
+              <span class="labelTxt">Average Golds Per Quest:</span>
+              <span class="statTxt">32</span>
+            </div>
+          </div>
+
+          <div class="headCol">
+            <button class="sb-resetBtn"
+              ng-if="isPracticing && !probe"
+              ng-click="resetQuestHighscores()">
+              Reset Highscores
+            </button>
+          </div>
+
+          <div class="headCol">more info about scoring?</div>
+
         </div>
-
-        <div class="badgeBox">
-            <div class="title">Perfect Block</div>
-            <div class="score">Achieved {{milestones.highscores.perfectBlock}} times</div>
-        </div>
-
-      </div>  <!-- .row02 -->
-
-    <div class="sbRow">
-      <button class="sb-resetBtn"
-        ng-if="isPracticing && !probe"
-        ng-click="resetQuestHighscores()">
-        Reset Highscores
-      </button>
+        <!-- .headInfo -->
     </div>
-    <!-- .row02 -->
+    <!-- .headBar -->
 
-  </div> <!-- .trophycase-container -->
 
-</div>
+    <div class="sbRow sbBody">
+
+      <div class="awardGrid">
+
+        <div class="awardRow topRow">
+
+          <div class="awardEle">
+            <div class="img hsib">
+              <div class="score">
+                {{milestones.highscores.hsib}}
+              </div>
+              <div class="ribbon">High Score in Block</div>
+            </div>
+            <div class="badgeFoot">
+              <div class="badgeDate">
+                achieved: 12/17/19
+              </div>
+              <div class="currentScore">
+                current block: {{scores.block_display_score}}
+              </div>
+            </div>
+          </div> <!-- end .awardEle -->
+
+          <div class="awardEle">
+            <div class="img mgib">
+              <div class="score">
+                {{milestones.highscores.mgib}}
+              </div>
+              <div class="ribbon">Most Gold in Block</div>
+            </div>
+            <div class="badgeFoot">
+              <div class="badgeDate">
+                achieved: 12/17/19
+              </div>
+              <div class="currentScore">
+                current block: {{scores.block_goldCount}}
+              </div>
+            </div>
+          </div> <!-- end .awardEle -->
+
+          <div class="awardEle">
+            <div class="img streak">
+              <div class="score score-streak">
+                  {{milestones.highscores.streak}}
+              </div>
+              <div class="score streak-text">in a row</div>
+              <div class="ribbon">Gold Streak</div>
+            </div>
+            <div class="badgeFoot">
+              <div class="badgeDate">
+                achieved: 12/17/19
+              </div>
+              <div class="currentScore">
+                current streak: {{scores.streak}}
+              </div>
+            </div>
+          </div> <!-- end .awardEle -->
+
+        </div> <!-- .awardRow -->
+
+        <div class="awardRow bottomRow">
+          <div class="awardEle">
+            <div class="img hsiq">
+              <div class="score">
+                  {{milestones.highscores.hsiq}}
+              </div>
+              <div class="ribbon">High Score in Quest</div>
+            </div>
+            <div class="badgeFoot">
+              <div class="badgeDate">
+                achieved: 12/17/19
+              </div>
+              <div class="currentScore">
+                current quest: {{scores.display_score}}
+              </div>
+            </div>
+          </div> <!-- end .awardEle -->
+
+          <div class="awardEle">
+            <div class="img mgiq">
+              <div class="score">
+                {{milestones.highscores.mgiq}}
+              </div>
+              <div class="ribbon">Most Gold in Quest</div>
+            </div>
+            <div class="badgeFoot">
+              <div class="badgeDate">
+                achieved: 12/17/19
+              </div>
+              <div class="currentScore">
+                current quest: {{scores.session_coins.gold}}
+              </div>
+            </div>
+          </div> <!-- end .awardEle -->
+
+
+          <div class="awardEle">
+            <div class="img perfectBlock">
+                <div class="score score-perfectB">
+                    {{milestones.highscores.perfectBlock}}
+                </div>
+                <div class="score perfectB-text">times</div>
+                <div class="ribbon">Perfect Block</div>
+            </div>
+            <div class="badgeFoot">
+              <div class="badgeDate">
+                achieved: 12/17/19
+              </div>
+              <!-- <div class="currentScore">
+                current session: ##
+              </div> -->
+            </div>
+          </div> <!-- end .awardEle -->
+
+        </div> <!-- .awardRow -->
+      </div> <!-- end .awardGrid -->
+    </div><!-- end sbBody -->
+
+  </div> <!--.trophycase-container -->
+
+</div> <!--.sandbank-container-->
