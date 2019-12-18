@@ -12,9 +12,7 @@
   z-index: 90;
   //border: 1px solid blue;
 
-  &.sandbankOpen {
-    top: 0;
-  }
+  &.sandbankOpen { top: 0; }
 
   .sandbank-bg {
     position: absolute;
@@ -66,7 +64,6 @@
     }
   } // sandDollar-box
 
-
 } // .sandbank-container
 
 
@@ -79,93 +76,333 @@
   background-color: #FCF3DC;
   height: $row-h * 5;
   width: 100%;
-  //padding-top: $row-h * 0.5;
   padding-left: $col-w * 2;
   padding-right: $col-w;
-  //border: 1px solid red;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-image: url('../img/bgImg/bg_sandbank--ripples.svg');
+  //border: 1px solid blue;
 
-  .sbRow {
+  .sbRow { //layout for sbHead & sbBody
     position: relative;
     display: flex;
     flex-flow: row nowrap;
     justify-content: flex-start;
-    //align-items: center;
     width: 100%;
-    padding-bottom: 2rem;
-    //min-height: $row-h;
+    //padding-bottom: 1rem;
     //border: 1px solid pink;
   }
 
-  .headBar {
-    height: $row-h * 0.75;
-    align-items: center;
+  .sbHead {
+    position: relative;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: space-between;
+    //align-items: flex-start; //center;
+    height: $row-h;
+    width: 100%;
     //border: 1px solid pink;
 
-    h1 {
-      font-size: 2rem;
+    h1 { //row
+      position: relative;
+      display: flex;
+      flex-flow: row nowrap;
+      align-self: flex-start;
+      font-size: 2.5rem;
       letter-spacing: 1px;
       color: $c-text-main;
       font-weight: 500;
-      //margin-bottom: 1rem;
+      width: 100%;
+      height: auto;
+      margin-bottom: 0.5rem;
+      //border: 1px solid orange;
     }
+
+    .headInfo { //row layout
+      position: relative;
+      display: flex;
+      flex-flow: row nowrap;
+      justify-content: space-between;
+      align-items: flex-start; //center;
+      //border: 1px solid lime;
+
+      .headCol { // layout class
+        position: relative;
+        display: flex;
+        flex-flow: column nowrap;
+        justify-content: flex-start;
+        align-items: center;
+        width: 100%;
+        height: auto;
+        //border: 1px solid lightgreen;
+      } // .headCol
+
+      .statsCol {
+        position: relative;
+        display: flex;
+        flex-flow: column nowrap;
+        justify-content: flex-start;
+        align-items: flex-start;
+        color: $c-text-main;
+        font-weight: $bold;
+        font-size: 0.9rem;
+        //border: 1px solid lime;
+
+        .statsRow {
+          position: relative;
+          display: flex;
+          flex-flow: row nowrap;
+          justify-content: flex-start;
+          align-items: flex-start;
+          line-height: 1.25rem;//1.75rem;
+
+          .labelTxt { padding-left: 2px; }
+          .statTxt {margin-left: 0.5rem; }
+        } // .statsRow
+      } // .statCol
+    } // .headInfo
   } // .headBar
 
-
-  .row01 {
+  .sbBody {
     position: relative;
     display: flex;
     flex-flow: row nowrap;
-    justify-content: flex-start;
-    //align-items: flex-start;
+    justify-content: space-between;
+    //align-items: center;
+    width: $col-w * 9;
+    height: $row-h * 4;
+    text-align: left;
+    margin-top: $row-h * 0.15;
+    //border: 1px solid lightBlue;
+  } // end  .sbBody
 
-    .statsTable {
-      display: flex;
-      flex-flow: column nowrap;
-      justify-content: flex-start;
-      align-items: flex-start;
-      width: 100%;
-      height: auto; //$row-h;
-      //padding-left: 0.5em;
-      color: $c-text-main;
-      font-weight: $bold;
-      //border-left: 1px solid pink;
-      //border-right: 1px solid pink;
-    }
-  }
 
-  .row02 {
+  .awardGrid {
     position: relative;
     display: flex;
-    flex-flow: row nowrap;
-    justify-content: flex-start;
-    //align-items: flex-start;
+    flex-flow: column nowrap;
+    //justify-content: flex-start;
+    width: 100%;
+    height: 100%;
+    color: $c-text-main;
+    //border: 1px solid pink;
 
-    .badgeBox {
+    .awardRow {
+      position: relative;
       display: flex;
-      flex-flow: column nowrap;
-      justify-content: flex-start;
-      align-items: flex-start;
-      min-height: $row-h;
+      flex-flow: row nowrap;
+      justify-content: space-between;
       width: 100%;
-      //border: 1px solid pink;
+      height: $row-h * 1.75;
+      //margin-bottom: 3rem;
+      //border-bottom: 1px solid pink;
 
-      .title {
-        color: $c-text-main;
-        font-weight: $bold;
-      }
-      .score {
-        color: $c-text-main;
-        font-weight: $bold;
-      }
-      .currentScore {
-        color: $c-text-main
-      }
-    } // .badgeBox
-  } // .row02
-} // .trophycase-container
+      &.topRow { align-items: flex-start; }
+      &.bottomRow { align-items: flex-end; }
 
+      .awardEle {
+        position: relative;
+        display: flex;
+        flex-flow: column nowrap;
+        align-items: center;
+        //padding: 8px;
+        width: 33%;
+        height: 100%;
+        font-weight: $bold;
+        //height: 50%;
+        //border: 1px solid pink;
+
+        .img {
+          position: absolute;
+          display: flex;
+          flex-flow: column nowrap;
+          top: 0;
+          left: 0;
+          height: $row-h * 1.25;
+          width: 100%;
+          z-index: 91;
+          background-size: contain;
+          background-repeat: no-repeat;
+          background-position: center;
+          //border: 1px solid pink;
+
+          .score {
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: auto;
+            top: $row-h * 0.4;
+            left: 0;
+            font-size: 2rem;
+            color: #b28c50;
+            //border: 1px solid lightGreen;
+
+            &.score-streak {
+              display: block;
+              width: auto;
+              top: $row-h * 0.3;
+              left: $col-w * 0.95;
+              //border: 1px solid lightGreen;
+            }
+            &.streak-text {
+              display: block;
+              width: auto;
+              top: $row-h * 0.65;
+              left: $col-w * 0.7;
+              font-size: 1rem;
+              //border: 1px solid pink;
+            }
+            &.score-perfectB {
+              display: block;
+              width: auto;
+              top: $row-h * 0.3;
+              left: $col-w * 1.8;
+              //border: 1px solid lightGreen;
+            }
+            &.perfectB-text {
+              display: block;
+              width: auto;
+              top: $row-h * 0.65;
+              left: $col-w * 1.7;
+              font-size: 1rem;
+              //border: 1px solid pink;
+            }
+          } // .score
+
+          .ribbon {
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            top: $row-h * 0.88;
+            left: 0;
+            width: 100%;
+            height: $row-h * 0.3;
+            color: white;
+            font-size: 1rem;
+            // background-image: url('../img/practDir/ribbon.svg');
+            // background-size: 90% 100%;
+            // background-repeat: no-repeat;
+            // background-position: center;
+            //border: 1px solid lightGreen;
+          }
+        } // img
+        .badgeFoot {
+          position: relative;
+          display: flex;
+          flex-flow: column nowrap;
+          top: $row-h * 1.15;
+
+          .badgeDate {
+            position: relative;
+            display: flex;
+            flex-flow: row nowrap;
+            justify-content: center;
+            // left: 0;
+            width: auto;
+            color: $c-text-main;
+            text-align: center;
+            font-weight: 400;
+            font-size: 1rem;
+            //border: 1px solid lightGreen;
+          } // .badgeDate
+
+
+        }
+
+        .currentScore {
+          position: relative;
+          display: flex;
+          flex-flow: row nowrap;
+          justify-content: center;
+          background-color: rgba(255, 255, 255, 0.75);
+          padding: 3px 6px;
+          border-radius: 6px;
+          margin-top: 0.5rem;
+          color: $c-text-main;
+        }
+      } // awardEle
+    } // .awardRow
+  } // .awardGrid
 
 // TEMP ----------------------------
 .sb-resetBtn {
   padding: 1em;
 }
+
+// Images ----------------------------
+  .hsib { background-image: url('../img/practDir/badges/hsib.svg'); }
+  .mgib { background-image: url('../img/practDir/badges/mgib.svg'); }
+  .hsiq { background-image: url('../img/practDir/badges/hsiq.svg'); }
+  .mgiq { background-image: url('../img/practDir/badges/mgiq.svg'); }
+  .streak { background-image: url('../img/practDir/badges/streak.svg'); }
+  .perfectBlock {
+    background-image: url('../img/practDir/badges/perfectBlock.svg');
+  }
+
+} // .trophyCaseContainer
+
+// ----------------------
+
+        // .table {
+        //   position: relative;
+        //   display: flex;
+        //   flex-flow: column nowrap;
+        //   justify-content: flex-start;
+        //   align-items: center;
+        //   // font-size: 0.8rem;
+        //   // line-height: 0.5rem;
+        //   //border: 1px solid lightGreen;
+
+        //   .rankText {
+        //     margin: 0;
+        //     padding: 0;
+        //     font-size: 0.8rem;
+        //     line-height: 1.2rem;
+
+        //     .bold {
+        //       margin-right: 1rem;
+        //       font-weight: $bold;
+        //     }
+        //   }
+        // } //table
+
+            // .statCol {
+    //   position: relative;
+    //   display: flex;
+    //   flex-flow: column nowrap;
+    //   justify-content: flex-start;
+    //   //align-items: flex-start;
+    //   width: $col-w * 2.5;
+    //   height: 100%;
+    //   //padding-bottom: 2rem;
+    //   //min-height: $row-h;
+    //   color: $c-text-main;
+    //   font-weight: $bold;
+    //   font-size: 0.9rem;
+    //   border-right: 1px solid lime;
+
+    //   .statsRow {
+    //     position: relative;
+    //     display: flex;
+    //     flex-flow: row nowrap;
+    //     justify-content: flex-start;
+    //     line-height: 2rem;
+
+    //     .labelTxt {
+    //       padding-left: 2px;
+    //       width: $col-w * 1.75;
+    //       //border: 1px solid pink;
+    //     }
+
+    //     .statTxt {
+    //       // position: relative;
+    //       // display: inline-flex;
+    //       //margin-left: 0.5rem;
+    //       //border: 1px solid lime;
+    //     }
+    //   }
+    // }
