@@ -258,42 +258,97 @@ function compareRecordings(ra, rb) {
 
 		$scope.viewProgressLineGraph = function () {
 			$scope.displayLineGraph = true;
-			$scope.setupLineGraph();
+			$scope.setupLineGraph($scope.dashboardDataPoints);
 		};
 
 		$scope.viewProgressTable = function () {$scope.displayLineGraph = false;};
 
-		$scope.setupLineGraph = function () {
+		// Note this function does not work if the lineCanvas is being hidden via ng-hide.
+		$scope.setupLineGraph = function (dashboardDataPoints) {
+
+			/*
+			<td>{{dataPoint.sessionDescription}}</td>
+			<td>{{dataPoint.performanceString}}</td>
+			percentCorrect
+			<td>{{dataPoint.durationString}}</td>
+			<td>{{dataPoint.date | date:"fullDate"}}</td>
+*/
+			var labels = [];
+			var data = [];
+			var sessionNumber = dashboardDataPoints.length;
+			dashboardDataPoints.forEach(function (dataPoint) {
+				// The extra space before Session is there so the titles of the tooltips have a space.
+				labels.push(dataPoint['sessionDescription'] + '\n' + ' Session #' + sessionNumber--);
+				data.push(
+					{
+						date: dataPoint['date'],
+						performanceString: dataPoint['performanceString'],
+						y: dataPoint['percentCorrect'],
+
+					});
+			});
+
+			// dashboard data points are stored from most recent to least recent, so first we need to reverse the graph.
+			labels.reverse();
+			data.reverse();
 
 			this.lineChart = new Chart(angular.element( document.querySelector('#lineCanvas')), {
 				type: 'line',
 				data: {
-					labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'November', 'December'],
+					labels: labels,
 					datasets: [
 						{
-							label: 'Sell per week',
-							fill: false,
-							lineTension: 0.1,
-							backgroundColor: 'rgba(75,192,192,0.4)',
-							borderColor: 'rgba(75,192,192,1)',
-							borderCapStyle: 'butt',
-							borderDash: [],
-							borderDashOffset: 0.0,
-							borderJoinStyle: 'miter',
-							pointBorderColor: 'rgba(75,192,192,1)',
-							pointBackgroundColor: '#fff',
-							pointBorderWidth: 1,
-							pointHoverRadius: 5,
-							pointHoverBackgroundColor: 'rgba(75,192,192,1)',
-							pointHoverBorderColor: 'rgba(220,220,220,1)',
-							pointHoverBorderWidth: 2,
-							pointRadius: 1,
-							pointHitRadius: 10,
-							data: [65, 59, 80, 81, 56, 55, 40, 10, 5, 50, 10, 15],
-							spanGaps: false,
+							label: $scope.data.currentProfile.name + '\'s Progress',
+							data: data,
+							borderColor: '#3e95cd',
+							fill: false
 						}
-					]
-				}
+					],
+				},
+
+				options: {
+					scales: {
+						yAxes: [{
+							scaleLabel: {
+								display: true,
+								labelString: 'Percent Trials Correct'
+							},
+							ticks: {
+								max: 100,
+								min: 0
+							}
+						}],
+						xAxes: [{
+							scaleLabel: {
+								display: false,
+								labelString: 'Session'
+							}
+						}]
+					},
+					tooltips: {
+						enabled: true,
+						mode: 'single',
+						callbacks: {
+							label: function(tooltipItems, data) {
+								var multiStringText = [];
+								var dataPoint = data.datasets[0].data[tooltipItems.index];
+								multiStringText.push(dataPoint.performanceString + ' trials correct.');
+								multiStringText.push('Completed on ' + dataPoint.date);
+								return multiStringText;
+							}
+						}
+					}
+				},
+
+				plugins: [{
+					beforeInit: function (chart) {
+						chart.data.labels.forEach(function (e, i, a) {
+							if (/\n/.test(e)) {
+								a[i] = e.split(/\n/);
+							}
+						});
+					}
+				}],
 			});
 		};
 
