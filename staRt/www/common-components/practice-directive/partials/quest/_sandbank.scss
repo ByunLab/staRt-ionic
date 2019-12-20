@@ -84,85 +84,49 @@
   background-image: url('../img/bgImg/bg_sandbank--ripples.svg');
   //border: 1px solid blue;
 
-  .sbRow { //layout for sbHead & sbBody
-    position: relative;
-    display: flex;
-    flex-flow: row nowrap;
-    justify-content: flex-start;
-    width: 100%;
-    //padding-bottom: 1rem;
-    //border: 1px solid pink;
-  }
-
   .sbHead {
     position: relative;
     display: flex;
-    flex-flow: column nowrap;
+    flex-flow: row nowrap;
     justify-content: space-between;
     //align-items: flex-start; //center;
     height: $row-h;
     width: 100%;
-    //border: 1px solid pink;
+    // border-left: 1px solid pink;
+    // border-right: 1px solid pink;
 
     h1 { //row
       position: relative;
       display: flex;
       flex-flow: row nowrap;
+      flex-grow: 2;
+      flex-shrink: 1;
+      justify-content: flex-start;
       align-self: flex-start;
       font-size: 2.5rem;
       letter-spacing: 1px;
       color: $c-text-main;
       font-weight: 500;
-      width: 100%;
+      //width: 100%;
       height: auto;
       margin-bottom: 0.5rem;
       //border: 1px solid orange;
     }
 
-    .headInfo { //row layout
+    .headCol { // layout class
       position: relative;
       display: flex;
-      flex-flow: row nowrap;
-      justify-content: space-between;
-      align-items: flex-start; //center;
-      //border: 1px solid lime;
-
-      .headCol { // layout class
-        position: relative;
-        display: flex;
-        flex-flow: column nowrap;
-        justify-content: flex-start;
-        align-items: center;
-        width: 100%;
-        height: auto;
-        //border: 1px solid lightgreen;
-      } // .headCol
-
-      .statsCol {
-        position: relative;
-        display: flex;
-        flex-flow: column nowrap;
-        justify-content: flex-start;
-        align-items: flex-start;
-        color: $c-text-main;
-        font-weight: $bold;
-        font-size: 0.9rem;
-        //border: 1px solid lime;
-
-        .statsRow {
-          position: relative;
-          display: flex;
-          flex-flow: row nowrap;
-          justify-content: flex-start;
-          align-items: flex-start;
-          line-height: 1.25rem;//1.75rem;
-
-          .labelTxt { padding-left: 2px; }
-          .statTxt {margin-left: 0.5rem; }
-        } // .statsRow
-      } // .statCol
-    } // .headInfo
+      flex-grow: 1;
+      flex-shrink: 1;
+      flex-flow: column nowrap;
+      justify-content: flex-start;
+      align-items: flex-end;
+      width: auto;
+      height: auto;
+      //border: 1px solid lightgreen;
+    } // .headCol
   } // .headBar
+
 
   .sbBody {
     position: relative;
