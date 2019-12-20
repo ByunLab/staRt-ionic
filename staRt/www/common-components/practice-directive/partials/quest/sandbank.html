@@ -17,40 +17,17 @@
 
   <div class=trophycase-container>
 
-    <div class="sbRow sbHead">
-        <h1>Achievements</h1>
+    <div class="sbHead">
+      <h1 class="">Achievements</h1>
 
-        <div class="headInfo">
+      <div class="headCol">
+        <button class="sb-resetBtn"
+          ng-if="isPracticing && !probe"
+          ng-click="resetQuestHighscores()">
+          Reset Highscores
+        </button>
+      </div>
 
-          <div class="headCol statsCol">
-            <div class="statsRow">
-              <div class="labelTxt">Total Quests Completed:</div>
-              <div class="statTxt">67</div>
-            </div>
-
-            <div class="statsRow">
-              <span class="labelTxt">Average Points Per Quest:</span>
-              <span class="statTxt">145</span>
-            </div>
-
-            <div class="statsRow">
-              <span class="labelTxt">Average Golds Per Quest:</span>
-              <span class="statTxt">32</span>
-            </div>
-          </div>
-
-          <div class="headCol">
-            <button class="sb-resetBtn"
-              ng-if="isPracticing && !probe"
-              ng-click="resetQuestHighscores()">
-              Reset Highscores
-            </button>
-          </div>
-
-          <div class="headCol">more info about scoring?</div>
-
-        </div>
-        <!-- .headInfo -->
     </div>
     <!-- .headBar -->
 
