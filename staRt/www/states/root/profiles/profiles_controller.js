@@ -81,8 +81,9 @@ function compareRecordings(ra, rb) {
 
 		function init()
 		{
+			$scope.noCompletedSessions = false;
 			$scope.displayingProgressModal = false;
-			$scope.displayLineGraph = false;
+			$scope.slideModalUp = false;
 			$scope.isEditing = false;
 			$scope.uploadCount = 0;
 			$scope.displayName = FirebaseService.userName();
@@ -120,6 +121,7 @@ function compareRecordings(ra, rb) {
 
 			var handleEmptyRecordingHistory = function() {
 				// Switches the scope variable so that on the progress dashboard something such as "No Recording History Data For User, Start Your First Quest"
+				$scope.noCompletedSessions = true;
 			};
 
 
@@ -147,6 +149,8 @@ function compareRecordings(ra, rb) {
 					return;
 				}
 
+				$scope.noCompletedSessions = false;
+
 
 				completedSessions.forEach(function (recordingSession) {
 					//console.log(recordingSession);
@@ -160,16 +164,35 @@ function compareRecordings(ra, rb) {
 					dataPoint['durationString'] = timeToMinutesSeconds(timeSeconds);
 
 					var CORRECT_RATING = 3;
+					var SILVER_RATING = 2;
+					var BRONZE_RATING = 1;
 
 					var trialsCompleted = recordingSession.ratings.length;
 					var trialsCorrect = recordingSession.ratings.filter(function(ratingData) {return ratingData.rating == CORRECT_RATING;}).length;
 					var percentCorrect = Math.floor((trialsCorrect /trialsCompleted * 100) + .5);
 
-					dataPoint['trialsCompleted'] = recordingSession.ratings.length;
+					dataPoint['totalGold'] = trialsCorrect;
+					dataPoint['totalSilver'] = 0;
+					dataPoint['totalBronze'] = 0;
+					dataPoint['totalScore'] = 0;
 
-					dataPoint['trialsScoredCorrect'] = recordingSession.ratings.filter(function(ratingData) {return ratingData.rating == CORRECT_RATING;}).length;
-					dataPoint['percentCorrect'] = Math.floor((dataPoint['trialsScoredCorrect'] / dataPoint['trialsCompleted'] * 100) + .5);
+					recordingSession.ratings.forEach(function(ratingData) {
+						var rating = ratingData.rating;
+						if (rating === SILVER_RATING) {
+							dataPoint['totalSilver'] += 1;
+						}
+						if (rating === BRONZE_RATING) {
+							dataPoint['totalBronze'] += 1;
+						}
+						dataPoint['totalScore'] += rating;
+					});
 
+
+
+					dataPoint['trialsCompleted'] = trialsCompleted;
+					dataPoint['possiblePoints'] = trialsCompleted * 3;
+					dataPoint['trialsScoredCorrect'] = dataPoint['totalGold'];
+					dataPoint['percentCorrect'] = percentCorrect;
 					dataPoint['performanceString'] = trialsCorrect + '/' + trialsCompleted + ' - ' + percentCorrect + '%';
 
 
@@ -252,16 +275,15 @@ function compareRecordings(ra, rb) {
 			$scope.setCardState('profile');
 		};
 
-		$scope.displayProgressModal = function () {$scope.displayingProgressModal = true;};
-
-		$scope.hideProgressModal = function () {$scope.displayingProgressModal = false;};
-
-		$scope.viewProgressLineGraph = function () {
-			$scope.displayLineGraph = true;
-			$scope.setupLineGraph($scope.dashboardDataPoints);
+		$scope.displayProgressModal = function () {
+			$scope.displayingProgressModal = true;
+			$timeout(function() {$scope.setupLineGraph($scope.dashboardDataPoints); $scope.slideModalUp = true;}, 15); // 15ms timeout to have the slide up animation word;
 		};
 
-		$scope.viewProgressTable = function () {$scope.displayLineGraph = false;};
+		$scope.hideProgressModal = function () {
+			$timeout(function() {$scope.slideModalUp = false;});
+			$timeout(function() {$scope.displayingProgressModal = false;}, 15);
+		};
 
 		// Note this function does not work if the lineCanvas is being hidden via ng-hide.
 		$scope.setupLineGraph = function (dashboardDataPoints) {
@@ -283,6 +305,11 @@ function compareRecordings(ra, rb) {
 					{
 						date: dataPoint['date'],
 						performanceString: dataPoint['performanceString'],
+						totalGold: dataPoint['totalGold'],
+						totalSilver: dataPoint['totalSilver'],
+						totalBronze: dataPoint['totalBronze'],
+						totalScore: dataPoint['totalScore'],
+						possiblePoints: dataPoint['possiblePoints'],
 						y: dataPoint['percentCorrect'],
 
 					});
@@ -291,6 +318,13 @@ function compareRecordings(ra, rb) {
 			// dashboard data points are stored from most recent to least recent, so first we need to reverse the graph.
 			labels.reverse();
 			data.reverse();
+
+			var MAX_SESSIONS_TO_SHOW = 40;
+
+			if (data.length > MAX_SESSIONS_TO_SHOW) {
+				data = data.slice(data.length - MAX_SESSIONS_TO_SHOW, data.length);
+				labels = labels.slice(labels.length - MAX_SESSIONS_TO_SHOW, labels.length);
+			}
 
 			this.lineChart = new Chart(angular.element( document.querySelector('#lineCanvas')), {
 				type: 'line',
@@ -333,6 +367,10 @@ function compareRecordings(ra, rb) {
 								var multiStringText = [];
 								var dataPoint = data.datasets[0].data[tooltipItems.index];
 								multiStringText.push(dataPoint.performanceString + ' trials correct.');
+								multiStringText.push('Total Gold: ' + dataPoint.totalGold);
+								multiStringText.push('Total Silver: ' +  dataPoint.totalSilver);
+								multiStringText.push('Total Bronze: ' + dataPoint.totalBronze);
+								multiStringText.push('Total Points / Total Possible Points: ' + dataPoint.totalScore + '/'  + dataPoint.possiblePoints);
 								multiStringText.push('Completed on ' + dataPoint.date);
 								return multiStringText;
 							}

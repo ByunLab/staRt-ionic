@@ -3,15 +3,39 @@
 // TODO: Round out the edges of the modal.
 .modal-backdrop {
     position: fixed;
+    top: 90%;
     width: 85vw;
-    height: 90vh;
+    height: 100vh;
     margin-left: $col-w * 1.4;
     margin-right: $col-w * 1.4;
-    margin-top: 20px;
-    z-index: 10;
+    z-index: 999;
     opacity: 1.0;
-    background-color: white;
+    background-color: #FCF3DC;
     overflow-y: auto;
+    transition: top 0.5s;
+    transition-timing-function: ease-in;
+    -moz-border-radius: 15px;
+    -webkit-border-radius: 15px;
+
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: top;
+    background-image: url("../img/bgImg/bg_sandbank--handle.svg");
+
+
+    &.modal-backdrop-slide-up {
+        top: 5%;
+    }
+
+    &.modal-backdrop-slide-down {
+        top: 100%;
+    }
+}
+
+.close-button {
+    float: right;
+    margin-top: 10px;
+    margin-right: 10px;
 }
 
 .card-progress { // parent ele
@@ -26,6 +50,7 @@
 
 #display-modal-text {
     text-align: center;
+    padding-bottom: 5px;
 }
 
 .datapoint-card-container {
