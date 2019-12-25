@@ -1,10 +1,5 @@
-
-<!-- TODO: Set displayProgressModal to true when viewing the entire table.-->
 <div ng-if="displayingProgressModal" class="modal-backdrop" ng-class="{'modal-backdrop-slide-up' : slideModalUp, 'modal-backdrop-slide-down' : !slideModalUp}">
-	<button
-	type="button"
-	class="button close-button"
-	ng-click="hideProgressModal()">X</button>
+	<button type="button"class="button close-button" ng-click="hideProgressModal()">X</button>
 	<br/>
 	<div>
 		<canvas id="lineCanvas"></canvas>
@@ -16,10 +11,7 @@
 	<div ng-if="noCompletedSessions" class="card-body card-progress">Complete your first quiz or quest to see your progress history.</div>
 	<div ng-if="!noCompletedSessions" class="card-body card-progress">
 		<div id="display-modal-text">
-			<button
-				type="button"
-				class="button button-royal"
-				ng-click="displayProgressModal()">View Line Graph of Progress</button>
+			<button type="button" class="button button-royal" ng-click="displayProgressModal()">View Line Graph of Progress</button>
 		</div>
 		<ion-scroll>
 			<ion-list ng-repeat="dataPoint in dashboardDataPoints">
@@ -30,9 +22,4 @@
 			</ion-list>
 		</ion-scroll>
 	</div>
-
-	<div class="card-foot">
-	 <!-- USER INPUT BTNS GO HERE -->
-	</div> <!-- card-foot -->
-
 </div>

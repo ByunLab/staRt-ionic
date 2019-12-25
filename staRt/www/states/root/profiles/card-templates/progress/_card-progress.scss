@@ -11,25 +11,14 @@
     z-index: 999;
     opacity: 1.0;
     background-color: #FCF3DC;
-    overflow-y: auto;
     transition: top 0.5s;
     transition-timing-function: ease-in;
     -moz-border-radius: 15px;
     -webkit-border-radius: 15px;
 
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: top;
-    background-image: url("../img/bgImg/bg_sandbank--handle.svg");
+    &.modal-backdrop-slide-up {top: 5%;}
 
-
-    &.modal-backdrop-slide-up {
-        top: 5%;
-    }
-
-    &.modal-backdrop-slide-down {
-        top: 100%;
-    }
+    &.modal-backdrop-slide-down {top: 100%;}
 }
 
 .close-button {
@@ -38,19 +27,14 @@
     margin-right: 10px;
 }
 
-.card-progress { // parent ele
+.card-progress {
 	ion-item {
 		border-bottom: 1px solid lightgray;
 	}
 }
 
-#scroll-element {
-    height: 100vh;
-}
-
 #display-modal-text {
     text-align: center;
-    padding-bottom: 5px;
 }
 
 .datapoint-card-container {
@@ -69,11 +53,3 @@
     text-align: right;
     width: 50%;
 }
-// Legacy: This was used inside of the modal-backdrop. The height/width/z-index may be useful for when you try to setup the line graph.
-/*
-.progress-table {
-    height: 90vh;
-    width: 90vh;
-    z-index: 11;
-}
-*/

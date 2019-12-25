@@ -25,12 +25,10 @@ function compareRecordings(ra, rb) {
 
 ( function(  )
 {
-	var profiles = angular.module( 'profiles');
+	var profiles = angular.module( 'profiles' );
 
 	profiles.controller('ProfilesController', function($scope, $timeout, $localForage, AutoService, FirebaseService, StartUIState, NotifyingService, ProfileService, UploadService, UtilitiesService, $rootScope, $state, $cordovaDialogs)
 	{
-		console.log('profiles controller here');
-
 		// Nota Bene: A valid profile must have the following kv pairs:
 		// "name" (string) the name of the profile
 		// "uuid" (string) some string that is unique to each account
@@ -81,6 +79,7 @@ function compareRecordings(ra, rb) {
 
 		function init()
 		{
+
 			$scope.noCompletedSessions = false;
 			$scope.displayingProgressModal = false;
 			$scope.slideModalUp = false;
@@ -124,46 +123,37 @@ function compareRecordings(ra, rb) {
 				$scope.noCompletedSessions = true;
 			};
 
-
 			var isQuest = function (recordingSession) {return recordingSession.probe == 'quest';};
 
 			var isQuiz = function(recordingSession) {return isQuest(recordingSession);};
 
 			var setProgressDashboardData = function() {
-				console.log("spD called");
 				var dashboardDataPoints = [];
 				var recordingSessionHistory = $scope.data.currentProfile.recordingSessionHistory;
 
 				if (!recordingSessionHistory) {
-					console.log('its empty');
-					handleEmptyRecordingHistory();
-					return;
+					return handleEmptyRecordingHistory();
 				}
 
-				console.log('recording session history: %o', recordingSessionHistory);
 				var completedSessions = recordingSessionHistory.filter(function (recordingSession) {return UtilitiesService.recordingSessionIsComplete(recordingSession);});
 
-				if (completedSessions.length == 0) {
-					console.log('empty completed sessions');
-					handleEmptyRecordingHistory();
-					return;
+				if (completedSessions.length === 0) {
+					return handleEmptyRecordingHistory();
 				}
 
 				$scope.noCompletedSessions = false;
 
-
 				completedSessions.forEach(function (recordingSession) {
-					//console.log(recordingSession);
 					var dataPoint = {};
 
 					var questOrQuizStr = isQuest(recordingSession) ? 'Quest' : 'Quiz';
 					dataPoint['sessionDescription'] = recordingSession.type.trim() + ' ' + questOrQuizStr;
-					dataPoint['date'] = new Date(recordingSession.endTimestamp); // TODO: Convert to datestring.UtilitiesService.formatDate(
+					dataPoint['date'] = new Date(recordingSession.endTimestamp);
 
 					var timeSeconds = (recordingSession.endTimestamp - recordingSession.startTimestamp);
 					dataPoint['durationString'] = timeToMinutesSeconds(timeSeconds);
 
-					var CORRECT_RATING = 3;
+					var CORRECT_RATING = 3; // aka gold rating.
 					var SILVER_RATING = 2;
 					var BRONZE_RATING = 1;
 
@@ -178,16 +168,10 @@ function compareRecordings(ra, rb) {
 
 					recordingSession.ratings.forEach(function(ratingData) {
 						var rating = ratingData.rating;
-						if (rating === SILVER_RATING) {
-							dataPoint['totalSilver'] += 1;
-						}
-						if (rating === BRONZE_RATING) {
-							dataPoint['totalBronze'] += 1;
-						}
+						if (rating === SILVER_RATING) {dataPoint['totalSilver'] += 1;}
+						if (rating === BRONZE_RATING) {dataPoint['totalBronze'] += 1;}
 						dataPoint['totalScore'] += rating;
 					});
-
-
 
 					dataPoint['trialsCompleted'] = trialsCompleted;
 					dataPoint['possiblePoints'] = trialsCompleted * 3;
@@ -195,9 +179,9 @@ function compareRecordings(ra, rb) {
 					dataPoint['percentCorrect'] = percentCorrect;
 					dataPoint['performanceString'] = trialsCorrect + '/' + trialsCompleted + ' - ' + percentCorrect + '%';
 
-
 					dashboardDataPoints.push(dataPoint);
 				});
+
 				dashboardDataPoints.sort(function(ra, rb) {return rb.date - ra.date;});
 				$timeout($scope.dashboardDataPoints = dashboardDataPoints);
 			};
@@ -228,8 +212,6 @@ function compareRecordings(ra, rb) {
 					} else {
 						$scope.data.lpcOrder = 35; // updates display
 					}
-
-
 
 					$scope.updateRecordingsList();
 					setProgressDashboardData();
@@ -277,29 +259,25 @@ function compareRecordings(ra, rb) {
 
 		$scope.displayProgressModal = function () {
 			$scope.displayingProgressModal = true;
-			$timeout(function() {$scope.setupLineGraph($scope.dashboardDataPoints); $scope.slideModalUp = true;}, 15); // 15ms timeout to have the slide up animation word;
+			// We need to have a delay before we set slideModalUp to true.
+			// slideModalUp changes the top position property on the line graph container modal.
+			// if slideModalUp is true at the same time displayingProgressModal is true, then there is no
+			// transition that occurs for the top position.
+			$timeout(function() {$scope.setupLineGraph($scope.dashboardDataPoints); $scope.slideModalUp = true;}, 15);
 		};
 
 		$scope.hideProgressModal = function () {
 			$timeout(function() {$scope.slideModalUp = false;});
+			// See comment in displayProgressModal about the reason for the 15ms delay.
 			$timeout(function() {$scope.displayingProgressModal = false;}, 15);
 		};
 
-		// Note this function does not work if the lineCanvas is being hidden via ng-hide.
 		$scope.setupLineGraph = function (dashboardDataPoints) {
-
-			/*
-			<td>{{dataPoint.sessionDescription}}</td>
-			<td>{{dataPoint.performanceString}}</td>
-			percentCorrect
-			<td>{{dataPoint.durationString}}</td>
-			<td>{{dataPoint.date | date:"fullDate"}}</td>
-*/
 			var labels = [];
 			var data = [];
 			var sessionNumber = dashboardDataPoints.length;
 			dashboardDataPoints.forEach(function (dataPoint) {
-				// The extra space before Session is there so the titles of the tooltips have a space.
+				// The extra space before Session is there so the titles in the tooltips have a space.
 				labels.push(dataPoint['sessionDescription'] + '\n' + ' Session #' + sessionNumber--);
 				data.push(
 					{
@@ -321,6 +299,8 @@ function compareRecordings(ra, rb) {
 
 			var MAX_SESSIONS_TO_SHOW = 40;
 
+			// If we have too many sessions the data will get ugly, so we only show the MAX_SESSIONS_TO_SHOW
+			// most recent sessions in the line graph.
 			if (data.length > MAX_SESSIONS_TO_SHOW) {
 				data = data.slice(data.length - MAX_SESSIONS_TO_SHOW, data.length);
 				labels = labels.slice(labels.length - MAX_SESSIONS_TO_SHOW, labels.length);
