@@ -118,10 +118,7 @@ function compareRecordings(ra, rb) {
 
 			$rootScope.initParticipants();
 
-			var handleEmptyRecordingHistory = function() {
-				// Switches the scope variable so that on the progress dashboard something such as "No Recording History Data For User, Start Your First Quest"
-				$scope.noCompletedSessions = true;
-			};
+			var handleEmptyRecordingHistory = function() {$scope.noCompletedSessions = true;};
 
 			var isQuest = function (recordingSession) {return recordingSession.probe == 'quest';};
 
@@ -131,15 +128,11 @@ function compareRecordings(ra, rb) {
 				var dashboardDataPoints = [];
 				var recordingSessionHistory = $scope.data.currentProfile.recordingSessionHistory;
 
-				if (!recordingSessionHistory) {
-					return handleEmptyRecordingHistory();
-				}
+				if (!recordingSessionHistory) {return handleEmptyRecordingHistory();}
 
 				var completedSessions = recordingSessionHistory.filter(function (recordingSession) {return UtilitiesService.recordingSessionIsComplete(recordingSession);});
 
-				if (completedSessions.length === 0) {
-					return handleEmptyRecordingHistory();
-				}
+				if (completedSessions.length === 0) {return handleEmptyRecordingHistory();}
 
 				$scope.noCompletedSessions = false;
 
@@ -261,8 +254,7 @@ function compareRecordings(ra, rb) {
 			$scope.displayingProgressModal = true;
 			// We need to have a delay before we set slideModalUp to true.
 			// slideModalUp changes the top position property on the line graph container modal.
-			// if slideModalUp is true at the same time displayingProgressModal is true, then there is no
-			// transition that occurs for the top position.
+			// if slideModalUp is true at the same time displayingProgressModal is true, then no transition animations occurs.
 			$timeout(function() {$scope.setupLineGraph($scope.dashboardDataPoints); $scope.slideModalUp = true;}, 15);
 		};
 
@@ -289,18 +281,17 @@ function compareRecordings(ra, rb) {
 						totalScore: dataPoint['totalScore'],
 						possiblePoints: dataPoint['possiblePoints'],
 						y: dataPoint['percentCorrect'],
-
 					});
 			});
 
-			// dashboard data points are stored from most recent to least recent, so first we need to reverse the graph.
+			// dashboard data points are stored from most to least recent, we want the reverse order for our line graph.
 			labels.reverse();
 			data.reverse();
 
 			var MAX_SESSIONS_TO_SHOW = 40;
 
-			// If we have too many sessions the data will get ugly, so we only show the MAX_SESSIONS_TO_SHOW
-			// most recent sessions in the line graph.
+			// With too many sessions being displayed the line graph becomes cramped.
+			// Thus, we only show the MAX_SESSIONS_TO_SHOW most recent sessions.
 			if (data.length > MAX_SESSIONS_TO_SHOW) {
 				data = data.slice(data.length - MAX_SESSIONS_TO_SHOW, data.length);
 				labels = labels.slice(labels.length - MAX_SESSIONS_TO_SHOW, labels.length);
@@ -321,6 +312,9 @@ function compareRecordings(ra, rb) {
 				},
 
 				options: {
+					legend: {
+						display: false
+					},
 					scales: {
 						yAxes: [{
 							scaleLabel: {
@@ -340,6 +334,11 @@ function compareRecordings(ra, rb) {
 						}]
 					},
 					tooltips: {
+						custom: function(tooltip) {
+							if (!tooltip) return;
+							// disable displaying the color box;
+							tooltip.displayColors = false;
+						},
 						enabled: true,
 						mode: 'single',
 						callbacks: {
@@ -358,6 +357,8 @@ function compareRecordings(ra, rb) {
 					}
 				},
 
+				// This puts new lines on the x axis labels.
+				// https://stackoverflow.com/questions/37090625/chartjs-new-lines-n-in-x-axis-labels-or-displaying-more-information-around-ch (archived: http://archive.is/wip/VY6YY)
 				plugins: [{
 					beforeInit: function (chart) {
 						chart.data.labels.forEach(function (e, i, a) {

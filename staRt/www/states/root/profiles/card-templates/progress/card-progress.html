@@ -1,5 +1,6 @@
 <div ng-if="displayingProgressModal" class="modal-backdrop" ng-class="{'modal-backdrop-slide-up' : slideModalUp, 'modal-backdrop-slide-down' : !slideModalUp}">
 	<button type="button"class="button close-button" ng-click="hideProgressModal()">X</button>
+	<div class="participant-name">{{data.currentProfile.name}}'s Progress Over Time</div>
 	<br/>
 	<div>
 		<canvas id="lineCanvas"></canvas>
