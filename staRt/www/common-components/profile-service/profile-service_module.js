@@ -196,7 +196,7 @@ profileService.factory('ProfileService', function($rootScope, $state, $localFora
 
 	function _resumeNormalRecordingSession(profile, sessionid) {
 		var recordingSession = _getRecordingSessionDataById(profile, sessionid);
-		if (recordingSession.count <= recordingSession.ratings.length) {
+		if (UtilitiesService.recordingSessionIsComplete(recordingSession)) {
 			// Ideally we don't even show the resume button for completed sessions.
 			$cordovaDialogs.alert(
 				'You cannot resume a session that has already been completed.',

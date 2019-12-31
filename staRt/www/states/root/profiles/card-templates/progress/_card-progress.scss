@@ -1,0 +1,54 @@
+
+// TODO: Calculate dimensions so that the modal is centered properly on the screen.
+.modal-backdrop {
+    position: fixed;
+    top: 90%;
+    width: 85vw;
+    height: 100vh;
+    margin-left: $col-w * 1.4;
+    margin-right: $col-w * 1.4;
+    z-index: 999;
+    opacity: 1.0;
+    background-color: #FCF3DC;
+    transition: top 0.5s;
+    transition-timing-function: ease-in;
+    -moz-border-radius: 15px;
+    -webkit-border-radius: 15px;
+
+    &.modal-backdrop-slide-up {top: 5%;}
+
+    &.modal-backdrop-slide-down {top: 100%;}
+}
+
+.close-button {
+    float: right;
+    margin-top: 10px;
+    margin-right: 10px;
+}
+
+.card-progress {
+	ion-item {
+		border-bottom: 1px solid lightgray;
+	}
+}
+
+#display-modal-text {
+    text-align: center;
+}
+
+.datapoint-card-container {
+    position: absolute;
+}
+
+.datapoint-card-left {
+    position: relative;
+    float: left;
+    width: 50%;
+}
+
+.datapoint-card-right {
+    position: relative;
+    float: left;
+    text-align: right;
+    width: 50%;
+}

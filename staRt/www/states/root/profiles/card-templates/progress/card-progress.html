@@ -1,12 +1,26 @@
-<div class="card-content">
-
-	<div class="card-body">
-		<h3>UNDER DEVELOPMENT</h3>
-		<p>Interactive chart and/or table of user progress will be displayed here.</p>
+<div ng-if="displayingProgressModal" class="modal-backdrop" ng-class="{'modal-backdrop-slide-up' : slideModalUp, 'modal-backdrop-slide-down' : !slideModalUp}">
+	<button type="button"class="button close-button" ng-click="hideProgressModal()">X</button>
+	<div class="participant-name">{{data.currentProfile.name}}'s Progress Over Time</div>
+	<br/>
+	<div>
+		<canvas id="lineCanvas"></canvas>
 	</div>
+</div>
 
-	<div class="card-foot">
-	 <!-- USER INPUT BTNS GO HERE -->
-	</div> <!-- card-foot -->
-	
+
+<div class="card-content">
+	<div ng-if="noCompletedSessions" class="card-body card-progress">Complete your first quiz or quest to see your progress history.</div>
+	<div ng-if="!noCompletedSessions" class="card-body card-progress">
+		<div id="display-modal-text">
+			<button type="button" class="button button-royal" ng-click="displayProgressModal()">View Line Graph of Progress</button>
+		</div>
+		<ion-scroll>
+			<ion-list ng-repeat="dataPoint in dashboardDataPoints">
+				<ion-item ng-class="datapoint-card-container">
+					<div class="datapoint-card-left">{{dataPoint.sessionDescription}}<br/>{{dataPoint.date | date:"EEE MMM d, yyyy"}}</div>
+					<div class="datapoint-card-right">{{dataPoint.performanceString}}<br/>{{dataPoint.durationString}}</div>
+				</ion-item>
+			</ion-list>
+		</ion-scroll>
+	</div>
 </div>

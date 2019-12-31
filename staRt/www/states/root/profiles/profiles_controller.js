@@ -27,7 +27,7 @@ function compareRecordings(ra, rb) {
 {
 	var profiles = angular.module( 'profiles' );
 
-	profiles.controller('ProfilesController', function($scope, $timeout, $localForage, AutoService, FirebaseService, StartUIState, NotifyingService, ProfileService, UploadService, $rootScope, $state, $cordovaDialogs)
+	profiles.controller('ProfilesController', function($scope, $timeout, $localForage, AutoService, FirebaseService, StartUIState, NotifyingService, ProfileService, UploadService, UtilitiesService, $rootScope, $state, $cordovaDialogs)
 	{
 		// Nota Bene: A valid profile must have the following kv pairs:
 		// "name" (string) the name of the profile
@@ -65,9 +65,24 @@ function compareRecordings(ra, rb) {
 			});
 		};
 
+		var getRecordingTimeString = function (recording) {
+			if (!recording) {
+				return 'Unknown';
+			}
+			var totalTime = dateFromString(recording.endDate) - dateFromString(recording.date);
+			return timeToMinutesSeconds(totalTime);
+		};
+
+		var timeToMinutesSeconds = function (totalTime) {
+			return Math.floor(totalTime / 60000) + ' min, ' + Math.floor((totalTime % 60000) / 1000) + ' sec';
+		};
+
 		function init()
 		{
 
+			$scope.noCompletedSessions = false;
+			$scope.displayingProgressModal = false;
+			$scope.slideModalUp = false;
 			$scope.isEditing = false;
 			$scope.uploadCount = 0;
 			$scope.displayName = FirebaseService.userName();
@@ -103,6 +118,67 @@ function compareRecordings(ra, rb) {
 
 			$rootScope.initParticipants();
 
+			var handleEmptyRecordingHistory = function() {$scope.noCompletedSessions = true;};
+
+			var isQuest = function (recordingSession) {return recordingSession.probe == 'quest';};
+
+			var isQuiz = function(recordingSession) {return isQuest(recordingSession);};
+
+			var setProgressDashboardData = function() {
+				var dashboardDataPoints = [];
+				var recordingSessionHistory = $scope.data.currentProfile.recordingSessionHistory;
+
+				if (!recordingSessionHistory) {return handleEmptyRecordingHistory();}
+
+				var completedSessions = recordingSessionHistory.filter(function (recordingSession) {return UtilitiesService.recordingSessionIsComplete(recordingSession);});
+
+				if (completedSessions.length === 0) {return handleEmptyRecordingHistory();}
+
+				$scope.noCompletedSessions = false;
+
+				completedSessions.forEach(function (recordingSession) {
+					var dataPoint = {};
+
+					var questOrQuizStr = isQuest(recordingSession) ? 'Quest' : 'Quiz';
+					dataPoint['sessionDescription'] = recordingSession.type.trim() + ' ' + questOrQuizStr;
+					dataPoint['date'] = new Date(recordingSession.endTimestamp);
+
+					var timeSeconds = (recordingSession.endTimestamp - recordingSession.startTimestamp);
+					dataPoint['durationString'] = timeToMinutesSeconds(timeSeconds);
+
+					var CORRECT_RATING = 3; // aka gold rating.
+					var SILVER_RATING = 2;
+					var BRONZE_RATING = 1;
+
+					var trialsCompleted = recordingSession.ratings.length;
+					var trialsCorrect = recordingSession.ratings.filter(function(ratingData) {return ratingData.rating == CORRECT_RATING;}).length;
+					var percentCorrect = Math.floor((trialsCorrect /trialsCompleted * 100) + .5);
+
+					dataPoint['totalGold'] = trialsCorrect;
+					dataPoint['totalSilver'] = 0;
+					dataPoint['totalBronze'] = 0;
+					dataPoint['totalScore'] = 0;
+
+					recordingSession.ratings.forEach(function(ratingData) {
+						var rating = ratingData.rating;
+						if (rating === SILVER_RATING) {dataPoint['totalSilver'] += 1;}
+						if (rating === BRONZE_RATING) {dataPoint['totalBronze'] += 1;}
+						dataPoint['totalScore'] += rating;
+					});
+
+					dataPoint['trialsCompleted'] = trialsCompleted;
+					dataPoint['possiblePoints'] = trialsCompleted * 3;
+					dataPoint['trialsScoredCorrect'] = dataPoint['totalGold'];
+					dataPoint['percentCorrect'] = percentCorrect;
+					dataPoint['performanceString'] = trialsCorrect + '/' + trialsCompleted + ' - ' + percentCorrect + '%';
+
+					dashboardDataPoints.push(dataPoint);
+				});
+
+				dashboardDataPoints.sort(function(ra, rb) {return rb.date - ra.date;});
+				$timeout($scope.dashboardDataPoints = dashboardDataPoints);
+			};
+
 			// Triggered when user selects a different profile from the drawer + on app startupp.
 			// Note this function normally fires twice. This is because when a user selects a profile, we immediately switch
 			// the currentProfile immediately, and then later switch it again once we update from firebase.
@@ -131,6 +207,7 @@ function compareRecordings(ra, rb) {
 					}
 
 					$scope.updateRecordingsList();
+					setProgressDashboardData();
 				}
 			});
 
@@ -171,6 +248,127 @@ function compareRecordings(ra, rb) {
 			$scope.setIsEditing(true);
 			$scope.slpView = false;
 			$scope.setCardState('profile');
+		};
+
+		$scope.displayProgressModal = function () {
+			$scope.displayingProgressModal = true;
+			// We need to have a delay before we set slideModalUp to true.
+			// slideModalUp changes the top position property on the line graph container modal.
+			// if slideModalUp is true at the same time displayingProgressModal is true, then no transition animations occurs.
+			$timeout(function() {$scope.setupLineGraph($scope.dashboardDataPoints); $scope.slideModalUp = true;}, 15);
+		};
+
+		$scope.hideProgressModal = function () {
+			$timeout(function() {$scope.slideModalUp = false;});
+			// See comment in displayProgressModal about the reason for the 15ms delay.
+			$timeout(function() {$scope.displayingProgressModal = false;}, 15);
+		};
+
+		$scope.setupLineGraph = function (dashboardDataPoints) {
+			var labels = [];
+			var data = [];
+			var sessionNumber = dashboardDataPoints.length;
+			dashboardDataPoints.forEach(function (dataPoint) {
+				// The extra space before Session is there so the titles in the tooltips have a space.
+				labels.push(dataPoint['sessionDescription'] + '\n' + ' Session #' + sessionNumber--);
+				data.push(
+					{
+						date: dataPoint['date'],
+						performanceString: dataPoint['performanceString'],
+						totalGold: dataPoint['totalGold'],
+						totalSilver: dataPoint['totalSilver'],
+						totalBronze: dataPoint['totalBronze'],
+						totalScore: dataPoint['totalScore'],
+						possiblePoints: dataPoint['possiblePoints'],
+						y: dataPoint['percentCorrect'],
+					});
+			});
+
+			// dashboard data points are stored from most to least recent, we want the reverse order for our line graph.
+			labels.reverse();
+			data.reverse();
+
+			var MAX_SESSIONS_TO_SHOW = 40;
+
+			// With too many sessions being displayed the line graph becomes cramped.
+			// Thus, we only show the MAX_SESSIONS_TO_SHOW most recent sessions.
+			if (data.length > MAX_SESSIONS_TO_SHOW) {
+				data = data.slice(data.length - MAX_SESSIONS_TO_SHOW, data.length);
+				labels = labels.slice(labels.length - MAX_SESSIONS_TO_SHOW, labels.length);
+			}
+
+			this.lineChart = new Chart(angular.element( document.querySelector('#lineCanvas')), {
+				type: 'line',
+				data: {
+					labels: labels,
+					datasets: [
+						{
+							label: $scope.data.currentProfile.name + '\'s Progress',
+							data: data,
+							borderColor: '#3e95cd',
+							fill: false
+						}
+					],
+				},
+
+				options: {
+					legend: {
+						display: false
+					},
+					scales: {
+						yAxes: [{
+							scaleLabel: {
+								display: true,
+								labelString: 'Percent Trials Correct'
+							},
+							ticks: {
+								max: 100,
+								min: 0
+							}
+						}],
+						xAxes: [{
+							scaleLabel: {
+								display: false,
+								labelString: 'Session'
+							}
+						}]
+					},
+					tooltips: {
+						custom: function(tooltip) {
+							if (!tooltip) return;
+							// disable displaying the color box;
+							tooltip.displayColors = false;
+						},
+						enabled: true,
+						mode: 'single',
+						callbacks: {
+							label: function(tooltipItems, data) {
+								var multiStringText = [];
+								var dataPoint = data.datasets[0].data[tooltipItems.index];
+								multiStringText.push(dataPoint.performanceString + ' trials correct.');
+								multiStringText.push('Total Gold: ' + dataPoint.totalGold);
+								multiStringText.push('Total Silver: ' +  dataPoint.totalSilver);
+								multiStringText.push('Total Bronze: ' + dataPoint.totalBronze);
+								multiStringText.push('Total Points / Total Possible Points: ' + dataPoint.totalScore + '/'  + dataPoint.possiblePoints);
+								multiStringText.push('Completed on ' + UtilitiesService.formatDate(dataPoint.date, 'ddd MMM d, yyyy'));
+								return multiStringText;
+							}
+						}
+					}
+				},
+
+				// This puts new lines on the x axis labels.
+				// https://stackoverflow.com/questions/37090625/chartjs-new-lines-n-in-x-axis-labels-or-displaying-more-information-around-ch (archived: http://archive.is/wip/VY6YY)
+				plugins: [{
+					beforeInit: function (chart) {
+						chart.data.labels.forEach(function (e, i, a) {
+							if (/\n/.test(e)) {
+								a[i] = e.split(/\n/);
+							}
+						});
+					}
+				}],
+			});
 		};
 
 
@@ -311,8 +509,7 @@ function compareRecordings(ra, rb) {
 							.then(function(status) {
 								recording.uploaded = !!status.uploaded;
 								if (recording.endDate && recording.endDate.length > 0) {
-									recording.totalTime = dateFromString(recording.endDate) - dateFromString(recording.date);
-									recording.totalTimeString = Math.floor(recording.totalTime / 60000) + ' min, ' + ((recording.totalTime % 60000) / 1000) + ' sec';
+									recording.totalTimeString = getRecordingTimeString(recording);
 								}
 							})
 					);
