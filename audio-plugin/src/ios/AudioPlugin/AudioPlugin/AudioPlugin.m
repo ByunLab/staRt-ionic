@@ -42,6 +42,7 @@
 
 - (void)getLPCCoefficients:(CDVInvokedUrlCommand *)command
 {
+    [self.commandDelegate runInBackground:^{
     NSNumber *xScaleFactor = @(self.audioManager.lpcCalculator.frequencyScaling);
     NSDictionary *coefficientsDict = [self.audioManager.lpcCalculator fetchCurrentCoefficients];
     NSArray *audioCoefficients = [coefficientsDict objectForKey:@"coefficients"];
@@ -54,6 +55,7 @@
     CDVPluginResult *result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK
                                             messageAsDictionary:resultDict];
     [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
+			}];
 }
 
 - (void)startRecording:(CDVInvokedUrlCommand *)command
@@ -63,7 +65,7 @@
                                                     messageAsString:@"Can't start recording--already recording"];
         [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
     }
-    
+
     LPCProfileDescription *description;
     NSDictionary *accountAsDict = [command argumentAtIndex:0 withDefault:nil andClass:[NSDictionary class]];
 	NSString *userString = [command argumentAtIndex:1 withDefault:@"" andClass:[NSString class]];
@@ -132,7 +134,7 @@
         [self sendInvalidActionResultWithMessage:@"Must pass valid JSON description of a recording" command:command];
         return;
     }
-    
+
     NSString *metadataFile = [[recordingAsDict objectForKey:LPCRecordingSessionMetadataKey] lastPathComponent];
     LPCRecordingSession *session = [LPCRecordingSession sessionWithMetadataFile:metadataFile];
 	if (session) {
@@ -140,8 +142,8 @@
 	}
 	[self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK]
 								callbackId:command.callbackId];
-	
-    
+
+
 }
 
 - (void)deleteAllRecordings:(CDVInvokedUrlCommand *)command
