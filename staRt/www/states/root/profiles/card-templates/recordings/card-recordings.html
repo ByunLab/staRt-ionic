@@ -7,7 +7,7 @@
 				ng-class="{uploaded:recording.uploaded, not_uploaded:!recording.uploaded}"
 			>
 				<ion-item ng-class="{ selected: recording.selected }">
-					<div>{{ recording.date }} </div>
+					<div>{{ recording.dateAsDate | date:"EEE MMM d, yyyy" }} </div>
 					<div>{{ recording.userString }} </div>
 					<div>{{ recording.totalTimeString }} </div>
 					<div ng-if=recording.uploaded class="upload_badge uploaded">Uploaded</div>
@@ -16,7 +16,7 @@
 					<button class="button buttcon-calm" ng-click="recordingClicked(recording)">Queue Upload</button>
 				</ion-item>
 			</ion-list>
-			
+
 		</ion-scroll>
 
 		<p>{{ data.uploadMessage }}</p>

@@ -502,6 +502,7 @@ function compareRecordings(ra, rb) {
 				var statusesToFetch = [];
 				recordings.sort(compareRecordings); // Prefer the recordings sorted from present to past
 				recordings.forEach(function(recording) {
+					recording.dateAsDate = dateFromString(recording.date); // We need an actual date object to display the date nicely with angularjs. recording.date is a string.
 					statusesToFetch.push(
 						UploadService.getUploadStatusForRecordingSessionID(sessionIDForRecording(recording))
 							.then(function(status) {
