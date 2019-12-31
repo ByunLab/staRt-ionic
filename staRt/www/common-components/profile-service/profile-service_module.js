@@ -178,9 +178,11 @@ profileService.factory('ProfileService', function($rootScope, $state, $localFora
 
 	function _getRecordingSessionDataById(profile, sessionid) {
 		var recordingSessions = profile.recordingSessionHistory.filter(function (recordingSession) {return recordingSession.id === sessionid;});
+		// This can happen when the user tries to resume a session that they recently quit out of.
+		// The problem is that the session is still uploading to firebase.
 		if (recordingSessions.length == 0) {
 			$cordovaDialogs.alert(
-				'This recording session cannot be resumed.',
+				'This recording session cannot be resumed. Please wait a few seconds and try again.',
 				'Cannot resume session.',
 				'Okay'
 			);
