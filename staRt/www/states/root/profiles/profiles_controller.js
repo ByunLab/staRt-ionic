@@ -122,8 +122,6 @@ function compareRecordings(ra, rb) {
 
 			var isQuest = function (recordingSession) {return recordingSession.probe == 'quest';};
 
-			var isQuiz = function(recordingSession) {return isQuest(recordingSession);};
-
 			var setProgressDashboardData = function() {
 				var dashboardDataPoints = [];
 				var recordingSessionHistory = $scope.data.currentProfile.recordingSessionHistory;
