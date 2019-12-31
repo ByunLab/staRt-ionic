@@ -350,7 +350,7 @@ function compareRecordings(ra, rb) {
 								multiStringText.push('Total Silver: ' +  dataPoint.totalSilver);
 								multiStringText.push('Total Bronze: ' + dataPoint.totalBronze);
 								multiStringText.push('Total Points / Total Possible Points: ' + dataPoint.totalScore + '/'  + dataPoint.possiblePoints);
-								multiStringText.push('Completed on ' + dataPoint.date);
+								multiStringText.push('Completed on ' + UtilitiesService.formatDate(dataPoint.date, 'ddd MMM d, yyyy'));
 								return multiStringText;
 							}
 						}
