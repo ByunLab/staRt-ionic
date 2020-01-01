@@ -411,6 +411,12 @@ lpcDirective.controller( 'LpcDirectiveController',
 
 		$scope.myURL = $state.current.name;
 
+		// BEGIN PAUSE-SETUP
+		if ($rootScope.lpcPauseListenersSet) {
+			document.removeEventListener('pause', $scope.onPause);
+			document.removeEventListener('resume', $scope.onResume);
+		}
+
 		$scope.onPause = function () {
 			console.log('Pausing LPC.');
 			$scope.active = false;
@@ -421,10 +427,11 @@ lpcDirective.controller( 'LpcDirectiveController',
 			$scope.animate();
 		};
 
-		// The "pause" event triggers when the home button is pressed on an ios device.
-		// The "resume" event triggers when an app is reopened on an ios device.
 		document.addEventListener('pause', $scope.onPause);
 		document.addEventListener('resume', $scope.onResume);
+		$rootScope.lpcPauseListenersSet = true;
+		// END PAUSE-SETUP
+
 
 		var unsubscribe = $rootScope.$on('$urlChangeStart', function(event, next) {
 			if (next === $scope.myURL) {
@@ -437,9 +444,6 @@ lpcDirective.controller( 'LpcDirectiveController',
 				fzText = undefined;
 			}
 
-			// The event listeners will persist even when the LPC closes, so we need to explicitly remove them.
-			document.removeEventListener('pause', $scope.onPause);
-			document.removeEventListener('resume', $scope.onResume);
 		});
 
 		$scope.$on('$destroy', function() {
