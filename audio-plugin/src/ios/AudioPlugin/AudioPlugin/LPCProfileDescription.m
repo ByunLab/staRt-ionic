@@ -68,11 +68,11 @@ static NSArray *metadataParams;
     LPCProfileDescription *desc = [[LPCProfileDescription alloc] init];
     desc.mutableMetadata = [NSMutableDictionary dictionary];
     desc.uuid = [rows[0] objectForKey:@"uuid"];
-	
+
 	if ([rows[0] objectForKey:@"email"]) {
 		[desc.mutableMetadata setObject:[rows[0] objectForKey:@"email"] forKey:LPCProfileDescriptionKeyEmail];
 	}
-	
+
     [desc.mutableMetadata setObject:[rows[0] objectForKey:@"username"] forKey:LPCProfileDescriptionKeyName];
     [desc.mutableMetadata setObject:[rows[0] objectForKey:@"age"] forKey:LPCProfileDescriptionKeyAge];
     [desc.mutableMetadata setObject:[rows[0] objectForKey:@"gender"] forKey:LPCProfileDescriptionKeyGender];
@@ -91,7 +91,7 @@ static NSArray *metadataParams;
 
 // Just in case javascript sends us a poorly formatted dictionary, we don't necessarily want to vomit an exception
 - (void) setValue:(id)value forUndefinedKey:(NSString *)key {
-	NSLog(@"LPCProfileDescription: Ignoring undefined key: %@", key);
+
 }
 
 @end
