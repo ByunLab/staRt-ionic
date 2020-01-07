@@ -35,118 +35,48 @@
     <div class="sbRow sbBody">
 
       <div class="awardGrid">
+        <div class="awardEle"
+          ng-repeat="award in milestones.display">
 
-        <div class="awardRow topRow">
-
-          <div class="awardEle">
-            <div class="img hsib">
-              <div class="score">
-                {{milestones.highscores.hsib}}
-              </div>
-              <div class="ribbon">High Score in Block</div>
+          <!-- empty state -->
+          <div ng-if="!award.achieved">
+            <div class="awardImg">
+              <div class="awardImg--empty"
+                ng-bind-html="award.emptyText"></div>
+              <div class="ribbon ribbon--empty">{{award.title}}</div>
             </div>
+          </div>
+
+          <!-- achieved state -->
+          <div ng-if="award.achieved">
+            <div class="awardImg" ng-class="award.imgClass">
+              <div class="score"
+                ng-class="award.scoreClass">
+                {{award.score}}
+              </div>
+              <div ng-if="award.scoreText"
+              class="score"
+              ng-class="award.scoreTextClass">
+              {{award.scoreText}}
+            </div>
+              <div class="ribbon">{{award.title}}</div>
+            </div>
+
             <div class="badgeFoot">
               <div class="badgeDate">
-                achieved: 12/17/19
+                achieved: {{award.dateStr}}
               </div>
-              <div class="currentScore">
-                current block: {{scores.block_display_score}}
+              <div class="currentScore"
+                ng-class="{'current--highlight': award.highlight}">
+                {{award.currentText}}:<br/>
+                <span class="currentValue">{{award.currentValue}}&nbsp;{{award.unit}}</span>
               </div>
             </div>
-          </div> <!-- end .awardEle -->
 
-          <div class="awardEle">
-            <div class="img mgib">
-              <div class="score">
-                {{milestones.highscores.mgib}}
-              </div>
-              <div class="ribbon">Most Gold in Block</div>
-            </div>
-            <div class="badgeFoot">
-              <div class="badgeDate">
-                achieved: 12/17/19
-              </div>
-              <div class="currentScore">
-                current block: {{scores.block_goldCount}}
-              </div>
-            </div>
-          </div> <!-- end .awardEle -->
+          </div> <!-- ng-if="award.achieved" -->
 
-          <div class="awardEle">
-            <div class="img streak">
-              <div class="score score-streak">
-                  {{milestones.highscores.streak}}
-              </div>
-              <div class="score streak-text">in a row</div>
-              <div class="ribbon">Gold Streak</div>
-            </div>
-            <div class="badgeFoot">
-              <div class="badgeDate">
-                achieved: 12/17/19
-              </div>
-              <div class="currentScore">
-                current streak: {{scores.streak}}
-              </div>
-            </div>
-          </div> <!-- end .awardEle -->
+        </div> <!-- .awardEle" -->
 
-        </div> <!-- .awardRow -->
-
-        <div class="awardRow bottomRow">
-          <div class="awardEle">
-            <div class="img hsiq">
-              <div class="score">
-                  {{milestones.highscores.hsiq}}
-              </div>
-              <div class="ribbon">High Score in Quest</div>
-            </div>
-            <div class="badgeFoot">
-              <div class="badgeDate">
-                achieved: 12/17/19
-              </div>
-              <div class="currentScore">
-                current quest: {{scores.display_score}}
-              </div>
-            </div>
-          </div> <!-- end .awardEle -->
-
-          <div class="awardEle">
-            <div class="img mgiq">
-              <div class="score">
-                {{milestones.highscores.mgiq}}
-              </div>
-              <div class="ribbon">Most Gold in Quest</div>
-            </div>
-            <div class="badgeFoot">
-              <div class="badgeDate">
-                achieved: 12/17/19
-              </div>
-              <div class="currentScore">
-                current quest: {{scores.session_coins.gold}}
-              </div>
-            </div>
-          </div> <!-- end .awardEle -->
-
-
-          <div class="awardEle">
-            <div class="img perfectBlock">
-                <div class="score score-perfectB">
-                    {{milestones.highscores.perfectBlock}}
-                </div>
-                <div class="score perfectB-text">times</div>
-                <div class="ribbon">Perfect Block</div>
-            </div>
-            <div class="badgeFoot">
-              <div class="badgeDate">
-                achieved: 12/17/19
-              </div>
-              <!-- <div class="currentScore">
-                current session: ##
-              </div> -->
-            </div>
-          </div> <!-- end .awardEle -->
-
-        </div> <!-- .awardRow -->
       </div> <!-- end .awardGrid -->
     </div><!-- end sbBody -->
 

@@ -89,11 +89,11 @@
     display: flex;
     flex-flow: row nowrap;
     justify-content: space-between;
-    //align-items: flex-start; //center;
-    height: $row-h;
+    height: $row-h * 0.75;;
     width: 100%;
-    // border-left: 1px solid pink;
-    // border-right: 1px solid pink;
+    // border: 1px solid pink;
+    //
+    //
 
     h1 { //row
       position: relative;
@@ -109,7 +109,7 @@
       font-weight: 500;
       //width: 100%;
       height: auto;
-      margin-bottom: 0.5rem;
+      //margin-bottom: 0.5rem;
       //border: 1px solid orange;
     }
 
@@ -128,7 +128,7 @@
   } // .headBar
 
 
-  .sbBody {
+  .sbBody { // ----------------------
     position: relative;
     display: flex;
     flex-flow: row nowrap;
@@ -137,160 +137,317 @@
     width: $col-w * 9;
     height: $row-h * 4;
     text-align: left;
-    margin-top: $row-h * 0.15;
+    //margin-top: $row-h * 0.15;
     //border: 1px solid lightBlue;
-  } // end  .sbBody
 
-
-  .awardGrid {
-    position: relative;
-    display: flex;
-    flex-flow: column nowrap;
-    //justify-content: flex-start;
-    width: 100%;
-    height: 100%;
-    color: $c-text-main;
-    //border: 1px solid pink;
-
-    .awardRow {
+    .awardGrid { // layout
       position: relative;
       display: flex;
-      flex-flow: row nowrap;
+      flex-flow: row wrap;
       justify-content: space-between;
       width: 100%;
-      height: $row-h * 1.75;
-      //margin-bottom: 3rem;
-      //border-bottom: 1px solid pink;
-
-      &.topRow { align-items: flex-start; }
-      &.bottomRow { align-items: flex-end; }
+      height: 100%;
+      color: $c-text-main;
+      //border: 1px solid lime;
 
       .awardEle {
         position: relative;
         display: flex;
         flex-flow: column nowrap;
         align-items: center;
-        //padding: 8px;
         width: 33%;
-        height: 100%;
-        font-weight: $bold;
+        height: $row-h * 1.75; //100%;
+        //font-weight: $bold;
         //height: 50%;
         //border: 1px solid pink;
-
-        .img {
-          position: absolute;
-          display: flex;
-          flex-flow: column nowrap;
-          top: 0;
-          left: 0;
-          height: $row-h * 1.25;
-          width: 100%;
-          z-index: 91;
-          background-size: contain;
-          background-repeat: no-repeat;
-          background-position: center;
-          //border: 1px solid pink;
-
-          .score {
-            position: absolute;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            height: auto;
-            top: $row-h * 0.4;
-            left: 0;
-            font-size: 2rem;
-            color: #b28c50;
-            //border: 1px solid lightGreen;
-
-            &.score-streak {
-              display: block;
-              width: auto;
-              top: $row-h * 0.3;
-              left: $col-w * 0.95;
-              //border: 1px solid lightGreen;
-            }
-            &.streak-text {
-              display: block;
-              width: auto;
-              top: $row-h * 0.65;
-              left: $col-w * 0.7;
-              font-size: 1rem;
-              //border: 1px solid pink;
-            }
-            &.score-perfectB {
-              display: block;
-              width: auto;
-              top: $row-h * 0.3;
-              left: $col-w * 1.8;
-              //border: 1px solid lightGreen;
-            }
-            &.perfectB-text {
-              display: block;
-              width: auto;
-              top: $row-h * 0.65;
-              left: $col-w * 1.7;
-              font-size: 1rem;
-              //border: 1px solid pink;
-            }
-          } // .score
-
-          .ribbon {
-            position: absolute;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            top: $row-h * 0.88;
-            left: 0;
-            width: 100%;
-            height: $row-h * 0.3;
-            color: white;
-            font-size: 1rem;
-            // background-image: url('../img/practDir/ribbon.svg');
-            // background-size: 90% 100%;
-            // background-repeat: no-repeat;
-            // background-position: center;
-            //border: 1px solid lightGreen;
-          }
-        } // img
-        .badgeFoot {
-          position: relative;
-          display: flex;
-          flex-flow: column nowrap;
-          top: $row-h * 1.15;
-
-          .badgeDate {
-            position: relative;
-            display: flex;
-            flex-flow: row nowrap;
-            justify-content: center;
-            // left: 0;
-            width: auto;
-            color: $c-text-main;
-            text-align: center;
-            font-weight: 400;
-            font-size: 1rem;
-            //border: 1px solid lightGreen;
-          } // .badgeDate
-
-
-        }
-
-        .currentScore {
-          position: relative;
-          display: flex;
-          flex-flow: row nowrap;
-          justify-content: center;
-          background-color: rgba(255, 255, 255, 0.75);
-          padding: 3px 6px;
-          border-radius: 6px;
-          margin-top: 0.5rem;
-          color: $c-text-main;
-        }
       } // awardEle
-    } // .awardRow
-  } // .awardGrid
+    } // .awardGrid
+  } // end  .sbBody
+
+  .awardImg { // layout
+    position: absolute;
+    display: flex;
+    flex-flow: column nowrap;
+    top: 0;
+    left: 0;
+    height: $row-h * 1.25;
+    width: 100%;
+    z-index: 91;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    //border: 1px solid lightgreen;
+
+    .awardImg--empty {
+      align-self: center;
+      text-align: center;
+      font-weight: normal;
+      height: 100%;
+      width: 70%;
+      padding-top: 1rem;
+      line-height: 1.5rem;
+      //border: 1px solid lightseagreen;
+      .bold {
+        font-weight: bold;
+      }
+    } // .awardImg--empty
+  } //.awardImg
+
+  .ribbon {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top: $row-h * 0.88;
+    left: 0;
+    width: 100%;
+    height: $row-h * 0.3;
+    color: white;
+    font-size: 1rem;
+
+    &.ribbon--empty {
+      background-image: url('../img/practDir/ribbon-outline.svg');
+      background-size: 90% 100%;
+      background-repeat: no-repeat;
+      background-position: center;
+      color: $c-text-main;
+    }
+  } //.ribbon
+
+  .score {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: auto;
+    top: $row-h * 0.4;
+    left: 0;
+    font-size: 2rem;
+    color: #a07e4d; //#b28c50;
+    //border: 1px solid lightGreen;
+
+    &.score-streak {
+      display: block;
+      width: auto;
+      top: $row-h * 0.3;
+      left: $col-w * 0.95;
+      //border: 1px solid lightGreen;
+    }
+    &.streak-text {
+      display: block;
+      width: auto;
+      top: $row-h * 0.65;
+      left: $col-w * 0.7;
+      font-size: 1rem;
+      //border: 1px solid pink;
+    }
+    &.score-perfectB {
+      display: block;
+      width: auto;
+      top: $row-h * 0.3;
+      left: $col-w * 1.8;
+      //border: 1px solid lightGreen;
+    }
+    &.perfectB-text {
+      display: block;
+      width: auto;
+      top: $row-h * 0.65;
+      left: $col-w * 1.7;
+      font-size: 1rem;
+      //border: 1px solid pink;
+    }
+  } // .score
+
+  .badgeFoot {
+    position: relative;
+    display: flex;
+    flex-flow: column nowrap;
+    top: $row-h * 1.15;
+
+    .badgeDate {
+      position: relative;
+      display: flex;
+      flex-flow: row nowrap;
+      justify-content: center;
+      width: auto;
+      color: $c-text-main;
+      text-align: center;
+      font-weight: 400;
+      font-size: 1rem;
+    } // .badgeDate
+
+    .currentScore {
+      position: relative;
+      display: block; //flex;
+      text-align: center;
+      margin-top: 0.5rem;
+      padding: 3px 6px;
+      border-top: 1px solid $c-text-main;
+      color: $c-text-main;
+      font-weight: normal;
+
+      .currentValue { font-weight: bold; }
+
+      &.current--highlight {
+        border-radius: 6px;
+        border: 1px solid $c-text-main;
+      }
+    } // .currentScore
+  } // .badgeFoot
+
+
+
+// OLD
+  // .awardGrid {
+  //   position: relative;
+  //   display: flex;
+  //   flex-flow: column nowrap;
+  //   //justify-content: flex-start;
+  //   width: 100%;
+  //   height: 100%;
+  //   color: $c-text-main;
+  //   //border: 1px solid pink;
+
+  //   .awardRow {
+  //     position: relative;
+  //     display: flex;
+  //     flex-flow: row nowrap;
+  //     justify-content: space-between;
+  //     width: 100%;
+  //     height: $row-h * 1.75;
+  //     //margin-bottom: 3rem;
+  //     //border-bottom: 1px solid pink;
+
+  //     &.topRow { align-items: flex-start; }
+  //     &.bottomRow { align-items: flex-end; }
+
+  //     .awardEle {
+  //       position: relative;
+  //       display: flex;
+  //       flex-flow: column nowrap;
+  //       align-items: center;
+  //       //padding: 8px;
+  //       width: 33%;
+  //       height: 100%;
+  //       font-weight: $bold;
+  //       //height: 50%;
+  //       //border: 1px solid pink;
+
+  //       .img {
+  //         position: absolute;
+  //         display: flex;
+  //         flex-flow: column nowrap;
+  //         top: 0;
+  //         left: 0;
+  //         height: $row-h * 1.25;
+  //         width: 100%;
+  //         z-index: 91;
+  //         background-size: contain;
+  //         background-repeat: no-repeat;
+  //         background-position: center;
+  //         //border: 1px solid pink;
+
+  //         .score {
+  //           position: absolute;
+  //           display: flex;
+  //           justify-content: center;
+  //           align-items: center;
+  //           width: 100%;
+  //           height: auto;
+  //           top: $row-h * 0.4;
+  //           left: 0;
+  //           font-size: 2rem;
+  //           color: #b28c50;
+  //           //border: 1px solid lightGreen;
+
+  //           &.score-streak {
+  //             display: block;
+  //             width: auto;
+  //             top: $row-h * 0.3;
+  //             left: $col-w * 0.95;
+  //             //border: 1px solid lightGreen;
+  //           }
+  //           &.streak-text {
+  //             display: block;
+  //             width: auto;
+  //             top: $row-h * 0.65;
+  //             left: $col-w * 0.7;
+  //             font-size: 1rem;
+  //             //border: 1px solid pink;
+  //           }
+  //           &.score-perfectB {
+  //             display: block;
+  //             width: auto;
+  //             top: $row-h * 0.3;
+  //             left: $col-w * 1.8;
+  //             //border: 1px solid lightGreen;
+  //           }
+  //           &.perfectB-text {
+  //             display: block;
+  //             width: auto;
+  //             top: $row-h * 0.65;
+  //             left: $col-w * 1.7;
+  //             font-size: 1rem;
+  //             //border: 1px solid pink;
+  //           }
+  //         } // .score
+
+  //         .ribbon {
+  //           position: absolute;
+  //           display: flex;
+  //           justify-content: center;
+  //           align-items: center;
+  //           top: $row-h * 0.88;
+  //           left: 0;
+  //           width: 100%;
+  //           height: $row-h * 0.3;
+  //           color: white;
+  //           font-size: 1rem;
+  //           // background-image: url('../img/practDir/ribbon.svg');
+  //           // background-size: 90% 100%;
+  //           // background-repeat: no-repeat;
+  //           // background-position: center;
+  //           //border: 1px solid lightGreen;
+  //         }
+  //       } // img
+  //       .badgeFoot {
+  //         position: relative;
+  //         display: flex;
+  //         flex-flow: column nowrap;
+  //         top: $row-h * 1.15;
+
+  //         .badgeDate {
+  //           position: relative;
+  //           display: flex;
+  //           flex-flow: row nowrap;
+  //           justify-content: center;
+  //           // left: 0;
+  //           width: auto;
+  //           color: $c-text-main;
+  //           text-align: center;
+  //           font-weight: 400;
+  //           font-size: 1rem;
+  //           //border: 1px solid lightGreen;
+  //         } // .badgeDate
+
+
+  //       }
+
+  //       .currentScore {
+  //         position: relative;
+  //         display: flex;
+  //         flex-flow: row nowrap;
+  //         justify-content: center;
+  //         background-color: rgba(255, 255, 255, 0.75);
+  //         padding: 3px 6px;
+  //         border-radius: 6px;
+  //         margin-top: 0.5rem;
+  //         color: $c-text-main;
+  //       }
+  //     } // awardEle
+  //   } // .awardRow
+  // } // .awardGrid
 
 // TEMP ----------------------------
 .sb-resetBtn {
