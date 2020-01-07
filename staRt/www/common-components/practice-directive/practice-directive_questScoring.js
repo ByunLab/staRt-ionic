@@ -188,6 +188,101 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		};
 	}
 
+	function Sandbank() {
+		return {
+			hsib: {
+				title: 'Most Points in Block',
+				achieved: false,
+				imgClass: 'hsib',
+				min:10,
+				highlightTest: 3,
+				emptyText: 'Earn <span class="bold">10 points in a single block</span> to unlock this achievement.',
+				score: 0, //should be same as milestones.highscores
+				dateStr: '', //
+				currentText: 'current block',
+				currentValue: '{{scores.block_display_score}}',
+				unit: 'points',
+				highlight: false,
+			},
+			mgib: {
+				title: 'Most Gold in Block',
+				achieved: false,
+				imgClass: 'mgib',
+				min:0,
+				highlightTest: 2,
+				emptyText: 'Earn <span class="bold">a gold coin</span> to unlock this achievement.',
+				score: 0,
+				dateStr: '',
+				currentText: 'current block',
+				currentValue: '0',
+				unit: 'coins',
+				highlight: false,
+			},
+			streak: {
+				title: 'Gold Streak',
+				achieved: false,
+				imgClass: 'streak',
+				min:1,
+				highlightTest: 1,
+				emptyText: 'Earn <span class="bold">2 consecutive gold coins</span> to unlock this achievement.',
+				score: 0,
+				scoreClass: 'score-streak',
+				scoreText: 'in a row',
+				scoreTextClass: 'streak-text',
+				dateStr: '',
+				currentText: 'current streak',
+				currentValue: '0',
+				unit: 'coins',
+				highlight: false,
+			},
+			hsiq: {
+				title: 'Most Points in Quest',
+				achieved: false,
+				imgClass: 'hsiq',
+				min: 20,
+				highlightTest: 10,
+				emptyText: 'Earn <span class="bold">20 points</span> to unlock this achievement.',
+				score: 0,
+				dateStr: '',
+				currentText: 'current quest',
+				currentValue: '0',
+				unit: 'points',
+				highlight: false,
+			},
+			mgiq: {
+				title: 'Most Gold in Quest',
+				achieved: false,
+				imgClass: 'mgiq',
+				min:0,
+				highlightTest: 5,
+				emptyText: 'Earn <span class="bold">a gold coin</span> to unlock this achievement.',
+				score: 0,
+				dateStr: '',
+				currentText: 'current quest',
+				currentValue: '0',
+				unit: 'coins',
+				highlight: false,
+			},
+			perfectBlock: {
+				title: 'Perfect Block',
+				achieved: false,
+				imgClass: 'perfectBlock',
+				min: 0,
+				highlightTest: 1,
+				emptyText: 'Earn <span class="bold">10 gold coins in a block</span> to unlock this achievement.',
+				score: 0,
+				scoreClass: 'score-perfectB',
+				scoreText: 'times',
+				scoreTextClass: 'perfectB-text',
+				dateStr: '',
+				currentText: 'current quest: ',
+				currentValue: '0',
+				unit: ' blocks',
+				highlight: false,
+			},
+		};
+	} // end sandbank constructor
+
 
 	// ==============================================
 	// INITS ------------------------
@@ -209,6 +304,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		milestones = undefined;
 		milestones = new Milestones();
 
+		// highscores data --------------------------
 		var mapHighscores = function(milestone) {
 			var highscoresArr = highscores[milestone + 'Hx'].map(function(item) {
 				return item.score;
@@ -219,6 +315,29 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		for (var key in milestones.highscores) {
 			milestones.highscores[key] = mapHighscores(key);
 		}
+
+		// display data --------------------------
+		var sandbank = new Sandbank();
+
+		var displayTemp = {};
+
+		for (var key in highscores) {
+			var keyName = key.slice(0, -2);
+			var keyIdxNewest = highscores[key].length -1;
+			displayTemp[keyName] = highscores[key][keyIdxNewest];
+			displayTemp[keyName].dateStr = new Date(displayTemp[keyName].date).toLocaleDateString();
+		}
+		for (var item in sandbank) {
+			sandbank[item].score = displayTemp[item].score;
+			sandbank[item].dateStr = displayTemp[item].dateStr;
+			if (sandbank[item].score > sandbank[item].min) {
+				sandbank[item].achieved = true;
+			}
+		}
+
+		milestones.display = sandbank;
+
+		// console.log(milestones.highscores);
 		return milestones;
 	};
 
@@ -305,10 +424,17 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 	// updates milestone props in in $scope.milestones to be saved to firebase at end of Quest
 	function updateMilestoneRecord(milestones, msProp, newMilestone) {
 		milestones.highscores[msProp] = newMilestone;
+
+		// for fb update
 		var msHx = [msProp] + 'Hx';
 		milestones.update[msHx].score = newMilestone;
 		milestones.update[msHx].date = Date.now();
 		milestones.shouldUpdateFirebase = true;
+
+		// for sandbank
+		milestones.display[msProp].score = newMilestone;
+		milestones.display[msProp].dateStr = 'TODAY!';
+		milestones.display[msProp].achieved = true;
 	}
 
 
@@ -409,6 +535,31 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		}
 
 		nextCard(badges);
+	}
+
+	// ==============================================
+	// SANDBANK ------------------------
+	function updateSandbank(scores, milestones) {
+		var updateObj = {
+			hsib: scores.block_display_score,
+			mgib: scores.block_goldCount,
+			streak: scores.streak,
+			hsiq: scores.display_score,
+			mgiq: scores.session_coins.gold,
+			perfectBlock: milestones.highscores.perfectBlock,
+		};
+
+		for (var sb_item in milestones.display) {
+			milestones.display[sb_item].currentValue = updateObj[sb_item];
+
+			//milestones.display[sb_item]
+			if( milestones.display[sb_item].currentValue > (milestones.display[sb_item].score - milestones.display[sb_item].highlightTest)) {
+				milestones.display[sb_item].highlight = true;
+			} else {
+				milestones.display[sb_item].highlight = false;
+			}
+		}
+		console.log(milestones.display);
 	}
 
 
@@ -609,7 +760,6 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		checkUpdateMilestones(scores, milestones, badges, currentWordIdx);
 	}; // end questRating()
 
-
 	return {
 		initCoinCounter: initCoinCounter,
 		initNewHighScores: initNewHighScores,
@@ -618,6 +768,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		initBadges: initBadges,
 		questRating: questRating,
 		nextCard: nextCard,
-		resetForNewBlock: resetForNewBlock
+		resetForNewBlock: resetForNewBlock,
+		updateSandbank: updateSandbank,
 	};
 });
