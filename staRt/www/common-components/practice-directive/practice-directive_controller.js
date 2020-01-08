@@ -746,10 +746,6 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 	$scope.toggleSandBank = function() {
 		QuestScore.updateSandbank($scope.scores, $scope.milestones);
 		$scope.sandbank = !$scope.sandbank;
-		// console.log($scope.milestones);
-		// console.log($scope.highscores.display);
-		// console.log('Sand dollar pressed!');
-		// console.log($scope.sandbank);
 	};
 
 	// DIALOG SEQUENCE HANDLERS ---------------------

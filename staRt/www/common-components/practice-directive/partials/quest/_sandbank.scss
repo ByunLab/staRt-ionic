@@ -23,7 +23,6 @@
     background-position: right bottom;
     background-repeat: no-repeat;
     z-index: 91;
-    //border: 1px solid lime;
   }
 
   .sandDollar-box {
@@ -48,7 +47,6 @@
       flex-flow: column nowrap;
       justify-content: center;
       height: $row-h * 0.3;
-      //border: 1px solid pink;
     } // .sandbank-score
 
     .sandbank-sandDollar {
@@ -60,7 +58,6 @@
       background-image: url("../img/ui/sandDollar.svg");
       background-position: center;
       background-repeat: no-repeat;
-      //border: 1px solid pink;
     }
   } // sandDollar-box
 
@@ -91,9 +88,6 @@
     justify-content: space-between;
     height: $row-h * 0.75;;
     width: 100%;
-    // border: 1px solid pink;
-    //
-    //
 
     h1 { //row
       position: relative;
