@@ -67,6 +67,7 @@
                 achieved: {{award.dateStr}}
               </div>
               <div class="currentScore"
+                ng-if="$index !== 5"
                 ng-class="{'current--highlight': award.highlight}">
                 {{award.currentText}}:<br/>
                 <span class="currentValue">{{award.currentValue}}&nbsp;{{award.unit}}</span>
