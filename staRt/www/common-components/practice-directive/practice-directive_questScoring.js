@@ -24,6 +24,8 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 	// handles state for active profile's highscores and milestone thresholds
 	function Milestones() {
 		return  {
+			// highscores: holds current in-game state of highscores
+			// created from firebase highscore data
 			highscores: {
 				mgib: 0,
 				hsib: 0,
@@ -32,6 +34,10 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 				streak: 0,
 				perfectBlock: 0,
 			},
+			// display: holds all the data (text, graphics, etc) for the sandbank display
+			// it is created from the Sandbank constructor and updated from this.highscores
+			display: undefined,
+			// update: if a milestone is achieved during a Quest, this object is updated to hold highscore data to be push to firebase at the end of the quest
 			update: {
 				mgibHx: {},
 				hsibHx: {},
@@ -316,6 +322,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 			milestones.highscores[key] = mapHighscores(key);
 		}
 
+		console.log(milestones);
 		// display data --------------------------
 		var sandbank = new Sandbank();
 
@@ -539,6 +546,8 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 
 	// ==============================================
 	// SANDBANK ------------------------
+	// Updates the Sandbank scores an sets highlights
+	// Called each time the user opens the Sandbank drawer
 	function updateSandbank(scores, milestones) {
 		var updateObj = {
 			hsib: scores.block_display_score,
@@ -552,14 +561,15 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		for (var sb_item in milestones.display) {
 			milestones.display[sb_item].currentValue = updateObj[sb_item];
 
-			//milestones.display[sb_item]
-			if( milestones.display[sb_item].currentValue > (milestones.display[sb_item].score - milestones.display[sb_item].highlightTest)) {
-				milestones.display[sb_item].highlight = true;
-			} else {
-				milestones.display[sb_item].highlight = false;
+			if(milestones.display[sb_item].currentValue > 0) {
+				if( milestones.display[sb_item].currentValue > (milestones.display[sb_item].score - milestones.display[sb_item].highlightTest)) {
+					milestones.display[sb_item].highlight = true;
+				} else {
+					milestones.display[sb_item].highlight = false;
+				}
 			}
 		}
-		console.log(milestones.display);
+		//console.log(milestones.display);
 	}
 
 
