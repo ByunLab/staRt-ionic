@@ -49,6 +49,7 @@
   }
 }
 
+// number above the word prompt
 .countIndicator-container {
   position: absolute;;
   display: flex;
@@ -62,7 +63,6 @@
   transition: opacity 0.5s;
   transition-timing-function: ease-in;
   z-index: 5;
-  //border: 1px solid red;
 
   &.counter_fade-in {
     opacity: 1;

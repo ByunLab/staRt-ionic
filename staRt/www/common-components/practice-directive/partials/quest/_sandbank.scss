@@ -10,7 +10,6 @@
   transition: top 0.5s;
   transition-timing-function: ease-in;
   z-index: 90;
-  //border: 1px solid blue;
 
   &.sandbankOpen { top: 0; }
 
@@ -68,7 +67,7 @@
   position: relative;
   display: flex;
   flex-flow: column nowrap;
-  justify-content: flex-start; //center; //space-between;
+  justify-content: flex-start;
   align-items: flex-start;
   background-color: #FCF3DC;
   height: $row-h * 5;
@@ -89,7 +88,7 @@
     height: $row-h * 0.75;;
     width: 100%;
 
-    h1 { //row
+    h1 {
       position: relative;
       display: flex;
       flex-flow: row nowrap;
@@ -101,9 +100,8 @@
       letter-spacing: 1px;
       color: $c-text-main;
       font-weight: 500;
-      //width: 100%;
+      width: auto;
       height: auto;
-      //margin-bottom: 0.5rem;
       //border: 1px solid orange;
     }
 
@@ -127,11 +125,10 @@
     display: flex;
     flex-flow: row nowrap;
     justify-content: space-between;
-    //align-items: center;
+    align-items: center;
     width: $col-w * 9;
     height: $row-h * 4;
     text-align: left;
-    //margin-top: $row-h * 0.15;
     //border: 1px solid lightBlue;
 
     .awardGrid { // layout
@@ -150,9 +147,8 @@
         flex-flow: column nowrap;
         align-items: center;
         width: 33%;
-        height: $row-h * 1.75; //100%;
+        height: $row-h * 2;
         font-weight: $bold;
-        //height: 50%;
         //border: 1px solid pink;
       } // awardEle
     } // .awardGrid
@@ -178,9 +174,8 @@
       font-weight: normal;
       height: 100%;
       width: 70%;
-      padding-top: 1rem;
+      padding-top: 2rem;
       line-height: 1.5rem;
-      //border: 1px solid lightseagreen;
       .bold {
         font-weight: bold;
       }
@@ -218,9 +213,8 @@
     top: $row-h * 0.4;
     left: 0;
     font-size: 2rem;
-    //font-weight: $bold;
     font-weight: 500;
-    color: #988675; //#a07e4d; //#b28c50;
+    color: #988675;
     //border: 1px solid lightGreen;
 
     &.score-streak {
@@ -236,7 +230,7 @@
       top: $row-h * 0.65;
       left: $col-w * 0.7;
       font-size: 1rem;
-      //border: 1px solid pink;
+      //border: 1px solid lightGreen;
     }
     &.score-perfectB {
       display: block;
@@ -251,7 +245,7 @@
       top: $row-h * 0.65;
       left: $col-w * 1.7;
       font-size: 1rem;
-      //border: 1px solid pink;
+      //border: 1px solid lightGreen;
     }
   } // .score
 
@@ -259,7 +253,8 @@
     position: relative;
     display: flex;
     flex-flow: column nowrap;
-    top: $row-h * 1.15;
+    top: $row-h * 1.2;
+    //border: 1px solid pink;
 
     .badgeDate {
       position: relative;
@@ -271,14 +266,15 @@
       text-align: center;
       font-weight: 400;
       font-size: 1rem;
+      //border: 1px solid pink;
     } // .badgeDate
 
     .currentScore {
       position: relative;
-      display: block; //flex;
+      display: block;
       text-align: center;
-      margin-top: 0.5rem;
-      padding: 3px 6px;
+      margin-top: 0.25rem;
+      padding: 1px 6px;
       border-top: 1px solid $c-text-main;
       color: $c-text-main;
       font-weight: normal;
