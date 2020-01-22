@@ -138,7 +138,10 @@ function compareRecordings(ra, rb) {
 					var dataPoint = {};
 
 					var questOrQuizStr = isQuest(recordingSession) ? 'Quest' : 'Quiz';
-					dataPoint['sessionDescription'] = recordingSession.type.trim() + ' ' + questOrQuizStr;
+					var recordingSessionType = recordingSession.type.trim();
+					dataPoint['isSyllableSession'] =  recordingSessionType === 'Syllable';
+					dataPoint['isWordSession'] =  recordingSessionType === 'Word';
+					dataPoint['sessionDescription'] = recordingSessionType + ' ' + questOrQuizStr;
 					dataPoint['date'] = new Date(recordingSession.endTimestamp);
 
 					var timeSeconds = (recordingSession.endTimestamp - recordingSession.startTimestamp);
@@ -264,36 +267,42 @@ function compareRecordings(ra, rb) {
 
 		$scope.setupLineGraph = function (dashboardDataPoints) {
 			var labels = [];
-			var data = [];
-			var sessionNumber = dashboardDataPoints.length;
+			var syllable_data = [];
+			var word_data = [];
 			dashboardDataPoints.forEach(function (dataPoint) {
 				// The extra space before Session is there so the titles in the tooltips have a space.
-				labels.push(dataPoint['sessionDescription'] + '\n' + ' Session #' + sessionNumber--);
-				data.push(
-					{
-						date: dataPoint['date'],
-						performanceString: dataPoint['performanceString'],
-						totalGold: dataPoint['totalGold'],
-						totalSilver: dataPoint['totalSilver'],
-						totalBronze: dataPoint['totalBronze'],
-						totalScore: dataPoint['totalScore'],
-						possiblePoints: dataPoint['possiblePoints'],
-						y: dataPoint['percentCorrect'],
-					});
+				labels.push(UtilitiesService.formatDate(dataPoint.date, 'MM/dd/yy'));
+				var dataPointIsSyllable = dataPoint['isSyllableSession'];
+				var dataForGraph = {
+					date: dataPoint['date'],
+					performanceString: dataPoint['performanceString'],
+					totalGold: dataPoint['totalGold'],
+					totalSilver: dataPoint['totalSilver'],
+					totalBronze: dataPoint['totalBronze'],
+					totalScore: dataPoint['totalScore'],
+					possiblePoints: dataPoint['possiblePoints'],
+					y: dataPoint['percentCorrect'],
+				};
+				if (dataPointIsSyllable) {
+					syllable_data.push(dataForGraph);
+					word_data.push(null);
+				} else {
+					syllable_data.push(null);
+					word_data.push(dataForGraph);
+				}
+
 			});
 
 			// dashboard data points are stored from most to least recent, we want the reverse order for our line graph.
 			labels.reverse();
-			data.reverse();
+			syllable_data.reverse();
+			word_data.reverse();
 
+
+			// TODO: Paginate
 			var MAX_SESSIONS_TO_SHOW = 40;
 
-			// With too many sessions being displayed the line graph becomes cramped.
-			// Thus, we only show the MAX_SESSIONS_TO_SHOW most recent sessions.
-			if (data.length > MAX_SESSIONS_TO_SHOW) {
-				data = data.slice(data.length - MAX_SESSIONS_TO_SHOW, data.length);
-				labels = labels.slice(labels.length - MAX_SESSIONS_TO_SHOW, labels.length);
-			}
+
 
 			this.lineChart = new Chart(angular.element( document.querySelector('#lineCanvas')), {
 				type: 'line',
@@ -301,18 +310,21 @@ function compareRecordings(ra, rb) {
 					labels: labels,
 					datasets: [
 						{
-							label: $scope.data.currentProfile.name + '\'s Progress',
-							data: data,
+							label: 'Word Sessions',
+							data: word_data,
 							borderColor: '#3e95cd',
+							fill: false
+						},
+						{
+							label: 'Syllable Sessions',
+							data: syllable_data,
+							borderColor: '#6a0dad', // TODO Make a nice color,
 							fill: false
 						}
 					],
 				},
-
 				options: {
-					legend: {
-						display: false
-					},
+					spanGaps: true,
 					scales: {
 						yAxes: [{
 							scaleLabel: {
@@ -338,11 +350,10 @@ function compareRecordings(ra, rb) {
 							tooltip.displayColors = false;
 						},
 						enabled: true,
-						mode: 'single',
 						callbacks: {
 							label: function(tooltipItems, data) {
 								var multiStringText = [];
-								var dataPoint = data.datasets[0].data[tooltipItems.index];
+								var dataPoint = data.datasets[tooltipItems.datasetIndex].data[tooltipItems.index];
 								multiStringText.push(dataPoint.performanceString + ' trials correct.');
 								multiStringText.push('Total Gold: ' + dataPoint.totalGold);
 								multiStringText.push('Total Silver: ' +  dataPoint.totalSilver);
