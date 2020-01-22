@@ -256,7 +256,7 @@ function compareRecordings(ra, rb) {
 			// We need to have a delay before we set slideModalUp to true.
 			// slideModalUp changes the top position property on the line graph container modal.
 			// if slideModalUp is true at the same time displayingProgressModal is true, then no transition animations occurs.
-			$timeout(function() {$scope.setupLineGraph($scope.dashboardDataPoints); $scope.slideModalUp = true;}, 15);
+			$timeout(function() {$scope.setupLineGraph(-1); $scope.slideModalUp = true;}, 15);
 		};
 
 		$scope.hideProgressModal = function () {
@@ -265,11 +265,11 @@ function compareRecordings(ra, rb) {
 			$timeout(function() {$scope.displayingProgressModal = false;}, 15);
 		};
 
-		$scope.setupLineGraph = function (dashboardDataPoints) {
+		$scope.setupLineGraph = function (paginationIndex) {
 			var labels = [];
 			var syllable_data = [];
 			var word_data = [];
-			dashboardDataPoints.forEach(function (dataPoint) {
+			$scope.dashboardDataPoints.forEach(function (dataPoint) {
 				// The extra space before Session is there so the titles in the tooltips have a space.
 				labels.push(UtilitiesService.formatDate(dataPoint.date, 'MM/dd/yy'));
 				var dataPointIsSyllable = dataPoint['isSyllableSession'];
@@ -298,11 +298,36 @@ function compareRecordings(ra, rb) {
 			syllable_data.reverse();
 			word_data.reverse();
 
+			var MAX_SESSIONS_TO_SHOW = 5;
+			var numDataChunks = Math.floor((labels.length - 1) / MAX_SESSIONS_TO_SHOW) + 1;
 
-			// TODO: Paginate
-			var MAX_SESSIONS_TO_SHOW = 40;
+			var getPaginationIndex = function() {
+				if (paginationIndex === -1) {
+					return numDataChunks - 1;
+				}
+				return paginationIndex;
+			};
 
+			var displayPaginationOptions = function() {
+				var activeIndex = getPaginationIndex();
+				$scope.paginationIndexes = [];
+				for (var i = 0; i < numDataChunks; i++) {
+					$scope.paginationIndexes.push({index : i, isActive : i === activeIndex});
+				}
+				$timeout();
+			};
 
+			$scope.paginationIndexes = [];
+
+			if (numDataChunks > 1) {
+				displayPaginationOptions();
+				var activeIndex = getPaginationIndex();
+				var sliceStart = activeIndex * MAX_SESSIONS_TO_SHOW;
+				var sliceEnd = Math.min(sliceStart + MAX_SESSIONS_TO_SHOW, labels.length);
+				labels = labels.slice(sliceStart, sliceEnd);
+				syllable_data = syllable_data.slice(sliceStart, sliceEnd);
+				word_data = word_data.slice(sliceStart, sliceEnd);
+			}
 
 			this.lineChart = new Chart(angular.element( document.querySelector('#lineCanvas')), {
 				type: 'line',
