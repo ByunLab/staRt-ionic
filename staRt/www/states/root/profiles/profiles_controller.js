@@ -173,6 +173,27 @@ function compareRecordings(ra, rb) {
 					dataPoint['percentCorrect'] = percentCorrect;
 					dataPoint['performanceString'] = trialsCorrect + '/' + trialsCompleted + ' - ' + percentCorrect + '%';
 
+					// From words controller
+					var categoryNames = [
+						'Syllabic /r/',
+						'Consonantal Front',
+						'Consonantal Back',
+						'Vocalic Front',
+						'Vocalic Back'
+					];
+
+					if (isQuest(recordingSession) && recordingSession.categoryRestrictions != null && recordingSession.categoryRestrictions.length >= 1) {
+						var selectedCategories = recordingSession.categoryRestrictions;
+						var selectedCategoriesString = '';
+						for (var i = 0; i < selectedCategories.length - 1; i++) {
+							selectedCategoriesString += categoryNames[selectedCategories[i]] + ', ';
+						}
+						selectedCategoriesString += categoryNames[selectedCategories.slice(-1)[0]]; // Add last elemented
+						dataPoint['selectedCategoriesString'] = selectedCategoriesString;
+					} else {
+						dataPoint['selectedCategoriesString'] = 'N/A';
+					}
+
 					dashboardDataPoints.push(dataPoint);
 				});
 
@@ -281,6 +302,8 @@ function compareRecordings(ra, rb) {
 					totalBronze: dataPoint['totalBronze'],
 					totalScore: dataPoint['totalScore'],
 					possiblePoints: dataPoint['possiblePoints'],
+					sessionDescprtion: dataPoint['sessionDescription'],
+					selectedCategoriesString: dataPoint['selectedCategoriesString'],
 					y: dataPoint['percentCorrect'],
 				};
 				if (dataPointIsSyllable) {
@@ -377,14 +400,18 @@ function compareRecordings(ra, rb) {
 						enabled: true,
 						callbacks: {
 							label: function(tooltipItems, data) {
+
 								var multiStringText = [];
 								var dataPoint = data.datasets[tooltipItems.datasetIndex].data[tooltipItems.index];
+
+								multiStringText.push(dataPoint.sessionDescprtion);
 								multiStringText.push(dataPoint.performanceString + ' trials correct.');
 								multiStringText.push('Total Gold: ' + dataPoint.totalGold);
 								multiStringText.push('Total Silver: ' +  dataPoint.totalSilver);
 								multiStringText.push('Total Bronze: ' + dataPoint.totalBronze);
 								multiStringText.push('Total Points / Total Possible Points: ' + dataPoint.totalScore + '/'  + dataPoint.possiblePoints);
 								multiStringText.push('Completed on ' + UtilitiesService.formatDate(dataPoint.date, 'ddd MMM d, yyyy'));
+								multiStringText.push('Categories Tested: ' + dataPoint.selectedCategoriesString);
 								return multiStringText;
 							}
 						}
