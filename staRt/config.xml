@@ -24,7 +24,7 @@
     <platform name="ios">
         <preference name="ios-XCBuildConfiguration-OTHER_LDFLAGS" value="-ObjC -lstdc++ -lObjC" />
         <config-file parent="NSMicrophoneUsageDescription" platform="ios" target="*-Info.plist">
-            <string>This app requires access to your microphone to function properly.</string>
+            <string>StaRt is a speech therapy app that requires access to your microphone in order to provide a visual reprensentation of the sound wave produced when you attempt to make certain sounds.</string>
         </config-file>
         <icon height="57" src="resources/ios/icon/icon.png" width="57" />
         <icon height="114" src="resources/ios/icon/icon@2x.png" width="114" />
