@@ -6,6 +6,7 @@ platforms/
 plugins/
 www/lib/
 www/data/credentials.json
+www/data/firebase_credentials.js
 .help.*
 ./www/css/*
 
