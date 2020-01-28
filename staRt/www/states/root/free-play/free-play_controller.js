@@ -26,9 +26,17 @@
 		}
 
 		ProfileService.getCurrentProfile().then(function (profile) {
-			$scope.data.participant_name = profile.name;
-			if (profile.nIntroComplete >= 1) {
-				$scope.data.session_number = profile.nBiofeedbackSessionsCompleted + profile.nNonBiofeedbackSessionsCompleted + 1;
+			if (profile) {
+				$scope.data.participant_name = profile.name;
+				if (profile.nIntroComplete >= 1) {
+					$scope.data.session_number = profile.nBiofeedbackSessionsCompleted + profile.nNonBiofeedbackSessionsCompleted + 1;
+				}
+			} else {
+				if (navigator.notification) {
+					navigator.notification.alert(
+						'Can\'t start free play -- create/select a profile first', function() {$state.go('root.profiles');}, 'No profile');
+				}
+
 			}
 		});
 
