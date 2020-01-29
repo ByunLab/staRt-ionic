@@ -116,7 +116,7 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 	$scope.quizType = undefined;
 
 	// WIP Helpers --------------------------- //#hc
-	$scope.qtScoreDebug = true;
+	$scope.qtScoreDebug = false;
 	$scope.qtAdaptDiffDebug = true;
 	$scope.qtBadgesDebug = true;
 	$scope.qzGraphicsMode = true;

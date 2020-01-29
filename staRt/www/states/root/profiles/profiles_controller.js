@@ -321,7 +321,7 @@ function compareRecordings(ra, rb) {
 			syllable_data.reverse();
 			word_data.reverse();
 
-			var MAX_SESSIONS_TO_SHOW = 5;
+			var MAX_SESSIONS_TO_SHOW = 40;
 			var numDataChunks = Math.floor((labels.length - 1) / MAX_SESSIONS_TO_SHOW) + 1;
 
 			var getPaginationIndex = function() {
