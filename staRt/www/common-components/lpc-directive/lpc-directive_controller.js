@@ -413,22 +413,22 @@ lpcDirective.controller( 'LpcDirectiveController',
 
 		// BEGIN PAUSE-SETUP
 		if ($rootScope.lpcPauseListenersSet) {
-			document.removeEventListener('pause', $scope.onPause);
-			document.removeEventListener('resume', $scope.onResume);
+			document.removeEventListener('pause', $rootScope.lpcOnPause);
+			document.removeEventListener('resume', $rootScope.lpcOnResume);
 		}
 
-		$scope.onPause = function () {
+		$rootScope.lpcOnPause = function () {
 			console.log('Pausing LPC.');
 			$scope.active = false;
 		};
 
-		$scope.onResume = function () {
+		$rootScope.lpcOnResume = function () {
 			$scope.active = true;
 			$scope.animate();
 		};
 
-		document.addEventListener('pause', $scope.onPause);
-		document.addEventListener('resume', $scope.onResume);
+		document.addEventListener('pause', $rootScope.lpcOnPause);
+		document.addEventListener('resume', $rootScope.lpcOnResume);
 		$rootScope.lpcPauseListenersSet = true;
 		// END PAUSE-SETUP
 
