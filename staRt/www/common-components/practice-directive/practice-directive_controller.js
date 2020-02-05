@@ -175,9 +175,9 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 		// process new rating
 		if (!$scope.probe) { //quest
 			QuestScore.questRating(data, $scope.scores, $scope.milestones, $scope.currentWordIdx, $scope.badges);
-
+			var NUM_WORDS_IN_BLOCK = 10;
 			// if Quest end-of-block, check Adaptive Difficulty
-			if ($scope.currentWordIdx % 10 == 0 &&
+			if ($scope.currentWordIdx % NUM_WORDS_IN_BLOCK == 0 &&
 				$scope.currentWordIdx != 0 && $scope.scores.changeDifficulty != 0) {
 				update_difficulty($scope.scores.changeDifficulty);
 			}
@@ -545,7 +545,12 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 			}
 			// quest is ended via the end-of-block dialog boxes
 		} else {
-			var lookupIdx = $scope.currentWordIdx % $scope.wordOrder.length;
+			var NUM_WORDS_IN_BLOCK = 10;
+			var lookupIdx = $scope.currentWordIdx;
+			if ($rootScope.isBlockSession) {
+				lookupIdx = Math.floor($scope.currentWordIdx / NUM_WORDS_IN_BLOCK);
+			}
+			lookupIdx = lookupIdx % $scope.wordOrder.length;
 			$scope.currentWord = $scope.wordList[$scope.wordOrder[lookupIdx]];
 			// also select a random carrier phrase
 			$scope.carrier_phrase = $scope.carrier_phrases[Math.floor(Math.random() * $scope.carrier_phrases.length)];
@@ -553,7 +558,7 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 			$scope.tinyFont = $scope.carrier_phrase.length >= 32;
 		}
 
-		if ((1 + $scope.currentWordIdx - $scope.reorderOffset) % $scope.wordOrder.length == 0) {
+		if (!$rootScope.isBlockSession && (1 + $scope.currentWordIdx - $scope.reorderOffset) % $scope.wordOrder.length == 0) {
 			$scope.reorderWords(true);
 		}
 	} // advanceWord()

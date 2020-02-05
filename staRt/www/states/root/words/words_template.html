@@ -131,11 +131,14 @@
 				</div>
 
 
-				<div ng-if="!data.waveHidden"
-					class="quest-config-row word-quest-wave-visible">
+				<div class="quest-config-row word-quest-wave-visible">
 					<ion-item>
 						<ion-label>Wave Hidden</ion-label>
 						<ion-checkbox ng-model="data.waveHidden"></ion-checkbox>
+					</ion-item>
+					<ion-item>
+						<ion-label>Repeat Mode</ion-label>
+						<ion-checkbox ng-model="$root.isBlockSession"></ion-checkbox>
 					</ion-item>
 				</div>
 
