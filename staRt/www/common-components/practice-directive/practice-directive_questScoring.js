@@ -90,6 +90,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 				mgib: {
 					template: 'achievement',
 					title: 'Most Gold in Block!',
+					imgClass: 'mgib',
 					count: 0,
 					imgUrl: '',
 					btnText: 'Next',
@@ -97,6 +98,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 				hsib: {
 					template: 'achievement',
 					title: 'High Score in Block!',
+					imgClass: 'hsib',
 					count: 0,
 					imgUrl: '',
 					btnText: 'Next',
@@ -104,6 +106,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 				streak: {
 					template: 'achievement',
 					title: 'Gold Streak!',
+					imgClass: 'streak',
 					count: 0,
 					imgUrl: '',
 					btnText: 'Next',
@@ -111,6 +114,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 				perfectBlock: {
 					template: 'achievement',
 					title: 'Perfect Block!',
+					imgClass: 'perfectBlock',
 					count: 0,
 					imgUrl: '',
 					btnText: 'Next',
@@ -118,6 +122,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 				incrDiff: {
 					template: 'note',
 					title: 'Increasing Difficulty!',
+					imgClass: 'incrDiff',
 					bodyText: 'Watch for new words.',
 					imgUrl: '',
 					btnText: 'Next',
@@ -126,6 +131,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 					template: 'note',
 					title: 'Checkpoint',
 					subtitle: '',
+					imgClass: 'feedback',
 					imgUrl: '',
 					bodyText: 'Please provide qualitative feedback on the participant\'s performance over the last ten trials.',
 					btnText: 'See Scores',
@@ -134,6 +140,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 					template: 'progSum',
 					title: 'Progress Summary',
 					subtitle: '',
+					imgClass: '',
 					gold: 0,
 					silver: 0,
 					bronze: 0,
@@ -145,6 +152,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 					flag: false,
 					template: 'achievement',
 					title: 'Most Gold in Quest!',
+					imgClass: 'mgiq',
 					count: 0,
 					imgUrl: '',
 					btnText: 'Next',
@@ -153,6 +161,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 					flag: false,
 					template: 'achievement',
 					title: 'High Score in Quest!',
+					imgClass: 'hsiq',
 					count: 0,
 					imgUrl: '',
 					btnText: 'Next',
@@ -161,6 +170,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 					flag: true,
 					template: 'endSum',
 					title: 'Quest Complete!',
+					imgClass: 'hooray',
 					gold: 0,
 					silver: 0,
 					bronze: 0,
@@ -170,6 +180,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 					flag: true,
 					template: 'finalScore',
 					title: 'Quest Complete!',
+					imgClass: 'hooray',
 					subtitle: '',
 					count: 0,
 					btnText: 'Close',
@@ -615,7 +626,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 			});
 		};
 		//add common template fields here
-		var commonFields = ['title', 'btnText'];
+		var commonFields = ['title', 'imgClass', 'btnText'];
 		populateCard(commonFields);
 
 		if(template === 'achievement') {
