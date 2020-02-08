@@ -712,7 +712,9 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		// checked at end of block -----------------------------
 		if( scores.endOfBlock ) {
 
-			checkDifficulty(scores, badges);
+			var finalBlock = (currentWordIdx > (scores.totalTrials -10)) ? true : false;
+
+			if(!finalBlock) { checkDifficulty(scores, badges); }
 
 			//updateSummaryCards()
 			badges.qtDialog.isBlockEnd = true;
@@ -720,8 +722,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 			var coinSum = scores.session_coins;
 			updateSummaryCards(badges, 'cardsBlockEnd', 'progSum', coinSum );
 
-			// if FINAL end-of-block sequence
-			if(currentWordIdx > (scores.totalTrials -10)) {
+			if(finalBlock){
 				badges.qtDialog.isFinal = true;
 				updateSummaryCards(badges, 'cardsQuestEnd', 'endSum', coinSum );
 				badges.cardsQuestEnd.finalScore.count = scores.display_score;
