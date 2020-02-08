@@ -66,35 +66,65 @@
   }
 }
 
+// base class for bg images &
+// layout class for content
 .dia-body {
+  position: relative;
   display: flex;
   flex-flow: column nowrap;
-  position: relative;
   height: $row-h * 2;
-  // padding-top: 1em;
   width: 100%;
   justify-content: center;
   align-items: center;
   font-weight: $bold;
+  // border: 1px solid red;
 
-  .achievementCount {
-
-    font-size: 5rem;
+  .imgLayout {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: 51;
+    //background-image: url('../img/practDir/cards/mgib.svg');
+    // background-color: pink;
+    // border: 1px solid blue;
   }
 
-  .note {
-    padding: 0 ($col-w /2);
-    padding-bottom: $row-h/5;
-    //align-self: flex-start;
-    text-align: left;
-    font-size: 1.5em;
-  }
+  .contentLayout {
+    position: relative;
+    display: flex;
+    z-index: 52;
 
-  .progSum {
-    font-size: 1.5em;
-  }
+    .achievementCount {
+      font-size: 4rem;
+      font-weight: 200;
+      color: #A07E4D;
+
+    }
+    .progSum { font-size: 1.5em; }
+    .note {
+      padding: 0 ($col-w /2);
+      padding-bottom: $row-h/5;
+      //align-self: flex-start;
+      text-align: left;
+      font-size: 1.5em;
+    }
+  } // contentLayout
 } // end .dia-body
 
+// Images ----------------------------
+.hsib { background-image: url('../img/practDir/cards/hsib.svg'); }
+.mgib { background-image: url('../img/practDir/cards/mgib.svg'); }
+.hsiq { background-image: url('../img/practDir/cards/hsiq.svg'); }
+.mgiq { background-image: url('../img/practDir/cards/mgiq.svg'); }
+.streak { background-image: url('../img/practDir/cards/streak.svg'); }
+.perfectBlock { background-image: url('../img/practDir/cards/perfectBlock.svg'); }
+
+
+
+// FOOTER ================================
 .dia-foot {
   display: flex;
   flex-flow: row nowrap;
@@ -111,7 +141,7 @@
   .footBtn {
     display: flex;
     position: relative;
-    font-size: 1.25em;
+    font-size: 1.5rem;
     font-weight: 700;
     align-items: center;
     justify-content: center;
