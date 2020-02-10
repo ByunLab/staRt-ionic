@@ -377,7 +377,7 @@ function compareRecordings(ra, rb) {
 						yAxes: [{
 							scaleLabel: {
 								display: true,
-								labelString: 'Percent Trials Correct'
+								labelString: 'Percent Gold'
 							},
 							ticks: {
 								max: 100,
