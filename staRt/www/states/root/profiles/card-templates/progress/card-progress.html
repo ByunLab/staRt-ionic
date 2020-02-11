@@ -1,12 +1,12 @@
 <div ng-if="displayingProgressModal" class="modal-backdrop" ng-class="{'modal-backdrop-slide-up' : slideModalUp, 'modal-backdrop-slide-down' : !slideModalUp}">
-	<button type="button"class="button close-button" ng-click="hideProgressModal()">X</button>
+	<button type="button"class="button close-button" on-tap="hideProgressModal()">X</button>
 
 	<div class="participant-name">{{data.currentProfile.name}}'s Progress Over Time</div>
 	<br/>
 	<div>
 		<canvas id="lineCanvas"></canvas>
 			<span ng-repeat="paginationData in paginationIndexes">
-			<span ng-class="{'active-pagination': paginationData.isActive}" class="pagination-item" ng-click="setupLineGraph({{paginationData.index}})">{{paginationData.index + 1}}</span>&nbsp;&nbsp;
+			<span ng-class="{'active-pagination': paginationData.isActive}" class="pagination-item" on-tap="setupLineGraph({{paginationData.index}})">{{paginationData.index + 1}}</span>&nbsp;&nbsp;
 		</span>
 	</div>
 </div>
@@ -16,7 +16,7 @@
 	<div ng-if="noCompletedSessions" class="card-body card-progress">Complete your first quiz or quest to see your progress history.</div>
 	<div ng-if="!noCompletedSessions" class="card-body card-progress">
 		<div id="display-modal-text">
-			<button type="button" class="button button-royal" ng-click="displayProgressModal()">View Line Graph of Progress</button>
+			<button type="button" class="button button-royal" on-tap="displayProgressModal()">View Line Graph of Progress</button>
 		</div>
 		<ion-scroll>
 			<ion-list ng-repeat="dataPoint in dashboardDataPoints">

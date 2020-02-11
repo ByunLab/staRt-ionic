@@ -173,7 +173,7 @@
 			<div class="inputBox">
 				<button
 					class="tutBtn"
-					ng-click="progressUpdate({{currStep.input.stepDone}})"
+					on-tap="progressUpdate({{currStep.input.stepDone}})"
 					ui-sref="{{'root.tutorial.' + currStep.input.next}}">
 					{{currStep.input.txt}}
 				</button>

@@ -39,7 +39,7 @@
 							<!-- 30 items, sequential -->
 							<button
 								class="big-button"
-								ng-click="beginSyllableQuestConfiguration()"
+								on-tap="beginSyllableQuestConfiguration()"
 								ng-hide="practicing"
 							>
 								Syllable Quest
@@ -56,7 +56,7 @@
 						<div class="btn-row">
 							<button
 								class="big-button"
-								ng-click="beginWordQuestConfiguration()"
+								on-tap="beginWordQuestConfiguration()"
 								ng-hide="practicing"
 							>
 								Word Quest
@@ -73,7 +73,7 @@
 			<div class="quest-config-page" ng-if="configuring && !practicing">
 
 				<div class="back-button"
-					ng-click="goBackToLanding()">
+					on-tap="goBackToLanding()">
 					Back
 				</div>
 
@@ -86,31 +86,31 @@
 						<button
 							class="big-button"
 							ng-selected="data.selectedCategories.includes(0)"
-              ng-click="toggleRCategory(0)">
+              on-tap="toggleRCategory(0)">
 							{{data.type === "Word" ? "bi/r/d" : "er" }}
 						</button>
 						<button
 							class="big-button"
 							ng-selected="data.selectedCategories.includes(1)"
-              ng-click="toggleRCategory(1)">
+              on-tap="toggleRCategory(1)">
 							{{data.type === "Word" ? "/r/ead" : "ree" }}
 						</button>
 						<button
 							class="big-button"
 							ng-selected="data.selectedCategories.includes(2)"
-              ng-click="toggleRCategory(2)">
+              on-tap="toggleRCategory(2)">
 							{{data.type === "Word" ? "/r/oad" : "rah" }}
 						</button>
 						<button
 							class="big-button"
 							ng-selected="data.selectedCategories.includes(3)"
-              ng-click="toggleRCategory(3)">
+              on-tap="toggleRCategory(3)">
 							{{data.type === "Word" ? "dee/r/" : "ear" }}
 						</button>
 						<button
 							class="big-button"
 							ng-selected="data.selectedCategories.includes(4)"
-              ng-click="toggleRCategory(4)">
+              on-tap="toggleRCategory(4)">
 							{{data.type === "Word" ? "doo/r/" : "ar" }}
 						</button>
 					</div>
@@ -146,7 +146,7 @@
 				<div class="quest-config-row quest-button-class">
 					<button
 							class="big-button"
-							ng-click="beginQuest()"
+							on-tap="beginQuest()"
 							ng-hide="practicing"
 							ng-disabled="!data.csvs || data.csvs.length === 0"
 						>

@@ -32,7 +32,7 @@
 				<button
 					type="button"
 					class="button button-royal column-div"
-					ng-click="optInFormalTesting()"
+					on-tap="optInFormalTesting()"
 					ng-hide="isEditing || !data.currentProfile || data.currentProfile.formalTester"
 					ng-disabled="!data.currentProfile">
 					Formal Testing
@@ -41,7 +41,7 @@
 				<button
 					type="button"
 					class="button button-royal column-div"
-					ng-click="startSession()"
+					on-tap="startSession()"
 					ng-hide="isEditing || !data.currentProfile || !data.currentProfile.formalTester || data.sessionIsActive || data.currentProfile.nFormalTreatmentComplete"
 					ng-disabled="!data.currentProfile">
 					Start Session
@@ -50,7 +50,7 @@
 				<button
 					type="button"
 					class="button button-royal column-div"
-					ng-click="stopSession()"
+					on-tap="stopSession()"
 					ng-hide="isEditing || !data.currentProfile || !data.currentProfile.formalTester || !data.sessionIsActive || data.currentProfile.nFormalTreatmentComplete"
 					ng-disabled="!data.currentProfile">
 					Stop Session
@@ -162,7 +162,7 @@
 			<button
 				type="button"
 				class="button button-balanced column-div"
-				ng-click="setIsEditing(true)"
+				on-tap="setIsEditing(true)"
 				ng-hide="isEditing"
 				ng-disabled="!data.currentProfile"
 				ng-hide="!data.currentProfile">
@@ -175,7 +175,7 @@
 			<button
 				type="button"
 				class="button button-positive column-div"
-				ng-click="saveProfile()"
+				on-tap="saveProfile()"
 				ng-hide="!isEditing">
 				Save
 			</button>
@@ -183,7 +183,7 @@
 			<button
 				type="button"
 				class="button button-calm column-div"
-				ng-click="cancelEdit()"
+				on-tap="cancelEdit()"
 				ng-hide="!isEditing">
 				Cancel
 			</button>
@@ -191,7 +191,7 @@
 			<button
 				type="button"
 				class="button button-assertive column-div"
-				ng-click="deleteProfile(data.currentProfile)"
+				on-tap="deleteProfile(data.currentProfile)"
 				ng-show="!isEditing"
 				ng-disabled="!data.currentProfile">
 
