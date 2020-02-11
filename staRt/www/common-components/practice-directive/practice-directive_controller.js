@@ -547,7 +547,7 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 		} else {
 			var NUM_WORDS_IN_BLOCK = 10;
 			var lookupIdx = $scope.currentWordIdx;
-			if ($rootScope.isBlockSession) {
+			if (!$rootScope.isRandomizeSession) {
 				lookupIdx = Math.floor($scope.currentWordIdx / NUM_WORDS_IN_BLOCK);
 			}
 			lookupIdx = lookupIdx % $scope.wordOrder.length;
@@ -558,7 +558,7 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 			$scope.tinyFont = $scope.carrier_phrase.length >= 32;
 		}
 
-		if (!$rootScope.isBlockSession && (1 + $scope.currentWordIdx - $scope.reorderOffset) % $scope.wordOrder.length == 0) {
+		if ($rootScope.isRandomizeSession && (1 + $scope.currentWordIdx - $scope.reorderOffset) % $scope.wordOrder.length == 0) {
 			$scope.reorderWords(true);
 		}
 	} // advanceWord()
