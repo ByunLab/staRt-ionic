@@ -12,8 +12,8 @@
 					<div>{{ recording.totalTimeString }} </div>
 					<div ng-if=recording.uploaded class="upload_badge uploaded">Uploaded</div>
 					<div ng-if=!recording.uploaded class="upload_badge not_uploaded">Not Uploaded</div>
-					<button class="button buttcon-calm" ng-click="resumeRecording(recording)">Resume</button>
-					<button class="button buttcon-calm" ng-click="recordingClicked(recording)">Select</button>
+					<button class="button buttcon-calm" on-tap="resumeRecording(recording)">Resume</button>
+					<button class="button buttcon-calm" on-tap="recordingClicked(recording)">Select</button>
 				</ion-item>
 			</ion-list>
 
@@ -27,7 +27,7 @@
 	<!-- <div class="column-div"> -->
 		<button
 			class="button button-calm column-div"
-			ng-click="uploadSelectedRecordings()"
+			on-tap="uploadSelectedRecordings()"
 			ng-disabled="!data.selectedProfileRecordings.length || uploadCount > 0" >
 			Upload
 		</button>
@@ -35,7 +35,7 @@
 	<!-- <div class="column-div"> -->
 		<button
 			class="button button-stable column-div"
-			ng-click="deleteSelectedRecordings()"
+			on-tap="deleteSelectedRecordings()"
 			ng-disabled="!data.selectedProfileRecordings.length || uploadCount > 0" >
 			<i class="icon ion-trash-b"></i>
 			Delete

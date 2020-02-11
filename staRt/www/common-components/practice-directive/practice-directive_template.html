@@ -24,7 +24,7 @@
   <!--
   <div class="toolbar-container">
       <div class="toolbar-tab" ng-repeat="tab in toolbar"
-      ng-click={{tab.action}}>
+      on-tap={{tab.action}}>
         <div class="tbTab-icon l-ico-cTextSubtle"
           ng-include="tab.icon"></div>
         <div class="tbTab-txt">{{tab.title}}</div>
@@ -43,7 +43,7 @@
       (will be replaced by toolbar in the future) -->
   <div class="toolbar-container">
     <div class="toolbar-tab-long"
-      ng-click="tbStop()">
+      on-tap="tbStop()">
         <div class="tbTab-txt_temp">Stop<br/>{{probe ? "Quiz" : "Quest"}}</div>
         <div class="tbTab-icon_temp l-ico-cTextSubtle"
           ng-include=" './img/icons/line/anchor.svg' ">
@@ -54,12 +54,12 @@
 
 <!-- (what is this? #sjt) --------------------------- -->
   <button style="margin:40px;"
-    ng-click="beginWordPractice()"
+    on-tap="beginWordPractice()"
     ng-hide="suppressStartButton || isPracticing || !hasValidWordList">
     Start {{type}} {{probe ? "probe" : "practice"}}
   </button>
 
-  <button style="margin:40px;" ng-click="nextWord()" ng-hide="!isPracticing" ng-if="false">
+  <button style="margin:40px;" on-tap="nextWord()" ng-hide="!isPracticing" ng-if="false">
     Next {{type}}
   </button>
 
@@ -119,21 +119,21 @@
   ng-if="!scores.endOfBlock">
     <button
       class="rateBtn rate-gold"
-      ng-click="onRating(3)"
+      on-tap="onRating(3)"
       ng-disabled="scores.endOfBlock">
         <span class="rateBtn-textbox">Great</span>
     </button>
 
     <button
       class="rateBtn rate-silver"
-      ng-click="onRating(2)"
+      on-tap="onRating(2)"
       ng-disabled="scores.endOfBlock">
         <span class="rateBtn-textbox">Good</span>
     </button>
 
     <button
       class="rateBtn rate-bronze"
-      ng-click="onRating(1)"
+      on-tap="onRating(1)"
       ng-disabled="scores.endOfBlock">
         <span class="rateBtn-textbox">Try Again</span>
     </button>

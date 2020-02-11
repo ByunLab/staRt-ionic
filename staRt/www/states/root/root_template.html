@@ -19,7 +19,7 @@
       <item
         ng-repeat="tab in tabData"
         class="navTab"
-        ng-click="safelySwitchStates(tab.sref)"
+        on-tap="safelySwitchStates(tab.sref)"
         ng-class="{ 'active': state.current.name.includes(tab.sref) }">
 
         <div class="navTabContent">

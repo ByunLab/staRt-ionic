@@ -32,7 +32,7 @@
 					<p>Please create a separate profile for each particpant who will be using the app.</p>
 
 					<button class="button"
-					ng-click="createProfile()">
+					on-tap="createProfile()">
 						<span>Add New Particpant</span>
 						<i class="icon ion-person-add "></i>
 					</button>
@@ -78,7 +78,7 @@
 						<!--   iconBtn -->
 						<div class="card-closeBox">
 							<button class="button"
-								ng-click="closeSlpView()">
+								on-tap="closeSlpView()">
 								<div class="s-ico32 l-ico-cTextMain"
 								  ng-include=" './img/icons/line/close.svg' " >
 								</div>
@@ -117,26 +117,26 @@
 
 					<div class="p-card_navBox">
 
-						<div ng-click="setCardState('profile')"
+						<div on-tap="setCardState('profile')"
 							class="pro_navitem"
 							ng-class="{'pro_navitem--active': cardState === 'profile' }">
 							profile
 						</div>
 
-						<div ng-click="setCardState('recordings')"
+						<div on-tap="setCardState('recordings')"
 							class="pro_navitem"
 							ng-class="{'pro_navitem--active': cardState === 'recordings' }">
 							recordings
 						</div>
 
-						<div ng-click="setCardState('progress')"
+						<div on-tap="setCardState('progress')"
 							class="pro_navitem"
 							ng-class="{'pro_navitem--active': cardState === 'progress' }">
 							progress
 						</div>
 
 
-						<div ng-click="setCardState('settings')"
+						<div on-tap="setCardState('settings')"
 							class="pro_navitem"
 							ng-class="{'pro_navitem--active': cardState === 'settings' }">
 							settings
