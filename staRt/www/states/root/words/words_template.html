@@ -131,11 +131,14 @@
 				</div>
 
 
-				<div ng-if="!data.waveHidden"
-					class="quest-config-row word-quest-wave-visible">
+				<div class="quest-config-row word-quest-wave-visible">
 					<ion-item>
-						<ion-label>Wave Hidden</ion-label>
-						<ion-checkbox ng-model="data.waveHidden"></ion-checkbox>
+						<ion-label>Show Wave</ion-label>
+						<ion-checkbox ng-model="data.waveHidden" ng-true-value="false" ng-false-value="true"></ion-checkbox>
+					</ion-item>
+					<ion-item>
+						<ion-label>Randomize</ion-label>
+						<ion-checkbox ng-model="$root.isRandomizeSession"></ion-checkbox>
 					</ion-item>
 				</div>
 

@@ -14,6 +14,8 @@
 		var lastChronoTime;
 		var ticker = undefined;
 
+		$rootScope.isRandomizeSession = true;
+
 		var logInterval = function() {
 			if (ticker) {
 				var nextChronoTime = Date.now();

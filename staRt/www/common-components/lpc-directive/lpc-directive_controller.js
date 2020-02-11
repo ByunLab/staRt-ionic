@@ -21,7 +21,6 @@ var lpcDirective = angular.module( 'lpcDirective' );
 lpcDirective.controller( 'LpcDirectiveController',
 	function($rootScope, $scope, $state, $stateParams, $element, $timeout, $localForage, ProfileService, LPCRenderer )
 	{
-
 		$scope.data = {};
 
 		$scope.$watchCollection('data', function()
