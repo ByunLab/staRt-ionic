@@ -1,7 +1,7 @@
 /*global milestones:writable */
 
 var practiceDirective = angular.module( 'practiceDirective' );
-practiceDirective.factory('QuestScore', function QuestScoreFactory() {
+practiceDirective.factory('QuestScore', function QuestScoreFactory($rootScope) {
 
 	/* ---------------------------------------
   Purpose: Handles Quest scoring, milestone, and badging logic
@@ -567,7 +567,8 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 				badges.cardsQuestEnd.finalScore.count = scores.display_score;
 			}
 
-			if(scores.isResumePrep){
+			var skipBlock = $rootScope.skipEndOfBlockDialogs && !badges.qtDialog.isFinal;
+			if(scores.isResumePrep || skipBlock){
 				// skips the dialog box prep if we are resuming a saved session
 				resetForNewBlock(scores, badges);
 			} else {
