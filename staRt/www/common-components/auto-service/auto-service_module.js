@@ -239,7 +239,7 @@ var SessionAuto = function (profile, currentStats, onShow, initialState) {
 				'Please complete this session using traditional (no-biofeedback) practice.';
 			return {
 				text: text,
-				title: 'Biofeedback',
+				title: 'Session Type',
 				button: 'Okay',
 				callback: (function () {
 					this.state.hasAcceptedBiofeedbackPrompt = true;
