@@ -71,6 +71,9 @@ public:
     
     // Call Peaks and Valleys class here
     PeaksAndValleys peaksAndValleys;
+    PeaksAndValleys peaksAndValleysLPF;
+    
+    PeakTracker peakTracker;
     
 private:
     
