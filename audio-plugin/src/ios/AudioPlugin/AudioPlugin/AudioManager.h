@@ -10,6 +10,7 @@
 #define __LPC_Display2__AudioManager__
 
 #include <iostream>
+#include <algorithm>
 #include <AudioToolbox/AudioToolbox.h>
 
 #define DBLBUF_NUM_BUFFERS (2)  /**< number of buffers in DoubleBuffer object */
@@ -17,7 +18,13 @@
 #define MAX_LPC_ORDER (52)      /**< maximum number of LPC coefficients */
 #define MAX_BLOCK_SIZE 4096     /**< maximum size of autocorrelation */
 
-#define FREQ_RESP_LEN 512 /* max length of frequency length response */
+#define FREQ_RESP_LEN 512 /**< max length of frequency length response */
+
+#define MAX_DISPLAY_FREQ (4500)     /**< upper limit of LPC magnitude spectrum display (Hz) */
+
+#define NUM_FORMANTS 4 /**< number of formants to track */
+
+#define NUM_FILTER_COEFF 3 /** number of filt coefficients*/
 
 #ifdef __cplusplus
 extern "C" {
@@ -235,6 +242,10 @@ extern "C" {
         float left[FREQ_RESP_LEN];
         float right[FREQ_RESP_LEN];
         
+        float max[FREQ_RESP_LEN];
+        float min[FREQ_RESP_LEN];
+        float mean[FREQ_RESP_LEN];
+        
         float leftMean    = 0.0;
         float leftStdDev  = 0.0;
         float rightMean   = 0.0;
@@ -255,6 +266,10 @@ extern "C" {
         float left[FREQ_RESP_LEN];
         float right[FREQ_RESP_LEN];
         
+        float max[FREQ_RESP_LEN];
+        float min[FREQ_RESP_LEN];
+        float mean[FREQ_RESP_LEN];
+        
         float leftMean    = 0.0;
         float leftStdDev  = 0.0;
         float rightMean   = 0.0;
@@ -262,7 +277,7 @@ extern "C" {
     } SLOPE;
     
     typedef struct {
-        float *idx;
+        float *freq;
         float *mag;
         
         HEIGHT height;
@@ -271,7 +286,7 @@ extern "C" {
     } PEAKS;
     
     typedef struct {
-        float *idx;
+        float *freq;
         float *mag;
     } VALLEYS;
     
@@ -302,7 +317,6 @@ extern "C" {
         PEAKS *peaks;
         VALLEYS *valleys;
         
-        
         /*
          Constructor
          */
@@ -322,17 +336,8 @@ extern "C" {
         /*
          Negative slope method
          */
-<<<<<<< HEAD
         void addPeaksAndValleys(int isPos);
-=======
-        void slopeNeg();
-        
-        /*
-         Positive slope method
-         */
-        void slopePos();
->>>>>>> 183e1ec0c51cbae49a5096eaa8c3552bd22a3bfd
-        
+    
         /*
          Update Peaks
          */
@@ -370,7 +375,180 @@ extern "C" {
          Compute statistics
          */
         void computeStats();
+    };
+    
+    /*
+     @brief Classes and Structs for Analysis & Tracking Formants
+     @Authors: Scott Murakami, Tae Hong Park
+     @Date: February 10th, 2020
+     */
+    
+    // Parameters for Formant Tracker
+    typedef struct{
+        float *freq;
+        float *mag;
+    } FORMANTS;
+    
+    typedef struct{
+        float *freq;
+        float *mag;
         
+        HEIGHT height;
+    } NEXT_FRAME_PEAKS;
+    
+    typedef struct{
+        float *freq;
+        float *mag;
+    } FORMANTS_NEW;
+    
+    class PeakTracker{
+    public:
+
+        bool init;
+        bool initDisplayPtr;
+        
+        bool startTracking;
+        // Frame of Analysis Start
+        int formantOnset;
+        int formantNum;
+        
+        float onsetThreshold;
+        float offsetThreshold;
+        
+        // High and Low Ranges for Formants
+        float deltaFLow;
+        float deltaFHigh;
+        
+        // Thresholds for Formant Ranges
+        float threshLow;
+        float threshHigh;
+        
+        int indexLow;
+        int indexHigh;
+        
+        int   nextPeakFreq;
+        float nextPeakMag;
+        
+        bool trackingOn;
+        bool firstFramePicked;
+        
+        int stopAnalysisCounter;
+        
+        float *lpfGuideSignal;
+        float *initTrackerVal;
+        float *initZeros;
+    
+        // Pointers for Onset Frame Tracker
+        float *tempF1Idx;
+        float *topPeaksMag;
+        
+        FORMANTS *formants;
+        NEXT_FRAME_PEAKS *nextFramePeaks;
+        FORMANTS_NEW *formantsNew;
+        
+        PeaksAndValleys *peaksAndValleys;
+        PeaksAndValleys *peaksAndValleysLPF;
+        
+        /**
+         * Constructor & Destructor
+         */
+        PeakTracker();
+        ~PeakTracker();
+        
+        /**
+         * Init
+         * @param[in] bufferSize - max number of peaks
+         */
+        void initTracker(unsigned int bufferSize);
+        
+        /**
+         * Reset
+         */
+        void resetTracker(unsigned int bufferSize);
+        
+        /**
+         * LPF Filter for Guide
+         */
+        void lpfFilter(float *signal, int signalLength);
+        
+        /**
+         * Turn Tracking on and off
+         */
+        void trackingOnOff(float *signal, int signalLength);
+        
+        /**
+         * Pick First (Onset) Formant Frame
+         */
+        void pickFirstFormantFrame();
+    
+        /**
+         * Tracks and Updates Formants
+         */
+        void track();
+        
+        /**
+         * Picks formants in next frame
+         */
+        void pickNextFrameFormant();
+        
+        /**
+         * Selects better peak if there are two candidates
+         */
+        void pickBetweenTwo();
+        
+        /**
+         * Skip and retain current peak values if there are none to pick from
+         */
+        void skipAndRetain();
+        
+        /**
+         * Pick Formant in High Range
+         * @param[in] Range for Higher Freq
+         * @return Index for High Peak
+         */
+        int pickHigh(float deltaFHigh);
+        
+        /**
+         * Pick Formant in Low Range
+         * @param[in] Range for Lower Freq
+         * @return Index for Low Peak
+         */
+        int pickLow(float deltaFLow);
+        
+        /**
+         * Calls checkLow and checkHigh to get Low and High Ranges for each formant
+         * @param[in] Threshold for Higher Freq Peak
+         * @param[in] Threshold for Lower Freq Peak
+         * @param[in] Formant Number 1-4
+         */
+        void checkHighAndLow(float threshLow, float threshHigh, int formantNum);
+        
+        /**
+         * Determines Delta Low Range for Each Formant
+         * @param[in] Threshold for Lower Freq Peak
+         * @param[in] Formant Number 1-4
+         */
+        void checkLow(float threshLow, int formantNum);
+        
+        /**
+         * Determines Delta High Range for Each Formant
+         * @param[in] Threshold for Higher Freq Peak
+         * @param[in] Formant Number 1-4
+         */
+        void checkHigh(float threshHigh, int formantNum);
+        
+    private:
+        
+        float noiseFloor;
+        
+        float *lpfInBuf;
+        float *lpfOutBuf;
+        
+        // LPF Coefficients
+        float bCoeff[NUM_FILTER_COEFF] = {0.2999217314805791, 0.5998434629611582, 0.2999217314805791};
+        float aCoeff[NUM_FILTER_COEFF] = {1, -1.984450219429652, 0.984570188122244};
+        
+        float ditheringNoise;
     };
     
 #ifdef __cplusplus
