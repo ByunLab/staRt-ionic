@@ -829,7 +829,6 @@ PeakTracker::PeakTracker(){
 
     // Create new structs
     formants       = new FORMANTS;
-    formantsNew    = new FORMANTS_NEW;
     
     peaksAndValleys    = new PeaksAndValleys();
     peaksAndValleysLPF = new PeaksAndValleys();
@@ -840,8 +839,6 @@ PeakTracker::~PeakTracker(){
     delete [] formants->mag;
     delete [] nextFramePeaks->freq;
     delete [] nextFramePeaks->mag;
-    delete [] formantsNew->freq;
-    delete [] formantsNew->mag;
     
     delete [] peaksAndValleys->peaks->freq;
     delete [] peaksAndValleys->peaks->mag;
@@ -855,7 +852,6 @@ PeakTracker::~PeakTracker(){
     
     delete formants;
     delete nextFramePeaks;
-    delete formantsNew;
     delete topPeaksMag;
     
     delete peaksAndValleys;
@@ -909,11 +905,6 @@ void PeakTracker::initTracker(unsigned int bufferSize){
     memcpy(formants->freq, initTrackerVal, bufferSize * sizeof(float));
     memcpy(formants->mag, initTrackerVal, bufferSize * sizeof(float));
     
-    formantsNew->freq = (float*) malloc(bufferSize * sizeof(float));
-    formantsNew->mag  = (float*) malloc(bufferSize * sizeof(float));
-    memcpy(formantsNew->freq, initTrackerVal, bufferSize * sizeof(float));
-    memcpy(formantsNew->mag, initTrackerVal, bufferSize * sizeof(float));
-    
     onsetThreshold  = 0.05;
     offsetThreshold = 0.05;
 }
@@ -935,7 +926,6 @@ void PeakTracker::resetTracker(unsigned int bufferSize){
     nextPeakFreq = -1.0;
     
     memcpy(lpfGuideSignal, initZeros, bufferSize * sizeof(float));
-    memcpy(formantsNew->mag, initTrackerVal, bufferSize * sizeof(float));
 }
 
 void PeakTracker::lpfFilter(float *signal, int signalLength){
@@ -1046,10 +1036,10 @@ void PeakTracker::track(){
     
     int lenPeaks = sizeof(formants->freq) / sizeof(formants->freq[0]);
     
-    for(int k = 0; k<NUM_FORMANTS; k++){
-        formantsNew->freq[k] = -1;
-        formantsNew->mag[k]  = -1;
-    }
+//    for(int k = 0; k<NUM_FORMANTS; k++){
+//        formantsNew->freq[k] = -1;
+//        formantsNew->mag[k]  = -1;
+//    }
     
     /* Go through new peaks and determine which are the next four formants */
     for (formantNum = 1; formantNum<lenPeaks; formantNum++){
@@ -1089,8 +1079,10 @@ void PeakTracker::track(){
         if(computed == true){
             pickNextFrameFormant();
         }
-        formantsNew->freq[formantNum] = nextPeakFreq;
-        formantsNew->mag[formantNum]  = nextPeakMag;
+        formants->freq[formantNum] = nextPeakFreq;
+        formants->mag[formantNum]  = nextPeakMag;
+//        formantsNew->freq[formantNum] = nextPeakFreq;
+//        formantsNew->mag[formantNum]  = nextPeakMag;
     }
 }
 
@@ -1106,6 +1098,48 @@ void PeakTracker::pickNextFrameFormant(){
     } else{
         skipAndRetain();
     }
+}
+
+void PeakTracker::pickBetweenTwo(){
+    int tempNextPeakFreqH  = nextFramePeaks->freq[indexHigh];
+    float tempNextPeakMagH = nextFramePeaks->mag[indexHigh];
+    
+    int tempNextPeakFreqL  = nextFramePeaks->freq[indexLow];
+    float tempNextPeakMagL = nextFramePeaks->mag[indexLow];
+    
+    float nextPeakHighMeanH = nextFramePeaks->height.mean[indexHigh];
+    float nextPeakHighMeanL = nextFramePeaks->height.mean[indexLow];
+    
+    // retain current peak
+    int currentPeakFreq = formants->freq[formantNum];
+    
+    // If magnitude is significantly bigger, choose bigger one
+    // if basically same, pick peak that is closer in frequency
+    
+    float peakThresh = 1.2;
+    if (tempNextPeakMagH > tempNextPeakMagL * peakThresh){
+        nextPeakFreq = tempNextPeakFreqH;
+        nextPeakMag  = tempNextPeakMagH;
+    }
+    else if (tempNextPeakMagL > tempNextPeakMagH*peakThresh){
+        nextPeakFreq = tempNextPeakFreqL;
+        nextPeakMag  = tempNextPeakMagL;
+    }
+    else{ // pick closest in freq
+        if(abs(currentPeakFreq - tempNextPeakFreqH) > abs(currentPeakFreq - tempNextPeakFreqL)){
+            nextPeakFreq = tempNextPeakFreqL;
+            nextPeakMag  = tempNextPeakMagL;
+        }
+        else{
+            nextPeakFreq = tempNextPeakFreqH;
+            nextPeakMag  = tempNextPeakMagH;
+        }
+    }
+}
+
+void PeakTracker::skipAndRetain(){
+    nextPeakFreq = formants->freq[formantNum];
+    nextPeakMag  = formants->mag[formantNum];
 }
 
 int PeakTracker::pickHigh(float deltaFHigh){

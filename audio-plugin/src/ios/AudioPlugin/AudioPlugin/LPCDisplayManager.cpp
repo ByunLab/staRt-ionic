@@ -124,7 +124,7 @@ void LPCDisplayManager::render(Float32 *lpc_mag_buffer, Vector3 *freqVertices, V
 
     // Output New Peaks for DISP
     for(int i=0; i<NUM_FORMANTS; i++){
-        peakIndices[i] = peakTracker.formantsNew->freq[i];
+        peakIndices[i] = peakTracker.formants->freq[i];
     }
     m_numPeaks = NUM_FORMANTS;
     
@@ -180,7 +180,7 @@ void LPCDisplayManager::render(Float32 *lpc_mag_buffer, Vector3 *freqVertices, V
             peakVertices[2*pk_cnt + 1].x = x_pos;
             
             // new peak tracker. Use magnitude values of tracked formants
-            if(peakTracker.formantsNew->mag[pk_cnt] != -1){
+            if(peakTracker.formants->mag[pk_cnt] != -1){
                 peakVertices[2*pk_cnt + 1].y = y_pos;
             }
             
