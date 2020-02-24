@@ -11,7 +11,13 @@
   justify-content: flex-end;
   align-items: center;
   z-index: 99;
+  transition: left 0.4s;
+  transition-timing-function: ease-in;
   //border: 1px solid blue;
+
+  &.tbSlideOut {
+    left: $col-w * 12;
+  }
 }
 
 .toolbar-tab {

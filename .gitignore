@@ -1,4 +1,5 @@
 .DS_Store
 staRt/www/css/app_styles.*
 *~
+staRt/www/data/firebase_credentials.js
 IDEWorkspaceChecks.plist

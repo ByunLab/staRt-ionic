@@ -48,13 +48,35 @@
     font-size: 2.5em;
   }
 }
- .words-progress-indicator {
-	display: inline-block;
-	vertical-align: middle;
-  //color: $c-text-main;
-  color: $c-text-subtle;
-	//border: 1px solid red;
+
+// number above the word prompt
+.countIndicator-container {
+  position: absolute;;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  align-items: center;
+  width: $col-w * 3;
+  height: $row-h * 0.5;
+  left: $col-w * 5;
+  opacity: 0;
+  transition: opacity 0.5s;
+  transition-timing-function: ease-in;
+  z-index: 5;
+
+  &.counter_fade-in {
+    opacity: 1;
+  }
+  &.counter_fade-out {
+    opacity: 0;
+  }
 }
+
+.countIndicator {
+  color: $c-text-subtle;
+}
+
+
 
 // RATING BUTTONS ------------------------------------
 .rateBtn-container {
@@ -64,10 +86,15 @@
   justify-content: space-between;
   align-items: flex-end;
   top: $row-h;
-  right: 0;
+  left: $col-w * 10;
   height: $row-h * 2;
   width: $col-w * 2;
-  //border: 1px solid red;
+  transition: left 0.4s;
+  transition-timing-function: ease-in;
+
+  &.rateBtnSlideOut {
+    left: $col-w * 12;
+  }
 
   button.rateBtn {
     display: flex;

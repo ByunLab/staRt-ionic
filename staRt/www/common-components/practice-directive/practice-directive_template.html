@@ -41,7 +41,10 @@
 
   <!-- Temp 'Stop Session' Button
       (will be replaced by toolbar in the future) -->
-  <div class="toolbar-container">
+      <!--  ng-hide="sandbank" ng-show="!sandbank" -->
+  <div class="toolbar-container"
+    ng-class="{'tbSlideOut': sandbank}"
+  >
     <div class="toolbar-tab-long"
       on-tap="tbStop()">
         <div class="tbTab-txt_temp">Stop<br/>{{probe ? "Quiz" : "Quest"}}</div>
@@ -72,16 +75,15 @@
   </div> <!-- end .profiles-layout_drawer-left -->
 
   <!-- PROMPT BOX ------------------------------- -->
-  <div class="badge-container"
-  ng-if="isPracticing && !probe"
-  ng-include=" './common-components/practice-directive/partials/quest/badges.html' ">
-  </div> <!-- end .profiles-layout_drawer-left -->
+  <div class="countIndicator-container"
+    ng-class="{'counter_fade-in': sandbank, 'counter_fade-out': !sandbank }">
+    <p class="countIndicator"> {{currentWordIdx + 1}} of {{count}} </p>
+  </div>
 
 
-  <!-- PROMPT BOX ------------------------------- -->
   <div class="promptBox-layout" ng-hide="!isPracticing">
     <div class="promptBox">
-      <p class="words-progress-indicator"> {{currentWordIdx + 1}} of {{count}} </p>
+      <p class="countIndicator"> {{currentWordIdx + 1}} of {{count}} </p>
       <p ng-class="{
         'words-word': true,
         'small': smallFont,
@@ -113,10 +115,10 @@
 
   </div>
 
-
   <!-- RATING BUTTONS --------------- -->
   <div class="rateBtn-container"
-  ng-if="!scores.endOfBlock">
+    ng-class="{
+      'rateBtnSlideOut': sandbank || scores.endOfBlock }">
     <button
       class="rateBtn rate-gold"
       on-tap="onRating(3)"
@@ -171,23 +173,6 @@
       <div class="stackHole img-sb_sandHole"></div>
     </div>
    </div>
-
-
-<!-- Old Method. TODO: Update saved sesions to new method --
-   <div class="coin-row-layout" ng-if="!probe">
-     <div class="coinBox-layout" style="width: {{sandholes.length * 41}}px;">
-       <div class="sand_coins">
-         <div ng-repeat="stack_coins in block_coins track by $index" class="coin_stack">
-           <img ng-repeat="stack_coin in stack_coins track by $index" ng-src="img/stackCoins/stackCoin-{{stack_coin}}.png"
-             class="coin" style="bottom: {{$index * 6}}px" />
-         </div>
-       </div>
-       <div class="sand_holes">
-         <img ng-repeat="i in sandholes track by $index" src="img/stackCoins/sandHole.png" />
-       </div>
-     </div>
-   </div>
-  -->
 
 
    <!-- SCORE & SANDBANK ----------------------------- -->

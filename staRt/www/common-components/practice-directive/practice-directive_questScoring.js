@@ -24,6 +24,8 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 	// handles state for active profile's highscores and milestone thresholds
 	function Milestones() {
 		return  {
+			// highscores: holds current in-game state of highscores
+			// created from firebase highscore data
 			highscores: {
 				mgib: 0,
 				hsib: 0,
@@ -32,6 +34,10 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 				streak: 0,
 				perfectBlock: 0,
 			},
+			// display: holds all the data (text, graphics, etc) for the sandbank display
+			// it is created from the Sandbank constructor and updated from this.highscores
+			display: undefined,
+			// update: if a milestone is achieved during a Quest, this object is updated to hold highscore data to be push to firebase at the end of the quest
 			update: {
 				mgibHx: {},
 				hsibHx: {},
@@ -49,7 +55,6 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		// sessionID is added by the controller
 		return {
 			block_display_score: 0, //user val
-			block_coins: [[]],
 			block_goldCount: 0,
 			block_score: 0, // lab val or difficulty score
 			session_score: 0,
@@ -85,6 +90,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 				mgib: {
 					template: 'achievement',
 					title: 'Most Gold in Block!',
+					imgClass: 'mgib',
 					count: 0,
 					imgUrl: '',
 					btnText: 'Next',
@@ -92,6 +98,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 				hsib: {
 					template: 'achievement',
 					title: 'High Score in Block!',
+					imgClass: 'hsib',
 					count: 0,
 					imgUrl: '',
 					btnText: 'Next',
@@ -99,6 +106,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 				streak: {
 					template: 'achievement',
 					title: 'Gold Streak!',
+					imgClass: 'streak',
 					count: 0,
 					imgUrl: '',
 					btnText: 'Next',
@@ -106,6 +114,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 				perfectBlock: {
 					template: 'achievement',
 					title: 'Perfect Block!',
+					imgClass: 'perfectBlock',
 					count: 0,
 					imgUrl: '',
 					btnText: 'Next',
@@ -113,6 +122,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 				incrDiff: {
 					template: 'note',
 					title: 'Increasing Difficulty!',
+					imgClass: 'incrDiff',
 					bodyText: 'Watch for new words.',
 					imgUrl: '',
 					btnText: 'Next',
@@ -121,6 +131,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 					template: 'note',
 					title: 'Checkpoint',
 					subtitle: '',
+					imgClass: 'feedback',
 					imgUrl: '',
 					bodyText: 'Please provide qualitative feedback on the participant\'s performance over the last ten trials.',
 					btnText: 'See Scores',
@@ -129,10 +140,11 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 					template: 'progSum',
 					title: 'Progress Summary',
 					subtitle: '',
+					imgClass: '',
 					gold: 0,
 					silver: 0,
 					bronze: 0,
-					btnText: 'Resume Quest',
+					btnText: 'Resume',
 				},
 			},
 			cardsQuestEnd: {
@@ -140,6 +152,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 					flag: false,
 					template: 'achievement',
 					title: 'Most Gold in Quest!',
+					imgClass: 'mgiq',
 					count: 0,
 					imgUrl: '',
 					btnText: 'Next',
@@ -148,6 +161,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 					flag: false,
 					template: 'achievement',
 					title: 'High Score in Quest!',
+					imgClass: 'hsiq',
 					count: 0,
 					imgUrl: '',
 					btnText: 'Next',
@@ -156,6 +170,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 					flag: true,
 					template: 'endSum',
 					title: 'Quest Complete!',
+					imgClass: 'hooray',
 					gold: 0,
 					silver: 0,
 					bronze: 0,
@@ -165,6 +180,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 					flag: true,
 					template: 'finalScore',
 					title: 'Quest Complete!',
+					imgClass: 'hooray',
 					subtitle: '',
 					count: 0,
 					btnText: 'Close',
@@ -189,6 +205,101 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		};
 	}
 
+	function Sandbank() {
+		return {
+			hsib: {
+				title: 'Most Points in Block',
+				achieved: false,
+				imgClass: 'hsib',
+				min:10,
+				highlightTest: 3,
+				emptyText: 'Earn <span class="bold">10 points in a single block</span> to unlock this achievement.',
+				score: 0, //should be same as milestones.highscores
+				dateStr: '', //
+				currentText: 'current block',
+				currentValue: '{{scores.block_display_score}}',
+				unit: 'points',
+				highlight: false,
+			},
+			mgib: {
+				title: 'Most Gold in Block',
+				achieved: false,
+				imgClass: 'mgib',
+				min:0,
+				highlightTest: 2,
+				emptyText: 'Earn <span class="bold">a gold coin</span> to unlock this achievement.',
+				score: 0,
+				dateStr: '',
+				currentText: 'current block',
+				currentValue: '0',
+				unit: 'coins',
+				highlight: false,
+			},
+			streak: {
+				title: 'Gold Streak',
+				achieved: false,
+				imgClass: 'streak',
+				min:1,
+				highlightTest: 1,
+				emptyText: 'Earn <span class="bold">2 consecutive gold coins</span> to unlock this achievement.',
+				score: 0,
+				scoreClass: '',
+				scoreText: '',
+				scoreTextClass: '',
+				dateStr: '',
+				currentText: 'current streak',
+				currentValue: '0',
+				unit: 'coins',
+				highlight: false,
+			},
+			hsiq: {
+				title: 'Most Points in Quest',
+				achieved: false,
+				imgClass: 'hsiq',
+				min: 20,
+				highlightTest: 10,
+				emptyText: 'Earn <span class="bold">20 points</span> to unlock this achievement.',
+				score: 0,
+				dateStr: '',
+				currentText: 'current quest',
+				currentValue: '0',
+				unit: 'points',
+				highlight: false,
+			},
+			mgiq: {
+				title: 'Most Gold in Quest',
+				achieved: false,
+				imgClass: 'mgiq',
+				min:0,
+				highlightTest: 5,
+				emptyText: 'Earn <span class="bold">a gold coin</span> to unlock this achievement.',
+				score: 0,
+				dateStr: '',
+				currentText: 'current quest',
+				currentValue: '0',
+				unit: 'coins',
+				highlight: false,
+			},
+			perfectBlock: {
+				title: 'Perfect Block',
+				achieved: false,
+				imgClass: 'perfectBlock',
+				min: 0,
+				highlightTest: 1,
+				emptyText: 'Earn <span class="bold">10 gold coins in a block</span> to unlock this achievement.',
+				score: 0,
+				scoreClass: 'score-perfectB',
+				scoreText: 'times',
+				scoreTextClass: 'perfectB-text',
+				dateStr: '',
+				currentText: 'current quest: ',
+				currentValue: '0',
+				unit: ' blocks',
+				highlight: false,
+			},
+		};
+	} // end sandbank constructor
+
 
 	// ==============================================
 	// INITS ------------------------
@@ -210,6 +321,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		milestones = undefined;
 		milestones = new Milestones();
 
+		// highscores data --------------------------
 		var mapHighscores = function(milestone) {
 			var highscoresArr = highscores[milestone + 'Hx'].map(function(item) {
 				return item.score;
@@ -220,6 +332,30 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		for (var key in milestones.highscores) {
 			milestones.highscores[key] = mapHighscores(key);
 		}
+
+		console.log(milestones);
+		// display data --------------------------
+		var sandbank = new Sandbank();
+
+		var displayTemp = {};
+
+		for (var key in highscores) {
+			var keyName = key.slice(0, -2);
+			var keyIdxNewest = highscores[key].length -1;
+			displayTemp[keyName] = highscores[key][keyIdxNewest];
+			displayTemp[keyName].dateStr = new Date(displayTemp[keyName].date).toLocaleDateString();
+		}
+		for (var item in sandbank) {
+			sandbank[item].score = displayTemp[item].score;
+			sandbank[item].dateStr = displayTemp[item].dateStr;
+			if (sandbank[item].score > sandbank[item].min) {
+				sandbank[item].achieved = true;
+			}
+		}
+
+		milestones.display = sandbank;
+
+		// console.log(milestones.highscores);
 		return milestones;
 	};
 
@@ -306,10 +442,17 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 	// updates milestone props in in $scope.milestones to be saved to firebase at end of Quest
 	function updateMilestoneRecord(milestones, msProp, newMilestone) {
 		milestones.highscores[msProp] = newMilestone;
+
+		// for fb update
 		var msHx = [msProp] + 'Hx';
 		milestones.update[msHx].score = newMilestone;
 		milestones.update[msHx].date = Date.now();
 		milestones.shouldUpdateFirebase = true;
+
+		// for sandbank
+		milestones.display[msProp].score = newMilestone;
+		milestones.display[msProp].dateStr = 'TODAY!';
+		milestones.display[msProp].achieved = true;
 	}
 
 
@@ -412,6 +555,34 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		nextCard(badges);
 	}
 
+	// ==============================================
+	// SANDBANK ------------------------
+	// Updates the Sandbank scores an sets highlights
+	// Called each time the user opens the Sandbank drawer
+	function updateSandbank(scores, milestones) {
+		var updateObj = {
+			hsib: scores.block_display_score,
+			mgib: scores.block_goldCount,
+			streak: scores.streak,
+			hsiq: scores.display_score,
+			mgiq: scores.session_coins.gold,
+			perfectBlock: milestones.highscores.perfectBlock,
+		};
+
+		for (var sb_item in milestones.display) {
+			milestones.display[sb_item].currentValue = updateObj[sb_item];
+
+			if(milestones.display[sb_item].currentValue > 0) {
+				if( milestones.display[sb_item].currentValue > (milestones.display[sb_item].score - milestones.display[sb_item].highlightTest)) {
+					milestones.display[sb_item].highlight = true;
+				} else {
+					milestones.display[sb_item].highlight = false;
+				}
+			}
+		}
+		//console.log(milestones.display);
+	}
+
 
 	// ==============================================
 	// MAIN PROCS ===================================
@@ -455,7 +626,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 			});
 		};
 		//add common template fields here
-		var commonFields = ['title', 'btnText'];
+		var commonFields = ['title', 'imgClass', 'btnText'];
 		populateCard(commonFields);
 
 		if(template === 'achievement') {
@@ -552,7 +723,9 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		// checked at end of block -----------------------------
 		if( scores.endOfBlock ) {
 
-			checkDifficulty(scores, badges);
+			var finalBlock = (currentWordIdx > (scores.totalTrials -10)) ? true : false;
+
+			if(!finalBlock) { checkDifficulty(scores, badges); }
 
 			//updateSummaryCards()
 			badges.qtDialog.isBlockEnd = true;
@@ -560,8 +733,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 			var coinSum = scores.session_coins;
 			updateSummaryCards(badges, 'cardsBlockEnd', 'progSum', coinSum );
 
-			// if FINAL end-of-block sequence
-			if(currentWordIdx > (scores.totalTrials -10)) {
+			if(finalBlock){
 				badges.qtDialog.isFinal = true;
 				updateSummaryCards(badges, 'cardsQuestEnd', 'endSum', coinSum );
 				badges.cardsQuestEnd.finalScore.count = scores.display_score;
@@ -610,7 +782,6 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		checkUpdateMilestones(scores, milestones, badges, currentWordIdx);
 	}; // end questRating()
 
-
 	return {
 		initCoinCounter: initCoinCounter,
 		initNewHighScores: initNewHighScores,
@@ -619,6 +790,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory() {
 		initBadges: initBadges,
 		questRating: questRating,
 		nextCard: nextCard,
-		resetForNewBlock: resetForNewBlock
+		resetForNewBlock: resetForNewBlock,
+		updateSandbank: updateSandbank,
 	};
 });

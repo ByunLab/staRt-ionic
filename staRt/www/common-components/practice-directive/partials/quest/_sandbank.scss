@@ -1,9 +1,17 @@
 // SANDBANK ------------------------------------
 .sandbank-container {
   position: absolute;
-  top: $row-h * 5;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-end;
   width: 100%;
-  height: $row-h;
+  height: $row-h * 6;
+  top: $row-h * 5;
+  transition: top 0.5s;
+  transition-timing-function: ease-in;
+  z-index: 90;
+
+  &.sandbankOpen { top: 0; }
 
   .sandbank-bg {
     position: absolute;
@@ -11,43 +19,269 @@
     height: $row-h * 0.8;
     top: $row-h * 0.2;
     background-image: url("../img/bgImg/bg_sandbank--handle.svg");
+    background-size: 100% auto;
     background-position: right bottom;
     background-repeat: no-repeat;
-    z-index: 0;
-    //border: 1px solid blue;
+    z-index: 91;
   }
-  .sandbank-score {
+
+  .sandDollar-box {
     position: relative;
     display: flex;
     flex-flow: column nowrap;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
-    //height: $row-h * 0.9;
-    height: $row-h * 1.1; //TEMP adjusted for reset btn
+    height: $row-h * 0.9;
     width: $col-w * 2;
     bottom: $row-h * 0.2;
-    //padding-bottom: $row-h * 0.1;
     margin-left: $col-w * 10;
     font-size: 1.25em;
     font-weight: 600;
     text-align: center;
     color: #c7b299;
-    z-index: 50;
-    //border: 1px solid pink;
+    z-index: 92;
+
+    .sandbank-score {
+      display: flex;
+      flex-flow: column nowrap;
+      justify-content: center;
+      height: $row-h * 0.3;
+    } // .sandbank-score
 
     .sandbank-sandDollar {
       position: relative;
       display: flex;
       height: $row-h * 0.6;
       width: $col-w * 1.1;
+      top: 0;
       background-image: url("../img/ui/sandDollar.svg");
       background-position: center;
       background-repeat: no-repeat;
-      //border: 1px solid red;
     }
-    button {
-      margin: 3px;
-      padding: 3px;
-    }
-  } // .sandbank-score
+  } // sandDollar-box
 } // .sandbank-container
+
+
+.trophycase-container {
+  position: relative;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  background-color: #FCF3DC;
+  height: $row-h * 5;
+  width: 100%;
+  padding-left: $col-w * 2;
+  padding-right: $col-w;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-image: url('../img/bgImg/bg_sandbank--ripples.svg');
+  //border: 1px solid blue;
+
+  .sbHead {
+    position: relative;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    height: $row-h * 0.75;;
+    width: 100%;
+
+    h1 {
+      position: relative;
+      display: flex;
+      flex-flow: row nowrap;
+      flex-grow: 2;
+      flex-shrink: 1;
+      justify-content: flex-start;
+      align-self: flex-start;
+      font-size: 2.5rem;
+      letter-spacing: 1px;
+      color: $c-text-main;
+      font-weight: 500;
+      width: auto;
+      height: auto;
+      //border: 1px solid orange;
+    }
+
+    .headCol { // layout class
+      position: relative;
+      display: flex;
+      flex-grow: 1;
+      flex-shrink: 1;
+      flex-flow: column nowrap;
+      justify-content: flex-start;
+      align-items: flex-end;
+      width: auto;
+      height: auto;
+      //border: 1px solid lightgreen;
+    } // .headCol
+  } // .headBar
+
+
+  .sbBody { // ----------------------
+    position: relative;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: center;
+    width: $col-w * 9;
+    height: $row-h * 4;
+    text-align: left;
+    //border: 1px solid lightBlue;
+
+    .awardGrid { // layout
+      position: relative;
+      display: flex;
+      flex-flow: row wrap;
+      justify-content: space-between;
+      width: 100%;
+      height: 100%;
+      color: $c-text-main;
+      //border: 1px solid lime;
+
+      .awardEle {
+        position: relative;
+        display: flex;
+        flex-flow: column nowrap;
+        align-items: center;
+        width: 33%;
+        height: $row-h * 2;
+        font-weight: $bold;
+        //border: 1px solid pink;
+      } // awardEle
+    } // .awardGrid
+  } // end  .sbBody
+
+  .awardImg { // layout
+    position: absolute;
+    display: flex;
+    flex-flow: column nowrap;
+    top: 0;
+    left: 0;
+    height: $row-h * 1.25;
+    width: 100%;
+    z-index: 91;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    //border: 1px solid lightgreen;
+
+    .awardImg--empty {
+      align-self: center;
+      text-align: center;
+      font-weight: normal;
+      height: 100%;
+      width: 70%;
+      padding-top: 2rem;
+      line-height: 1.5rem;
+      .bold {
+        font-weight: bold;
+      }
+    } // .awardImg--empty
+  } //.awardImg
+
+  .ribbon {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top: $row-h * 0.88;
+    left: 0;
+    width: 100%;
+    height: $row-h * 0.3;
+    color: white;
+    font-size: 1rem;
+
+    &.ribbon--empty {
+      background-image: url('../img/practDir/ribbon-outline.svg');
+      background-size: 90% 100%;
+      background-repeat: no-repeat;
+      background-position: center;
+      color: $c-text-main;
+    }
+  } //.ribbon
+
+  .score {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: auto;
+    top: $row-h * 0.4;
+    left: 0;
+    font-size: 2rem;
+    font-weight: 500;
+    color: #988675;
+    //border: 1px solid lightGreen;
+
+    &.score-perfectB {
+      display: block;
+      width: auto;
+      top: $row-h * 0.3;
+      left: $col-w * 1.8;
+      //border: 1px solid lightGreen;
+    }
+    &.perfectB-text {
+      display: block;
+      width: auto;
+      top: $row-h * 0.65;
+      left: $col-w * 1.7;
+      font-size: 1rem;
+      //border: 1px solid lightGreen;
+    }
+  } // .score
+
+  .badgeFoot {
+    position: relative;
+    display: flex;
+    flex-flow: column nowrap;
+    top: $row-h * 1.2;
+
+    .badgeDate {
+      position: relative;
+      display: flex;
+      flex-flow: row nowrap;
+      justify-content: center;
+      width: auto;
+      color: $c-text-main;
+      text-align: center;
+      font-weight: 400;
+      font-size: 1rem;
+    } // .badgeDate
+
+    .currentScore {
+      position: relative;
+      display: block;
+      text-align: center;
+      margin-top: 0.25rem;
+      padding: 1px 6px;
+      border-top: 1px solid $c-text-main;
+      color: $c-text-main;
+      font-weight: normal;
+
+      .currentValue { font-weight: bold; }
+
+      &.current--highlight {
+        border-radius: 6px;
+        border: 1px solid $c-text-main;
+      }
+    } // .currentScore
+  } // .badgeFoot
+
+
+// TEMP ----------------------------
+.sb-resetBtn { padding: 1em; }
+
+// Images ----------------------------
+  .hsib { background-image: url('../img/practDir/badges/hsib.svg'); }
+  .mgib { background-image: url('../img/practDir/badges/mgib.svg'); }
+  .hsiq { background-image: url('../img/practDir/badges/hsiq.svg'); }
+  .mgiq { background-image: url('../img/practDir/badges/mgiq.svg'); }
+  .streak { background-image: url('../img/practDir/badges/streak.svg'); }
+  .perfectBlock {
+    background-image: url('../img/practDir/badges/perfectBlock.svg');
+  }
+
+} // .trophyCaseContainer

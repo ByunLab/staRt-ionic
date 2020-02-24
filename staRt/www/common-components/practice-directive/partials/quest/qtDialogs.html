@@ -23,23 +23,27 @@
 
   <div class="dia-body">
 
-    <div ng-if="badges.qtDialogTemplate.achievement || badges.qtDialogTemplate.finalScore"
+    <div class="imgLayout" ng-class="badges.card.imgClass"></div>
+
+    <div class="contentLayout">
+      <div ng-if="badges.qtDialogTemplate.achievement || badges.qtDialogTemplate.finalScore"
         class="achievementCount">
         {{badges.card.count}}
-    </div>
+      </div>
 
-    <div ng-if="badges.qtDialogTemplate.note"
-        class="note">
-        {{badges.card.bodyText}}
-    </div>
+      <div ng-if="badges.qtDialogTemplate.note"
+          class="note">
+          {{badges.card.bodyText}}
+      </div>
 
-    <div ng-if="badges.qtDialogTemplate.progSum || badges.qtDialogTemplate.endSum"
-        class="progSum">
-        <p>Gold: {{badges.card.gold}}</p>
-        <p>Silver: {{badges.card.silver}}</p>
-        <p>Bronze: {{badges.card.bronze}}</p>
+      <div ng-if="badges.qtDialogTemplate.progSum || badges.qtDialogTemplate.endSum"
+          class="progSum">
+          <p>Gold: {{badges.card.gold}}</p>
+          <p>Silver: {{badges.card.silver}}</p>
+          <p>Bronze: {{badges.card.bronze}}</p>
+      </div>
     </div>
-
+    <!-- end of .contentLayout -->
   </div>
   <!-- end of .dia-body -->
 

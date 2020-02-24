@@ -1,13 +1,88 @@
-<div class="sandbank-container">
+<div class="sandbank-container"
+  ng-class="{'sandbankOpen': sandbank }">
   <div class="sandbank-bg"></div>
-  <div class="sandbank-score">
-    <span ng-if="isPracticing">{{scores.display_score}} pts</span>
-    <span class="sandbank-sandDollar"></span>
-    <button
-      ng-if="isPracticing && !probe && qtScoreDebug"
-      on-tap="resetQuestHighscores()">
-      Reset Highscores
-    </button>
-  </div>
+  <div class="sandDollar-box ">
+    <span
+      class="sandbank-score"
+      ng-if="isPracticing"
+      ng-show="!sandbank"
+      ng-hide="sandbank">
+        {{scores.display_score}} pts
+    </span>
+    <span
+      class="sandbank-sandDollar"
+      on-tap="toggleSandBank()">
+    </span>
+  </div> <!-- div.sandDollar-box -->
 
-</div>
+  <div class=trophycase-container>
+
+    <div class="sbHead">
+      <h1 class="">Achievements</h1>
+
+      <div class="headCol">
+
+        <!-- <button class="sb-resetBtn"
+          ng-if="isPracticing && !probe"
+          ng-click="resetQuestHighscores()">
+          Reset Highscores
+        </button> -->
+
+      </div>
+
+    </div>
+    <!-- .headBar -->
+
+
+    <div class="sbRow sbBody">
+
+      <div class="awardGrid">
+        <div class="awardEle"
+          ng-repeat="award in milestones.display">
+
+          <!-- empty state -->
+          <div ng-if="!award.achieved">
+            <div class="awardImg">
+              <div class="awardImg--empty"
+                ng-bind-html="award.emptyText"></div>
+              <div class="ribbon ribbon--empty">{{award.title}}</div>
+            </div>
+          </div>
+
+          <!-- achieved state -->
+          <div ng-if="award.achieved">
+            <div class="awardImg" ng-class="award.imgClass">
+              <div class="score"
+                ng-class="award.scoreClass">
+                {{award.score}}
+              </div>
+              <div ng-if="award.scoreText"
+              class="score"
+              ng-class="award.scoreTextClass">
+              {{award.scoreText}}
+            </div>
+              <div class="ribbon">{{award.title}}</div>
+            </div>
+
+            <div class="badgeFoot">
+              <div class="badgeDate">
+                achieved: {{award.dateStr}}
+              </div>
+              <div class="currentScore"
+                ng-if="$index !== 5"
+                ng-class="{'current--highlight': award.highlight}">
+                {{award.currentText}}:<br/>
+                <span class="currentValue">{{award.currentValue}}&nbsp;{{award.unit}}</span>
+              </div>
+            </div>
+
+          </div> <!-- ng-if="award.achieved" -->
+
+        </div> <!-- .awardEle" -->
+
+      </div> <!-- end .awardGrid -->
+    </div><!-- end sbBody -->
+
+  </div> <!--.trophycase-container -->
+
+</div> <!--.sandbank-container-->
