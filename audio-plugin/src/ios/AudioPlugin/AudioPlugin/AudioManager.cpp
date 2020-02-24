@@ -16,9 +16,9 @@ _curr_read_idx(1)
 {
     m_buffer_size = bufferSize;
     m_num_buffers = numBuffers;
-    
+
     _buffer_list = new Float32*[this->m_num_buffers];
-    
+
     for (int i=0; i<this->m_num_buffers; i++) {
         _buffer_list[i] = new Float32[m_buffer_size];
         memset(_buffer_list[i], 0, m_buffer_size * sizeof(Float32));
@@ -72,24 +72,24 @@ _computeLPC(false)
     m_lpc_BufferSize = lpcBuffSize;
     m_lpc_magSpecResolution = magSpecRes;
     m_sampleRate = sampleRate;
-    
+
     m_gain = 0.0;
     this->setLPCOrder(lpcOrder);
-    
+
     _double_buffer = new DoubleBuffer(m_lpc_BufferSize, DBLBUF_NUM_BUFFERS);
-    
+
     m_lpc_mag_buffer = new Float32[m_lpc_BufferSize];
     memset(m_lpc_mag_buffer, 0, m_lpc_BufferSize * sizeof(Float32));
-    
+
     // Hanning window
     _win = new Float32[m_lpc_BufferSize];
     vDSP_hann_window(_win, m_lpc_BufferSize, vDSP_HANN_NORM);
-    
+
 }
 
 AudioManager::~AudioManager()
 {
-    
+
     delete [] m_lpc_mag_buffer;
     delete [] _win;
     delete _double_buffer;
@@ -101,13 +101,6 @@ void AudioManager::grabAudioData(Float32 *inAudioBuffer)
     _double_buffer->writeBuffer(inAudioBuffer);
 }
 
-Float32 AudioManager::computeRMS(Float32 *audioBuffer, UInt32 winSize)
-{
-    float rms;
-    vDSP_rmsqv(audioBuffer, (vDSP_Stride)1, &rms, (vDSP_Length)winSize);
-    return (Float32)rms;
-}
-
 /* LPC stuff */
 void AudioManager::setLPCOrder(UInt32 lpcOrder)
 {
@@ -115,7 +108,7 @@ void AudioManager::setLPCOrder(UInt32 lpcOrder)
         lpcOrder = MAX_LPC_ORDER;
     }
     m_lpc_order = lpcOrder;
-    
+
     //_double_buffer->resetAllBuffers();
     memset(m_lpc_coeffs, 0, (m_lpc_order+1) * sizeof(double));
 }
@@ -125,38 +118,38 @@ void AudioManager::computeLPC()
     if (!_computeLPC) {
         return;
     }
-    
+
     // get current read buffer
     Float32 curr_audio_buffer[m_lpc_BufferSize];
-    
+
     _double_buffer->readBuffer(curr_audio_buffer);
-    
+
     // remove mean
     vDSP_Stride stride = (vDSP_Stride)1;
     float mean;
     vDSP_meanv((float *)curr_audio_buffer, stride, &mean, m_lpc_BufferSize);
     mean = -mean;
     vDSP_vsadd(curr_audio_buffer, stride, &mean, curr_audio_buffer, stride, m_lpc_BufferSize);
-    
+
     // apply window to buffer
     vDSP_vmul(curr_audio_buffer,(vDSP_Stride)1,_win,(vDSP_Stride)1,curr_audio_buffer,(vDSP_Stride)1,m_lpc_BufferSize);
-    
+
     // apply high-pass filter
     Float32 tmpBuff[m_lpc_BufferSize];
     memcpy(tmpBuff, curr_audio_buffer, m_lpc_BufferSize * sizeof(Float32));
     memset(curr_audio_buffer, 0, m_lpc_BufferSize * sizeof(Float32));
     this->highPassFilter(tmpBuff, curr_audio_buffer, m_lpc_BufferSize);
-    
+
     // compute LPC coefficients
     memset(m_lpc_coeffs, 0, (m_lpc_order+1) * sizeof(double));
-    
+
     double lpc_coeffs[m_lpc_order];
     lpc_from_data(m_lpc_order, m_lpc_BufferSize, curr_audio_buffer, lpc_coeffs);
     m_lpc_coeffs[0] = 1.0;
     for (int i=1; i<m_lpc_order+1; i++) {
         m_lpc_coeffs[i] = -lpc_coeffs[i-1];
     }
-    
+
     Float32 gain = 0.5;
     this->computeLPCFreqRespV(gain);
 }
@@ -166,7 +159,7 @@ void AudioManager::computeLPCFreqResp(Float32 gain)
     double incr = M_PI / ((double)m_lpc_magSpecResolution - 1.0);
     std::complex<double> I(0.0,1.0);
     std::complex<double> One(1.0,0.0);
-    
+
     for (int k=0; k<m_lpc_magSpecResolution; k++) {
         std::complex<double> tmp_sum(0.0,0.0);
         double angle = ((double)k)*incr;
@@ -182,7 +175,7 @@ void AudioManager::computeLPCFreqRespV(Float32 gain)
     double incr = M_PI / ((double)m_lpc_magSpecResolution - 1.0);
     float vin[m_lpc_magSpecResolution][(m_lpc_order+1)*2];
     float vout[m_lpc_magSpecResolution][(m_lpc_order+1)*2];
-    
+
     for (int k=0; k<m_lpc_magSpecResolution; k++) {
         double angle = ((double)k)*incr;
         for (int j=0; j<m_lpc_order+1; j++) {
@@ -219,9 +212,9 @@ void lpc_from_data(long order, long size, float *data, double *coeffs)
     double r_mat[MAX_LPC_ORDER][MAX_LPC_ORDER];
     long i,j;
     float corr[MAX_BLOCK_SIZE];
-    
+
     autocorr(size,data,corr);
-    
+
     // New, hardware accelerated matrix inverse
     for (i=1;i<order;i++) {
         for (j=1;j<order;j++) r_mat[(i-1)][(j-1)] = corr[abs(i-j)];
@@ -233,7 +226,7 @@ void lpc_from_data(long order, long size, float *data, double *coeffs)
             coeffs[i] += r_mat[i][j] * corr[1+j];
         }
     }
-    
+
     // Old, non-hardware accelerated inverse
     /*
      for (i=1;i<order;i++) {
@@ -253,14 +246,14 @@ void autocorr(long size, float *data, float *result)
 {
     long i,j,k;
     double temp,norm;
-    
+
     for (i=0;i<size/2;i++) {
         result[i] = 0.0;
         for (j=0;j<size-i-1;j++)    {
             result[i] += data[i+j] * data[j];
         }
     }
-    
+
     // find positive slope, store in j
     temp = result[0];
     j = (long) size*0.02;
@@ -268,7 +261,7 @@ void autocorr(long size, float *data, float *result)
         temp = result[j];
         j += 1;
     }
-    
+
     temp = 0.0;
     for (i=j;i<size*0.5;i++) {
         if (result[i]>temp) {
@@ -291,25 +284,25 @@ void vautocorr(long size, float *data, float *result)
     double temp,norm;
     float *signal, *filter;
     uint32_t lenSignal, filterLength, resultLength;
-    
+
     filterLength = size;
     resultLength = filterLength;
     lenSignal = ((filterLength + 3) & 0xFFFFFFFC) + resultLength;
-    
+
     signal = (float *) calloc(lenSignal, sizeof(float));
     filter = (float *) malloc(filterLength * sizeof(float));
-    
+
     for (i = 0; i < filterLength; i++)
         filter[i] = data[i];
-    
+
     for (i = 0; i < resultLength; i++)
         if (i >=resultLength- filterLength)
             signal[i] = filter[i - filterLength+1];
-    
+
     vDSP_conv(signal, 1, filter, 1, result, 1, resultLength, filterLength);
     free(signal);
     free(filter);
-    
+
     // find positive slope, store in j
     temp = result[0];
     j = (long) size*0.02;
@@ -317,7 +310,7 @@ void vautocorr(long size, float *data, float *result)
         temp = result[j];
         j += 1;
     }
-    
+
     temp = 0.0;
     for (i=j;i<size*0.5;i++) {
         if (result[i]>temp) {
@@ -339,7 +332,7 @@ long minvert(long size, double mat[][MAX_LPC_ORDER])
     long item,row,col,rank=0; //,t2;
     double temp,res[MAX_LPC_ORDER][MAX_LPC_ORDER];
     //    long ok,zerorow;
-    
+
     for (row=1;row<=size;row++)     {
         for (col=1;col<=size;col++)    {
             //    printf(stdout," %f ",mat[row][col]);
@@ -421,17 +414,17 @@ void vminvert(long size, double mat[][MAX_LPC_ORDER])
     __CLPK_integer pivot[MAX_LPC_ORDER];
     __CLPK_doublereal workspace[MAX_LPC_ORDER];
     __CLPK_integer N = size;
-    
+
     /*  LU factorisation */
     dgetrf_(&N, &N, (__CLPK_doublereal *)mat, &lda, pivot, &error);
-    
+
     if (error != 0) {
         // handle the error
     }
-    
+
     /*  matrix inversion */
     dgetri_(&N, (__CLPK_doublereal *)mat, &lda, pivot, workspace, &N, &error);
-    
+
     if (error != 0) {
         // handle the second error
     }
@@ -441,35 +434,6 @@ void vminvert(long size, double mat[][MAX_LPC_ORDER])
 /* ------------------------------------------------------- */
 /* ---------------     helper functions ------------------ */
 /* ------------------------------------------------------- */
-
-void findMaxima(Float32 *signal, UInt32 signalLength, UInt32 *peakIndices, UInt32 *numPeaks)
-{
-    int cnt = 0;
-    Float32 slopes[signalLength];
-    
-    // compute slopes
-    for (int i=0; i<signalLength-1; i++) {
-        slopes[i] = 0.5*(signal[i+1]-signal[i]);
-    }
-    slopes[signalLength-1] = 0.0;
-    
-    Boolean look_for_peak = true;
-    
-    for (int i=0; i<signalLength; i++) {
-        if (sign(slopes[i])<0) {
-            if (look_for_peak) {
-                peakIndices[cnt] = i;
-                cnt++;
-                look_for_peak = false;
-            }
-        }
-        else {
-            look_for_peak = true;
-        }
-    }
-    *numPeaks = cnt;
-}
-
 
 int sign(Float32 v)
 {
@@ -526,7 +490,7 @@ float computeStdDev(float *array, int endLimit){
 
 
 PeaksAndValleys::PeaksAndValleys(){
-    
+
     // Initialize class values
     valleyPair      = 0;
     cntValley       = 0;
@@ -535,54 +499,54 @@ PeaksAndValleys::PeaksAndValleys(){
     noiseFloor      = -100;
     init            = false;
     initDisplayPtr  = false;
-    
+
     // Create new structs
     peaks   = new PEAKS;
     valleys = new VALLEYS;
 }
 
 PeaksAndValleys::~PeaksAndValleys(){
-    
+
     delete [] peaks->freq;
     delete [] peaks->mag;
     delete [] valleys->freq;
     delete [] valleys->mag;
-    
+
     delete peaks;
     delete valleys;
-    
+
     free(initValue);
     free(slopes);
 }
 
 void PeaksAndValleys::displayInit(float *signal, unsigned int signalLength){
-    
+
     sigPointer     = signal;
     len            = signalLength - 1;
-    
+
     // Initialize all values to -1
     initValue = (float*) calloc(signalLength, sizeof(float));
     for (int i = 0; i < signalLength; i++){
         initValue[i] = -1.0;
     }
-    
+
     slopes = (float*) calloc(len, sizeof(float));
     for (int i = 0; i < len; i++){
         slopes[i] = -1.0;
     }
-    
+
     // PEAKS
     peaks->freq   = (float*) malloc(signalLength * sizeof(float));
     peaks->mag   = (float*) malloc(signalLength * sizeof(float));
     memcpy(peaks->freq, initValue, signalLength * sizeof(float));
     memcpy(peaks->mag, initValue, signalLength * sizeof(float));
-    
+
     // VALLEYS
     valleys->freq = (float*) malloc(signalLength * sizeof(float));
     valleys->mag = (float*) malloc(signalLength * sizeof(float));
     memcpy(valleys->freq, initValue, signalLength * sizeof(float));
     memcpy(valleys->mag, initValue, signalLength * sizeof(float));
-    
+
     for (int i = 0; i < FREQ_RESP_LEN; i++){
         peaks->height.left[i]  = 0;
         peaks->height.right[i] = 0;
@@ -591,20 +555,20 @@ void PeaksAndValleys::displayInit(float *signal, unsigned int signalLength){
         peaks->slope.left[i]   = 0;
         peaks->slope.right[i]  = 0;
     }
-    
+
     peaks->height.leftMean  = 0.0;
     peaks->height.rightMean = 0.0;
     peaks->spread.leftMean  = 0.0;
     peaks->spread.rightMean = 0.0;
     peaks->slope.leftMean   = 0.0;
     peaks->slope.rightMean  = 0.0;
-    
+
     // Compute the peaks and valleys for the incoming signal
 //    computeParams(signal);
 }
 
 void PeaksAndValleys::resetValues(unsigned int signalLength){
-    
+
     len             = signalLength - 1;
     valleyPair      = 0;
     cntValley       = 0;
@@ -612,13 +576,13 @@ void PeaksAndValleys::resetValues(unsigned int signalLength){
     prevSlopePos    = 1;
     noiseFloor      = -100;
     init            = false;
-    
+
     memcpy(peaks->freq, initValue, signalLength * sizeof(float));
     memcpy(peaks->mag, initValue, signalLength * sizeof(float));
-    
+
     memcpy(valleys->freq, initValue, signalLength * sizeof(float));
     memcpy(valleys->mag, initValue, signalLength * sizeof(float));
-    
+
     for (int i = 0; i < FREQ_RESP_LEN; i++){
         peaks->height.left[i]  = 0;
         peaks->height.right[i] = 0;
@@ -627,7 +591,7 @@ void PeaksAndValleys::resetValues(unsigned int signalLength){
         peaks->slope.left[i]   = 0;
         peaks->slope.right[i]  = 0;
     }
-    
+
     peaks->height.leftMean  = 0.0;
     peaks->height.rightMean = 0.0;
     peaks->spread.leftMean  = 0.0;
@@ -637,12 +601,12 @@ void PeaksAndValleys::resetValues(unsigned int signalLength){
 }
 
 void PeaksAndValleys::computeParams(float *signal){
-    
+
     // Compute slopes array
     for (int i = 0; i < len; i++){
         slopes[i] = 0.5*(signal[i+1] - signal[i]);
     }
-    
+
     // Find slope changes
     if (slopes[0] > 0) {
         updateValleys(0);
@@ -652,7 +616,7 @@ void PeaksAndValleys::computeParams(float *signal){
         prevSlopePos = 0;
         addPeaksAndValleys(0);
     }
-    
+
     if (!prevSlopePos){
         for (int j = 0; j < len; j++){
             if (valleys->freq[j] < 0){
@@ -662,17 +626,17 @@ void PeaksAndValleys::computeParams(float *signal){
             }
         }
     }
-    
+
     if (cntPeak != 0){
         cntPeak = cntPeak - 1;
     }
-    
+
     // Peak height, spread and slope analysis
     analysis();
-    
+
     // Compute adaptive filtering for thresholding
     postFiltering();
-    
+
     // Compute statistics for class parameters (mean & std)
     computeStats();
 }
@@ -719,10 +683,10 @@ void PeaksAndValleys::addPeaksAndValleys(int isPos){
 //}
 
 void PeaksAndValleys::updatePeaks(int k){
-    
+
     peaks->freq[cntPeak] = k;
     peaks->mag[cntPeak] = sigPointer[k];
-    
+
     cntPeak = cntPeak + 1;
 }
 
@@ -738,31 +702,31 @@ void PeaksAndValleys::updateValleys(int k){
 }
 
 void PeaksAndValleys::postFiltering(){
-    
+
     /* METHOD 1
      * Adaptive Threshold based on calculated Noise Floor
      */
-    
+
     float magSum = 0.0;
     for (int i = 0; i < (cntPeak + 1); i++){
         magSum += valleys->mag[i];
     }
-    
+
     // Compute noise floor
     noiseFloor = computeMean(valleys->mag, cntPeak+1);
-    
+
     // Processing idx and mag values that lie above the threshold
     for (int i = 0; i < cntPeak; i++){
         if (peaks->mag[i] < noiseFloor){
             peaks->mag[i] = -1;
         }
     }
-    
+
     /* METHOD 2
      * Pick the max peak between left & right peaks
      * Manually set threshold value for peaks
      */
-    
+
     /*
     float maxValue   = 0.0;
     float peakThresh = 0.0;
@@ -777,37 +741,37 @@ void PeaksAndValleys::postFiltering(){
 }
 
 void PeaksAndValleys::analysis(){
-    
+
     int k;
     float diffL, diffR, slopeL, slopeR;
-    
+
     for (k = 0; k < cntPeak; k++){
         diffL = std::abs(peaks->mag[k] - valleys->mag[k]);
         diffR = std::abs(peaks->mag[k] - valleys->mag[k+1]);
-        
+
         peaks->height.left[k]  = std::max(diffL, diffR);
         peaks->height.right[k] = meanValue(diffL, diffR);
-        
+
         slopeL = diffL / (peaks->freq[k] - valleys->freq[k]);
         slopeR = diffR / (valleys->freq[k+1] - peaks->freq[k]);
-        
+
         peaks->slope.left[k]  = std::max(slopeL, slopeR);
         peaks->slope.right[k] = meanValue(slopeL, slopeR);
-        
+
         peaks->spread.left[k]  = peaks->freq[k] - valleys->freq[k];
         peaks->spread.right[k] = valleys->freq[k+1] - peaks->freq[k];
     }
 }
 
 void PeaksAndValleys::computeStats(){
-    
+
     peaks->height.leftMean  = computeMean(peaks->height.left, cntPeak);
     peaks->height.rightMean = computeMean(peaks->height.right, cntPeak);
     peaks->spread.leftMean  = computeMean(peaks->spread.left, cntPeak);
     peaks->spread.rightMean = computeMean(peaks->spread.right, cntPeak);
     peaks->slope.leftMean   = computeMean(peaks->slope.left, cntPeak);
     peaks->slope.rightMean  = computeMean(peaks->slope.right, cntPeak);
-    
+
     peaks->height.leftStdDev  = computeStdDev(peaks->height.left, cntPeak);
     peaks->height.rightStdDev = computeStdDev(peaks->height.right, cntPeak);
     peaks->spread.leftStdDev  = computeStdDev(peaks->spread.left, cntPeak);
@@ -823,14 +787,14 @@ void PeaksAndValleys::computeStats(){
 
 /* Peak Tracker */
 PeakTracker::PeakTracker(){
-    
+
     init            = false;
     initDisplayPtr  = false;
 
     // Create new structs
     formants       = new FORMANTS;
     formantsNew    = new FORMANTS_NEW;
-    
+
     peaksAndValleys    = new PeaksAndValleys();
     peaksAndValleysLPF = new PeaksAndValleys();
 };
@@ -842,25 +806,25 @@ PeakTracker::~PeakTracker(){
     delete [] nextFramePeaks->mag;
     delete [] formantsNew->freq;
     delete [] formantsNew->mag;
-    
+
     delete [] peaksAndValleys->peaks->freq;
     delete [] peaksAndValleys->peaks->mag;
     delete [] peaksAndValleys->valleys->freq;
     delete [] peaksAndValleys->valleys->mag;
-    
+
     delete [] peaksAndValleysLPF->peaks->freq;
     delete [] peaksAndValleysLPF->peaks->mag;
     delete [] peaksAndValleysLPF->valleys->freq;
     delete [] peaksAndValleysLPF->valleys->mag;
-    
+
     delete formants;
     delete nextFramePeaks;
     delete formantsNew;
     delete topPeaksMag;
-    
+
     delete peaksAndValleys;
     delete peaksAndValleysLPF;
-    
+
     free(initZeros);
     free(initTrackerVal);
     free(tempF1Idx);
@@ -869,30 +833,30 @@ PeakTracker::~PeakTracker(){
 };
 
 void PeakTracker::initTracker(unsigned int bufferSize){
-    
+
     trackingOn = false;
     firstFramePicked = false;
     stopAnalysisCounter = 0;
-    
+
     formantNum = 0;
-    
+
     deltaFLow  = 100;
     deltaFHigh = 100;
-    
+
     indexLow  = -1;
     indexHigh = -1;
-    
+
     nextPeakFreq = -1;
     nextPeakFreq = -1.0;
-    
-    
+
+
     lpfInBuf  = (float*)calloc(NUM_FILTER_COEFF, sizeof(float));
     lpfOutBuf = (float*)calloc(NUM_FILTER_COEFF, sizeof(float));
     for(int i=0; i<NUM_FILTER_COEFF; i++){
         lpfInBuf[i]  = 0.0;
         lpfOutBuf[i] = 0.0;
     }
-    
+
     // Initialize all values to -1
     initTrackerVal = (float*) calloc(bufferSize, sizeof(float));
     initZeros = (float*) calloc(bufferSize, sizeof(float));
@@ -900,50 +864,50 @@ void PeakTracker::initTracker(unsigned int bufferSize){
         initTrackerVal[i] = -1.0;
         initZeros[i] = 0.0;
     }
-    
+
     lpfGuideSignal = (float*) malloc(bufferSize*sizeof(float));
     memcpy(lpfGuideSignal, initZeros, bufferSize * sizeof(float));
-    
+
     formants->freq = (float*) malloc(bufferSize * sizeof(float));
     formants->mag  = (float*) malloc(bufferSize * sizeof(float));
     memcpy(formants->freq, initTrackerVal, bufferSize * sizeof(float));
     memcpy(formants->mag, initTrackerVal, bufferSize * sizeof(float));
-    
+
     formantsNew->freq = (float*) malloc(bufferSize * sizeof(float));
     formantsNew->mag  = (float*) malloc(bufferSize * sizeof(float));
     memcpy(formantsNew->freq, initTrackerVal, bufferSize * sizeof(float));
     memcpy(formantsNew->mag, initTrackerVal, bufferSize * sizeof(float));
-    
+
     onsetThreshold  = 0.05;
     offsetThreshold = 0.05;
 }
 
 void PeakTracker::resetTracker(unsigned int bufferSize){
-    
+
     firstFramePicked = false;
     stopAnalysisCounter = 0;
-    
+
     formantNum = 0;
-    
+
     deltaFLow  = 100;
     deltaFHigh = 100;
-    
+
     indexLow  = -1;
     indexHigh = -1;
-    
+
     nextPeakFreq = -1;
     nextPeakFreq = -1.0;
-    
+
     memcpy(lpfGuideSignal, initZeros, bufferSize * sizeof(float));
     memcpy(formantsNew->mag, initTrackerVal, bufferSize * sizeof(float));
 }
 
 void PeakTracker::lpfFilter(float *signal, int signalLength){
     int bufLen = sizeof(lpfOutBuf) / sizeof(lpfOutBuf[0]);
-    
+
     for(int i=0; i<signalLength; i++){
         lpfGuideSignal[i] = (bCoeff[i]*lpfInBuf[i]) + (bCoeff[i+1]*lpfInBuf[i+1]) + (bCoeff[i+2]*lpfInBuf[i+2]) + (aCoeff[i]*lpfOutBuf[i]) + (aCoeff[i+1]*lpfOutBuf[i+1]) + (aCoeff[i+2]*lpfOutBuf[i+2]);
-        
+
         for(int j=bufLen-1; j>=0; j--){
             lpfOutBuf[j+1] = lpfOutBuf[j];
             lpfInBuf[j+1]  = lpfInBuf[j];
@@ -957,11 +921,11 @@ void PeakTracker::trackingOnOff(float *signal, int signalLength){
     float energy = 0.0;
     for (int i=0; i<signalLength; i++)
         energy += signal[i];
-    
+
     // enable tracking when above onset threshold
     if (energy >= onsetThreshold)
         trackingOn = true;
-    
+
     // turn off tracking when below offset threshold
     if(energy < offsetThreshold){
         if(trackingOn == true && stopAnalysisCounter < 10){
@@ -978,46 +942,46 @@ void PeakTracker::trackingOnOff(float *signal, int signalLength){
 void PeakTracker::pickFirstFormantFrame(){
     int totalNumPeaks = sizeof(peaksAndValleys->peaks->freq)/sizeof(peaksAndValleys->peaks->freq[0]);
     int potentialF1Counter = 0;
-    
+
     int tempF1Freq[totalNumPeaks];
     float tempF1HeightMin[totalNumPeaks];
     float tempF1HeightMax[totalNumPeaks];
-    
+
     for (int i=0; i<totalNumPeaks; i++){
         /**
          1. If peaks are within range of the low passed peak (between the valleys on each side) then this is a potential F1
          2. Keep counter of potential F1s
         */
-        
+
         if((peaksAndValleys->peaks->freq[i] > peaksAndValleysLPF->valleys->freq[0]) && (peaksAndValleys->peaks->freq[i] < peaksAndValleysLPF->valleys->freq[1])){
-            
+
             tempF1Freq[potentialF1Counter]      = peaksAndValleys->peaks->freq[i];
             tempF1HeightMin[potentialF1Counter] = peaksAndValleys->peaks->height.min[i];
             tempF1HeightMax[potentialF1Counter] = peaksAndValleys->peaks->height.max[i];
-            
+
             potentialF1Counter += 1;
         }
     }
-    
+
     /**
      3. Choose from potential F1 candidates by selecting the most salient
      4. Sort all peaks in descending order
      5. Get the first formant location
      6. Pick the next three formants, making sure they are higher in frequency than the chosen first
      */
-    
+
     // 3 - pick the most salient pick based on the largest min distance from adjacent valleys
     tempF1Idx = std::max_element(tempF1HeightMin, tempF1HeightMin+potentialF1Counter);
     long int F1Idx = std::distance(tempF1HeightMin, tempF1Idx);
     float F1Max    = peaksAndValleys->peaks->height.max[F1Idx];
-    
+
     // 4 - sort
     // temp array of largest peaks
     topPeaksMag  = (float*) malloc(totalNumPeaks * sizeof(float));
     memcpy(topPeaksMag, peaksAndValleys->peaks->height.max, totalNumPeaks*sizeof(float));
-    
+
     sort(topPeaksMag, topPeaksMag+totalNumPeaks, std::greater<int>());
-    
+
     int formantIdx = 1;
     for(int i=0; i<totalNumPeaks; i++){
         for(int j=0; j<4; j++){
@@ -1043,23 +1007,23 @@ void PeakTracker::pickFirstFormantFrame(){
 }
 
 void PeakTracker::track(){
-    
+
     int lenPeaks = sizeof(formants->freq) / sizeof(formants->freq[0]);
-    
+
     for(int k = 0; k<NUM_FORMANTS; k++){
         formantsNew->freq[k] = -1;
         formantsNew->mag[k]  = -1;
     }
-    
+
     /* Go through new peaks and determine which are the next four formants */
     for (formantNum = 1; formantNum<lenPeaks; formantNum++){
         indexLow   = -1;
         indexHigh  = -1;
         deltaFLow  = -1;
         deltaFHigh = -1;
-        
+
         bool computed = true;
-        
+
         switch (formantNum){
             case 0:
                 checkHighAndLow(threshLow, threshHigh, formantNum);
@@ -1114,20 +1078,20 @@ int PeakTracker::pickHigh(float deltaFHigh){
     int indexes[numOfPeaks];
     int numOfCandidates = 0;
     int startIdx = -1;
-    
+
     for (int k = 0; k < numOfPeaks; k++){
         if((peaksAndValleys->peaks->freq[k] < formants->freq[formantNum] + deltaFHigh) && peaksAndValleys->peaks->freq[k] > formants->freq[formantNum]){
             numOfCandidates += 1;
-            
+
             indexes[numOfCandidates] = k;
         }
     }
-    
+
     if (numOfCandidates > 0){
         int temp = 0;
         int tempIndexes[numOfCandidates];
         int lenTemp = sizeof(tempIndexes) / sizeof(tempIndexes[0]);
-        
+
         for (int kk = 0; kk < lenTemp; kk++){
             if (peaksAndValleys->peaks->height.max[kk] > temp){
                 temp  = peaksAndValleys->peaks->height.max[kk];
@@ -1146,20 +1110,20 @@ int PeakTracker::pickLow(float deltaFLow){
     int indexes[numOfPeaks];
     int numOfCandidates = 0;
     int startIdx = -1;
-    
+
     for (int k = 0; k < numOfPeaks; k++){
         if((peaksAndValleys->peaks->freq[k] > formants->freq[formantNum] - deltaFLow) && peaksAndValleys->peaks->freq[k] < formants->freq[formantNum]){
             numOfCandidates += 1;
-            
+
             indexes[numOfCandidates] = k;
         }
     }
-    
+
     if (numOfCandidates > 0){
         int temp = 0;
         int tempIndexes[numOfCandidates];
         int lenTemp = sizeof(tempIndexes) / sizeof(tempIndexes[0]);
-        
+
         for (int kk = 0; kk < lenTemp; kk++){
             if (peaksAndValleys->peaks->height.max[kk] > temp){
                 temp = peaksAndValleys->peaks->height.max[kk];
