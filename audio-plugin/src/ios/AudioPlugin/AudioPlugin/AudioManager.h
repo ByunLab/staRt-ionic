@@ -396,11 +396,6 @@ extern "C" {
         HEIGHT height;
     } NEXT_FRAME_PEAKS;
     
-    typedef struct{
-        float *freq;
-        float *mag;
-    } FORMANTS_NEW;
-    
     class PeakTracker{
     public:
 
@@ -444,7 +439,6 @@ extern "C" {
         
         FORMANTS *formants;
         NEXT_FRAME_PEAKS *nextFramePeaks;
-        FORMANTS_NEW *formantsNew;
         
         PeaksAndValleys *peaksAndValleys;
         PeaksAndValleys *peaksAndValleysLPF;
@@ -545,7 +539,7 @@ extern "C" {
         float *lpfOutBuf;
         
         // LPF Coefficients
-        float bCoeff[NUM_FILTER_COEFF] = {0.2999217314805791, 0.5998434629611582, 0.2999217314805791};
+        float bCoeff[NUM_FILTER_COEFF] = {0.00002999217314805791, 0.00005998434629611582, 0.00002999217314805791};
         float aCoeff[NUM_FILTER_COEFF] = {1, -1.984450219429652, 0.984570188122244};
         
         float ditheringNoise;
