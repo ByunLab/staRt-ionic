@@ -213,11 +213,10 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 
 	function sessionDisplayString() {
 	    var type = $scope.type ? $scope.type.toLowerCase() : 'word';
-	    var sesh = $scope.probe ? 'quiz' : 'quest';
-	    var hidden = $scope.forceWaveHidden ? ' trad' : ' bio';
+	    var quizOrQuest = $scope.probe ? 'quiz' : 'quest';
 	    var stats = SessionStatsService.getCurrentProfileStats();
 	    var session = stats ? stats.thisContextString : '';
-	    return type + ' ' + sesh + hidden + ' ' + session;
+	    return type + ' ' + quizOrQuest + ' ' + session;
 	}
 
 	function uploadCallbackForSession(session) {
