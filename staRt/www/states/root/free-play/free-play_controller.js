@@ -39,24 +39,6 @@
 
 			}
 		});
-
-		var lastChronoTime = Date.now();
-
-		var logInterval = function() {
-			var nextChronoTime = Date.now();
-			var duration = nextChronoTime - lastChronoTime;
-			NotifyingService.notify('freeplay-tick', duration);
-			lastChronoTime = nextChronoTime;
-		};
-
-
-		// Start a timer to log the time spend in free play
-		var ticker = setInterval(logInterval, 10000);
-
-		$scope.$on('$destroy', function() {
-			logInterval();
-			clearInterval(ticker);
-		});
 	});
 
 } )(  );

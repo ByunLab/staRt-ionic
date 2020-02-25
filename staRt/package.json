@@ -21,7 +21,8 @@
         "cordova-universal-links-plugin-fix": "^1.2.1",
         "localforage-cordovasqlitedriver": "^1.6.0",
         "path": "^0.12.7",
-        "run-sequence": "^1.2.1"
+        "run-sequence": "^1.2.1",
+        "site.girlfriends.start.audio": "../audio-plugin"
     },
     "devDependencies": {
         "bower": "^1.8.2",

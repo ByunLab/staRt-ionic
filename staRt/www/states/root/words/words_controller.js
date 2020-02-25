@@ -118,7 +118,6 @@
 			$scope.configuring = false;
 			$scope.data.csvs = [];
 			$scope.data.navTitle = 'Quest';
-			clearTimeLogger();
 		};
 
 		$scope.toggleRCategory = function(wordCategoryIdx, force) {
@@ -147,10 +146,6 @@
 		$scope.updateCount = function() {
 			console.log('count is now ' + $scope.data.count);
 		};
-
-		$scope.$on('$destroy', function() {
-			clearTimeLogger();
-		});
 
 		if ($rootScope.sessionToResume){
 			$rootScope.categoryRestrictions = $rootScope.sessionToResume.categoryRestrictions;

@@ -102,50 +102,45 @@ sessionStatsService.factory('SessionStatsService', function($rootScope, $localFo
 
 	NotifyingService.subscribe('recording-completed', $rootScope, _updateProfileForRecording);
 
-	NotifyingService.subscribe('quest-start', $rootScope, function(msg) {
-		ProfileService.runTransactionForCurrentProfile(function(handle, doc, t) {
-			var profileChanges = {};
-			var statsChanges = {};
-			var profile = doc.data();
-			_incrementProfileStat(profile, 'nQuestsInitiated', 1, profileChanges);
-			t.update(handle, profileChanges);
-			return {profileChanges: profileChanges, statsChanges: statsChanges};
-		}).then(function(changes) {
-			_handleSuccessfulChanges(changes);
-		}).catch(function(e) {
-			console.log(e);
+	var subscribeToProfileChange = function(eventString, processProfileChange) {
+		NotifyingService.subscribe(eventString, $rootScope, function (msg) {
+			ProfileService.runTransactionForCurrentProfile(function(handle, doc, t) {
+				var profileChanges = {};
+				var statsChanges = {};
+				var profile = doc.data();
+				processProfileChange(profileChanges, statsChanges, profile);
+				t.update(handle, profileChanges);
+				return {profileChanges: profileChanges, statsChanges: statsChanges};
+			}).then(function(changes) {
+				_handleSuccessfulChanges(changes);
+			}).catch(function(e) {
+				console.log(e);
+			});
 		});
+	}
+
+
+
+	subscribeToProfileChange('quest-start', function(profileChanges, statsChanges, profile) {
+		_incrementProfileStat(profile, 'nQuestsInitiated', 1, profileChanges);
 	});
 
-	NotifyingService.subscribe('intro-completed', $rootScope, function(msg) {
-		ProfileService.runTransactionForCurrentProfile(function(handle, doc, t) {
-			var profileChanges = {};
-			var statsChanges = {};
-			var profile = doc.data();
-			_incrementProfileStat(profile, 'nIntroComplete', 1, profileChanges);
-			t.update(handle, profileChanges);
-			return {profileChanges: profileChanges, statsChanges: statsChanges};
-		}).then(function(changes) {
-			_handleSuccessfulChanges(changes);
-		}).catch(function(e) {
-			console.log(e);
-		});
+	subscribeToProfileChange('intro-completed', function(profileChanges, statsChanges, profile) {
+		_incrementProfileStat(profile, 'nIntroComplete', 1, profileChanges);
 	});
 
-	NotifyingService.subscribe('tutorial-completed', $rootScope, function(msg) {
-		ProfileService.runTransactionForCurrentProfile(function(handle, doc, t) {
-			var profileChanges = {};
-			var statsChanges = {};
-			var profile = doc.data();
-			_incrementProfileStat(profile, 'nTutorialComplete', 1, profileChanges);
-			t.update(handle, profileChanges);
-			return {profileChanges: profileChanges, statsChanges: statsChanges};
-		}).then(function(changes) {
-			_handleSuccessfulChanges(changes);
-		}).catch(function(e) {
-			console.log(e);
-		});
+	subscribeToProfileChange('tutorial-completed', function(profileChanges, statsChanges, profile) {
+		_incrementProfileStat(profile, 'nTutorialComplete', 1, profileChanges);
 	});
+
+	subscribeToProfileChange('conclusion-completed', function(profileChanges, statsChanges, profile) {
+		_incrementProfileStat(profile, 'nFormalTreatmentComplete', 1, profileChanges);
+	});
+
+	subscribeToProfileChange('formal-testing-validated', function(profileChanges, statsChanges, profile) {
+		_updateProfileStat('formalTester', true, profileChanges);
+	});
+
 	NotifyingService.subscribe('session-completed', $rootScope, function(msg, data) {
 		ProfileService.runTransactionForCurrentProfile(function(handle, doc, t) {
 			var profileChanges = {};
@@ -156,36 +151,6 @@ sessionStatsService.factory('SessionStatsService', function($rootScope, $localFo
 			} else {
 				_incrementProfileStat(profile, 'nNonBiofeedbackSessionsCompleted', 1, profileChanges);
 			}
-			t.update(handle, profileChanges);
-			return {profileChanges: profileChanges, statsChanges: statsChanges};
-		}).then(function(changes) {
-			_handleSuccessfulChanges(changes);
-		}).catch(function(e) {
-			console.log(e);
-		});
-	});
-
-	NotifyingService.subscribe('conclusion-completed', $rootScope, function(msg) {
-		ProfileService.runTransactionForCurrentProfile(function(handle, doc, t) {
-			var profileChanges = {};
-			var statsChanges = {};
-			var profile = doc.data();
-			_incrementProfileStat(profile, 'nFormalTreatmentComplete', 1, profileChanges);
-			t.update(handle, profileChanges);
-			return {profileChanges: profileChanges, statsChanges: statsChanges};
-		}).then(function(changes) {
-			_handleSuccessfulChanges(changes);
-		}).catch(function(e) {
-			console.log(e);
-		});
-	});
-
-	NotifyingService.subscribe('formal-testing-validated', $rootScope, function(msg) {
-		ProfileService.runTransactionForCurrentProfile(function(handle, doc, t) {
-			var profileChanges = {};
-			var statsChanges = {};
-			var profile = doc.data();
-			_updateProfileStat('formalTester', true, profileChanges);
 			t.update(handle, profileChanges);
 			return {profileChanges: profileChanges, statsChanges: statsChanges};
 		}).then(function(changes) {
@@ -252,7 +217,9 @@ sessionStatsService.factory('SessionStatsService', function($rootScope, $localFo
 		}
 	});
 
+
 	NotifyingService.subscribe('$stateChangeSuccess', $rootScope, function() {
+		console.log('successful state change!');
 		ProfileService.getCurrentProfile().then(function (profile) {
 			if (profile) {
 				var profileChanges = {};
