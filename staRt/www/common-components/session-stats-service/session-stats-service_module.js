@@ -21,29 +21,6 @@ sessionStatsService.factory('SessionStatsService', function($rootScope, $localFo
 
 	var currentProfileStats = null;
 
-	/*
-	// function _checkForPrompt(profile) {
-	// 	StartServerService.getCredentials(function (credentials) {
-	// 		if (credentials) {
-	// 			var headers = {}, options = {};
-	// 			headers['Authorization'] = 'Basic ' + btoa(credentials.username + ':' + credentials.password);
-	// 			options.headers = headers;
-	// 			var params = {
-	// 				profile: profile
-	// 			};
-	// 			$http.post('https://byunlab.com/start/prompt', {name: "hey"} , options)
-	// 				.success(function (res) {
-	// 					console.log(res);
-	// 				})
-	// 				.error(function (err, status) {
-	// 					console.log(err);
-	// 					console.log(status);
-	// 				});
-	// 		}
-	// 	});
-  // }
-  */
-
 	function _handleSuccessfulChanges(changes) {
 		var profileChanges = changes.profileChanges;
 		var statsChanges = changes.statsChanges;
@@ -62,37 +39,8 @@ sessionStatsService.factory('SessionStatsService', function($rootScope, $localFo
 		changes[stat] = value;
 	}
 
-	function _logProfileUseInterval() {
-		var nextSessionChronoTime = Date.now();
-		var duration = nextSessionChronoTime - lastSessionChronoTime;
-
-		ProfileService.runTransactionForCurrentProfile(function(handle, profile, t) {
-			var changes = {};
-			var profileData = profile.data();
-			_incrementProfileStat(profileData, 'allSessionTime', duration, changes);
-			if (currentProfileStats) _incrementProfileStat(profileData, 'thisSessionTime', duration, changes);
-			t.update(handle, changes);
-			return changes;
-		}).then(function(updateData) {
-			if (updateData) {
-				ProfileService.getCurrentProfile().then(function(profile) {
-					_notifyChanges(profile, currentProfileStats, updateData);
-				});
-			}
-		}).catch(function(e) {
-			console.log(e);
-		});
-		lastSessionChronoTime = nextSessionChronoTime;
-	}
-
 	function _notifyChanges(profile, currentProfileStats, changes) {
 		NotifyingService.notify('profile-stats-updated', [profile, currentProfileStats, Object.keys(changes)]);
-	}
-
-	function _resetProfileChrono() {
-	    if (profileSessionTimerId) clearInterval(profileSessionTimerId);
-	    lastSessionChronoTime = Date.now();
-	    setInterval(_logProfileUseInterval, 60000);
 	}
 
 	function _updateProfileForRecording(msg, session) {
@@ -154,44 +102,12 @@ sessionStatsService.factory('SessionStatsService', function($rootScope, $localFo
 
 	NotifyingService.subscribe('recording-completed', $rootScope, _updateProfileForRecording);
 
-	NotifyingService.subscribe('freeplay-tick', $rootScope, function(msg, duration) {
-		ProfileService.runTransactionForCurrentProfile(function(handle, doc, t) {
-			var profileChanges = {};
-			var statsChanges = {};
-			var profile = doc.data();
-			_incrementProfileStat(profile, 'allFreeplayTime', duration, profileChanges);
-			if (currentProfileStats) _incrementProfileStat(currentProfileStats, 'thisFreeplayTime', duration, statsChanges);
-			t.update(handle, profileChanges);
-			return {profileChanges: profileChanges, statsChanges: statsChanges};
-		}).then(function(changes) {
-			_handleSuccessfulChanges(changes);
-		}).catch(function(e) {
-			console.log(e);
-		});
-	});
-
 	NotifyingService.subscribe('quest-start', $rootScope, function(msg) {
 		ProfileService.runTransactionForCurrentProfile(function(handle, doc, t) {
 			var profileChanges = {};
 			var statsChanges = {};
 			var profile = doc.data();
 			_incrementProfileStat(profile, 'nQuestsInitiated', 1, profileChanges);
-			t.update(handle, profileChanges);
-			return {profileChanges: profileChanges, statsChanges: statsChanges};
-		}).then(function(changes) {
-			_handleSuccessfulChanges(changes);
-		}).catch(function(e) {
-			console.log(e);
-		});
-	});
-
-	NotifyingService.subscribe('quest-tick', $rootScope, function(msg, duration) {
-		ProfileService.runTransactionForCurrentProfile(function(handle, doc, t) {
-			var profileChanges = {};
-			var statsChanges = {};
-			var profile = doc.data();
-			_incrementProfileStat(profile, 'allQuestTime', duration, profileChanges);
-			if (currentProfileStats) _incrementProfileStat(currentProfileStats, 'thisQuestTime', duration, statsChanges);
 			t.update(handle, profileChanges);
 			return {profileChanges: profileChanges, statsChanges: statsChanges};
 		}).then(function(changes) {
@@ -215,6 +131,7 @@ sessionStatsService.factory('SessionStatsService', function($rootScope, $localFo
 			console.log(e);
 		});
 	});
+
 	NotifyingService.subscribe('tutorial-completed', $rootScope, function(msg) {
 		ProfileService.runTransactionForCurrentProfile(function(handle, doc, t) {
 			var profileChanges = {};
@@ -306,7 +223,6 @@ sessionStatsService.factory('SessionStatsService', function($rootScope, $localFo
 							var profileChanges = {};
 							var statsChanges = {};
 							_updateProfileStat('lastLoginTime', Date.now(), profileChanges);
-							_resetProfileChrono();
 							t.update(handle, profileChanges);
 							return {profileChanges: profileChanges, statsChanges: statsChanges};
 						}).then(function(changes) {
