@@ -588,8 +588,7 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 					if ($scope.startPracticeCallback) $scope.startPracticeCallback();
 				} else {
 					if (navigator.notification) {
-						navigator.notification.alert(
-							'Can\'t start ' + sessionDisplayString() + ' -- create/select a profile first', function() {$state.go('root.profiles');}, 'No profile');
+						navigator.notification.alert('Can\'t start ' + sessionDisplayString() + ' -- create a profile first', null, 'No profile');
 					}
 				}
 			},
