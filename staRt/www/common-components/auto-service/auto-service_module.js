@@ -295,18 +295,7 @@ var SessionAuto = function (profile, currentStats, onShow, initialState) {
 			return null;
 		}).bind(this),
 		dialog: (function (profile, currentStats, changeList) {
-			var text;
-			if (profile.allTrialsCorrect < 100) {
-				text = 'Please choose Syllable Quest to practice at the syllable level. Each Quest is 100 ' +
-          'syllables long, but you can break your Quest into shorter sessions if ' +
-          'you need to. Remember that the clinician should provide a model before ' +
-          'each syllable.';
-			} else {
-				text = 'Please choose Word Quest to practice at the word level. Each Quest is 100 ' +
-          'words long, but you can break your Quest into shorter sessions if you need to. ' +
-          'Remember that the clinician should provide a model only at the start of each ' +
-          'block of 10 words.';
-			}
+			var text = "Please choose Syllable Quest or Word Quest based on your client's current stimulability level, and choose /r/ variants to target based on your clinical judgment. Please keep these settings constant across all Quest sessions for a participant in our research study. Each Quest should be 100 trials long, but you can break your Quest into shorter sessions if you need to. Remember that the clinician should provide a model only at the start of each block of 10 trials.";
 			return {
 				text: text,
 				title: 'Quest'
@@ -320,7 +309,7 @@ var SessionAuto = function (profile, currentStats, onShow, initialState) {
 			if (sessionIndex === (TOTAL_SESSION_COUNT)) {
 				var percentCorrectStr = profile.percentTrialsCorrect.toString().split('.')[0];
 				text = 'Congratulations, you finished your sixteen quests! Your total accuracy was approximately ' + percentCorrectStr +
-          '% correct. Your accuracy in your final session was approximatedly ' + currentStats.thisQuestPercentTrialsCorrect + '% correct.' +
+          '% correct. Your accuracy in your final session was approximately ' + currentStats.thisQuestPercentTrialsCorrect + '% correct.' +
           ' To complete your tasks as a formal pilot tester, please schedule one more visit to complete the Word Quiz and the Syllable Quiz ' +
           'at the post-treatment time point.';
 			} else {
@@ -562,18 +551,18 @@ autoService.factory('AutoService', function ($rootScope, $ionicPlatform, Notifyi
 		var weblink = 'https://wp.nyu.edu/byunlab/projects/start/participate/';
 		$cordovaDialogs.prompt(
 			'To initiate formal testing mode, please enter the code that you received after completion of the consent process.',
-			'Formal Research Pilot',
+			'Research Participation',
 			['Cancel', 'Confirm']
 		).then(function (result) {
 			if (result.buttonIndex <= 1) {
 				$cordovaDialogs.alert(
 					'If you decide later that you want to be a formal tester, you can opt in from the profiles page.',
-					'Formal Research Pilot'
+					'Research Participation'
 				);
 			} else {
 				if (result.input1 !== 'biofeedback') {
 					$cordovaDialogs.confirm(
-						'Please see our website for information on formal study participation, and to receive a code to begin testing.',
+						'Please see our website for information on research participation and to receive a code to begin testing.',
 						'Invalid Password',
 						['Okay', 'Visit Website']
 					).then(function (idx) {
@@ -590,27 +579,24 @@ autoService.factory('AutoService', function ($rootScope, $ionicPlatform, Notifyi
 
 		if (profile.formalTester) {
 			$cordovaDialogs.alert(
-				profile.name + ' is already participating as a formal pilot tester',
-				'Formal Research Pilot'
+				profile.name + ' is already participating as a formal pilot tester.',
+				'Research Participation'
 			);
 
 			return;
 		}
 
 		var weblink = 'https://wp.nyu.edu/byunlab/projects/start/participate/';
-		var text = 'Do you want to participate as a formal pilot tester in our research study? ' +
-      'Please note that we must obtain informed consent from the clinician, client, and client’s ' +
-      'family before formal participation is possible. Please see our website ' +
-      'or email nyuchildspeech@gmail.com for more information.';
+		var = "Do you want to participate as a formal tester in our research study? Please note that we must obtain informed consent from the client and client's family before formal participation is possible. Please see our website or email nyuchildspeech@gmail.com for more information."
 		$cordovaDialogs.confirm(
 			text,
-			'Formal Research Pilot',
+			'Research Participation',
 			['No', 'Visit Website', 'Yes']
 		).then(function (idx) {
 			if (idx === 0 || idx === 1) {
 				$cordovaDialogs.alert(
 					'If you decide later that you want to be a formal tester, you can opt in from the profiles page.',
-					'Formal Research Pilot'
+					'Research Participation'
 				);
 			} else if (idx === 2) {
 				window.open(weblink, '_blank', 'location=yes');
@@ -643,7 +629,7 @@ autoService.factory('AutoService', function ($rootScope, $ionicPlatform, Notifyi
 
 				if (profile.inProcessSession) {
 					$cordovaDialogs.confirm(
-						'It looks like you were in the middle of a session. Would you like to pick up where you left off, or start over?',
+						'It looks like you were in the middle of a session. Would you like to resume or start over?',
 						'Resume Session',
 						['Resume', 'Start over']
 					).then(function(index) {
@@ -685,7 +671,7 @@ autoService.factory('AutoService', function ($rootScope, $ionicPlatform, Notifyi
 		ProfileService.getProfileWithUUID(profileUUID).then(function (profile) {
 			if (profile && profile.formalTester && (profile.nFormalTreatmentComplete === 0)) {
 				$cordovaDialogs.alert(
-					'Welcome back! Please press the purple "start session" button to begin your next session',
+					'Welcome back! Please press the purple "start session" button to begin your next session.',
 					'Introduction',
 					'Okay'
 				).then(function () {
@@ -707,7 +693,7 @@ autoService.factory('AutoService', function ($rootScope, $ionicPlatform, Notifyi
 		} else if (changeList.indexOf('formalTester') !== -1) {
 
 			$cordovaDialogs.alert(
-				'Welcome to the formal testing program! Please press the purple "start session" button at any time to begin',
+				'Welcome to the formal testing program! Please press the purple "start session" button at any time to begin.',
 				'Introduction',
 				'Okay'
 			).then(function () {

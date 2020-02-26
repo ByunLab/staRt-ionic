@@ -635,7 +635,7 @@ function compareRecordings(ra, rb) {
 
 				function win() {
 					$cordovaDialogs.alert(
-						'Session uploaded successfully',
+						'Session uploaded successfully.',
 						'Upload Complete',
 						'Okay'
 					);
@@ -646,7 +646,7 @@ function compareRecordings(ra, rb) {
 
 				function fail(err) {
 					$cordovaDialogs.alert(
-						'Session upload failed',
+						'Session upload failed.',
 						'Upload Error',
 						'Okay'
 					);

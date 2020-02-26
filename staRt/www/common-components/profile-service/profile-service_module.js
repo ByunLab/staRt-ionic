@@ -219,7 +219,7 @@ profileService.factory('ProfileService', function($rootScope, $state, $localFora
 		}
 		if (recordingSession.isFormalSession) {
 			$cordovaDialogs.alert(
-				'You cannot resume an on protocol session through this page. You must resume on protocol sessions by going to Profiles->profile and clicking start session.',
+				'You cannot resume an on protocol session through this page. You must resume on protocol sessions by going to Profiles and clicking Start Session.',
 				'Cannot resume session.',
 				'Okay'
 			);
