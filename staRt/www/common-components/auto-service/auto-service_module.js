@@ -118,8 +118,8 @@ var IntroAuto = function (profile, currentStats, onShow, initialState) {
 
 	steps.freePlay = {
 		next: function (profile, currentStats, changeList) {
-			var timeThreshold = profile.name === 'Speedy' ? SPEEDY_INTRO_FREEPLAY_TIME : INTRO_FREEPLAY_TIME;
-			if (currentStats.thisFreeplayTime >= timeThreshold) return steps.complete;
+			if (currentStats.finishedFreePlay) return steps.complete;
+			return null;
 		},
 		dialog: {
 			text: 'You will be taken to Free Play to try out the wave for approximately five minutes.',
@@ -252,8 +252,7 @@ var SessionAuto = function (profile, currentStats, onShow, initialState) {
 
 	steps.freePlay = {
 		next: function (profile, currentStats) {
-			var timeThreshold = profile.name === 'Speedy' ? SPEEDY_SESSION_FREEPLAY_TIME : SESSION_FREEPLAY_TIME;
-			if (currentStats.thisFreeplayTime >= timeThreshold) return steps.quest;
+			if (currentStats.finishedFreePlay) return steps.quest;
 			return null;
 		},
 		dialog: {

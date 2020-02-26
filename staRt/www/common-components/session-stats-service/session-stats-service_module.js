@@ -13,8 +13,6 @@ sessionStatsService.factory('SessionStatsService', function($rootScope, $localFo
 	    this.thisQuestTrialsCompleted = 0; // trials completed since the start of this session
 	    this.thisQuestTrialsCorrect = 0; // score since the start of this session
 	    this.thisQuestPercentTrialsCorrect = 0; // 100 * correct / completed
-	    this.thisSessionTime = 0; // time elapsed since the start of this session
-	    this.thisFreeplayTime = 0; // time elapsed in freeplay since the start of this session
 	    this.thisQuestTime = 0; // time elapsed in quest since the start of this session
 	    this.thisCurrentView = $state.current.url; // whichever view the user is currently looking at
 	}
@@ -142,8 +140,9 @@ sessionStatsService.factory('SessionStatsService', function($rootScope, $localFo
 	});
 
 	subscribeToProfileChange('finished-free-play', function(profileChanges, statsChanges, profile) {
-		_updateProfileStat('finishedFreePlay', true, profileChanges);
-	}
+		console.log('current profile stats %o', currentProfileStats);
+		_updateProfileStat('finishedFreePlay', true, statsChanges);
+	});
 
 	NotifyingService.subscribe('session-completed', $rootScope, function(msg, data) {
 		ProfileService.runTransactionForCurrentProfile(function(handle, doc, t) {
