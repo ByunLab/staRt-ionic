@@ -4,10 +4,6 @@ var sessionStatsService = angular.module('sessionStatsService', [ 'firebaseServi
 
 sessionStatsService.factory('SessionStatsService', function($rootScope, $localForage, $http, FirebaseService, NotifyingService, ProfileService, $state)
 {
-	var lastSessionChronoTime;
-	var profileSessionTimerId;
-	var profileLongSessionTimerId;
-
 	function ProfileStats(contextString) {
 	    this.thisContextString = contextString; // user-defined string specifying the context of the current session
 	    this.thisQuestTrialsCompleted = 0; // trials completed since the start of this session
@@ -164,41 +160,21 @@ sessionStatsService.factory('SessionStatsService', function($rootScope, $localFo
 	});
 
 	NotifyingService.subscribe('will-set-current-profile-uuid', $rootScope, function(msg, profileUUID) {
-
 		if (profileUUID) {
 			ProfileService.getProfileWithUUID(profileUUID).then(function(profile) {
 				if (profile) {
-					if (profileLongSessionTimerId) clearTimeout(profileLongSessionTimerId);
-					profileLongSessionTimerId = null;
-					profileLongSessionTimerId = setTimeout(function() {
-						var handle = ProfileService.getProfileTransactionHandle(profile);
-						ProfileService.runTransaction(handle, function(handle, doc, t) {
-							var profileChanges = {};
-							var statsChanges = {};
-							_incrementProfileStat(doc.data(), 'nLongSessionsCompleted', 1, profileChanges);
-							t.update(handle, profileChanges);
-							return {profileChanges: profileChanges, statsChanges: statsChanges};
-						}).then(function(changes) {
-							_handleSuccessfulChanges(changes);
-						}).catch(function(e) {
-							console.log(e);
-						});
-					}, LONG_SESSION_MILLIS);
-
-					{
-						var handle = ProfileService.getProfileTransactionHandle(profile);
-						ProfileService.runTransaction(handle, function(handle, doc, t) {
-							var profileChanges = {};
-							var statsChanges = {};
-							_updateProfileStat('lastLoginTime', Date.now(), profileChanges);
-							t.update(handle, profileChanges);
-							return {profileChanges: profileChanges, statsChanges: statsChanges};
-						}).then(function(changes) {
-							_handleSuccessfulChanges(changes);
-						}).catch(function(e) {
-							console.log(e);
-						});
-					}
+					var handle = ProfileService.getProfileTransactionHandle(profile);
+					ProfileService.runTransaction(handle, function(handle, doc, t) {
+						var profileChanges = {};
+						var statsChanges = {};
+						_updateProfileStat('lastLoginTime', Date.now(), profileChanges);
+						t.update(handle, profileChanges);
+						return {profileChanges: profileChanges, statsChanges: statsChanges};
+					}).then(function(changes) {
+						_handleSuccessfulChanges(changes);
+					}).catch(function(e) {
+						console.log(e);
+					});
 
 					// eslint-disable-next-line no-extra-boolean-cast
 					if (!!profile.brandNew) {
@@ -222,7 +198,6 @@ sessionStatsService.factory('SessionStatsService', function($rootScope, $localFo
 
 
 	NotifyingService.subscribe('$stateChangeSuccess', $rootScope, function() {
-		console.log('successful state change!');
 		ProfileService.getCurrentProfile().then(function (profile) {
 			if (profile) {
 				var profileChanges = {};
