@@ -34,6 +34,7 @@ var AutoState = function (profile, currentStats, onShow, initialState) {
 	this.contextString = 'abstact';
 	this.state = Object.assign({}, initialState ? initialState : {});
 };
+
 AutoState.prototype = {
 	currentMessage: function (profile, currentStats, changeList) {
 		if (this.currentStep) {

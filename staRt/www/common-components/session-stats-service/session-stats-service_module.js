@@ -141,6 +141,10 @@ sessionStatsService.factory('SessionStatsService', function($rootScope, $localFo
 		_updateProfileStat('formalTester', true, profileChanges);
 	});
 
+	subscribeToProfileChange('finished-free-play', function(profileChanges, statsChanges, profile) {
+		_updateProfileStat('finishedFreePlay', true, profileChanges);
+	}
+
 	NotifyingService.subscribe('session-completed', $rootScope, function(msg, data) {
 		ProfileService.runTransactionForCurrentProfile(function(handle, doc, t) {
 			var profileChanges = {};
