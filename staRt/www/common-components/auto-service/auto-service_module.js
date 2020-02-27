@@ -175,15 +175,19 @@ var SessionAuto = function (profile, currentStats, onShow, initialState) {
 			if (i >= profile.nBiofeedbackSessionsCompleted) {
 				biofeedback.push('BF');
 			}
-		}
-		for (var i = 0; i < (TOTAL_SESSION_COUNT / 2); i++) {
 			if (i >= profile.nNonBiofeedbackSessionsCompleted) {
 				biofeedback.push('TRAD');
 			}
 		}
 		_scramble(biofeedback);
-
-		this.state.biofeedback = biofeedback.pop();
+		var biofeedbackTradDifference = profile.nBiofeedbackSessionCompleted - profile.nNonBiofeedbackSessionCompleted
+		if (biofeedbackTradDifference >= 3) {
+			this.state.biofeedback = 'TRAD';
+		} else if (biofeedbackTradDifference <= -3) {
+			this.state.biofeedback = 'BF';
+		} else {
+			this.state.biofeedback = biofeedback.pop();
+		}
 	}
 
 	if (this.state.biofeedback === 'BF') {
