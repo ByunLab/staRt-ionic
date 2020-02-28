@@ -70,10 +70,10 @@ public:
     UInt32 _numDisplayBins;         /**< size of array used to display LPC magnitude spectrum  */
     
     // Call Peaks and Valleys class here
-    PeaksAndValleys peaksAndValleys;
-    PeaksAndValleys peaksAndValleysLPF;
+    PeaksAndValleys *peaksAndValleys;
+    PeaksAndValleys *peaksAndValleysLPF;
     
-    PeakTracker peakTracker;
+    PeakTracker *peakTracker;
     
 private:
     

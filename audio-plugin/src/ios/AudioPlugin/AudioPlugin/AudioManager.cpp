@@ -572,14 +572,14 @@ void PeaksAndValleys::displayInit(float *signal, unsigned int signalLength){
     }
     
     // PEAKS
-    peaks->freq   = (float*) malloc(signalLength * sizeof(float));
-    peaks->mag   = (float*) malloc(signalLength * sizeof(float));
+    peaks->freq = (float*) malloc(signalLength * sizeof(float));
+    peaks->mag  = (float*) malloc(signalLength * sizeof(float));
     memcpy(peaks->freq, initValue, signalLength * sizeof(float));
     memcpy(peaks->mag, initValue, signalLength * sizeof(float));
     
     // VALLEYS
     valleys->freq = (float*) malloc(signalLength * sizeof(float));
-    valleys->mag = (float*) malloc(signalLength * sizeof(float));
+    valleys->mag  = (float*) malloc(signalLength * sizeof(float));
     memcpy(valleys->freq, initValue, signalLength * sizeof(float));
     memcpy(valleys->mag, initValue, signalLength * sizeof(float));
     
@@ -620,12 +620,15 @@ void PeaksAndValleys::resetValues(unsigned int signalLength){
     memcpy(valleys->mag, initValue, signalLength * sizeof(float));
     
     for (int i = 0; i < FREQ_RESP_LEN; i++){
-        peaks->height.left[i]  = 0;
-        peaks->height.right[i] = 0;
-        peaks->spread.left[i]  = 0;
-        peaks->spread.right[i] = 0;
-        peaks->slope.left[i]   = 0;
-        peaks->slope.right[i]  = 0;
+        peaks->height.left[i]  = 0.0;
+        peaks->height.right[i] = 0.0;
+        peaks->spread.left[i]  = 0.0;
+        peaks->spread.right[i] = 0.0;
+        peaks->slope.left[i]   = 0.0;
+        peaks->slope.right[i]  = 0.0;
+        peaks->height.min[i]   = 0.0;
+        peaks->height.max[i]   = 0.0;
+        peaks->height.mean[i]  = 0.0;
     }
     
     peaks->height.leftMean  = 0.0;
@@ -672,9 +675,6 @@ void PeaksAndValleys::computeParams(float *signal){
     
     // Compute adaptive filtering for thresholding
     postFiltering();
-    
-    // Compute statistics for class parameters (mean & std)
-    computeStats();
 }
 
 void PeaksAndValleys::addPeaksAndValleys(int isPos){
@@ -689,34 +689,6 @@ void PeaksAndValleys::addPeaksAndValleys(int isPos){
         }
     }
 }
-
-//void PeaksAndValleys::slopePos(){
-//
-//    for (int i = 0; i < len; i++){
-//        if (sign(slopes[i]) < 0){
-//            if (!init){
-//                init = true;
-//                prevSlopePos = 0;
-//                continue;
-//            }
-//            if (prevSlopePos){
-//                updatePeaks(i);
-//                prevSlopePos = 0;
-//            }
-//        }
-//        else{
-//            if (!init){
-//                updateValleys(i);
-//                init = true;
-//                continue;
-//            }
-//            if (!prevSlopePos){
-//                updateValleys(i);
-//            }
-//            prevSlopePos = 1;
-//        }
-//    }
-//}
 
 void PeaksAndValleys::updatePeaks(int k){
     
@@ -758,22 +730,6 @@ void PeaksAndValleys::postFiltering(){
         }
     }
     
-    /* METHOD 2
-     * Pick the max peak between left & right peaks
-     * Manually set threshold value for peaks
-     */
-    
-    /*
-    float maxValue   = 0.0;
-    float peakThresh = 0.0;
-     for (int i = 0; i < cntPeak; i++){
-         maxValue = std::max(peaks->height.left[i], peaks->height.right[i]);
-         peakThresh = 0.07; // adjust this setting for more or less sensitivity
-         if (maxValue < peakThresh){
-             peaks->mag[i] = -1;
-         }
-     }
-     */
 }
 
 void PeaksAndValleys::analysis(){
@@ -785,35 +741,26 @@ void PeaksAndValleys::analysis(){
         diffL = std::abs(peaks->mag[k] - valleys->mag[k]);
         diffR = std::abs(peaks->mag[k] - valleys->mag[k+1]);
         
-        peaks->height.left[k]  = std::max(diffL, diffR);
-        peaks->height.right[k] = meanValue(diffL, diffR);
+        peaks->height.left[k]  = diffL;
+        peaks->height.right[k] = diffR;
+        
+        peaks->height.min[k]  = std::min(diffL, diffR);
+        peaks->height.max[k]  = std::max(diffL, diffR);
+        peaks->height.mean[k] = meanValue(diffL, diffR);
         
         slopeL = diffL / (peaks->freq[k] - valleys->freq[k]);
         slopeR = diffR / (valleys->freq[k+1] - peaks->freq[k]);
         
-        peaks->slope.left[k]  = std::max(slopeL, slopeR);
-        peaks->slope.right[k] = meanValue(slopeL, slopeR);
+        peaks->slope.left[k]  = slopeL;
+        peaks->slope.right[k] = slopeR;
+        
+        peaks->slope.min[k]  = std::min(slopeL, slopeR);
+        peaks->slope.max[k]  = std::max(slopeL, slopeR);
+        peaks->slope.mean[k] = meanValue(slopeL, slopeR);
         
         peaks->spread.left[k]  = peaks->freq[k] - valleys->freq[k];
         peaks->spread.right[k] = valleys->freq[k+1] - peaks->freq[k];
     }
-}
-
-void PeaksAndValleys::computeStats(){
-    
-    peaks->height.leftMean  = computeMean(peaks->height.left, cntPeak);
-    peaks->height.rightMean = computeMean(peaks->height.right, cntPeak);
-    peaks->spread.leftMean  = computeMean(peaks->spread.left, cntPeak);
-    peaks->spread.rightMean = computeMean(peaks->spread.right, cntPeak);
-    peaks->slope.leftMean   = computeMean(peaks->slope.left, cntPeak);
-    peaks->slope.rightMean  = computeMean(peaks->slope.right, cntPeak);
-    
-    peaks->height.leftStdDev  = computeStdDev(peaks->height.left, cntPeak);
-    peaks->height.rightStdDev = computeStdDev(peaks->height.right, cntPeak);
-    peaks->spread.leftStdDev  = computeStdDev(peaks->spread.left, cntPeak);
-    peaks->spread.rightStdDev = computeStdDev(peaks->spread.right, cntPeak);
-    peaks->slope.leftStdDev   = computeStdDev(peaks->slope.left, cntPeak);
-    peaks->slope.rightStdDev  = computeStdDev(peaks->slope.right, cntPeak);
 }
 
 /* ------------------------------------------------------- */
@@ -822,23 +769,20 @@ void PeaksAndValleys::computeStats(){
 /* ------------------------------------------------------- */
 
 /* Peak Tracker */
-PeakTracker::PeakTracker(){
-    
-    init            = false;
-    initDisplayPtr  = false;
+PeakTracker::PeakTracker(PeaksAndValleys *peaksAndValleys, PeaksAndValleys *peaksAndValleysLPF){
+
+    initDisplayPtr = false;
 
     // Create new structs
-    formants       = new FORMANTS;
+    formants = new FORMANTS;
     
-    peaksAndValleys    = new PeaksAndValleys();
-    peaksAndValleysLPF = new PeaksAndValleys();
+    this->peaksAndValleys    = peaksAndValleys;
+    this->peaksAndValleysLPF = peaksAndValleysLPF;
 };
 
 PeakTracker::~PeakTracker(){
     delete [] formants->freq;
     delete [] formants->mag;
-    delete [] nextFramePeaks->freq;
-    delete [] nextFramePeaks->mag;
     
     delete [] peaksAndValleys->peaks->freq;
     delete [] peaksAndValleys->peaks->mag;
@@ -851,7 +795,6 @@ PeakTracker::~PeakTracker(){
     delete [] peaksAndValleysLPF->valleys->mag;
     
     delete formants;
-    delete nextFramePeaks;
     delete topPeaksMag;
     
     delete peaksAndValleys;
@@ -859,18 +802,22 @@ PeakTracker::~PeakTracker(){
     
     free(initZeros);
     free(initTrackerVal);
-    free(tempF1Idx);
     free(lpfInBuf);
     free(lpfOutBuf);
+    free(lpfGuideSignal);
 };
 
 void PeakTracker::initTracker(unsigned int bufferSize){
     
     trackingOn = false;
     firstFramePicked = false;
-    stopAnalysisCounter = 0;
+    startAnalysisCounter = 0;
+    stopAnalysisCounter  = 0;
     
     formantNum = 0;
+    
+    threshLow  = 0;
+    threshHigh = 0;
     
     deltaFLow  = 100;
     deltaFHigh = 100;
@@ -880,7 +827,6 @@ void PeakTracker::initTracker(unsigned int bufferSize){
     
     nextPeakFreq = -1;
     nextPeakFreq = -1.0;
-    
     
     lpfInBuf  = (float*)calloc(NUM_FILTER_COEFF, sizeof(float));
     lpfOutBuf = (float*)calloc(NUM_FILTER_COEFF, sizeof(float));
@@ -905,14 +851,19 @@ void PeakTracker::initTracker(unsigned int bufferSize){
     memcpy(formants->freq, initTrackerVal, bufferSize * sizeof(float));
     memcpy(formants->mag, initTrackerVal, bufferSize * sizeof(float));
     
-    onsetThreshold  = 0.05;
-    offsetThreshold = 0.05;
+    trackingThreshold  = 8.0;
 }
 
+/*
+ - Resets the peak tracker
+ - Values that need to be reset: formantNum, deltaFLow/High, indexLow/High, nextPeakFreq/Mag, lpfGuideSignal
+ - Values that need to be retained: current formants (in order to pick the next frames formants)
+ */
 void PeakTracker::resetTracker(unsigned int bufferSize){
     
     firstFramePicked = false;
-    stopAnalysisCounter = 0;
+    startAnalysisCounter = 0;
+    stopAnalysisCounter  = 0;
     
     formantNum = 0;
     
@@ -923,11 +874,23 @@ void PeakTracker::resetTracker(unsigned int bufferSize){
     indexHigh = -1;
     
     nextPeakFreq = -1;
-    nextPeakFreq = -1.0;
+    nextPeakMag  = -1.0;
+    
+    for(int i=0; i<NUM_FILTER_COEFF; i++){
+        lpfInBuf[i]  = 0.0;
+        lpfOutBuf[i] = 0.0;
+    }
     
     memcpy(lpfGuideSignal, initZeros, bufferSize * sizeof(float));
+    memcpy(formants->freq, initTrackerVal, bufferSize * sizeof(float));
+    memcpy(formants->mag, initTrackerVal, bufferSize * sizeof(float));
 }
 
+/*
+ - Low Pass Filter used to create the "guide" or outline signal
+ - Used in picking the first frame's formants if there are multiple Peaks very close in frequency
+ - Most important for onset frame because the later formant peaks are chosen with prior information of formant location, whereas first frame has no prior.
+ */
 void PeakTracker::lpfFilter(float *signal, int signalLength){
     int bufLen = sizeof(lpfOutBuf) / sizeof(lpfOutBuf[0]);
     
@@ -942,31 +905,42 @@ void PeakTracker::lpfFilter(float *signal, int signalLength){
     }
 }
 
+/*
+ - Turns tracking on and off based on analysis of the signal's energy in relation to an onsetThreshold and offsetThreshold
+ */
 void PeakTracker::trackingOnOff(float *signal, int signalLength){
     // sum energy over signal
     float energy = 0.0;
-    for (int i=0; i<signalLength; i++)
+    for (int i=0; i<signalLength; i++){
         energy += signal[i];
-    
+    }
     // enable tracking when above onset threshold
-    if (energy >= onsetThreshold)
+    if (energy > trackingThreshold){
         trackingOn = true;
+    }
     
     // turn off tracking when below offset threshold
-    if(energy < offsetThreshold){
-        if(trackingOn == true && stopAnalysisCounter < 10){
+    if(energy <= trackingThreshold){
+        if(trackingOn == true && stopAnalysisCounter < 150){
             stopAnalysisCounter += 1;
         }
-        else if (stopAnalysisCounter >= 10){
+        else if (stopAnalysisCounter >= 150){
             // turn tracking off
             trackingOn = false;
             stopAnalysisCounter = 0;
+            resetTracker(signalLength);
         }
     }
 }
 
+/*
+ - Picks formants in onset frame
+ - Important because this picks the first formant peaks that will be used to guide the tracking for future frames
+ - If this frame is off, future frames will likely be off
+ */
 void PeakTracker::pickFirstFormantFrame(){
-    int totalNumPeaks = sizeof(peaksAndValleys->peaks->freq)/sizeof(peaksAndValleys->peaks->freq[0]);
+    int totalNumPeaks = peaksAndValleys->cntPeak;
+    
     int potentialF1Counter = 0;
     
     int tempF1Freq[totalNumPeaks];
@@ -974,11 +948,16 @@ void PeakTracker::pickFirstFormantFrame(){
     float tempF1HeightMax[totalNumPeaks];
     
     for (int i=0; i<totalNumPeaks; i++){
+        tempF1Freq[i] = 0;
+        tempF1HeightMin[i] = 0.0;
+        tempF1HeightMax[i] = 0.0;
+    }
+    
+    for (int i=0; i<totalNumPeaks; i++){
         /**
          1. If peaks are within range of the low passed peak (between the valleys on each side) then this is a potential F1
          2. Keep counter of potential F1s
         */
-        
         if((peaksAndValleys->peaks->freq[i] > peaksAndValleysLPF->valleys->freq[0]) && (peaksAndValleys->peaks->freq[i] < peaksAndValleysLPF->valleys->freq[1])){
             
             tempF1Freq[potentialF1Counter]      = peaksAndValleys->peaks->freq[i];
@@ -997,52 +976,51 @@ void PeakTracker::pickFirstFormantFrame(){
      */
     
     // 3 - pick the most salient pick based on the largest min distance from adjacent valleys
-    tempF1Idx = std::max_element(tempF1HeightMin, tempF1HeightMin+potentialF1Counter);
-    long int F1Idx = std::distance(tempF1HeightMin, tempF1Idx);
-    float F1Max    = peaksAndValleys->peaks->height.max[F1Idx];
+    long int F1Idx = std::distance(tempF1HeightMin, std::max_element(tempF1HeightMin, tempF1HeightMin+potentialF1Counter));
+    float F1Max = peaksAndValleys->peaks->height.max[F1Idx];
     
     // 4 - sort
     // temp array of largest peaks
     topPeaksMag  = (float*) malloc(totalNumPeaks * sizeof(float));
     memcpy(topPeaksMag, peaksAndValleys->peaks->height.max, totalNumPeaks*sizeof(float));
+    sort(topPeaksMag, topPeaksMag+totalNumPeaks, std::greater<float>());
     
-    sort(topPeaksMag, topPeaksMag+totalNumPeaks, std::greater<int>());
-    
-    int formantIdx = 1;
+    int formantIdx = 0;
     for(int i=0; i<totalNumPeaks; i++){
-        for(int j=0; j<4; j++){
+        for(int j=0; j<NUM_FORMANTS; j++){
             // Pick F1
-            if (F1Max == topPeaksMag[j] && formantIdx == 1){
+            if (F1Max == topPeaksMag[j] && formantIdx == 0){
                 formants->freq[formantIdx] = peaksAndValleys->peaks->freq[F1Idx];
                 formants->mag[formantIdx]  = peaksAndValleys->peaks->mag[F1Idx];
                 formantIdx += 1;
             // Pick F2-F4. Pick the next largest peaks that aren't already chosen and are higher in frequency than the previous peaks
-            } else if((peaksAndValleys->peaks->height.max[i] == topPeaksMag[j]) && peaksAndValleys->peaks->height.max[i] != peaksAndValleys->peaks->freq[F1Idx]){
+            } else if((peaksAndValleys->peaks->height.max[i] == topPeaksMag[j]) && peaksAndValleys->peaks->height.max[i] != peaksAndValleys->peaks->height.max[F1Idx]){
                 if (peaksAndValleys->peaks->freq[i] > formants->freq[formantIdx-1]){
                     formants->freq[formantIdx] = peaksAndValleys->peaks->freq[i];
                     formants->mag[formantIdx]  = peaksAndValleys->peaks->mag[i];
+                    formantIdx += 1;
                 }
-            } else{
                 if (formantIdx > 3){
                     break;
                 }
             }
+            else{
+                break;
+            }
+        }
+        if(formantIdx > 3){
+            break;
         }
     }
     firstFramePicked = true;
 }
 
+/*
+ - Tracks the formants based on incoming peaks in relation to the previous formant locations
+ */
 void PeakTracker::track(){
-    
-    int lenPeaks = sizeof(formants->freq) / sizeof(formants->freq[0]);
-    
-//    for(int k = 0; k<NUM_FORMANTS; k++){
-//        formantsNew->freq[k] = -1;
-//        formantsNew->mag[k]  = -1;
-//    }
-    
     /* Go through new peaks and determine which are the next four formants */
-    for (formantNum = 1; formantNum<lenPeaks; formantNum++){
+    for (formantNum = 0  ; formantNum<NUM_FORMANTS; formantNum++){
         indexLow   = -1;
         indexHigh  = -1;
         deltaFLow  = -1;
@@ -1081,11 +1059,16 @@ void PeakTracker::track(){
         }
         formants->freq[formantNum] = nextPeakFreq;
         formants->mag[formantNum]  = nextPeakMag;
-//        formantsNew->freq[formantNum] = nextPeakFreq;
-//        formantsNew->mag[formantNum]  = nextPeakMag;
     }
 }
 
+/*
+ - Picks the formants
+ - Three options:
+    - 1) the next peak is in range above (in freq)
+    - 2) in range below in freq
+    - 3) No peaks in range, therefore retain current peak values and "skip"
+ */
 void PeakTracker::pickNextFrameFormant(){
     if(indexHigh != -1 && indexLow != -1){
         pickBetweenTwo();
@@ -1100,22 +1083,23 @@ void PeakTracker::pickNextFrameFormant(){
     }
 }
 
+/*
+ - Deals with the case where there are two potential peaks that are both in range and seem like good peaks to pick.
+ - If the Magnitude of one peak is significantly greater than the other peak, pick that one.
+ - If the Magnitudes are basically the same, pick the peak that is closer in frequency to the current
+ */
 void PeakTracker::pickBetweenTwo(){
-    int tempNextPeakFreqH  = nextFramePeaks->freq[indexHigh];
-    float tempNextPeakMagH = nextFramePeaks->mag[indexHigh];
+    int tempNextPeakFreqH  = peaksAndValleys->peaks->freq[indexHigh];
+    float tempNextPeakMagH = peaksAndValleys->peaks->mag[indexHigh];
     
-    int tempNextPeakFreqL  = nextFramePeaks->freq[indexLow];
-    float tempNextPeakMagL = nextFramePeaks->mag[indexLow];
+    int tempNextPeakFreqL  = peaksAndValleys->peaks->freq[indexLow];
+    float tempNextPeakMagL = peaksAndValleys->peaks->mag[indexLow];
     
-    float nextPeakHighMeanH = nextFramePeaks->height.mean[indexHigh];
-    float nextPeakHighMeanL = nextFramePeaks->height.mean[indexLow];
+//    float nextPeakHighMeanH = nextFramePeaks->height.mean[indexHigh];
+//    float nextPeakHighMeanL = nextFramePeaks->height.mean[indexLow];
     
     // retain current peak
     int currentPeakFreq = formants->freq[formantNum];
-    
-    // If magnitude is significantly bigger, choose bigger one
-    // if basically same, pick peak that is closer in frequency
-    
     float peakThresh = 1.2;
     if (tempNextPeakMagH > tempNextPeakMagL * peakThresh){
         nextPeakFreq = tempNextPeakFreqH;
@@ -1137,32 +1121,39 @@ void PeakTracker::pickBetweenTwo(){
     }
 }
 
+/*
+ - Deals with the case of a peak dropping out, or going undetected
+ - Retains current formant peak information and skips until a peak re-emerges / new peak emerges
+ */
 void PeakTracker::skipAndRetain(){
     nextPeakFreq = formants->freq[formantNum];
     nextPeakMag  = formants->mag[formantNum];
 }
 
+/*
+ - Picks the potential formant in the upper range (between formantNum & formantNum + 1). 
+ - Stores Index of the Peak, which can be used to access the correct Peak freq, mag, etc.
+ */
 int PeakTracker::pickHigh(float deltaFHigh){
     int index = -1;
-    int numOfPeaks = sizeof(peaksAndValleys->peaks->freq)/sizeof(peaksAndValleys->peaks->freq[0]);
-    int indexes[numOfPeaks];
+    int numOfPeaks = peaksAndValleys->cntPeak;
     int numOfCandidates = 0;
-    int startIdx = -1;
+    
+    int indexes[numOfPeaks];
+    for (int i=0; i<numOfPeaks; i++){
+        indexes[i] = 0;
+    }
     
     for (int k = 0; k < numOfPeaks; k++){
-        if((peaksAndValleys->peaks->freq[k] < formants->freq[formantNum] + deltaFHigh) && peaksAndValleys->peaks->freq[k] > formants->freq[formantNum]){
+        if(((peaksAndValleys->peaks->freq[k] < formants->freq[formantNum]) + deltaFHigh) && (peaksAndValleys->peaks->freq[k] > formants->freq[formantNum])){
             numOfCandidates += 1;
-            
             indexes[numOfCandidates] = k;
         }
     }
     
     if (numOfCandidates > 0){
         int temp = 0;
-        int tempIndexes[numOfCandidates];
-        int lenTemp = sizeof(tempIndexes) / sizeof(tempIndexes[0]);
-        
-        for (int kk = 0; kk < lenTemp; kk++){
+        for (int kk = 0; kk < numOfCandidates; kk++){
             if (peaksAndValleys->peaks->height.max[kk] > temp){
                 temp  = peaksAndValleys->peaks->height.max[kk];
                 index = indexes[kk];
@@ -1174,27 +1165,30 @@ int PeakTracker::pickHigh(float deltaFHigh){
     return index;
 }
 
+/*
+- Picks the potential formant in the lower range (between formantNum & formantNum - 1).
+- Stores Index of the Peak, which can be used to access the correct Peak freq, mag, etc.
+*/
 int PeakTracker::pickLow(float deltaFLow){
     int index = -1;
-    int numOfPeaks = sizeof(peaksAndValleys->peaks->freq)/sizeof(peaksAndValleys->peaks->freq[0]);
-    int indexes[numOfPeaks];
+    int numOfPeaks = peaksAndValleys->cntPeak;
     int numOfCandidates = 0;
-    int startIdx = -1;
+    
+    int indexes[numOfPeaks];
+    for (int i=0; i<numOfPeaks; i++){
+        indexes[i] = 0;
+    }
     
     for (int k = 0; k < numOfPeaks; k++){
         if((peaksAndValleys->peaks->freq[k] > formants->freq[formantNum] - deltaFLow) && peaksAndValleys->peaks->freq[k] < formants->freq[formantNum]){
             numOfCandidates += 1;
-            
             indexes[numOfCandidates] = k;
         }
     }
     
     if (numOfCandidates > 0){
         int temp = 0;
-        int tempIndexes[numOfCandidates];
-        int lenTemp = sizeof(tempIndexes) / sizeof(tempIndexes[0]);
-        
-        for (int kk = 0; kk < lenTemp; kk++){
+        for (int kk = 0; kk < numOfCandidates; kk++){
             if (peaksAndValleys->peaks->height.max[kk] > temp){
                 temp = peaksAndValleys->peaks->height.max[kk];
                 index = indexes[kk];
@@ -1206,11 +1200,19 @@ int PeakTracker::pickLow(float deltaFLow){
     return index;
 }
 
+/*
+ - Calls checkLow and checkHigh to check for potential peaks in both the lower and upper ranges of the current formant
+ */
 void PeakTracker::checkHighAndLow(float threshLow, float threshHigh, int formantNum){
     checkLow(threshLow, formantNum);
     checkHigh(threshHigh, formantNum);
 }
 
+/*
+ - Checks for potential peaks in the lower range of the current formant.
+ - Special case for Formant #1 since there is no Formant below to compare with
+    - Takes lower end of frequency spectrum (no formant will appear at 50Hz) as the lower limit
+ */
 void PeakTracker::checkLow(float threshLow, int formantNum){
     if (formantNum == 0){
         deltaFLow = (formants->freq[formantNum] - 50) / 2;
@@ -1221,6 +1223,11 @@ void PeakTracker::checkLow(float threshLow, int formantNum){
     }
 }
 
+/*
+ - Checks for potential peaks in the higher range of the current formant
+ - Special case for Formant #4 since there is no Formant above to compare with
+    - Uses maximum frequency of the display as the upper limit
+ */
 void PeakTracker::checkHigh(float threshHigh, int formantNum){
     if (formantNum == 3){ //3 is actually 4
         // 4500 is the max freq of the analysis
