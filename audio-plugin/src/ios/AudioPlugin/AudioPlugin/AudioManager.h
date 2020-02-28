@@ -370,11 +370,6 @@ extern "C" {
          Post filtering
          */
         void postFiltering();
-        
-        /*
-         Compute statistics
-         */
-        void computeStats();
     };
     
     /*
@@ -398,8 +393,6 @@ extern "C" {
     
     class PeakTracker{
     public:
-
-        bool init;
         bool initDisplayPtr;
         
         bool startTracking;
@@ -407,8 +400,7 @@ extern "C" {
         int formantOnset;
         int formantNum;
         
-        float onsetThreshold;
-        float offsetThreshold;
+        float trackingThreshold;
         
         // High and Low Ranges for Formants
         float deltaFLow;
@@ -427,6 +419,7 @@ extern "C" {
         bool trackingOn;
         bool firstFramePicked;
         
+        int startAnalysisCounter; 
         int stopAnalysisCounter;
         
         float *lpfGuideSignal;
@@ -434,19 +427,17 @@ extern "C" {
         float *initZeros;
     
         // Pointers for Onset Frame Tracker
-        float *tempF1Idx;
         float *topPeaksMag;
         
         FORMANTS *formants;
-        NEXT_FRAME_PEAKS *nextFramePeaks;
-        
         PeaksAndValleys *peaksAndValleys;
         PeaksAndValleys *peaksAndValleysLPF;
         
         /**
          * Constructor & Destructor
          */
-        PeakTracker();
+        PeakTracker(PeaksAndValleys *peaksAndValleys, PeaksAndValleys *peaksAndValleysLPF);
+        
         ~PeakTracker();
         
         /**
@@ -548,6 +539,5 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-
 
 #endif /* defined(__LPC_Display2__AudioManager__) */

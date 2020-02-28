@@ -31,11 +31,11 @@ m_numPeaks(0)
     _historyBuffer = new DoubleBuffer(_numDisplayBins,LPC_HIST_LEN);
     
     // Instance of Peaks and Valleys class for full Res & LPF 'Guide'
-    peaksAndValleys    = *new PeaksAndValleys();
-    peaksAndValleysLPF = *new PeaksAndValleys();
+    peaksAndValleys    = new PeaksAndValleys();
+    peaksAndValleysLPF = new PeaksAndValleys();
     
     // Instance of Peak Tracker
-    peakTracker = *new PeakTracker();
+    peakTracker = new PeakTracker(peaksAndValleys, peaksAndValleysLPF);
 }
 
 LPCDisplayManager::~LPCDisplayManager()
@@ -83,48 +83,57 @@ void LPCDisplayManager::render(Float32 *lpc_mag_buffer, Vector3 *freqVertices, V
     _historyBuffer->averageAllBuffers(avgLpc);
     
     // INIT
-    if(!peaksAndValleys.initDisplayPtr){
+    if(!peaksAndValleys->initDisplayPtr){
         // Initialize all values and compute peaks and valleys for the incoming signal
-        peaksAndValleys.displayInit(avgLpc, _numDisplayBins);
-        peaksAndValleys.initDisplayPtr = true;
+        peaksAndValleys->displayInit(avgLpc, _numDisplayBins);
+        peaksAndValleys->initDisplayPtr = true;
+        
+        peaksAndValleysLPF->displayInit(avgLpcLpf, _numDisplayBins);
+        peaksAndValleysLPF->initDisplayPtr = true;
 
         // Initialize Peak Tracker
-        peakTracker.initTracker(_numDisplayBins);
-        peakTracker.initDisplayPtr = true;
+        peakTracker->initTracker(_numDisplayBins);
+        peakTracker->initDisplayPtr = true;
     }
-    else if(peaksAndValleys.initDisplayPtr){
-        // Reset all values and compute peaks and valleys for the incoming signal
-        peaksAndValleys.resetValues(_numDisplayBins);
-        peaksAndValleys.computeParams(avgLpc);
-
+    else if(peaksAndValleys->initDisplayPtr){
         // 1. Create LPF 'guide' signal here
-        peakTracker.lpfFilter(avgLpc, _numDisplayBins);
-
+        peakTracker->lpfFilter(avgLpc, _numDisplayBins);
+        
+        // Reset all values and compute peaks and valleys for the incoming signal
+        peaksAndValleys->resetValues(_numDisplayBins);
+        peaksAndValleys->computeParams(avgLpc);
+        
+        peaksAndValleysLPF->resetValues(_numDisplayBins);
+        peaksAndValleysLPF->computeParams(avgLpc);
+        
         // 2. Find OnsetFrame (start tracking)
-        if (peakTracker.trackingOn == false){
-            //peakTracker.detectFormantOnset(avgLpc, _numDisplayBins);
-            peakTracker.trackingOnOff(avgLpc, _numDisplayBins);
+        if(peakTracker->trackingOn == true && peakTracker->firstFramePicked == false){
+            peakTracker->startAnalysisCounter += 1;
+            if (peakTracker->startAnalysisCounter >= 20){
+                peaksAndValleys->computeParams(avgLpc);
+                peaksAndValleysLPF->computeParams(avgLpcLpf);
+                peakTracker->pickFirstFormantFrame();
+            }
         }
-
-        if(peakTracker.trackingOn == true && peakTracker.firstFramePicked == false){
-            //run peaker peaker on both "full res" and low passed signal
-            peaksAndValleys.computeParams(avgLpc);
-            peaksAndValleysLPF.computeParams(avgLpcLpf);
-            peakTracker.pickFirstFormantFrame();
+        
+        if (peakTracker->trackingOn == false){
+            peakTracker->trackingOnOff(avgLpc, _numDisplayBins);
         }
-
+        
         // 3 - Start Tracking
-        if(peakTracker.firstFramePicked == true){
-            peakTracker.track();
+        if(peakTracker->firstFramePicked == true){
+            peakTracker->track();
         }
 
         // Determine if tracking should be turned off
-        peakTracker.trackingOnOff(avgLpc, _numDisplayBins);
+        if(peakTracker->trackingOn == true){
+            peakTracker->trackingOnOff(avgLpc, _numDisplayBins);
+        }
     }
 
     // Output New Peaks for DISP
     for(int i=0; i<NUM_FORMANTS; i++){
-        peakIndices[i] = peakTracker.formants->freq[i];
+        peakIndices[i] += peakTracker->formants->freq[i];
     }
     m_numPeaks = NUM_FORMANTS;
     
@@ -180,7 +189,7 @@ void LPCDisplayManager::render(Float32 *lpc_mag_buffer, Vector3 *freqVertices, V
             peakVertices[2*pk_cnt + 1].x = x_pos;
             
             // new peak tracker. Use magnitude values of tracked formants
-            if(peakTracker.formants->mag[pk_cnt] != -1){
+            if(peakTracker->formants->mag[pk_cnt] != -1){
                 peakVertices[2*pk_cnt + 1].y = y_pos;
             }
             
