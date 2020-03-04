@@ -110,7 +110,15 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 	$scope.scores;
 	$scope.difficulty = 1;
 	$scope.carrier_phrases = AdaptDifficulty.phrases[0];
+
 	$scope.sandbank = false; // used to open and close botton drawer
+	$scope.sbInfoDrawer = false; // used to open/close the sandbank More Info drawer
+	$scope.sbSettings = false; // used to toggle b/t 'Scoring Info' and 'Settings' in sbInfo drawer
+	$scope.cardsOn = true;
+	$scope.badgesOn = true;
+	$scope.remindersOn = true;
+
+
 
 	// quiz-specific vars
 	$scope.quizType = undefined;
@@ -749,10 +757,22 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 		handleRatingData(data);
 	};
 
+
+	// $scope.sandbank = false; // used to open and close botton drawer
+	// $scope.sbInfoDrawer = false; // used to open/close the sandbank More Info drawer
+	// $scope.sbSettings = false; // used to toggle b/t 'Scoring Info' and 'Settings' in sbInfo drawer
+
 	$scope.toggleSandBank = function() {
 		QuestScore.updateSandbank($scope.scores, $scope.milestones);
 		$scope.sandbank = !$scope.sandbank;
 	};
+
+	$scope.toggle_sbInfoDrawer = function() {
+		$scope.sbInfoDrawer = !$scope.sbInfoDrawer;
+	};
+	$scope.tap_sbSettings = function() { $scope.sbSettings = true; };
+	$scope.tap_sbInfo = function() { $scope.sbSettings = false; };
+
 
 	// DIALOG SEQUENCE HANDLERS ---------------------
 	$scope.dialogEnd = function() {

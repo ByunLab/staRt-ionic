@@ -20,19 +20,190 @@
     <div class="sbHead">
       <h1 class="">Achievements</h1>
 
-      <div class="headCol">
+      <div class="infoRow">
 
-        <button class="sb-resetBtn"
-          ng-if="isPracticing && !probe"
-          ng-click="resetQuestHighscores()">
-          Reset Highscores
-        </button>
+        <div class="infoBtn"
+        on-tap="toggle_sbInfoDrawer()">
+          <div class="content">
+            <div class="coinImg"></div>
+            More Info: <br/>
+            Scoring & Settings
+          </div>
+        </div>
 
       </div>
 
     </div>
     <!-- .headBar -->
 
+    <div class="infoContainer"
+      ng-if="sandbank"
+      ng-show="sbInfoDrawer"
+      ng-hide="!sbInfoDrawer">
+
+      <div class="head-col">
+        <div class="head-row">
+          <h1>Quest&nbsp;
+            <span ng-if="!sbSettings">Scoring</span>
+            <span ng-if="sbSettings">Settings</span>
+          </h1>
+          <div class="navBox">
+            <div class="navTab"
+              ng-class="{'active': !sbSettings }"
+              on-tap="tap_sbInfo()">
+              Scoring
+            </div>
+
+            <div class="navTab"
+              ng-class="{'active': sbSettings }"
+              on-tap="tap_sbSettings()">
+              Settings
+            </div>
+
+            <div class="navTab"
+              on-tap="toggle_sbInfoDrawer()">
+              Close
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+
+
+        <div class="info-body"
+          ng-show="!sbSettings"
+          ng-hide="sbSettings">
+
+          <ion-scroll zooming="false" direction="y">
+
+            <div class="info-body_section">
+              <h2>RATINGS</h2>
+              <p>Ratings are intended to be given by an SLP during the course of treatment. They record the perceptual accuracy of the /r/ in each trial, allowing participants and clinicians to track progress over time.</p>
+              <div class="coin-bullet_row">
+                <div class="coin-bullet gold"></div>
+                <div class="coin-li">
+                  <span class="bold">Great: </span>Use this rating for productions with fully correct /r/ quality, like a typical adult production of /r/. <br/>
+                  Yield: 1 gold coin, 3 points
+                </div>
+              </div>
+
+              <div class="coin-bullet_row">
+                <div class="coin-bullet silver"></div>
+                <div class="coin-li">
+                  <span class="bold">Good: </span>Use this rating for productions that approximate a correct /r/ quality, but feature a mild to moderate degree of distortion.<br/>
+                  Yield: 1 silver coin, 2 points
+                </div>
+              </div>
+              <div class="coin-bullet_row">
+                <div class="coin-bullet bronze"></div>
+                <div class="coin-li">
+                  <span class="bold">Try Again: </span>Use this rating for productions that represent a different speech sound (e.g. /w/ or /u/) or for severe distortions with no /r/ quality.
+                  <br/>
+                  Yield: 1 bronze coin, 1 point
+                </div>
+              </div>
+              </p>
+            </div>
+
+
+            <div class="info-body_section">
+              <h2>MEAUSREMENTS</h2>
+
+              <p>Trials are measured in coins and points.</p>
+              <ul >
+                <li>
+                  Gold coins can be thought of as a measure of accuracy (gold = correct, not gold = incorrect). This accuracy measure is used for the graph of progress that can be viewed under Profiles > Progress.
+                </li>
+                <li>
+                  The points systems rewards both accuracy and effort, with points earned for each trial completed. Points are used for the milestones presented throughout practice.
+                </li>
+              </ul>
+            </div>
+
+
+            <div class="info-body_section">
+              <h2>MILESTONES</h2>
+              <p>
+                Milestones appear in the progress cards at the end of each block and as badges in the Sandbank. Your milestone progress cards and badges appear as they are attained, but the achievement is not saved to your profile until you complete the Quest. If you think you have attained a milestone, but don’t see it reflected in your sandbank, please check Profiles/Recordings to see if the Quest is complete.
+              </p>
+              <p>
+                If you would like to turn off or reset any of your milestones, please visit the <a on-tap="tap_sbSettings();">Settings Tab </a>on this page.
+              </p>
+            </div>
+
+          </ion-scroll>
+
+        </div>
+
+        <div class="info-body"
+          ng-show="sbSettings"
+          ng-hide="!sbSettings">
+
+          <div class="info-body_settings">
+
+            <div class="settings-row">
+              <div class="toggle-row">
+                <span class="toggleLabel">Progress Cards</span>
+                <ion-toggle
+                  ng-model="cardsOn"
+                  toggle-class="toggle-calm">
+                </ion-toggle>
+              </div>
+              <p>
+                Turn on/off the progress cards at the end of each block.
+              </p>
+            </div>
+
+            <div class="settings-row"><hr /></div>
+
+            <div class="settings-row">
+              <div class="toggle-row">
+                <span class="toggleLabel">In-Game Badges</span>
+                <ion-toggle
+                  ng-model="badgesOn"
+                  toggle-class="toggle-calm">
+                </ion-toggle>
+              </div>
+              <p>
+                Turn on/off the 'New Record' and 'On A Roll' badges.
+              </p>
+            </div>
+
+            <div class="settings-row"><hr /></div>
+
+            <div class="settings-row">
+              <div class="toggle-row">
+                <span class="toggleLabel">Clinician Reminders</span>
+                <ion-toggle
+                  ng-model="remindersOn"
+                  toggle-class="toggle-calm">
+                </ion-toggle>
+              </div>
+              <p>
+                Turn on/off the verbal feedback reminder at the end of each block.
+              </p>
+            </div>
+
+            <div class="settings-row"><hr /></div>
+
+            <div class="settings-row">
+              <button class="sb-resetBtn"
+                ng-if="isPracticing && !probe"
+                ng-click="resetQuestHighscores()">
+                Reset Highscores
+              </button>
+            </div>
+
+
+          </div>
+        </div>
+
+
+
+
+
+    </div>
 
     <div class="sbRow sbBody">
 
