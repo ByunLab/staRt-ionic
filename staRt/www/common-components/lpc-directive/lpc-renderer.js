@@ -10,6 +10,7 @@ lpcDirective.factory('LPCRenderer', function ( Draw, Mesh )
 
 		this.graphicsGroup = undefined;
 		this.sliderGroup = undefined;
+		this.sliderGroupTwo = undefined;
 		this.bubBtnGroup = undefined;
 		this.peaksGroup = undefined;
 		this.waveGroup = undefined;
@@ -18,11 +19,14 @@ lpcDirective.factory('LPCRenderer', function ( Draw, Mesh )
 		this.initialize(parentElement, canvasElement);
 	}
 
+	var getSliderPositionFunction = function (slider) {
+
+	};
+
 	Object.defineProperty(LPCRenderer.prototype, 'sliderPosition', {
-		set: function sliderPosition(s) {
+		set: function(s) {
 			if (s > 1) s = 1;
 			if (s < 0) s = 0;
-
 			if (this.sliderGroup !== undefined) {
 				this.sliderGroup.position.x =
 					this.linScale( s, 0, 1,
@@ -32,6 +36,19 @@ lpcDirective.factory('LPCRenderer', function ( Draw, Mesh )
 			}
 		}
 	});
+
+	Object.defineProperty(LPCRenderer.prototype, 'sliderTwoPosition', {
+		set: function(s) {
+			if (this.sliderGroupTwo !== undefined) {
+				this.sliderGroupTwo.position.x =
+					this.linScale( s, 0, 1,
+						this.dim.graph.left,
+						this.dim.graph.right
+					);
+			}
+		}
+	});
+
 
 	/*
 	Object.defineProperty(LPCRenderer.prototype, 'doShowSlider', {
@@ -360,6 +377,9 @@ lpcDirective.factory('LPCRenderer', function ( Draw, Mesh )
 			this.sliderGroup = new THREE.Group();
 			this.sliderGroup.name = 'sliderGroup';
 
+			this.sliderGroupTwo = new THREE.Group();
+			this.sliderGroupTwo.name = 'sliderGroupTwo';
+
 			this.bubBtnGroup = new THREE.Group();
 			this.bubBtnGroup.name = 'bubBtnGroup';
 
@@ -389,8 +409,11 @@ lpcDirective.factory('LPCRenderer', function ( Draw, Mesh )
 			Mesh.createBubBtn( this.dim, this.bubBtnGroup, this.materials );
 			this.scene.add( this.bubBtnGroup );
 
-			Mesh.createSlider( this.dim, this.sliderGroup, this.materials );
-			this.scene.add( this.sliderGroup );
+			Mesh.createSlider( this.dim, this.sliderGroup, this.materials, 'star');
+			this.scene.add( this.sliderGroup);
+
+			Mesh.createSlider( this.dim, this.sliderGroupTwo, this.materials, 'starTwo');
+			this.scene.add( this.sliderGroupTwo );
 
 			// ----------------------------------
 			this.graphicsGroup.position.z = 2;
@@ -414,6 +437,7 @@ lpcDirective.factory('LPCRenderer', function ( Draw, Mesh )
 	{
 		this.scene.remove( this.graphicsGroup );
 		this.scene.remove( this.sliderGroup );
+		this.scene.remove( this.sliderGroupTwo );
 		this.scene.remove( this.bubBtnGroup );
 		this.scene.remove( this.peaksGroup );
 		this.waveMesh === undefined;

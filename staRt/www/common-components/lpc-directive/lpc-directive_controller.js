@@ -22,6 +22,7 @@ lpcDirective.controller( 'LpcDirectiveController',
 	function($rootScope, $scope, $state, $stateParams, $element, $timeout, $localForage, ProfileService, LPCRenderer )
 	{
 		$scope.data = {};
+		$scope.secondTargetHidden = true;
 
 		$scope.$watchCollection('data', function()
 		{
@@ -160,18 +161,32 @@ lpcDirective.controller( 'LpcDirectiveController',
 				if (intersects === 'resetBtn') {
 					$scope.resetF3();
 					$scope.trackingTarget = false;
+					$scope.trackingSecondTarget = false;
 
 				} else if(intersects === 'bubBtn'
 					|| intersects === 'playIcon'
 					|| intersects === 'pauseIcon') {
 					$scope.pauseHandler();
 					$scope.trackingTarget = false;
+					$scope.trackingSecondTarget = false;
 
-				} else if( intersects === 'star' ) {
+				} else if( intersects === 'star' || intersects === 'starTwo' ) {
 					$scope.trackingTarget = true;
+					if (intersects === 'starTwo') {
+						$scope.trackingSecondTarget = true;
+					}
 					//console.log('touch: ' + px);
 					//$scope.updateTarget();
-				} else {
+				} else if (intersects === 'postBig') {
+					if ($scope.secondTargetHidden) {
+						$scope.showSecondTarget();
+					} else {
+						$scope.hideSecondTarget();
+					}
+				}
+
+				else {
+					$scope.trackingSecondTarget = false;
 					$scope.trackingTarget = false;
 				}
 			}
@@ -194,10 +209,6 @@ lpcDirective.controller( 'LpcDirectiveController',
 				var px_waveEdgeLeft = ($scope.lpcRenderer.dim.canvas.width/2) + $scope.lpcRenderer.dim.graph.left;
 				var px_waveEdgeRight = ($scope.lpcRenderer.dim.canvas.width/2) + $scope.lpcRenderer.dim.graph.right;
 
-				// console.log('left: ' + px_waveEdgeLeft);
-				// console.log('right: ' +px_waveEdgeRight);
-				// console.log('px: ' +px);
-
 				//adds padding on right edge (prevents slider from overlapping reset sign.
 				var padRight = $scope.lpcRenderer.dim.col_W * 0.75;
 				px_waveEdgeRight -= padRight;
@@ -208,8 +219,13 @@ lpcDirective.controller( 'LpcDirectiveController',
 				if( px < px_waveEdgeLeft) { px = px_waveEdgeLeft; }
 				if( px > px_waveEdgeRight) { px = px_waveEdgeRight; }
 
-				$scope.data.targetF3 = $scope.lpcRenderer.linScale(px, px_waveEdgeLeft, px_waveEdgeRight, 0, fzPadHigh);
+				var scaled_pos = $scope.lpcRenderer.linScale(px, px_waveEdgeLeft, px_waveEdgeRight, 0, fzPadHigh);
 
+				if ($scope.trackingSecondTarget) {
+					$scope.data.secondTarget = scaled_pos;
+				} else {
+					$scope.data.targetF3  = scaled_pos;
+				}
 				$scope.targetNeedsUpdate = true;
 			} // end tracking target
 		} // end touchMove
@@ -234,6 +250,7 @@ lpcDirective.controller( 'LpcDirectiveController',
 			$scope.pointerDown = false;
 			$scope.trackedTouch = undefined;
 			$scope.trackingTarget = false;
+			$scope.trackingSecondTarget = false;
 		}
 
 
@@ -269,6 +286,7 @@ lpcDirective.controller( 'LpcDirectiveController',
 
 					if ($scope.targetNeedsUpdate) {
 						$scope.updateTarget();
+						$scope.updateSecondTarget();
 					}
 
 					// even though we aren't writing to a text sprite anymore,
@@ -320,12 +338,34 @@ lpcDirective.controller( 'LpcDirectiveController',
 				$timeout(function()
 				{
 					$scope.updateTarget();
+
+					//TODO: Make a function that starts the second target.
+					$scope.data.secondTarget = $scope.data.targetF3;
+					$scope.updateSecondTarget();
 				});
 			});
 		} // end setInitialTarget()
 
-		$scope.updateTarget = function() {
+		$scope.showSecondTarget = function () {
+			// We show the second target by merely placing it at the value secondTarget
+			$scope.lpcRenderer.sliderTwoPosition = $scope.lpcRenderer.linScale($scope.data.secondTarget, 0, 4500, 0, 1);
+			$scope.secondTargetHidden = false;
+		}
 
+		$scope.hideSecondTarget = function () {
+			// We hide the second target by pushing it off the screen.
+			$scope.lpcRenderer.sliderTwoPosition = $scope.lpcRenderer.linScale(10000, 0, 4500, 0, 1);
+			$scope.secondTargetHidden = true;
+		}
+
+		$scope.updateSecondTarget = function () {
+			console.log('updating second target!');
+			if ($scope.data.secondTarget === undefined || $scope.secondTargetHidden) return;
+			$scope.lpcRenderer.sliderTwoPosition = $scope.lpcRenderer.linScale($scope.data.secondTarget, 0, 4500, 0, 1);
+			$scope.targetNeedsUpdate = false;
+		}
+
+		$scope.updateTarget = function() {
 			if ($scope.data.targetF3 === undefined) return;
 
 			var sliderPosition = $scope.lpcRenderer.linScale($scope.data.targetF3, 0, 4500, 0, 1);
@@ -337,6 +377,7 @@ lpcDirective.controller( 'LpcDirectiveController',
 			if (fzText !== undefined) {
 				fzText.innerHTML = Math.floor($scope.data.targetF3);
 			}
+			$scope.targetNeedsUpdate = false;
 		};
 
 		$scope.resetF3 = function() {

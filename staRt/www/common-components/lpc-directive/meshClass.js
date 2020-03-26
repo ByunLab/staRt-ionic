@@ -351,7 +351,7 @@ Mesh.prototype.createFoamGroup = function(dim, graphicsGroup, materials) {
 	loadFoamBase();
 };
 
-Mesh.prototype.createSlider = function(dim, sliderGroup, materials) {
+Mesh.prototype.createSlider = function(dim, sliderGroup, materials, starName) {
 
 	/* note: for some reason dim resets a few times when loading, which screws up mesh.scale.set() cuz the transform in the SVG loader ( Matrix3.getInverse() ) can't ever handle 0s. Everthing else seems fine with the normal dim arg.  */
 
@@ -403,7 +403,7 @@ Mesh.prototype.createSlider = function(dim, sliderGroup, materials) {
 
 	// LOAD SVG ---------------------------
 	function loadStar() {
-		svgLoaderToMesh('img/lpcDir/star.svg', 'star', starGroup, starCB);
+		svgLoaderToMesh('img/lpcDir/star.svg', starName, starGroup, starCB);
 	}
 
 	// ---------------------------
