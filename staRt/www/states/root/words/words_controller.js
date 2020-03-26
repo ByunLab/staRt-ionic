@@ -97,6 +97,9 @@
 		};
 
 		$scope.beginQuest = function() {
+			if (!$scope.data.csvs || $scope.data.csvs.length === 0) {
+				return;
+			}
 			console.log('Begin ' + $scope.data.type + ' quest');
 			$scope.practicing = true;
 			$scope.configuring = false;
