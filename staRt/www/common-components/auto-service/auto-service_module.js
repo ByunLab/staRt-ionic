@@ -587,7 +587,7 @@ autoService.factory('AutoService', function ($rootScope, $ionicPlatform, Notifyi
 		}
 
 		var weblink = 'https://wp.nyu.edu/byunlab/projects/start/participate/';
-		var = "Do you want to participate as a formal tester in our research study? Please note that we must obtain informed consent from the client and client's family before formal participation is possible. Please see our website or email nyuchildspeech@gmail.com for more information."
+		var text = "Do you want to participate as a formal tester in our research study? Please note that we must obtain informed consent from the client and client's family before formal participation is possible. Please see our website or email nyuchildspeech@gmail.com for more information.";
 		$cordovaDialogs.confirm(
 			text,
 			'Research Participation',
