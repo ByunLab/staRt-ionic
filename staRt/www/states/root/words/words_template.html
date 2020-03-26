@@ -146,9 +146,8 @@
 				<div class="quest-config-row quest-button-class">
 					<button
 							class="big-button"
-							on-tap="beginQuest()"
+							ng-click="beginQuest()"
 							ng-hide="practicing"
-							ng-disabled="!data.csvs || data.csvs.length === 0"
 						>
 							Begin {{data.type}} Quest
 					</button>

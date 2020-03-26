@@ -741,6 +741,9 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 	$scope.resetQuestHighscores = function() { resetQuestHighscores(); };
 
 	$scope.onRating = function(data) {
+		if ($scope.scores.endOfBlock) {
+			return;
+		}
 		$scope.rating = data;
 		$scope.nextWord();
 		handleRatingData(data);
