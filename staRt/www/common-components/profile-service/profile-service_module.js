@@ -118,6 +118,16 @@ profileService.factory('ProfileService', function($rootScope, $state, $localFora
 				return null;
 			});
 	}
+	function _goIfCurrentProfileSelected(destination) {
+		return profilesInterfaceState.then( function(res) {
+			var currentId = res['currentProfileUUID'];
+			if (!!currentId || destination == 'root.profiles') {
+				$state.go(destination);
+			} else {
+				$cordovaDialogs.alert('You must select a participant to use staRt.', 'Select Participant');
+			}
+		});
+	}
 
 	function _getCurrentProfile() {
 		return profilesInterfaceState.then( function(res) {
@@ -268,6 +278,11 @@ profileService.factory('ProfileService', function($rootScope, $state, $localFora
 		getCurrentProfile: function()
 		{
 			return _getCurrentProfile();
+		},
+
+		goIfCurrentProfileSelected : function (destination)
+		{
+			return _goIfCurrentProfileSelected(destination);
 		},
 
 		getProfileTransactionHandle: function(profileData)

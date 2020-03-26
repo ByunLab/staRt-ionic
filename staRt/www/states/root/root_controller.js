@@ -4,7 +4,7 @@
 {
 	var root = angular.module( 'root' );
 
-	root.controller('RootController', function($scope, $timeout, $localForage, $ionicNavBarDelegate, AutoService, FirebaseService, StartUIState, ProfileService, SessionStatsService, UploadService, $rootScope, $state)
+	root.controller('RootController', function($scope, $timeout, $localForage, $ionicNavBarDelegate, AutoService, FirebaseService, StartUIState, ProfileService, SessionStatsService, UploadService, $rootScope, $state, $cordovaDialogs)
 	{
 		//console.log('RootController here!');
 		if (window.cordovaSQLiteDriver !== undefined) {
@@ -35,7 +35,7 @@
 					['Leave Session', 'Stay']);
 			}
 			else {
-				$state.go('root.' + destination);
+				ProfileService.goIfCurrentProfileSelected('root.' + destination);
 			}
 		};
 
