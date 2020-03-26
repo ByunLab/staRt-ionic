@@ -11,27 +11,7 @@
 	{
 		console.log('WordsController here!');
 
-		var lastChronoTime;
-		var ticker = undefined;
-
 		$rootScope.isRandomizeSession = true;
-
-		var logInterval = function() {
-			if (ticker) {
-				var nextChronoTime = Date.now();
-				var duration = nextChronoTime - lastChronoTime;
-				NotifyingService.notify('quest-tick', duration);
-				lastChronoTime = nextChronoTime;
-			}
-		};
-
-		var clearTimeLogger = function() {
-			if (ticker) {
-				logInterval();
-				clearInterval(ticker);
-				ticker = undefined;
-			}
-		};
 
 		$scope.practicing = false;
 		$scope.configuring = false;
@@ -131,8 +111,6 @@
 
 			// Start a timer to log the time spend in quest mode play
 			NotifyingService.notify('quest-start');
-			lastChronoTime = Date.now();
-			ticker = setInterval(logInterval, 60000);
 		};
 
 		$scope.endQuestCallback = function() {
@@ -140,7 +118,6 @@
 			$scope.configuring = false;
 			$scope.data.csvs = [];
 			$scope.data.navTitle = 'Quest';
-			clearTimeLogger();
 		};
 
 		$scope.toggleRCategory = function(wordCategoryIdx, force) {
@@ -169,10 +146,6 @@
 		$scope.updateCount = function() {
 			console.log('count is now ' + $scope.data.count);
 		};
-
-		$scope.$on('$destroy', function() {
-			clearTimeLogger();
-		});
 
 		if ($rootScope.sessionToResume){
 			$rootScope.categoryRestrictions = $rootScope.sessionToResume.categoryRestrictions;

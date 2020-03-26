@@ -8,6 +8,9 @@
 	{
 		console.log('FreePlayController here!');
 
+		var SESSION_FREEPLAY_TIME = 300000; // Five minutes
+		var SPEEDY_SESSION_FREEPLAY_TIME = 5000; // Five seconds.
+
 		$scope.data = {
 			navTitle: 'Free Play',
 			waveHidden: false,
@@ -25,10 +28,31 @@
 			$scope.data.researchSession= false;
 		}
 
+		$scope.freeplayTimeout = null;
+		$scope.announceTimeUp = null;
+		$scope.didAnnounceTimeUp = false;
+
+		$scope.$on('$destroy', function() {
+			if (!!$scope.freeplayTimeout) {
+				$scope.announceTimeUp();
+				clearTimeout($scope.freeplayTimeout);
+			}
+		});
+
+
 		ProfileService.getCurrentProfile().then(function (profile) {
 			$scope.data.participant_name = profile.name;
 			if (profile) {
 				$scope.data.participant_name = profile.name;
+				var freeplayTime = profile.name === 'Speedy' ? SPEEDY_SESSION_FREEPLAY_TIME : SESSION_FREEPLAY_TIME;
+				$scope.announceTimeUp = function() {
+					if (!$scope.didAnnounceTimeUp) {
+						$scope.didAnnounceTimeUp = true;
+						NotifyingService.notify('finished-free-play');
+					}
+				}
+				$scope.freeplayTimeout = setTimeout($scope.announceTimeUp, freeplayTime);
+
 				if (profile.nIntroComplete >= 1) {
 					$scope.data.session_number = profile.nBiofeedbackSessionsCompleted + profile.nNonBiofeedbackSessionsCompleted + 1;
 				}
@@ -38,24 +62,6 @@
 						'Can\'t start free play, please select a profile first.', function() {$state.go('root.profiles');}, 'No profile');
 				}
 			}
-		});
-
-		var lastChronoTime = Date.now();
-
-		var logInterval = function() {
-			var nextChronoTime = Date.now();
-			var duration = nextChronoTime - lastChronoTime;
-			NotifyingService.notify('freeplay-tick', duration);
-			lastChronoTime = nextChronoTime;
-		};
-
-
-		// Start a timer to log the time spend in free play
-		var ticker = setInterval(logInterval, 10000);
-
-		$scope.$on('$destroy', function() {
-			logInterval();
-			clearInterval(ticker);
 		});
 	});
 
