@@ -231,7 +231,7 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 	function completeCallback() {
 	  $scope.uploadStatus.isUploading = false;
 	  $cordovaDialogs.alert(
-	    'Session uploaded successfully',
+	    'Session uploaded successfully.',
 	    'Upload Complete',
 	    'Okay'
 	  );
@@ -365,7 +365,7 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 		if ($scope.homeScreenClicked) {
 			var resumeMessage = 'Hey, looks like you quit staRt mid session! You can resume quizzes and quests by going to the recordings section on the Profiles page.';
 			if (doStoreFormalSession) {
-				resumeMessage = 'You quit midway through a session. You can resume the formal session by going to the Profiles->profile page and clicking Start Session.';
+				resumeMessage = 'You quit midway through a session. You can resume the formal session by going to the Profiles page and clicking Start Session.';
 			}
 			$cordovaDialogs.alert(
 				resumeMessage,
@@ -380,7 +380,7 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 						$scope.currentPracticeSession.files = files;
 						var practiceTypeStr = sessionDisplayString();
 						var session = $scope.currentPracticeSession; //Object.assign({}, $scope.currentPracticeSession);
-						navigator.notification.confirm('Would you like to upload this ' + practiceTypeStr + ' session?',
+						navigator.notification.confirm('Would you like to upload this session?',
 							function (index) {
 								NotifyingService.notify('recording-completed', session);
 								if (index === 1) {
@@ -588,7 +588,7 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 					if ($scope.startPracticeCallback) $scope.startPracticeCallback();
 				} else {
 					if (navigator.notification) {
-						navigator.notification.alert('Can\'t start ' + sessionDisplayString() + ' -- create a profile first', null, 'No profile');
+						navigator.notification.alert('Can\'t start ' + sessionDisplayString() + ', please select a profile first', null, 'No profile');
 					}
 				}
 			},
