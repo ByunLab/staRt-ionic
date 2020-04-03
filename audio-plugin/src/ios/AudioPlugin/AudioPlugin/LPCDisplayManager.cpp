@@ -11,7 +11,7 @@
 #include "LPCDisplayManager.h"
 #include "AudioManager.h"
 
-#define LPC_HIST_LEN (16)        /**< number of buffers used for LPC magnitude spectrum history */
+#define LPC_HIST_LEN (8)        /**< number of buffers used for LPC magnitude spectrum history */
 //#define LPC_NUM_DISPLAY_BINS (256)  // <-- this shouldn't need to change if sample rate is changed
 
 #define MAX_DB_VAL (10.0)       /**< maximum level of LPC magnitude spectrum (dB) */
@@ -96,6 +96,7 @@ void LPCDisplayManager::render(Float32 *lpc_mag_buffer, Vector3 *freqVertices, V
         peakTracker->initDisplayPtr = true;
     }
     else if(peaksAndValleys->initDisplayPtr){
+        std::cout<<"already init"<<std::endl;
         // 1. Create LPF 'guide' signal here
         peakTracker->lpfFilter(avgLpc, _numDisplayBins);
         
@@ -106,10 +107,14 @@ void LPCDisplayManager::render(Float32 *lpc_mag_buffer, Vector3 *freqVertices, V
         peaksAndValleysLPF->resetValues(_numDisplayBins);
         peaksAndValleysLPF->computeParams(avgLpc);
         
+        std::cout<<"tracking on: "<<peakTracker->trackingOn <<std::endl;
+        std::cout<<"first y/n: "<< peakTracker->firstFramePicked <<std::endl;
         // 2. Find OnsetFrame (start tracking)
-        if(peakTracker->trackingOn == true && peakTracker->firstFramePicked == false){
+        if((peakTracker->trackingOn == true) && (peakTracker->firstFramePicked == false)){
+            std::cout<<"start cnt: "<< peakTracker->startAnalysisCounter <<std::endl;
             peakTracker->startAnalysisCounter += 1;
-            if (peakTracker->startAnalysisCounter >= 20){
+            if (peakTracker->startAnalysisCounter >= 35){
+                std::cout<<"ok actually start now"<<std::endl;
                 peaksAndValleys->computeParams(avgLpc);
                 peaksAndValleysLPF->computeParams(avgLpcLpf);
                 peakTracker->pickFirstFormantFrame();
@@ -117,6 +122,7 @@ void LPCDisplayManager::render(Float32 *lpc_mag_buffer, Vector3 *freqVertices, V
         }
         
         if (peakTracker->trackingOn == false){
+            std::cout<<"start the tracker"<<std::endl;
             peakTracker->trackingOnOff(avgLpc, _numDisplayBins);
         }
         
@@ -130,33 +136,14 @@ void LPCDisplayManager::render(Float32 *lpc_mag_buffer, Vector3 *freqVertices, V
             peakTracker->trackingOnOff(avgLpc, _numDisplayBins);
         }
     }
-
+    
     // Output New Peaks for DISP
     for(int i=0; i<NUM_FORMANTS; i++){
         peakIndices[i] += peakTracker->formants->freq[i];
+        std::cout<<"formant "<< i << ": "<< peakTracker->formants->freq[i] << "\n";
     }
     m_numPeaks = NUM_FORMANTS;
-    
-////    New (now old) peaks detector
-//    if (!peaksAndValleys.initDisplayPtr){
-//        // Initialize all values and compute peaks and valleys for the incoming signal
-//        peaksAndValleys.displayInit(avgLpc, _numDisplayBins);
-//        peaksAndValleys.initDisplayPtr = true;
-//        peaksAndValleys.computeParams(avgLpc);
-//
-//    } else if (peaksAndValleys.initDisplayPtr){
-//        // Reset all values and compute peaks and valleys for the incoming signal
-//        peaksAndValleys.resetValues(_numDisplayBins);
-//        peaksAndValleys.computeParams(avgLpc);
-//    }
-//
-////     Update peak indices
-//    for (int i = 0; i < peaksAndValleys.cntPeak; i++){
-//        peakIndices[i] += peaksAndValleys.peaks->freq[i];
-//    }
-//
-////     Update peak count
-//    m_numPeaks = peaksAndValleys.cntPeak;
+    std::cout<<"--------------"<<"\n";
     
     float mag;
     int pk_cnt = 0, curr_pk_idx;
@@ -193,15 +180,11 @@ void LPCDisplayManager::render(Float32 *lpc_mag_buffer, Vector3 *freqVertices, V
                 peakVertices[2*pk_cnt + 1].y = y_pos;
             }
             
-            // Peak picking based on an adaptive threshold. Magnitudes below threshold are set to -1.
-//            if(peaksAndValleys.peaks->mag[pk_cnt] != -1){
-//                peakVertices[2*pk_cnt + 1].y = y_pos;
-//            }
-            
             peakVertices[2*pk_cnt + 1].z = 0.0;
             pk_cnt++;
         }
     }
+    peakTracker->resetTracker(_numDisplayBins);
 }
 
 Float32 LPCDisplayManager::getNormalizedFreq(Float32 freq)
