@@ -96,7 +96,6 @@ void LPCDisplayManager::render(Float32 *lpc_mag_buffer, Vector3 *freqVertices, V
         peakTracker->initDisplayPtr = true;
     }
     else if(peaksAndValleys->initDisplayPtr){
-        std::cout<<"already init"<<std::endl;
         // 1. Create LPF 'guide' signal here
         peakTracker->lpfFilter(avgLpc, _numDisplayBins);
         
@@ -105,24 +104,19 @@ void LPCDisplayManager::render(Float32 *lpc_mag_buffer, Vector3 *freqVertices, V
         peaksAndValleys->computeParams(avgLpc);
         
         peaksAndValleysLPF->resetValues(_numDisplayBins);
-        peaksAndValleysLPF->computeParams(avgLpc);
+        peaksAndValleysLPF->computeParams(peakTracker->lpfGuideSignal);
         
-        std::cout<<"tracking on: "<<peakTracker->trackingOn <<std::endl;
-        std::cout<<"first y/n: "<< peakTracker->firstFramePicked <<std::endl;
         // 2. Find OnsetFrame (start tracking)
         if((peakTracker->trackingOn == true) && (peakTracker->firstFramePicked == false)){
-            std::cout<<"start cnt: "<< peakTracker->startAnalysisCounter <<std::endl;
             peakTracker->startAnalysisCounter += 1;
             if (peakTracker->startAnalysisCounter >= 35){
-                std::cout<<"ok actually start now"<<std::endl;
                 peaksAndValleys->computeParams(avgLpc);
-                peaksAndValleysLPF->computeParams(avgLpcLpf);
+                peaksAndValleysLPF->computeParams(peakTracker->lpfGuideSignal);
                 peakTracker->pickFirstFormantFrame();
             }
         }
         
         if (peakTracker->trackingOn == false){
-            std::cout<<"start the tracker"<<std::endl;
             peakTracker->trackingOnOff(avgLpc, _numDisplayBins);
         }
         

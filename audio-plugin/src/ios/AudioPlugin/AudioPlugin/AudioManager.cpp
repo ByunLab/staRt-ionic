@@ -978,14 +978,14 @@ void PeakTracker::pickFirstFormantFrame(){
         tempF1HeightMax[i] = 0.0;
     }
     
-    for(int j=0; j<potentialF1Counter; j++){
-        for (int i=0; i<totalNumPeaks; i++){
+    for(int i=0; i<potentialF1Counter; i++){
+        for (int j=0; j<totalNumPeaks; j++){
         
-            if((peaksAndValleys->peaks->freq[i] > peaksAndValleysLPF->valleys->freq[0]) && (peaksAndValleys->peaks->freq[i] < peaksAndValleysLPF->valleys->freq[1])){
+            if((peaksAndValleys->peaks->freq[j] > peaksAndValleysLPF->valleys->freq[0]) && (peaksAndValleys->peaks->freq[j] < peaksAndValleysLPF->valleys->freq[1])){
                 
-                tempF1Freq[j] = peaksAndValleys->peaks->freq[i];
-                tempF1HeightMin[j] = peaksAndValleys->peaks->height.min[i];
-                tempF1HeightMax[j] = peaksAndValleys->peaks->height.max[i];
+                tempF1Freq[i] = peaksAndValleys->peaks->freq[j];
+                tempF1HeightMin[i] = peaksAndValleys->peaks->height.min[j];
+                tempF1HeightMax[i] = peaksAndValleys->peaks->height.max[j];
             }
         }
     }
@@ -1010,34 +1010,20 @@ void PeakTracker::pickFirstFormantFrame(){
     int formantIdx = 0;
     for(int i=0; i<totalNumPeaks; i++){
         for(int j=0; j<totalNumPeaks; j++){
-            
-            // Pick F1
             if ((formantIdx == 0) && (F1Max == topPeaksMag[j])){
                 formants->freq[formantIdx] = peaksAndValleys->peaks->freq[F1Idx];
                 formants->mag[formantIdx]  = peaksAndValleys->peaks->mag[F1Idx];
                 formantIdx += 1;
-            // Pick F2-F4.
-                // if index is same as one of top NUM_FORMANTS+2 peaks and
-                // if peak is NOT already chosen for F1
             } else if((formantIdx > 0) && (peaksAndValleys->peaks->height.max[i] == topPeaksMag[j]) && (peaksAndValleys->peaks->height.max[i] != F1Max)){
-                // if peak is greater than previous formant freq
-                // f2 cannot be higher than f3, etc.
                 if (peaksAndValleys->peaks->freq[i] > formants->freq[formantIdx-1]){
                     formants->freq[formantIdx] = peaksAndValleys->peaks->freq[i];
                     formants->mag[formantIdx]  = peaksAndValleys->peaks->mag[i];
                     formantIdx += 1;
                 }
-                if (formantIdx > 3){
-                    break;
-                }
-            }
-            else{
-                break;
+                if (formantIdx > 3){break;}
             }
         }
-        if(formantIdx > 3){
-            break;
-        }
+        if(formantIdx > 3){break;}
     }
     firstFramePicked = true;
 }
