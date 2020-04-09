@@ -107,7 +107,7 @@ void LPCDisplayManager::render(Float32 *lpc_mag_buffer, Vector3 *freqVertices, V
         peaksAndValleysLPF->computeParams(peakTracker->lpfGuideSignal);
 
         // 2. Find OnsetFrame (start tracking)
-        if((peakTracker->trackingOn == true) && (peakTracker->firstFramePicked == false)){
+        if((peakTracker->trackingOn == true) && (!peakTracker->firstFramePicked)){
             peakTracker->startAnalysisCounter += 1;
             if (peakTracker->startAnalysisCounter >= 35){
                 peaksAndValleys->computeParams(avgLpc);
@@ -115,8 +115,8 @@ void LPCDisplayManager::render(Float32 *lpc_mag_buffer, Vector3 *freqVertices, V
                 peakTracker->pickFirstFormantFrame();
             }
         }
-
-        if (peakTracker->trackingOn == false){
+        
+        if (!peakTracker->trackingOn){
             peakTracker->trackingOnOff(avgLpc, _numDisplayBins);
         }
 
