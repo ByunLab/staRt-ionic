@@ -350,9 +350,6 @@ float computeMean(float *array, int endLimit){
             localSum += array[i];
             localCount++;
         }
-        else{
-            continue;
-        }
     }
     return localSum/(float)localCount;
 }
@@ -410,14 +407,14 @@ PeaksAndValleys::~PeaksAndValleys(){
     free(slopes);
 }
 
-void PeaksAndValleys::displayInit(float *signal, unsigned int signalLength){
-
-    sigPointer     = signal;
-    len            = signalLength - 1;
-
+void PeaksAndValleys::displayInit(float *lpcSpectrum, unsigned int lpcSpectrumLength){
+    
+    sigPointer     = lpcSpectrum;
+    len            = lpcSpectrumLength - 1;
+    
     // Initialize all values to -1
-    initValue = (float*) calloc(signalLength, sizeof(float));
-    for (int i = 0; i < signalLength; i++){
+    initValue = (float*) calloc(lpcSpectrumLength, sizeof(float));
+    for (int i = 0; i < lpcSpectrumLength; i++){
         initValue[i] = -1.0;
     }
 
@@ -427,17 +424,17 @@ void PeaksAndValleys::displayInit(float *signal, unsigned int signalLength){
     }
 
     // PEAKS
-    peaks->freq = (float*) malloc(signalLength * sizeof(float));
-    peaks->mag  = (float*) malloc(signalLength * sizeof(float));
-    memcpy(peaks->freq, initValue, signalLength * sizeof(float));
-    memcpy(peaks->mag, initValue, signalLength * sizeof(float));
-
+    peaks->freq = (float*) malloc(lpcSpectrumLength * sizeof(float));
+    peaks->mag  = (float*) malloc(lpcSpectrumLength * sizeof(float));
+    memcpy(peaks->freq, initValue, lpcSpectrumLength * sizeof(float));
+    memcpy(peaks->mag, initValue, lpcSpectrumLength * sizeof(float));
+    
     // VALLEYS
-    valleys->freq = (float*) malloc(signalLength * sizeof(float));
-    valleys->mag  = (float*) malloc(signalLength * sizeof(float));
-    memcpy(valleys->freq, initValue, signalLength * sizeof(float));
-    memcpy(valleys->mag, initValue, signalLength * sizeof(float));
-
+    valleys->freq = (float*) malloc(lpcSpectrumLength * sizeof(float));
+    valleys->mag  = (float*) malloc(lpcSpectrumLength * sizeof(float));
+    memcpy(valleys->freq, initValue, lpcSpectrumLength * sizeof(float));
+    memcpy(valleys->mag, initValue, lpcSpectrumLength * sizeof(float));
+    
     for (int i = 0; i < FREQ_RESP_LEN; i++){
         peaks->height.left[i]  = 0;
         peaks->height.right[i] = 0;
@@ -453,27 +450,27 @@ void PeaksAndValleys::displayInit(float *signal, unsigned int signalLength){
     peaks->spread.rightMean = 0.0;
     peaks->slope.leftMean   = 0.0;
     peaks->slope.rightMean  = 0.0;
-
-    // Compute the peaks and valleys for the incoming signal
-//    computeParams(signal);
+    
+    // Compute the peaks and valleys for the incoming lpcSpectrum
+//    computeParams(lpcSpectrum);
 }
 
-void PeaksAndValleys::resetValues(unsigned int signalLength){
-
-    len             = signalLength - 1;
+void PeaksAndValleys::resetValues(unsigned int lpcSpectrumLength){
+    
+    len             = lpcSpectrumLength - 1;
     valleyPair      = 0;
     cntValley       = 0;
     cntPeak         = 0;
     prevSlopePos    = 1;
     noiseFloor      = -100;
     init            = false;
-
-    memcpy(peaks->freq, initValue, signalLength * sizeof(float));
-    memcpy(peaks->mag, initValue, signalLength * sizeof(float));
-
-    memcpy(valleys->freq, initValue, signalLength * sizeof(float));
-    memcpy(valleys->mag, initValue, signalLength * sizeof(float));
-
+    
+    memcpy(peaks->freq, initValue, lpcSpectrumLength * sizeof(float));
+    memcpy(peaks->mag, initValue, lpcSpectrumLength * sizeof(float));
+    
+    memcpy(valleys->freq, initValue, lpcSpectrumLength * sizeof(float));
+    memcpy(valleys->mag, initValue, lpcSpectrumLength * sizeof(float));
+    
     for (int i = 0; i < FREQ_RESP_LEN; i++){
         peaks->height.left[i]  = 0.0;
         peaks->height.right[i] = 0.0;
@@ -494,11 +491,11 @@ void PeaksAndValleys::resetValues(unsigned int signalLength){
     peaks->slope.rightMean  = 0.0;
 }
 
-void PeaksAndValleys::computeParams(float *signal){
-
+void PeaksAndValleys::computeParams(float *lpcSpectrum){
+    
     // Compute slopes array
     for (int i = 0; i < len; i++){
-        slopes[i] = 0.5*(signal[i+1] - signal[i]);
+        slopes[i] = 0.5*(lpcSpectrum[i+1] - lpcSpectrum[i]);
     }
 
     // Find slope changes
@@ -746,10 +743,10 @@ void PeakTracker::resetTracker(unsigned int bufferSize){
  - Used in picking the first frame's formants if there are multiple Peaks very close in frequency
  - Most important for onset frame because the later formant peaks are chosen with prior information of formant location, whereas first frame has no prior.
  */
-void PeakTracker::lpfFilter(float *signal, int signalLength){
+void PeakTracker::lpfFilter(float *lpcSpectrum, int lpcSpectrumLength){
     int bufLen = sizeof(lpfOutBuf) / sizeof(lpfOutBuf[0]);
-
-    for(int i=0; i<signalLength; i++){
+    
+    for(int i=0; i<lpcSpectrumLength; i++){
         lpfGuideSignal[i] = (bCoeff[i]*lpfInBuf[i]) + (bCoeff[i+1]*lpfInBuf[i+1]) + (bCoeff[i+2]*lpfInBuf[i+2]) + (aCoeff[i]*lpfOutBuf[i]) + (aCoeff[i+1]*lpfOutBuf[i+1]) + (aCoeff[i+2]*lpfOutBuf[i+2]);
 
         for(int j=bufLen-1; j>=0; j--){
@@ -763,11 +760,11 @@ void PeakTracker::lpfFilter(float *signal, int signalLength){
 /*
  - Turns tracking on and off based on analysis of the signal's energy in relation to an onsetThreshold and offsetThreshold
  */
-void PeakTracker::trackingOnOff(float *signal, int signalLength){
+void PeakTracker::trackingOnOff(float *lpcSpectrum, int lpcSpectrumLength){
     // sum energy over signal
     float energy = 0.0;
-    for (int i=0; i<signalLength; i++){
-        energy += signal[i];
+    for (int i=0; i<lpcSpectrumLength; i++){
+        energy += lpcSpectrum[i];
     }
     std::cout<<"energy: " << energy << std::endl;
 
@@ -785,8 +782,8 @@ void PeakTracker::trackingOnOff(float *signal, int signalLength){
             // turn tracking off
             trackingOn = false;
             stopAnalysisCounter = 0;
-            resetTracker(signalLength);
-
+            resetTracker(lpcSpectrumLength);
+            
             firstFramePicked = false;
             startAnalysisCounter = 0;
             stopAnalysisCounter  = 0;
@@ -795,10 +792,10 @@ void PeakTracker::trackingOnOff(float *signal, int signalLength){
                 lpfInBuf[i]  = 0.0;
                 lpfOutBuf[i] = 0.0;
             }
-
-            memcpy(lpfGuideSignal, initZeros, signalLength * sizeof(float));
-            memcpy(formants->freq, initZeros, signalLength * sizeof(float));
-            memcpy(formants->mag, initTrackerVal, signalLength * sizeof(float));
+            
+            memcpy(lpfGuideSignal, initZeros, lpcSpectrumLength * sizeof(float));
+            memcpy(formants->freq, initZeros, lpcSpectrumLength * sizeof(float));
+            memcpy(formants->mag, initTrackerVal, lpcSpectrumLength * sizeof(float));
         }
     }
 }

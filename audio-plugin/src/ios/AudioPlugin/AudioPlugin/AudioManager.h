@@ -68,7 +68,7 @@ extern "C" {
      * @return 1 if number positive, -1 if number is negative, 0 if number is 0
      */
     int sign(Float32 v);
-
+    
     /**
      * Class to handle multiple buffering of arbitrary arrays.
      */
@@ -299,10 +299,10 @@ extern "C" {
 
         /*
          Computation method
-         @param[in] signal - LPC spectrum
+         @param[in] lpcSpectrum - LPC spectrum
          */
-        void computeParams(float *signal);
-
+        void computeParams(float *lpcSpectrum);
+        
         /*
          Negative slope method
          */
@@ -325,17 +325,17 @@ extern "C" {
 
         /*
          Initializer
-         @param[in] signal - LPC spectrum
-         @param[in] signalLength - length of LPC spectrum or numDisplayBins
+         @param[in] lpcSpectrum - LPC spectrum
+         @param[in] lpcSpectrumLength - length of LPC spectrum or numDisplayBins
          */
-        void displayInit(float *signal, unsigned int signalLength);
-
+        void displayInit(float *lpcSpectrum, unsigned int lpcSpectrumLength);
+        
         /*
          Reset class values
-         @param[in] signalLength - length of LPC spectrum or numDisplayBins
+         @param[in] lpcSpectrumLength - length of LPC spectrum or numDisplayBins
          */
-        void resetValues(unsigned int signalLength);
-
+        void resetValues(unsigned int lpcSpectrumLength);
+        
         /*
          Post filtering
          */
@@ -424,13 +424,13 @@ extern "C" {
         /**
          * LPF Filter for Guide
          */
-        void lpfFilter(float *signal, int signalLength);
-
+        void lpfFilter(float *lpcSpectrum, int lpcSpectrumLength);
+        
         /**
          * Turn Tracking on and off
          */
-        void trackingOnOff(float *signal, int signalLength);
-
+        void trackingOnOff(float *lpcSpectrum, int lpcSpectrumLength);
+        
         /**
          * Pick First (Onset) Formant Frame
          */
