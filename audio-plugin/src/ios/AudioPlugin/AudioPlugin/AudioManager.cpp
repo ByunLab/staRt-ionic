@@ -101,12 +101,6 @@ void AudioManager::grabAudioData(Float32 *inAudioBuffer)
     _double_buffer->writeBuffer(inAudioBuffer);
 }
 
-Float32 AudioManager::computeRMS(Float32 *audioBuffer, UInt32 winSize)
-{
-    float rms;
-    vDSP_rmsqv(audioBuffer, (vDSP_Stride)1, &rms, (vDSP_Length)winSize);
-    return (Float32)rms;
-}
 
 /* LPC stuff */
 void AudioManager::setLPCOrder(UInt32 lpcOrder)
@@ -159,22 +153,6 @@ void AudioManager::computeLPC()
 
     Float32 gain = 0.5;
     this->computeLPCFreqRespV(gain);
-}
-
-void AudioManager::computeLPCFreqResp(Float32 gain)
-{
-    double incr = M_PI / ((double)m_lpc_magSpecResolution - 1.0);
-    std::complex<double> I(0.0,1.0);
-    std::complex<double> One(1.0,0.0);
-
-    for (int k=0; k<m_lpc_magSpecResolution; k++) {
-        std::complex<double> tmp_sum(0.0,0.0);
-        double angle = ((double)k)*incr;
-        for (int j=0; j<m_lpc_order+1; j++) {
-            tmp_sum += m_lpc_coeffs[j] * exp(angle*j*I);
-        }
-        m_lpc_mag_buffer[k] = gain/(abs(tmp_sum) + 1e-20);
-    }
 }
 
 void AudioManager::computeLPCFreqRespV(Float32 gain)
@@ -233,20 +211,6 @@ void lpc_from_data(long order, long size, float *data, double *coeffs)
             coeffs[i] += r_mat[i][j] * corr[1+j];
         }
     }
-
-    // Old, non-hardware accelerated inverse
-    /*
-     for (i=1;i<order;i++) {
-     for (j=1;j<order;j++) r_mat[i][j] = corr[abs(i-j)];
-     }
-     minvert(order-1,r_mat);
-     for (i=0;i<order-1;i++)     {
-     coeffs[i] = 0.0;
-     for (j=0;j<order-1;j++)    {
-     coeffs[i] += r_mat[i+1][j+1] * corr[1+j];
-     }
-     }
-     */
 }
 
 void autocorr(long size, float *data, float *result)
@@ -334,86 +298,6 @@ void vautocorr(long size, float *data, float *result)
     else if (j > size/4) j = 0;
 }
 
-long minvert(long size, double mat[][MAX_LPC_ORDER])
-{
-    long item,row,col,rank=0; //,t2;
-    double temp,res[MAX_LPC_ORDER][MAX_LPC_ORDER];
-    //    long ok,zerorow;
-
-    for (row=1;row<=size;row++)     {
-        for (col=1;col<=size;col++)    {
-            //    printf(stdout," %f ",mat[row][col]);
-            if (row==col)
-                res[row][col] = 1.0;
-            else
-                res[row][col] = 0.0;
-        }
-        //    fprintf(stdout,"\n");
-    }
-    for (item=1;item<=size;item++) {
-        if (mat[item][item]==0)        {
-            for (row=item;row<=size;row++)   {
-                for (col=1;col<=size;col++)    {
-                    mat[item][col] = mat[item][col] + mat[row][col];
-                    res[item][col] = res[item][col] + res[row][col];
-                }
-            }
-        }
-        for (row=item;row<=size;row++)  {
-            temp=mat[row][item];
-            if (temp!=0)    {
-                for (col=1;col<=size;col++)    {
-                    mat[row][col] = mat[row][col] / temp;
-                    res[row][col] = res[row][col] / temp;
-                }
-            }
-        }
-        if (item!=size)    {
-            for (row=item+1;row<=size;row++)    {
-                temp=mat[row][item];
-                if (temp!=0)    {
-                    for (col=1;col<=size;col++)    {
-                        mat[row][col] = mat[row][col] - mat[item][col];
-                        res[row][col] = res[row][col] - res[item][col];
-                    }
-                }
-            }
-        }
-    }
-    for (item=2;item<=size;item++)   {
-        for (row=1;row<item;row++)    {
-            temp = mat[row][item];
-            for (col=1;col<=size;col++)       {
-                mat[row][col] = mat[row][col] - temp * mat[item][col];
-                res[row][col] = res[row][col] - temp * res[item][col];
-            }
-        }
-    }
-    /*    ok = TRUE;
-     rank = 0;
-     for (row=1;row<=size;row++)    {
-     zerorow = TRUE;
-     for (col=1;col<=size;col++)    {
-     if (mat[row][col]!=0) zerorow = FALSE;
-     t2 = (mat[row][col] + 0.5);
-     if (row==col&&t2!=1) ok = FALSE;
-     t2 = fabs(mat[row][col]*100.0);
-     if (row!=col&&t2!=0) ok = FALSE;
-     }
-     if (!zerorow) rank += 1;
-     }
-     if (!ok)    {
-     fprintf(stdout,"Matrix Not Invertible\n");
-     fprintf(stdout,"Rank is Only %i of %i\n",rank,size);
-     }                                    */
-    for (row=1;row<=size;row++)    {
-        for (col=1;col<=size;col++)    {
-            mat[row][col] = res[row][col];
-        }
-    }
-    return rank;
-}
-
 void vminvert(long size, double mat[][MAX_LPC_ORDER])
 {
     __CLPK_integer error=0;
@@ -441,35 +325,6 @@ void vminvert(long size, double mat[][MAX_LPC_ORDER])
 /* ------------------------------------------------------- */
 /* ---------------     helper functions ------------------ */
 /* ------------------------------------------------------- */
-
-void findMaxima(Float32 *signal, UInt32 signalLength, UInt32 *peakIndices, UInt32 *numPeaks)
-{
-    int cnt = 0;
-    Float32 slopes[signalLength];
-
-    // compute slopes
-    for (int i=0; i<signalLength-1; i++) {
-        slopes[i] = 0.5*(signal[i+1]-signal[i]);
-    }
-    slopes[signalLength-1] = 0.0;
-
-    Boolean look_for_peak = true;
-
-    for (int i=0; i<signalLength; i++) {
-        if (sign(slopes[i])<0) {
-            if (look_for_peak) {
-                peakIndices[cnt] = i;
-                cnt++;
-                look_for_peak = false;
-            }
-        }
-        else {
-            look_for_peak = true;
-        }
-    }
-    *numPeaks = cnt;
-}
-
 
 int sign(Float32 v)
 {
