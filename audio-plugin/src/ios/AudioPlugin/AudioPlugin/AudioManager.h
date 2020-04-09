@@ -50,14 +50,6 @@ extern "C" {
      * Invert matrix
      * @param[in] size number of rows in matrix mat
      * @param[in] mat matrix to invert
-     * @return rank matrix rank (not currently used)
-     */
-    long minvert(long size, double mat[][MAX_LPC_ORDER]);
-
-    /**
-     * Invert matrix
-     * @param[in] size number of rows in matrix mat
-     * @param[in] mat matrix to invert
      */
     void vminvert(long rows, double mat[][MAX_LPC_ORDER]);
 
@@ -76,15 +68,6 @@ extern "C" {
      * @return 1 if number positive, -1 if number is negative, 0 if number is 0
      */
     int sign(Float32 v);
-
-    /**
-     * Find the maximum points (peaks) in a signal by looking at slopes of neighboring points
-     * @param[in] signal buffer in which to search for peaks
-     * @param[in] signalLength length of signal buffer
-     * @param[out] peakIndices indices in signal buffer indicating location of peaks
-     * @param[out] numPeaks number of peaks found in signal buffer
-     */
-    void findMaxima(Float32 *signal, UInt32 signalLength, UInt32 *peakIndices, UInt32 *numPeaks);
 
     /**
      * Class to handle multiple buffering of arbitrary arrays.
@@ -163,23 +146,10 @@ extern "C" {
         void computeLPC();
 
         /**
-         * Compute the LPC magnitude spectrum from the LPC coefficients
-         * @param[in] gain gain level of audio signal
-         */
-        void computeLPCFreqResp(Float32 gain);
-
-        /**
          * Hardware-accelecrated, compute the LPC magnitude spectrum from the LPC coefficients
          * @param[in] gain gain level of audio signal
          */
         void computeLPCFreqRespV(Float32 gain);
-
-        /**
-         * Compute the RMS of an audio buffer
-         * @param[in] audioBuffer input audio buffer
-         * @param[in] winSize size of input audio buffer
-         */
-        Float32 computeRMS(Float32 *audioBuffer, UInt32 winSize);
 
         /**
          * High-pass filter an audio buffer
