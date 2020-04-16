@@ -2,7 +2,7 @@
 
 var practiceDirective = angular.module( 'practiceDirective' );
 
-practiceDirective.factory('QuestScore', function QuestScoreFactory( $rootScope, ScoreConstructors ) {
+practiceDirective.factory('QuestScore', function QuestScoreFactory( ScoreConstructors ) {
 
 	/* ---------------------------------------
   Purpose: Handles Quest scoring, milestone, and badging logic
@@ -28,7 +28,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory( $rootScope, 
 			changeDifficulty: 0, // req'd for difficulty score
 			endOfBlock: false, // req'd by prepEndOfBlock()
 			totalTrials: 0, // // req'd by prepEndOfBlock()
-			isResumePrep: false // used by resume-session feature
+			isResumePrep: false, // used by resume-session feature
 		};
 	}
 
@@ -97,10 +97,12 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory( $rootScope, 
 		return scores;
 	};
 
-	var initBadges = function(badges) {
+	var initBadges = function(badges, userPrefs) {
 		badges = undefined;
-		//badges = new Badges();
 		badges = ScoreConstructors.Badges();
+		badges = updateUserPrefs(badges, userPrefs);
+
+		// updates $scope.badges
 		return badges;
 	};
 
@@ -237,22 +239,30 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory( $rootScope, 
 	// ==============================================
 	// BADGE HELPERS (in-game stickers) -------------
 	function displayBadgeOnARoll(badges) {
-		badges.newRecord.visible = false;
-		badges.onARoll.flag = true;
-		badges.onARoll.visible = true;
-		badges.onARoll.trials++;
+		if(!badges.badgesOn) {
+			return;
+		} else {
+			badges.newRecord.visible = false;
+			badges.onARoll.flag = true;
+			badges.onARoll.visible = true;
+			badges.onARoll.trials++;
+		}
 	}
 
 	function displayBadgeNewRecord(badges) {
-		if(badges.onARoll.flag === false ||
-			badges.onARoll.trials > 2)
-		{ // switch badges
-			badges.onARoll.visible = false;
-			badges.newRecord.flag = true;
-			badges.newRecord.visible = true;
-			badges.newRecord.trials++;
+		if(!badges.badgesOn) {
+			return;
 		} else {
-			badges.newRecord.flag = true;
+			if(badges.onARoll.flag === false ||
+				badges.onARoll.trials > 2)
+			{ // switch badges
+				badges.onARoll.visible = false;
+				badges.newRecord.flag = true;
+				badges.newRecord.visible = true;
+				badges.newRecord.trials++;
+			} else {
+				badges.newRecord.flag = true;
+			}
 		}
 	}
 
@@ -260,8 +270,9 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory( $rootScope, 
 	// ==============================================
 	// DIALOG BOX HELPERS ------------------------
 	function prepEndOfBlock(badges) {
+		var showReminders = badges.remindersOn;
 		var msFlags = badges.cardFlags; // array of milestones achieved in block
-		console.log(msFlags);
+		//console.log(msFlags);
 
 		// adds card template per milestone achieved in block + feedback card
 		msFlags.forEach( function(ms) {
@@ -276,15 +287,20 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory( $rootScope, 
 			if(badges.cardsQuestEnd.hsiq.flag) {
 				badges.cardSeq.push( badges.cardsQuestEnd.hsiq );
 			}
-			badges.cardSeq.push( badges.cardsBlockEnd.feedback );
+			if(showReminders) {
+				badges.cardSeq.push( badges.cardsBlockEnd.feedback );
+			}
 			badges.cardSeq.push(badges.cardsQuestEnd.endSum);
 			badges.cardSeq.push( badges.cardsQuestEnd.finalScore );
 
 		} else { // normal end-of-block
-			badges.cardSeq.push( badges.cardsBlockEnd.feedback );
+			if(showReminders) {
+				badges.cardSeq.push( badges.cardsBlockEnd.feedback );
+			}
 			badges.cardSeq.push( badges.cardsBlockEnd.progSum );
 		}
 
+		//console.log(badges.cardSeq);
 		nextCard(badges);
 	}
 
@@ -314,6 +330,19 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory( $rootScope, 
 			}
 		}
 		//console.log(milestones.display);
+	}
+
+	function updateUserPrefs(badges, userPrefs) {
+		badges.badgesOn = userPrefs.badgesOn;
+		badges.cardsOn = userPrefs.cardsOn;
+		badges.remindersOn = userPrefs.remindersOn;
+
+		if(!badges.badgesOn) {
+			resetBadges(badges, 'onARoll');
+			resetBadges(badges, 'newRecord');
+		}
+
+		return badges;
 	}
 
 
@@ -478,9 +507,9 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory( $rootScope, 
 				badges.cardsQuestEnd.finalScore.count = scores.display_score;
 			}
 
-			var skipBlock = $rootScope.skipEndOfBlockDialogs && !badges.qtDialog.isFinal;
+			var skipBlock = !badges.cardsOn && !badges.qtDialog.isFinal;
+			// skips the dialog box prep if we are resuming a saved session
 			if(scores.isResumePrep || skipBlock){
-				// skips the dialog box prep if we are resuming a saved session
 				resetForNewBlock(scores, badges);
 			} else {
 				prepEndOfBlock(badges);
@@ -532,5 +561,6 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory( $rootScope, 
 		nextCard: nextCard,
 		resetForNewBlock: resetForNewBlock,
 		updateSandbank: updateSandbank,
+		updateUserPrefs: updateUserPrefs,
 	};
 });

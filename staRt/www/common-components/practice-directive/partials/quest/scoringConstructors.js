@@ -203,7 +203,11 @@ practiceDirective.factory('ScoreConstructors', function ScoreConstructorsFactory
 				progSum: false, // used by "Progress Summary" card
 				endSum: false, // used by 'Quest Complete Summary'
 				finalScore: false, // used by 'Final Score'
-			}
+			},
+			// COPIED FROM PROFILE SETTINGS DATA AT INIT
+			// badgesOn: true,
+			// cardsOn: true,
+			// remindersOn: true,
 		};
 	} // end Badges
 

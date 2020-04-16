@@ -103,20 +103,29 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 	$scope.currentPracticeSession = null;
 
 	// quest-specific vars ---------------------------
-	// see questscoring.md
+	// see questscoring.md &
+	// partials/quest/scoringConstructors.js
 	$scope.questCoins = []; // holds stacks of Quest Coins
 	$scope.highscores;
 	$scope.milestones;
-	$scope.scores;
-	$scope.difficulty = 1;
+	$scope.scores; // handles state for active Quest score counters
+	$scope.difficulty = 1; // adaptive difficulty level
 	$scope.carrier_phrases = AdaptDifficulty.phrases[0];
 
-	$scope.sandbank = false; // used to open and close botton drawer
-	$scope.sbInfoDrawer = false; // used to open/close the sandbank More Info drawer
-	$scope.sbSettings = false; // used to toggle b/t 'Scoring Info' and 'Settings' in sbInfo drawer
-	$scope.cardsOn = true;
-	$scope.badgesOn = true;
-	$scope.remindersOn = true;
+	$scope.userPrefs = {};
+	$scope.userPrefs.cardsOn = true;
+	//cardsOn: Should cards be displayed at end of block?
+	$scope.userPrefs.badgesOn = true;
+	//badgesOn: Should in-game badges be displayed?
+	$scope.userPrefs.remindersOn = true;
+	//reminderOn: Should the verbal feedback reminder be added to the end-of-block card stack?
+
+	$scope.sandbank = false;
+	// flag, used to open/close Sandbank drawer
+	$scope.sbInfoDrawer = false;
+	// flag, used to open/close the sandbank More Info drawer
+	$scope.sbSettings = false;
+	// flag, used to toggle b/t 'Scoring Info' and 'Settings' in sbInfo drawer
 
 
 
@@ -440,7 +449,7 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 		}, Promise.resolve());
 	}
 
-	// NOTE: This fn is called for BOTH quiz and quest.
+	// NOTE: This fn is called for BOTH quiz and quest during $scope.beginWordPractice().
 	// However, it doesn't do anything if($scope.probe), b/c we aren't saving or resuming scores yet/
 	function beginPracticeForUser(user) {
 		//console.log(user);
@@ -483,7 +492,7 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 			QuestScore.initCoinCounter($scope.count, $scope.questCoins); // always new
 			$scope.scores = QuestScore.initScores($scope.scores, $scope.count); // always new
 			$scope.milestones = QuestScore.initMilestones($scope.highscores); // built from highscores
-			$scope.badges = QuestScore.initBadges($scope.badges); // always new
+			$scope.badges = QuestScore.initBadges($scope.badges, $scope.userPrefs); // always new
 			$scope.difficulty = 1;
 		} //if (!$scope.probe)
 
@@ -748,6 +757,7 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 	// IN-GAME BUTTON HANDLERS (except for toolbar) -----------------
 	$scope.resetQuestHighscores = function() { resetQuestHighscores(); };
 
+	// called by rating btns in ui
 	$scope.onRating = function(data) {
 		if (!$scope.probe && $scope.scores.endOfBlock) {
 			return;
@@ -757,20 +767,25 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 		handleRatingData(data);
 	};
 
-
+	// SANDBANK SETTINGS
 	// $scope.sandbank = false; // used to open and close botton drawer
 	// $scope.sbInfoDrawer = false; // used to open/close the sandbank More Info drawer
 	// $scope.sbSettings = false; // used to toggle b/t 'Scoring Info' and 'Settings' in sbInfo drawer
-
 	$scope.toggleSandBank = function() {
 		QuestScore.updateSandbank($scope.scores, $scope.milestones);
 		$scope.sandbank = !$scope.sandbank;
+
+		if(!$scope.sandbank) {
+			QuestScore.updateUserPrefs($scope.badges, $scope.userPrefs);
+		}
 	};
 
 	$scope.toggle_sbInfoDrawer = function() {
 		$scope.sbInfoDrawer = !$scope.sbInfoDrawer;
 	};
+
 	$scope.tap_sbSettings = function() { $scope.sbSettings = true; };
+
 	$scope.tap_sbInfo = function() { $scope.sbSettings = false; };
 
 
