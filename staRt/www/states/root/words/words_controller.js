@@ -19,7 +19,7 @@
 		$scope.data = {
 			categoriesRestricted: !!$rootScope.categoryRestrictions,
 			categoryString: null,
-			count: $rootScope.rootTrialCount || 50,
+			count: $rootScope.rootTrialCount || 100,
 			csvs: [],
 			navTitle: 'Quest',
 			selectedCategories: [],

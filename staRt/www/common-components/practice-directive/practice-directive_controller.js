@@ -191,7 +191,26 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 
 		// process new rating
 		if (!$scope.probe) { //quest
+
+			// check for end of coinRow
+			if($scope.scores.coinRowMultiples > 1) {
+				if($scope.currentWordIdx > 0 &&
+					(($scope.currentWordIdx + 1)% $scope.scores.coinRowMax == 0))
+				{
+					console.log('RESET COIN ROW');
+					$scope.questCoins = [];
+
+					var remainingTrials = $scope.scores.totalTrials - ($scope.currentWordIdx + 1);
+
+					$scope.scores.coinRowCounter = (remainingTrials > $scope.scores.coinRowMax) ? $scope.scores.coinRowMax : remainingTrials;
+
+					QuestScore.initCoinCounter($scope.scores, $scope.questCoins);
+				}
+
+			}
+
 			QuestScore.questRating(data, $scope.scores, $scope.milestones, $scope.currentWordIdx, $scope.badges);
+
 			var NUM_WORDS_IN_BLOCK = 10;
 			// if Quest end-of-block, check Adaptive Difficulty
 			if ($scope.currentWordIdx % NUM_WORDS_IN_BLOCK == 0 &&
@@ -489,8 +508,7 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 		// QUEST-ONLY: ADDITIONAL INIT VALUES
 		if (!$scope.probe) {
 			// Same for all quests, regardless of resume-session status. For saved sessions, these vals are updated during the sessionPrepTask process
-			QuestScore.initCoinCounter($scope.count, $scope.questCoins); // always new
-			$scope.scores = QuestScore.initScores($scope.scores, $scope.count); // always new
+			$scope.scores = QuestScore.initScores($scope.scores, $scope.count, $scope.questCoins); // always new
 			$scope.milestones = QuestScore.initMilestones($scope.highscores); // built from highscores
 			$scope.badges = QuestScore.initBadges($scope.badges, $scope.userPrefs); // always new
 			$scope.difficulty = 1;

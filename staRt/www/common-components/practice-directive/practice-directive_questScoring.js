@@ -29,17 +29,23 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory( ScoreConstru
 			endOfBlock: false, // req'd by prepEndOfBlock()
 			totalTrials: 0, // // req'd by prepEndOfBlock()
 			isResumePrep: false, // used by resume-session feature
+			coinRowMax: 100, // max trials per row
+			coinRowMultiples: 1, // flag to split into trials into blocks of coinRowMax
+			coinRowCounter: 0, // coin row counter adjusted for coin row max
 		};
 	}
 
 	// ==============================================
 	// INITS ------------------------
-	var initCoinCounter = function(count, questCoins){
+	var initCoinCounter = function(scores, questCoins) {
+		var count = scores.coinRowCounter;
 		var numStack = count/10;
 		for(var i=0; i<numStack; i++) {
 			var stack = { id: i };
 			questCoins.push(stack);
 		}
+
+		return questCoins;
 	};
 
 	var initNewHighScores = function(highscores) {
@@ -64,7 +70,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory( ScoreConstru
 			milestones.highscores[key] = mapHighscores(key);
 		}
 
-		console.log(milestones);
+		//console.log(milestones);
 		// display data --------------------------
 		var sandbank = ScoreConstructors.Sandbank();
 
@@ -90,10 +96,20 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory( ScoreConstru
 		return milestones;
 	};
 
-	var initScores = function(scores, sessionCount) {
+	var initScores = function(scores, sessionCount, questCoins) {
 		scores = undefined;
 		scores = new QuestScores();
 		scores.totalTrials = sessionCount;
+
+		if(sessionCount > scores.coinRowMax) {
+			scores.coinRowMultiples = sessionCount/scores.coinRowMax;
+			scores.coinRowCounter = scores.coinRowMax;
+		} else {
+			scores.coinRowMultiples = 1;
+			scores.coinRowCounter = sessionCount;
+		}
+		initCoinCounter(scores, questCoins);
+
 		return scores;
 	};
 
@@ -125,11 +141,9 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory( ScoreConstru
 		1: 0
 	};
 
-	var updateCoinGraphic = function(data, currentWordIdx) {
-		//console.log('currentWordIdx: ' + currentWordIdx);
-
+	var updateCoinGraphic = function(data, currentWordIdx, scores) {
 		//graphics use zero-based idx
-		var wordIdx = currentWordIdx - 1;
+		var wordIdx = (currentWordIdx - 1) % scores.coinRowMax;
 		var stackIdx = (Math.floor(wordIdx/10));
 		var stackID = 'div#stack' + stackIdx;
 		var coinID = 'g#coin-' + (wordIdx - (stackIdx * 10));
@@ -520,9 +534,12 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory( ScoreConstru
 	//--------------------------------------------------
 	// Called by each rating button press. Updates scores and coins.
 	var questRating = function(data, scores, milestones, currentWordIdx, badges) {
+		// currentWordIdx starts at 0
+
+		// scores.endOfBlock = (currentWordIdx % 10 == 0 && currentWordIdx > 0) ? true : false;
 
 		// update the coin
-		updateCoinGraphic(data, currentWordIdx);
+		updateCoinGraphic(data, currentWordIdx, scores);
 
 		// update score data
 		scores.display_score += data;
@@ -549,6 +566,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory( ScoreConstru
 		scores.endOfBlock = (currentWordIdx % 10 == 0 && currentWordIdx > 0) ? true : false;
 
 		checkUpdateMilestones(scores, milestones, badges, currentWordIdx);
+
 	}; // end questRating()
 
 	return {
