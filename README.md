@@ -46,6 +46,10 @@ The audio plugin Xcode project has a couple of different targets. You can see al
 
 So, to build the plugin, simply select the UniversalLib target and build it.
 
+Note: If you receive some build errors you may need to go to Build Settings -> Build Active Architecture Only -> and then turn Release from Yes to No. Getting to the Build Settings page is a tad complicated, since they changed its location in newer versions of Xcode. You need to click the "Audio Plugin" button with the blue Xcode icon to the left of it in the top center of Xcode.
+
+![Selecting Build Settings](readme-images/xcode-build-settings.png)
+
 ### Adding Credentials
 The production server is password protected. Therefore, you'll need to create a JSON file `staRt/www/data/credentials.json` with the following format:
 ```json
@@ -54,7 +58,10 @@ The production server is password protected. Therefore, you'll need to create a 
 	"password": "the_password"
 }
 ```
-This file is in the `.gitignore` so that the username and password will not be accidentally uploaded to Github. It is important to have this file so when the Ionic application is built, the username and password will be included. To get the username and password, just ask someone.
+
+You will also need to create another file `staRt/www/data/firebase_credentials.js` (Note that this is a "js" file and the other is a "json" file.)
+
+These files are in `.gitignore` so that the sensitive credentials are not uploaded to Github. StaRt won't work without these files, so make sure you ask someone for the credentials.
 
 ### Installing the audio plugin
 
