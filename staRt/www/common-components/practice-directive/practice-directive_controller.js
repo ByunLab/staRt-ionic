@@ -521,23 +521,7 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 		});
 	}
 
-	function advanceWord() {
-		if ($scope.currentWord !== null) {
-			if ($scope.rating === 0) {
-				console.log('Error - a given rating should never be 0');
-				return;
-			}
-			$scope.currentPracticeSession.ratings.push({
-				target: $scope.currentWord,
-				rating: $scope.rating,
-				time: Date.now(),
-			});
-			$scope.rating = 0;
-			$scope.$broadcast('resetRating');
-		}
-
-		$scope.currentWordIdx++;
-
+	function setCurrentWord() {
 		if ($scope.count && $scope.currentWordIdx >= $scope.count) {
 			if($scope.probe) {
 				$scope.endWordPractice();
@@ -556,6 +540,26 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 			$scope.smallFont = $scope.carrier_phrase.length >= 16;
 			$scope.tinyFont = $scope.carrier_phrase.length >= 32;
 		}
+	}
+
+	function advanceWord() {
+		if ($scope.currentWord !== null) {
+			if ($scope.rating === 0) {
+				console.log('Error - a given rating should never be 0');
+				return;
+			}
+			$scope.currentPracticeSession.ratings.push({
+				target: $scope.currentWord,
+				rating: $scope.rating,
+				time: Date.now(),
+			});
+			$scope.rating = 0;
+			$scope.$broadcast('resetRating');
+		}
+
+		$scope.currentWordIdx++;
+
+		setCurrentWord();
 
 		if ($rootScope.isRandomizeSession && (1 + $scope.currentWordIdx - $scope.reorderOffset) % $scope.wordOrder.length == 0) {
 			$scope.reorderWords(true);
@@ -712,6 +716,10 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 			});
 			$scope.wordList = tempWordList;
 			$scope.reorderWords(true);
+			// We need to manually set the current word if we update from a rating change.
+			if ($scope.currentWordIdx != -1) {
+				setCurrentWord();
+			}
 			return Promise.resolve();
 		}
 
