@@ -195,7 +195,7 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 			// check for end of coinRow
 			if($scope.scores.coinRowMultiples > 1) {
 				if($scope.currentWordIdx > 0 &&
-					(($scope.currentWordIdx + 1)% $scope.scores.coinRowMax == 0))
+					(($scope.currentWordIdx)% $scope.scores.coinRowMax == 0))
 				{
 					console.log('RESET COIN ROW');
 					$scope.questCoins = [];
