@@ -97,7 +97,7 @@
     .progSum { font-size: 1.5em; }
     .note {
       padding: 0 ($col-w /2);
-      padding-bottom: $row-h/5;
+      padding-bottom: $row-h/2;
       text-align: left;
       font-size: 1.5em;
     }
@@ -111,7 +111,8 @@
 .mgiq { background-image: url('../img/practDir/cards/mgiq.svg'); }
 .streak { background-image: url('../img/practDir/cards/streak.svg'); }
 .perfectBlock { background-image: url('../img/practDir/cards/perfectBlock.svg'); }
-
+.feedback { background-image: url('../img/practDir/cards/feedback.svg'); 
+}
 
 
 // FOOTER ================================
