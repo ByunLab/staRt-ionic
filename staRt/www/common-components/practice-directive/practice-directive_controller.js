@@ -566,7 +566,7 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 		} else {
 			var NUM_WORDS_IN_BLOCK = 10;
 			var lookupIdx = $scope.currentWordIdx;
-			if (!$rootScope.isRandomizeSession) {
+			if (!$rootScope.isRandomizeSession || $scope.probe) {
 				lookupIdx = Math.floor($scope.currentWordIdx / NUM_WORDS_IN_BLOCK);
 			}
 			lookupIdx = lookupIdx % $scope.wordOrder.length;
