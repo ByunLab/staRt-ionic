@@ -480,6 +480,8 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 
 		// COLLECT SAVED-SESSION DATA ($scope.currentPracticeSession) AND HIGHSCORE DATA ($scope.highscores)
 		// on-protocol quest && saved session
+
+		$scope.isFormalSession = AutoService.isSessionActive()
 		if (user.inProcessSession && AutoService.isSessionActive()) {
 			needToReload = true;
 			$scope.currentPracticeSession = Object.assign({}, user.inProcessSession);

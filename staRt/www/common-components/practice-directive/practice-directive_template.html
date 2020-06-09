@@ -39,7 +39,7 @@
 
   <div class="acctLabel-container">
     <div class="user-text">{{participant_name}}</div>
-    <div class="user-text" ng-if="session_number">Research Session # {{session_number}}</div>
+    <div class="user-text" ng-if="session_number && isFormalSession">Research Session # {{session_number}}</div>
   </div>
 
 
