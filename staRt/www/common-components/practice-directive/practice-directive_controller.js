@@ -81,7 +81,8 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 	// 	"http://localhost:5000"
 	// ];
 
-
+	$scope.tinyFont = false;
+	$scope.smallFont = false;
 	$scope.active = true;
 	$scope.isFeedbacking = false;
 	$scope.isPracticing = false;
