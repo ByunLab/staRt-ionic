@@ -16,7 +16,7 @@
     <!-- Renderer will be inserted here -->
     <canvas
       id="lpc-canvas"
-      ng-hide="lpcHidden || probe || waveHidden || $root.rootWaveHidden">
+      ng-hide="!tutorial && (lpcHidden || probe || waveHidden || $root.rootWaveHidden)">
     </canvas>
   </div>
 

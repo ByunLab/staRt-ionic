@@ -7,12 +7,16 @@
   <!-- BADGES ------------------------------- -->
   <div ng-if="isPracticing && !probe">
     <div class="badge-container" ng-if="qtBadgesDebug">
-      <div class="badge" ng-if="badges.newRecord.visible"
-        ng-include=" './img/practDir/badge_newRec.svg' ">
+      <div ng-include=" './img/practDir/badge_newRec.svg' "
+        class="badge newRecord"
+        ng-class="{'showBadge': badges.newRecord.visible}"
+        >
       </div>
 
-      <div class="badge" ng-if="badges.onARoll.visible"
-        ng-include=" './img/practDir/badge_conseq.svg' ">
+      <div ng-include=" './img/practDir/badge_conseq.svg' "
+        class="badge onARoll"
+        ng-class="{'showBadge': badges.onARoll.visible}"
+        >
       </div>
     </div> <!-- end badge-container -->
   </div>
@@ -35,7 +39,7 @@
 
   <div class="acctLabel-container">
     <div class="user-text">{{participant_name}}</div>
-    <div class="user-text" ng-if="session_number">Research Session # {{session_number}}</div>
+    <div class="user-text" ng-if="session_number && isFormalSession">Research Session # {{session_number}}</div>
   </div>
 
 

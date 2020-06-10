@@ -10,6 +10,7 @@
   transition: top 0.5s;
   transition-timing-function: ease-in;
   z-index: 90;
+  //border: 1px solid lightgreen;
 
   &.sandbankOpen { top: 0; }
 
@@ -72,7 +73,7 @@
   height: $row-h * 5;
   width: 100%;
   padding-left: $col-w * 2;
-  padding-right: $col-w;
+  //padding-right: $col-w;
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
@@ -86,6 +87,7 @@
     justify-content: space-between;
     height: $row-h * 0.75;;
     width: 100%;
+    //border: 1px solid lightgreen;
 
     h1 {
       position: relative;
@@ -104,19 +106,323 @@
       //border: 1px solid orange;
     }
 
-    .headCol { // layout class
+    .infoRow { // layout class
       position: relative;
       display: flex;
-      flex-grow: 1;
-      flex-shrink: 1;
+      flex-flow: row nowrap;
+      justify-content: flex-end;
+      align-items: flex-start;
+      width: $col-w * 2;
+      height: auto;
+      //border: 1px solid green;
+
+      .infoBtn { // div, but functions as a button
+        position: relative;
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: flex-start;
+        align-items: center;
+        width: $col-w * 2;
+        height: $row-h * 0.6;
+        margin: 0;
+        padding: 1rem;
+        background-color: white;
+        border-bottom: 1px solid #dbccb6;
+        box-shadow: 1px 1px 1px rgba(0,0,0,0.15);
+        border-radius: 0;
+        border-bottom-left-radius: 6px;
+        border-top-left-radius: 6px;
+        text-decoration: none;
+        cursor: pointer;
+        // -webkit-appearance: none;
+
+        .content {
+          position: relative;
+          display: block;
+          font-size: 0.9rem;
+          font-weight: bold;
+          color: $c-text-main;
+          text-align: left;
+          //border: 1px solid orange;
+
+          .coinImg {
+            position: absolute;
+            display: block;
+            height: 26px;
+            width: 26px;
+            top: -4px;
+            left: 75px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-image: url('../img/practDir/goldx24.svg');
+            z-index: 91;
+            //border: 1px solid orange;
+
+          }
+        }
+
+      }
+    } // .infoRow
+
+  } // .headBar
+
+  .infoContainer {
+    position: absolute;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    background-color: white;
+    width: $col-w * 10;
+    height: 100%;
+    z-index: 92;
+    border-radius: 0;
+    border-top-left-radius: 1rem;
+    padding-top: $row-h * 0.5;
+    padding-left: $col-w * 0.5;
+    padding-right: $col-w * 0.5;
+
+
+    .head-col {
+      position: relative;
+      display: flex;
       flex-flow: column nowrap;
       justify-content: flex-start;
-      align-items: flex-end;
-      width: auto;
+      width: 100%;
+      height: $row-h * 0.5;
+      min-height: $row-h * 0.5;
+      //border: 1px solid red;
+
+      .head-row {
+        position: relative;
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: space-between;
+        align-items: flex-end;
+        height: $row-h * 0.5;
+        width: 100%;
+        height: 32px;
+        border-bottom: 2px solid #50d3d6; //$c-text-main;
+
+        h1 {
+          position: relative;
+          display: flex;
+          flex-flow: row nowrap;
+          flex-grow: 2;
+          flex-shrink: 1;
+          justify-content: flex-start;
+          align-self: flex-end;
+          font-size: 2rem;
+          letter-spacing: 1px;
+          color: $c-text-main;
+          font-weight: 400;
+          width: auto;
+          height: auto;
+          //border: 1px solid orange;
+        }
+
+        .navBox {
+          position: relative;
+          display: flex;
+          flex-flow: row nowrap;
+          justify-content: space-between;
+          align-self: center;
+          width: $col-w * 3;
+          height: auto;
+          // border-left: 1px solid orange;
+          // border-right: 1px solid orange;
+
+          .navTab {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-self: flex-start;
+            font-size: 0.9rem;
+            font-weight: 500;
+            top: 4px;
+            width: 68px;
+            color: $c-text-main;
+            cursor: pointer;
+            //border-bottom: 3px solid white;
+            //border: 1px solid pink;
+
+            &.active {
+              font-weight: 700;
+              border: none;
+              border-bottom: 6px solid $c-text-main;
+              // #50d3d6;
+            }
+          }
+        }
+      } // .head-row
+  } //head-col
+
+    .info-body {
+      display: flex;
+      flex-flow: column nowrap;
+      justify-content: flex-start;
+      align-items: flex-start;
+      text-align: left;
+      color: $c-text-main;
+      width: 100%;
+      min-height: $row-h * 4;
+      //border: 1px solid pink;
+
+      .info-body_section {
+        padding: 0 ($col-w * 0.5);
+        width: 100%;
+        //border: 1px solid orange;
+
+        h2 {
+          display: block;
+          width: 100%;
+          color: $c-text-main;
+          text-align: left;
+          font-size: 1.2rem;
+          font-weight: bold;
+          margin-top: 2.5rem;
+        }
+
+        ul {
+          padding-left: 2rem;
+          li {
+            padding-left: 1rem;
+            list-style-position: outside;
+            list-style-type: disc;
+            //border: 1px solid orange;
+          }
+        }
+
+        a {
+          color: $c-text-main;
+          text-decoration: underline;
+          font-weight: bold;
+          cursor: pointer;
+        }
+      } //.info-body_section
+    } // .info-body
+  } // .infoContainer
+
+
+// in Scoring's .info-body ---------------------------
+  .coin-bullet_row {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    text-align: left;
+    width: 100%;
+    margin-bottom: 1rem;
+
+    .coin-bullet {
+      position: relative;
+      display: block;
+      height: 48px;
+      width: 48px;
+      margin-right: 1rem;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      // border: 1px solid red;
+
+      &.gold {
+        background-image: url('../img/practDir/gold48.svg');
+        background-size: contain;
+      }
+      &.silver {
+        background-image: url('../img/practDir/silver48.svg');
+      }
+      &.bronze {
+        background-image: url('../img/practDir/bronze48.svg');
+      }
+    }
+
+    .coin-li {
       height: auto;
-      //border: 1px solid lightgreen;
-    } // .headCol
-  } // .headBar
+      width: 100%;
+      //border: 1px solid pink;
+
+      span.bold {
+        font-weight: 700;
+      }
+    }
+  }
+
+// in Setting's .info-body ---------------------------
+
+.info-body_settings {
+  position: relative;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  text-align: left;
+  color: $c-text-main;
+  width: 100%;
+  height: $row-h * 3.75;
+  //padding: 0 32px;
+  //border: 1px solid orange;
+
+  .settings-row {
+    position: relative;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding: 1rem 2rem;
+    width: 100%;
+    // border: 1px solid orange;
+
+    .toggle-row {
+      position: relative;
+      display: flex;
+      flex-flow: row nowrap;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      height: auto;
+      //border: 1px solid orange;
+
+      span.toggleLabel {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: $c-text-main;
+      }
+
+      .item-toggle .toggle {
+        top: 0;
+      }
+
+      .toggle.toggle-calm input:checked + .track {
+        border-color: #50d3d6;
+        background-color: #50d3d6;
+      }
+
+    }
+
+    hr {
+      width: 100%;
+      border-top: 0.75px solid #c2f2f2;
+    }
+
+    p {
+      display: flex;
+      width: 100%;
+    }
+
+  }
+}
+
+
+
+
+
+
+
+
+
+
 
 
   .sbBody { // ----------------------

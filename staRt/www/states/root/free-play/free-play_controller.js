@@ -4,7 +4,7 @@
 {
 	var freePlay = angular.module( 'freePlay' );
 
-	freePlay.controller('FreePlayController', function($scope, $timeout, $localForage, StartUIState, NotifyingService, $rootScope, $state, ProfileService, FirebaseService)
+	freePlay.controller('FreePlayController', function($scope, $timeout, $localForage, StartUIState, NotifyingService, $rootScope, $state, ProfileService, FirebaseService, AutoService)
 	{
 		console.log('FreePlayController here!');
 
@@ -53,7 +53,7 @@
 				}
 				$scope.freeplayTimeout = setTimeout($scope.announceTimeUp, freeplayTime);
 
-				if (profile.nIntroComplete >= 1) {
+				if (profile.nIntroComplete >= 1 && AutoService.isSessionActive()) {
 					$scope.data.session_number = profile.nBiofeedbackSessionsCompleted + profile.nNonBiofeedbackSessionsCompleted + 1;
 				}
 			} else {

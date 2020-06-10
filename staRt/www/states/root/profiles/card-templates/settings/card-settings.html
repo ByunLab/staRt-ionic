@@ -1,13 +1,15 @@
 <div class="card-content">
 
 	<div class="card-body card-body-settings">
-
-		<ion-item>
-			<div class="cardBod-settings-row skip-block-cards">
-				<ion-label>Skip End of Block Cards</ion-label>
-				<ion-checkbox ng-model="$root.skipEndOfBlockDialogs"></ion-checkbox>
+		<div>
+			Trials Per Formal Session: <span class="">{{data.formalSessionNumTrials}}</span>
+		</div>
+		<div class="pro_range-container">
+			<div class="pro_range-row">
+				<input class="pro_range-input" type="range" step="10" min="100" max="250" ng-model="data.formalSessionNumTrials" ng-change="updateFormalSessionNumTrials()">
 			</div>
-		</ion-item>
+		</div>
+
 
 		<div class="cardBod-settings-row pro_lpc-row">
 			<div class="fiterOrder-label-row">
@@ -21,6 +23,7 @@
 			</lpc-directive>
 
 		</div>
+
 
 
 		<div class="cardBod-settings-row pro_range-row">
