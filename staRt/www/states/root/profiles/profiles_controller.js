@@ -39,16 +39,28 @@ function compareRecordings(ra, rb) {
 		// "targetF3" (double, optional) the saved target F3 value
 		// "stdevF3" (double, optional) the saved stdeviation F3 value
 		// "targetLPCOrder" (int, optional) the saved target LPC order
+
+
 		$rootScope.initParticipants = function() {
 			ProfileService.getCurrentProfile().then(function(res) {
 				if (res) {
 					$scope.data.currentProfile = res;
 					$scope.data.currentProfileUUID = res.uuid;
 
+					$scope.data.formalSessionNumTrials = res.formalSessionNumTrials;
+					$scope.data.formalTester = res.formalTester;
+
+					var DEFAULT_NUM_TRIALS = 100;
+					if (!$scope.data.formalSessionNumTrials) {
+						$scope.data.formalSessionNumTrials = DEFAULT_NUM_TRIALS;
+					}
+
+
 					if (res.lpcOrder) {
 						$scope.data.lpcOrder = res.lpcOrder;
 					} else {
-					// #stj Default just 35? Call the lookup fx?
+						// #stj Default just 35? Call the lookup fx?
+						console.log("lpc order not set");
 						$scope.data.lpcOrder = 0;
 					}
 
@@ -705,6 +717,12 @@ function compareRecordings(ra, rb) {
 		$scope.setLPCOrder = function(order) {
 			$scope.data.lpcOrder = order;
 		};
+
+		$scope.updateFormalSessionNumTrials = function() {
+				ProfileService.runTransactionForCurrentProfile(function(handle, doc, t) {
+					t.update(handle, {formalSessionNumTrials: $scope.data.formalSessionNumTrials});
+				});
+		}
 
 		$scope.updatePluginLPCOrder = function() {
 			if (window.AudioPlugin !== undefined) {

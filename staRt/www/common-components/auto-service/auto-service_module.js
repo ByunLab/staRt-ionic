@@ -24,6 +24,17 @@ function _scramble(array) {
 	}
 }
 
+function getTrialsPerSession(profile) {
+	if (profile.name === 'Speedy') {
+		return SPEEDY_TRIALS_PER_SESSION;
+	}
+	var trialsPerSession = profile.formalSessionNumTrials;
+	if (!trialsPerSession) {
+		trialsPerSession = TRIALS_PER_SESSION;
+	}
+	return trialsPerSession;
+}
+
 // -----------------------------------------------------------------------
 // Object to hold state of user's progress thru the protocol
 
@@ -199,9 +210,8 @@ var SessionAuto = function (profile, currentStats, onShow, initialState) {
 		this.restrictions.rootWaveForced = true;
 		this.restrictions.rootWaveHidden = true;
 	}
-	this.restrictions.rootTrialCount = profile.name === 'Speedy'
-		? SPEEDY_TRIALS_PER_SESSION
-		: TRIALS_PER_SESSION;
+
+		this.restrictions.rootTrialCount = getTrialsPerSession(profile);
 
 	steps.confirm = {
 		next: (function () {
@@ -286,7 +296,7 @@ var SessionAuto = function (profile, currentStats, onShow, initialState) {
 		}).bind(this)
 	};
 
-	var goal = profile.name === 'Speedy' ? SPEEDY_TRIALS_PER_SESSION : TRIALS_PER_SESSION;
+		var goal = getTrialsPerSession(profile);
 	steps.whichQuest = {
 		next: (function (profile, currentStats) {
 			if (currentStats.thisQuestTrialsCompleted >= goal) {
@@ -296,7 +306,7 @@ var SessionAuto = function (profile, currentStats, onShow, initialState) {
 			return null;
 		}).bind(this),
 		dialog: (function (profile, currentStats, changeList) {
-			var text = "Please choose Syllable Quest or Word Quest based on your client's current stimulability level, and choose /r/ variants to target based on your clinical judgment. Please keep these settings constant across all Quest sessions for a participant in our research study. Each Quest should be 100 trials long, but you can break your Quest into shorter sessions if you need to. Remember that the clinician should provide a model only at the start of each block of 10 trials.";
+			var text = "Please choose Syllable Quest or Word Quest based on your client's current stimulability level, and choose /r/ variants to target based on your clinical judgment. Please keep these settings constant across all Quest sessions for a participant in our research study. Remember that the clinician should provide a model only at the start of each block of 10 trials.";
 			return {
 				text: text,
 				title: 'Quest'
