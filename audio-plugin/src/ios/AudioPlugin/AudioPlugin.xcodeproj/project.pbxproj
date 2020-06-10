@@ -513,6 +513,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -809,7 +810,7 @@
 				DSTROOT = "$(PROJECT_DIR)/$(PROJECT_NAME).dst";
 				INSTALL_PATH = /lib;
 				KEEP_PRIVATE_EXTERNS = NO;
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
