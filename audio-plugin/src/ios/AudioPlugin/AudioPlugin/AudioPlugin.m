@@ -42,7 +42,6 @@
 
 - (void)getLPCCoefficients:(CDVInvokedUrlCommand *)command
 {
-    [self.commandDelegate runInBackground:^{
     NSNumber *xScaleFactor = @(self.audioManager.lpcCalculator.frequencyScaling);
     NSDictionary *coefficientsDict = [self.audioManager.lpcCalculator fetchCurrentCoefficients];
     NSArray *audioCoefficients = [coefficientsDict objectForKey:@"coefficients"];
@@ -55,7 +54,6 @@
     CDVPluginResult *result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK
                                             messageAsDictionary:resultDict];
     [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
-			}];
 }
 
 - (void)startRecording:(CDVInvokedUrlCommand *)command
