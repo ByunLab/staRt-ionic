@@ -115,7 +115,7 @@ void LPCDisplayManager::render(Float32 *lpc_mag_buffer, Vector3 *freqVertices, V
                 peakTracker->pickFirstFormantFrame();
             }
         }
-        
+
         if (!peakTracker->trackingOn){
             peakTracker->trackingOnOff(avgLpc, _numDisplayBins);
         }
