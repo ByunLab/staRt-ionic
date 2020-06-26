@@ -698,10 +698,10 @@ void PeakTracker::initTracker(unsigned int bufferSize){
     lpfGuideSignal = (float*) malloc(bufferSize*sizeof(float));
     memcpy(lpfGuideSignal, initZeros, bufferSize * sizeof(float));
 
-    formants->freq = (float*) malloc(bufferSize * sizeof(float));
-    formants->mag  = (float*) malloc(bufferSize * sizeof(float));
-    memcpy(formants->freq, initZeros, bufferSize * sizeof(float));
-    memcpy(formants->mag, initTrackerVal, bufferSize * sizeof(float));
+    formants->freq = (float*) malloc(NUM_FORMANTS * sizeof(float));
+    formants->mag  = (float*) malloc(NUM_FORMANTS * sizeof(float));
+    memcpy(formants->freq, initZeros, NUM_FORMANTS * sizeof(float));
+    memcpy(formants->mag, initTrackerVal, NUM_FORMANTS * sizeof(float));
 
     trackingThreshold  = 4.2;
 }
@@ -712,10 +712,6 @@ void PeakTracker::initTracker(unsigned int bufferSize){
  - Values that need to be retained: current formants (in order to pick the next frames formants)
  */
 void PeakTracker::resetTracker(unsigned int bufferSize){
-
-//    firstFramePicked = false;
-//    startAnalysisCounter = 0;
-//    stopAnalysisCounter  = 0;
 
     formantNum = 0;
 
@@ -728,14 +724,6 @@ void PeakTracker::resetTracker(unsigned int bufferSize){
     nextPeakFreq = 0;
     nextPeakMag  = -1.0;
 
-//    for(int i=0; i<NUM_FILTER_COEFF; i++){
-//        lpfInBuf[i]  = 0.0;
-//        lpfOutBuf[i] = 0.0;
-//    }
-//
-//    memcpy(lpfGuideSignal, initZeros, bufferSize * sizeof(float));
-//    memcpy(formants->freq, initZeros, bufferSize * sizeof(float));
-//    memcpy(formants->mag, initTrackerVal, bufferSize * sizeof(float));
 }
 
 /*
@@ -744,7 +732,7 @@ void PeakTracker::resetTracker(unsigned int bufferSize){
  - Most important for onset frame because the later formant peaks are chosen with prior information of formant location, whereas first frame has no prior.
  */
 void PeakTracker::lpfFilter(float *lpcSpectrum, int lpcSpectrumLength){
-    int bufLen = sizeof(lpfOutBuf) / sizeof(lpfOutBuf[0]);
+    int bufLen = NUM_FILTER_COEFF;
     
     for(int i=0; i<lpcSpectrumLength; i++){
         lpfGuideSignal[i] = (bCoeff[i]*lpfInBuf[i]) + (bCoeff[i+1]*lpfInBuf[i+1]) + (bCoeff[i+2]*lpfInBuf[i+2]) + (aCoeff[i]*lpfOutBuf[i]) + (aCoeff[i+1]*lpfOutBuf[i+1]) + (aCoeff[i+2]*lpfOutBuf[i+2]);
@@ -753,6 +741,7 @@ void PeakTracker::lpfFilter(float *lpcSpectrum, int lpcSpectrumLength){
             lpfOutBuf[j+1] = lpfOutBuf[j];
             lpfInBuf[j+1]  = lpfInBuf[j];
         }
+        lpfInBuf[0]  = lpcSpectrum[i];
         lpfOutBuf[0] = lpfGuideSignal[i];
     }
 }
@@ -794,8 +783,8 @@ void PeakTracker::trackingOnOff(float *lpcSpectrum, int lpcSpectrumLength){
             }
             
             memcpy(lpfGuideSignal, initZeros, lpcSpectrumLength * sizeof(float));
-            memcpy(formants->freq, initZeros, lpcSpectrumLength * sizeof(float));
-            memcpy(formants->mag, initTrackerVal, lpcSpectrumLength * sizeof(float));
+            memcpy(formants->freq, initZeros, NUM_FORMANTS * sizeof(float));
+            memcpy(formants->mag, initTrackerVal, NUM_FORMANTS * sizeof(float));
         }
     }
 }
