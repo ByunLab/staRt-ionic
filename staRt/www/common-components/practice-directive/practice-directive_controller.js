@@ -211,7 +211,7 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 
 			}
 
-			QuestScore.questRating(data, $scope.scores, $scope.milestones, $scope.currentWordIdx, $scope.badges);
+			QuestScore.questRating(data, $scope.scores, $scope.milestones, $scope.currentWordIdx, $scope.badges, $scope.type);
 
 			var NUM_WORDS_IN_BLOCK = 10;
 			// if Quest end-of-block, check Adaptive Difficulty
@@ -789,7 +789,7 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 
 	// called by rating btns in ui
 	$scope.onRating = function(data) {
-		if (!$scope.probe && $scope.scores.endOfBlock) {
+		if (!$scope.probe && $scope.scores && $scope.scores.endOfBlock) {
 			return;
 		}
 		$scope.rating = data;

@@ -431,7 +431,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory( ScoreConstru
 	}; // advanceEndOfBlock
 
 	//called by questRating() only
-	var checkUpdateMilestones = function(scores, milestones, badges, currentWordIdx) {
+	var checkUpdateMilestones = function(scores, milestones, badges, currentWordIdx, questType) {
 
 		// checked every trial -----------------------------
 		if(scores.streak > 2)	{
@@ -507,7 +507,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory( ScoreConstru
 
 			var finalBlock = (currentWordIdx > (scores.totalTrials -10)) ? true : false;
 
-			if(!finalBlock) { checkDifficulty(scores, badges); }
+			if(questType === 'Word' && !finalBlock) { checkDifficulty(scores, badges); }
 
 			//updateSummaryCards()
 			badges.qtDialog.isBlockEnd = true;
@@ -533,7 +533,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory( ScoreConstru
 
 	//--------------------------------------------------
 	// Called by each rating button press. Updates scores and coins.
-	var questRating = function(data, scores, milestones, currentWordIdx, badges) {
+	var questRating = function(data, scores, milestones, currentWordIdx, badges, questType) {
 		// currentWordIdx starts at 0
 
 		// scores.endOfBlock = (currentWordIdx % 10 == 0 && currentWordIdx > 0) ? true : false;
@@ -565,7 +565,7 @@ practiceDirective.factory('QuestScore', function QuestScoreFactory( ScoreConstru
 		// check for end of block
 		scores.endOfBlock = (currentWordIdx % 10 == 0 && currentWordIdx > 0) ? true : false;
 
-		checkUpdateMilestones(scores, milestones, badges, currentWordIdx);
+		checkUpdateMilestones(scores, milestones, badges, currentWordIdx, questType);
 
 	}; // end questRating()
 
