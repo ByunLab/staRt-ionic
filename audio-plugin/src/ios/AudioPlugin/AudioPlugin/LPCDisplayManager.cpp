@@ -75,10 +75,6 @@ void LPCDisplayManager::render(Float32 *lpc_mag_buffer, Vector3 *freqVertices, V
     float avgLpc[_numDisplayBins];
     memset(avgLpc, 0, sizeof(float)*_numDisplayBins);
 
-    // average LPC "guide" - low passed spectrum
-    float avgLpcLpf[_numDisplayBins];
-    memset(avgLpcLpf, 0, sizeof(float)*_numDisplayBins);
-
     _historyBuffer->writeBuffer(lpc_mag_buffer);
     _historyBuffer->averageAllBuffers(avgLpc);
 
@@ -88,7 +84,7 @@ void LPCDisplayManager::render(Float32 *lpc_mag_buffer, Vector3 *freqVertices, V
         peaksAndValleys->displayInit(avgLpc, _numDisplayBins);
         peaksAndValleys->initDisplayPtr = true;
 
-        peaksAndValleysLPF->displayInit(avgLpcLpf, _numDisplayBins);
+        peaksAndValleysLPF->displayInit(avgLpc, _numDisplayBins);
         peaksAndValleysLPF->initDisplayPtr = true;
 
         // Initialize Peak Tracker

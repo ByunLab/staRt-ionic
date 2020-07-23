@@ -735,7 +735,7 @@ void PeakTracker::lpfFilter(float *lpcSpectrum, int lpcSpectrumLength){
     int bufLen = NUM_FILTER_COEFF;
     
     for(int i=0; i<lpcSpectrumLength; i++){
-        lpfGuideSignal[i] = (bCoeff[i]*lpfInBuf[i]) + (bCoeff[i+1]*lpfInBuf[i+1]) + (bCoeff[i+2]*lpfInBuf[i+2]) + (aCoeff[i]*lpfOutBuf[i]) + (aCoeff[i+1]*lpfOutBuf[i+1]) + (aCoeff[i+2]*lpfOutBuf[i+2]);
+        lpfGuideSignal[i] = (bCoeff[0]*lpfInBuf[0]) + (bCoeff[1]*lpfInBuf[1]) + (bCoeff[2]*lpfInBuf[2]) + (aCoeff[0]*lpfOutBuf[0]) + (aCoeff[1]*lpfOutBuf[1]) + (aCoeff[2]*lpfOutBuf[2]);
 
         for(int j=bufLen-1; j>=0; j--){
             lpfOutBuf[j+1] = lpfOutBuf[j];
