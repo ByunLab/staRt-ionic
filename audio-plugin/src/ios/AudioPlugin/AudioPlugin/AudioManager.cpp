@@ -411,6 +411,7 @@ void PeaksAndValleys::displayInit(float *lpcSpectrum, unsigned int lpcSpectrumLe
     
     sigPointer     = lpcSpectrum;
     len            = lpcSpectrumLength - 1;
+    std::cout << "spectrum len: " << lpcSpectrumLength << "\n";
     
     // Initialize all values to -1
     initValue = (float*) calloc(lpcSpectrumLength, sizeof(float));
@@ -517,7 +518,7 @@ void PeaksAndValleys::computeParams(float *lpcSpectrum){
             }
         }
     }
-
+    
     if (cntPeak != 0){
         cntPeak = cntPeak - 1;
     }
@@ -660,26 +661,30 @@ PeakTracker::~PeakTracker(){
 };
 
 void PeakTracker::initTracker(unsigned int bufferSize){
-
+    
+    // Flags and Counters
     trackingOn = false;
     firstFramePicked = false;
     startAnalysisCounter = 0;
     stopAnalysisCounter  = 0;
-
+    
+    // Start at lowest formant
     formantNum = 0;
-
-    threshLow  = 0;
-    threshHigh = 0;
-
+    
+    threshLow  = 0.1;
+    threshHigh = 0.1;
+    
+    // Init range values for each formant
     deltaFLow  = 100;
     deltaFHigh = 100;
-
+    
     indexLow  = -1;
     indexHigh = -1;
 
     nextPeakFreq = -1;
     nextPeakFreq = -1.0;
-
+    
+    // Memory Allocation
     lpfInBuf  = (float*)calloc(NUM_FILTER_COEFF, sizeof(float));
     lpfOutBuf = (float*)calloc(NUM_FILTER_COEFF, sizeof(float));
     for(int i=0; i<NUM_FILTER_COEFF; i++){
@@ -702,7 +707,9 @@ void PeakTracker::initTracker(unsigned int bufferSize){
     formants->mag  = (float*) malloc(NUM_FORMANTS * sizeof(float));
     memcpy(formants->freq, initZeros, NUM_FORMANTS * sizeof(float));
     memcpy(formants->mag, initTrackerVal, NUM_FORMANTS * sizeof(float));
-
+    
+    // App wave defaults to energy of 4 with no signal
+    // This value will need to be adjusted when using microphone rather than reading audiofiles, due to background noise
     trackingThreshold  = 4.2;
 }
 
@@ -763,11 +770,13 @@ void PeakTracker::trackingOnOff(float *lpcSpectrum, int lpcSpectrumLength){
     }
 
     // turn off tracking when below offset threshold
+    // timer in frames
+    int trackingOnOffTimer = 150;
     if(energy <= trackingThreshold){
-        if(trackingOn == true && stopAnalysisCounter < 150){
+        if(trackingOn == true && stopAnalysisCounter < trackingOnOffTimer){
             stopAnalysisCounter += 1;
         }
-        else if (stopAnalysisCounter >= 150){
+        else if (stopAnalysisCounter >= trackingOnOffTimer){
             // turn tracking off
             trackingOn = false;
             stopAnalysisCounter = 0;
@@ -804,11 +813,14 @@ void PeakTracker::pickFirstFormantFrame(){
          1. If peaks are within range of the low passed peak (between the valleys on each side) then this is a potential F1
          2. Keep counter of potential F1s
         */
-        if((peaksAndValleys->peaks->freq[i] > peaksAndValleysLPF->valleys->freq[0]) && (peaksAndValleys->peaks->freq[i] < peaksAndValleysLPF->valleys->freq[1])){
+        if((peaksAndValleys->peaks->freq[i] > peaksAndValleysLPF->valleys->freq[0]) &&
+           (peaksAndValleys->peaks->freq[i] < peaksAndValleysLPF->valleys->freq[1])){
             potentialF1Counter += 1;
         }
     }
-
+    
+    // Temp Arrays to hold info about F1 candidates
+    // - freq, heightMin, heightMax
     float tempF1Freq[potentialF1Counter];
     float tempF1HeightMin[potentialF1Counter];
     float tempF1HeightMax[potentialF1Counter];
@@ -818,12 +830,17 @@ void PeakTracker::pickFirstFormantFrame(){
         tempF1HeightMin[i] = 0.0;
         tempF1HeightMax[i] = 0.0;
     }
-
+    
+    // Go through number of F1 candidates
+    // For each F1 go through all the peaks
     for(int i=0; i<potentialF1Counter; i++){
         for (int j=0; j<totalNumPeaks; j++){
 
-            if((peaksAndValleys->peaks->freq[j] > peaksAndValleysLPF->valleys->freq[0]) && (peaksAndValleys->peaks->freq[j] < peaksAndValleysLPF->valleys->freq[1])){
-
+            // If peak falls between first valley of LPF version, this is a potential peak
+            if((peaksAndValleys->peaks->freq[j] > peaksAndValleysLPF->valleys->freq[0]) &&
+               (peaksAndValleys->peaks->freq[j] < peaksAndValleysLPF->valleys->freq[1])){
+                
+                // store info
                 tempF1Freq[i] = peaksAndValleys->peaks->freq[j];
                 tempF1HeightMin[i] = peaksAndValleys->peaks->height.min[j];
                 tempF1HeightMax[i] = peaksAndValleys->peaks->height.max[j];
@@ -838,10 +855,11 @@ void PeakTracker::pickFirstFormantFrame(){
      6. Pick the next three formants, making sure they are higher in frequency than the chosen first
      */
 
-    // 3 - pick the most salient pick based on the largest min distance from adjacent valleys
-    long int F1Idx = std::distance(tempF1HeightMin, std::max_element(tempF1HeightMin, tempF1HeightMin+potentialF1Counter));
-    float F1Max    = peaksAndValleys->peaks->height.max[F1Idx];
-
+    // 3 - pick the most salient peak based on the largest min distance from adjacent valleys
+    // Sort in descending order
+    int F1Idx   = int(std::distance(tempF1HeightMin, std::max_element(tempF1HeightMin, tempF1HeightMin+potentialF1Counter)));
+    float F1Max = peaksAndValleys->peaks->height.max[F1Idx];
+    
     // 4 - sort
     // temp array of largest peaks
     topPeaksMag  = (float*) malloc(totalNumPeaks * sizeof(float));
@@ -1062,7 +1080,7 @@ void PeakTracker::checkHighAndLow(float threshLow, float threshHigh, int formant
  */
 void PeakTracker::checkLow(float threshLow, int formantNum){
     if (formantNum == 0){
-        deltaFLow = (formants->freq[formantNum] - 50) / 2;
+        deltaFLow = (formants->freq[formantNum] - 5) / 2;
         deltaFLow = deltaFLow - (deltaFLow*threshLow);
     } else {
         deltaFLow = (formants->freq[formantNum] - formants->freq[formantNum-1]) / 2;
@@ -1078,7 +1096,8 @@ void PeakTracker::checkLow(float threshLow, int formantNum){
 void PeakTracker::checkHigh(float threshHigh, int formantNum){
     if (formantNum == 3){ //3 is actually 4
         // 4500 is the max freq of the analysis
-        deltaFHigh = (MAX_DISPLAY_FREQ - formants->freq[formantNum]) / 2;
+//        deltaFHigh = (MAX_DISPLAY_FREQ - formants->freq[formantNum]) / 2;
+        deltaFHigh = (512 - formants->freq[formantNum]) / 2;
         deltaFHigh = deltaFHigh - (deltaFHigh*threshHigh);
     } else {
         deltaFHigh = (formants->freq[formantNum+1] - formants->freq[formantNum]) / 2;
