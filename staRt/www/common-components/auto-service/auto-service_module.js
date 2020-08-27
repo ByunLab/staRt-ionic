@@ -192,9 +192,9 @@ var SessionAuto = function (profile, currentStats, onShow, initialState) {
 			}
 		}
 		_scramble(biofeedback);
-		if (profile.nBiofeedbackSessionCompleted > profile.nNonBiofeedbackSessionCompleted) {
+		if (profile.nBiofeedbackSessionsCompleted > profile.nNonBiofeedbackSessionsCompleted) {
 			this.state.biofeedback = 'TRAD';
-		} else if (profile.nBiofeedbackSessionCompleted < profile.nNonBiofeedbackSessionCompleted) {
+		} else if (profile.nBiofeedbackSessionsCompleted < profile.nNonBiofeedbackSessionsCompleted) {
 			this.state.biofeedback = 'BF';
 		} else {
 			// This whole pop business is legacy code, we are essentially flipping a coin as to whether we get
