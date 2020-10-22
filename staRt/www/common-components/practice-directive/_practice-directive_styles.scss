@@ -73,7 +73,8 @@
 }
 
 .countIndicator {
-  color: $c-text-subtle;
+		color: $c-text-subtle;
+		font-size: 36px; // 24 pixels looked good.
 }
 
 
