@@ -55,6 +55,7 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 {
 	ProfileService.getCurrentProfile().then(function (profile) {
 		$scope.participant_name = profile.name;
+		$scope.formalTester = !!profile.formalTester;
 		if (profile.nIntroComplete >= 1) {
 			$scope.session_number = profile.nBiofeedbackSessionsCompleted + profile.nNonBiofeedbackSessionsCompleted + 1;
 		}
@@ -374,7 +375,7 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 			}
 		});
 
-		var doUpload = ($scope.currentPracticeSession.ratings.length > 0);
+		var doUpload = ($scope.currentPracticeSession.ratings.length > 0 && $scope.formalTester);
 		// If the user is not done yet, we should save all the data that we need
 		// to restore the practice session.
 		var didNotFinish = $scope.currentPracticeSession.ratings.length > 0 && $scope.currentPracticeSession.count > $scope.currentPracticeSession.ratings.length;
@@ -412,7 +413,7 @@ practiceDirective.controller( 'PracticeDirectiveController', function($scope, $t
 			).then(function() {$state.go($scope.recordingStoppedDestination);});
 		} else {
 			storeTask.then(function() {
-				if (doUpload) {
+				if (doUpload && $scope.formalTester) {
 					saveJSON($scope.currentPracticeSession.ratings, jsonPath, function () {
 						files.Ratings = jsonPath;
 						$scope.currentPracticeSession.files = files;
