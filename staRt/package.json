@@ -44,7 +44,7 @@
         "main-bower-files": "^2.13.1",
         "shelljs": "^0.3.0",
         "tar": "^4.4.2",
-        "three": "^0.103.0"
+        "three": "^0.125.0"
     },
     "cordovaPlugins": [
         "cordova-custom-config",
