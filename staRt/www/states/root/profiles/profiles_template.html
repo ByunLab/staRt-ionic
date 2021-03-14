@@ -2,6 +2,10 @@
 
 	<div class="profiles-layout_view-container">
 
+
+			<div ng-if="!data.currentProfile.hasSignedLegal" ng-include=" './states/root/profiles/legal-template/legal-template.html' ">
+			</div>
+
 		<ion-nav-bar class="ion-nav-bar"></ion-nav-bar>
 
 		<div class="profiles-layout_absPos-container">
@@ -14,9 +18,8 @@
 			<!-- PROFILES DRAWER (PARTICPANT LIST) IS INSERTED HERE -->
 		</div> <!-- end .profiles-layout_drawer-left -->
 
-
-
 		<div class="profiles-layout_content-container">
+
 
 			<!-- WELCOME MESSAGES ==================================== -->
  			<div class="profiles-noCard"

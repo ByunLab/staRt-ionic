@@ -1,0 +1,15 @@
+
+.modal-backdrop {
+    position: fixed;
+    top: 5%;
+    width: 85vw;
+    height: 80vh;
+    margin-left: $col-w * 1.4;
+    margin-right: $col-w * 1.4;
+    overflow-y: scroll;
+    z-index: 999;
+    opacity: 1.0;
+    padding: 30px;
+    text-align: left;
+    background-color: #FCF3DC;
+}

@@ -47,6 +47,12 @@ function compareRecordings(ra, rb) {
 					$scope.data.currentProfile = res;
 					$scope.data.currentProfileUUID = res.uuid;
 
+
+					if (!$scope.data.currentProfile.hasSignedLegal) {
+						$scope.needsLegal = true;
+						console.log('User has not signed legal!');
+					}
+
 					$scope.data.formalSessionNumTrials = res.formalSessionNumTrials;
 					$scope.data.formalTester = res.formalTester;
 
@@ -60,7 +66,7 @@ function compareRecordings(ra, rb) {
 						$scope.data.lpcOrder = res.lpcOrder;
 					} else {
 						// #stj Default just 35? Call the lookup fx?
-						console.log("lpc order not set");
+						console.log('lpc order not set');
 						$scope.data.lpcOrder = 0;
 					}
 
@@ -282,6 +288,14 @@ function compareRecordings(ra, rb) {
 			$scope.setIsEditing(true);
 			$scope.slpView = false;
 			$scope.setCardState('profile');
+		};
+
+		$scope.agreeToLegal = function () {
+			ProfileService.runTransactionForCurrentProfile(function (handle, profileDoc, t) {
+				t.update(handle, {
+					hasSignedLegal: true
+				});
+			});
 		};
 
 		$scope.displayProgressModal = function () {
