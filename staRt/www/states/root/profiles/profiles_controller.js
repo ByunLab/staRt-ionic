@@ -41,6 +41,7 @@ function compareRecordings(ra, rb) {
 		// "targetLPCOrder" (int, optional) the saved target LPC order
 
 		$localForage.getItem('didSign').then(function (item) {
+			console.log('didSign is ' + item);
 			$rootScope.needsLegal = !item;
 		});
 
