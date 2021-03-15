@@ -12,7 +12,12 @@
       version: "",
       platform: "",
 			navTitle: "SLP Resources"
-    };
+		};
+
+		$scope.unsignLegal = function () {
+			console.log("unsign legal called");
+			$localForage.setItem('didSign', false);
+		}
 
 		if (window.AudioPlugin !== undefined) {
 	     cordova.getAppVersion.getVersionNumber().then(function (version) {
@@ -20,6 +25,7 @@
 	       $scope.data.platform = `${device.platform} ${device.version}`;
 	     });
 		};
+
 
 		$scope.$on("$ionicView.enter", function() {
 			console.log('resources content loaded!');

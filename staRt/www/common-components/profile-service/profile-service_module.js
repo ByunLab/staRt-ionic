@@ -335,6 +335,7 @@ profileService.factory('ProfileService', function($rootScope, $state, $localFora
 			});
 		},
 
+
 		// @param profileHandle - A proflie handle as returned by getProfileTransactionHandle
 		// @param transactionFunction - A function that takes as its first argument a profile
 		//  handle (profileHandle), as its second argument the profile doc itself (profileDoc)

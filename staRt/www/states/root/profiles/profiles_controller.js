@@ -40,6 +40,10 @@ function compareRecordings(ra, rb) {
 		// "stdevF3" (double, optional) the saved stdeviation F3 value
 		// "targetLPCOrder" (int, optional) the saved target LPC order
 
+		$localForage.getItem('didSign').then(function (item) {
+			console.log('didSign is ' + item);
+			$rootScope.needsLegal = !item;
+		});
 
 		$rootScope.initParticipants = function() {
 			ProfileService.getCurrentProfile().then(function(res) {
@@ -60,7 +64,7 @@ function compareRecordings(ra, rb) {
 						$scope.data.lpcOrder = res.lpcOrder;
 					} else {
 						// #stj Default just 35? Call the lookup fx?
-						console.log("lpc order not set");
+						console.log('lpc order not set');
 						$scope.data.lpcOrder = 0;
 					}
 
@@ -282,6 +286,11 @@ function compareRecordings(ra, rb) {
 			$scope.setIsEditing(true);
 			$scope.slpView = false;
 			$scope.setCardState('profile');
+		};
+
+		$scope.agreeToLegal = function () {
+			$rootScope.needsLegal = false;
+			$localForage.setItem('didSign', true);
 		};
 
 		$scope.displayProgressModal = function () {
@@ -719,10 +728,10 @@ function compareRecordings(ra, rb) {
 		};
 
 		$scope.updateFormalSessionNumTrials = function() {
-				ProfileService.runTransactionForCurrentProfile(function(handle, doc, t) {
-					t.update(handle, {formalSessionNumTrials: $scope.data.formalSessionNumTrials});
-				});
-		}
+			ProfileService.runTransactionForCurrentProfile(function(handle, doc, t) {
+				t.update(handle, {formalSessionNumTrials: $scope.data.formalSessionNumTrials});
+			});
+		};
 
 		$scope.updatePluginLPCOrder = function() {
 			if (window.AudioPlugin !== undefined) {

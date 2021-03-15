@@ -1,0 +1,26 @@
+
+.modal-backdrop{
+    position: fixed;
+    top: 5%;
+    width: 85vw;
+    height: 85vh;
+    margin-left: $col-w * 1.4;
+    margin-right: $col-w * 1.4;
+    overflow-y: scroll;
+    z-index: 999;
+    opacity: 1.0;
+    padding: 30px;
+    background-color: #FCF3DC;
+}
+
+.modal-backdrop p{
+    text-align: left;
+}
+
+.modal-backdrop b {
+    text-align: center;
+}
+
+.agree-button {
+    text-align: center;
+}
