@@ -3,8 +3,8 @@
 	<div class="profiles-layout_view-container">
 
 
-			<div ng-if="!data.currentProfile.hasSignedLegal" ng-include=" './states/root/profiles/legal-template/legal-template.html' ">
-			</div>
+		<div ng-if="$root.needsLegal" ng-include=" './states/root/profiles/legal-template/legal-template.html' ">
+		</div>
 
 		<ion-nav-bar class="ion-nav-bar"></ion-nav-bar>
 

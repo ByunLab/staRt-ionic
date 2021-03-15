@@ -1,5 +1,5 @@
 
-.modal-backdrop {
+.modal-backdrop{
     position: fixed;
     top: 5%;
     width: 85vw;
@@ -10,6 +10,17 @@
     z-index: 999;
     opacity: 1.0;
     padding: 30px;
-    text-align: left;
     background-color: #FCF3DC;
+}
+
+.modal-backdrop p{
+    text-align: left;
+}
+
+.modal-backdrop b {
+    text-align: center;
+}
+
+.agree-button {
+    text-align: center;
 }

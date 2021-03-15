@@ -40,18 +40,15 @@ function compareRecordings(ra, rb) {
 		// "stdevF3" (double, optional) the saved stdeviation F3 value
 		// "targetLPCOrder" (int, optional) the saved target LPC order
 
+		$localForage.getItem('didSign').then(function (item) {
+			$rootScope.needsLegal = !item;
+		});
 
 		$rootScope.initParticipants = function() {
 			ProfileService.getCurrentProfile().then(function(res) {
 				if (res) {
 					$scope.data.currentProfile = res;
 					$scope.data.currentProfileUUID = res.uuid;
-
-
-					if (!$scope.data.currentProfile.hasSignedLegal) {
-						$scope.needsLegal = true;
-						console.log('User has not signed legal!');
-					}
 
 					$scope.data.formalSessionNumTrials = res.formalSessionNumTrials;
 					$scope.data.formalTester = res.formalTester;
@@ -291,11 +288,8 @@ function compareRecordings(ra, rb) {
 		};
 
 		$scope.agreeToLegal = function () {
-			ProfileService.runTransactionForCurrentProfile(function (handle, profileDoc, t) {
-				t.update(handle, {
-					hasSignedLegal: true
-				});
-			});
+			$rootScope.needsLegal = false;
+			$localForage.setItem('didSign', true);
 		};
 
 		$scope.displayProgressModal = function () {
@@ -733,10 +727,10 @@ function compareRecordings(ra, rb) {
 		};
 
 		$scope.updateFormalSessionNumTrials = function() {
-				ProfileService.runTransactionForCurrentProfile(function(handle, doc, t) {
-					t.update(handle, {formalSessionNumTrials: $scope.data.formalSessionNumTrials});
-				});
-		}
+			ProfileService.runTransactionForCurrentProfile(function(handle, doc, t) {
+				t.update(handle, {formalSessionNumTrials: $scope.data.formalSessionNumTrials});
+			});
+		};
 
 		$scope.updatePluginLPCOrder = function() {
 			if (window.AudioPlugin !== undefined) {

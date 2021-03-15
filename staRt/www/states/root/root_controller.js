@@ -25,6 +25,9 @@
 		$rootScope.loggedIn = !!firebase.auth().currentUser;
 
 		$rootScope.safelySwitchStates = function(destination) {
+			if ($rootScope.needsLegal) {
+				return;
+			}
 			if (navigator.notification && !!$rootScope.isRecording) {
 				navigator.notification.confirm('Are you sure you would like to leave this session?',
 					function (index) {
