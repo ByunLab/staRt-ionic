@@ -19,7 +19,7 @@
 #define LPC_ORDER (40)                  /**< default number LPC coefficients */
 #define LPC_NUM_DISPLAY_BINS (256)      /**< resolution of LPC magnitude spectrum */
 #define MAX_NUM_TARG_FORMANTS (5)   /**< maximum number of LPC target formant frequencies */
-#define NUM_LPC_DISPLAY_BINS (256)  /**< number of points in OpenGL structure used to draw LPC magnitude spectrum */
+#define NUM_LPC_DISPLAY_BINS (512)  /**< number of points in OpenGL structure used to draw LPC magnitude spectrum */
 #define MAX_DISPLAY_FREQ (4500)     /**< upper limit of LPC magnitude spectrum display (Hz) */
 
 //#define TEST_WITH_SIN_WAVE  1

@@ -9,6 +9,8 @@
 #define __lpc_app__LPCDisplayManager__
 
 #include "MacTypes.h"
+#include <cstdint>
+#include "AudioManager.h"
 
 class DoubleBuffer;
 
@@ -42,7 +44,7 @@ public:
     /**
      * Get the normalized frequency (value in [0.0,1.0]) from frequency in Hz (value in [0,sampleRate/2])
      * @param[in] freq frequency in Hz
-     * @return normalized frequency 
+     * @return normalized frequency
      */
     Float32 getNormalizedFreq(Float32 freq);
 
@@ -61,14 +63,20 @@ public:
      * @param[in] maxNumTargFormantFreqs number of target formant frequencies
      */
     void renderTargetFormantFreqs(Vector3 *targFreqVertices, double *targFormantFreqs, int maxNumTargFormantFreqs);
-    
+
     // properties
     Float32 m_sampleRate;           /**< audio sample rate */
     UInt32 m_numPeaks;              /**< number of peaks in LPC magnitude spectrum */
     UInt32 _numDisplayBins;         /**< size of array used to display LPC magnitude spectrum  */
-    
+
+    // Call Peaks and Valleys class here
+    PeaksAndValleys *peaksAndValleys;
+    PeaksAndValleys *peaksAndValleysLPF;
+
+    PeakTracker *peakTracker;
+
 private:
-    
+
     // properties
     DoubleBuffer *_historyBuffer;
     float _displayPad;
