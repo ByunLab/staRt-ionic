@@ -6,6 +6,7 @@
  */
 
 #include <iostream>
+#include <cstdint>
 
 #include "LPCDisplayManager.h"
 #include "AudioManager.h"
@@ -28,6 +29,13 @@ m_numPeaks(0)
     
     // history buffer for smoothing out LPC magnitude computations
     _historyBuffer = new DoubleBuffer(_numDisplayBins,LPC_HIST_LEN);
+    
+    // Instance of Peaks and Valleys class for full Res & LPF 'Guide'
+    peaksAndValleys    = *new PeaksAndValleys();
+    peaksAndValleysLPF = *new PeaksAndValleys();
+    
+    // Instance of Peak Tracker
+    peakTracker = *new PeakTracker();
 }
 
 LPCDisplayManager::~LPCDisplayManager()
@@ -55,7 +63,6 @@ void LPCDisplayManager::renderTargetFormantFreqs(Vector3 *targFreqVertices, doub
         targFreqVertices[2*i+1].y = 1.0;
         targFreqVertices[2*i+1].z = 0.0;
     }
-    
 }
 
 void LPCDisplayManager::render(Float32 *lpc_mag_buffer, Vector3 *freqVertices, Vector3 *peakVertices)
@@ -68,11 +75,79 @@ void LPCDisplayManager::render(Float32 *lpc_mag_buffer, Vector3 *freqVertices, V
     float avgLpc[_numDisplayBins];
     memset(avgLpc, 0, sizeof(float)*_numDisplayBins);
     
+    // average LPC "guide" - low passed spectrum
+    float avgLpcLpf[_numDisplayBins];
+    memset(avgLpcLpf, 0, sizeof(float)*_numDisplayBins);
+    
     _historyBuffer->writeBuffer(lpc_mag_buffer);
     _historyBuffer->averageAllBuffers(avgLpc);
     
-    // find peaks
-    findMaxima(avgLpc, _numDisplayBins, &peakIndices[0], &m_numPeaks);
+    // INIT
+    if(!peaksAndValleys.initDisplayPtr){
+        // Initialize all values and compute peaks and valleys for the incoming signal
+        peaksAndValleys.displayInit(avgLpc, _numDisplayBins);
+        peaksAndValleys.initDisplayPtr = true;
+
+        // Initialize Peak Tracker
+        peakTracker.initTracker(_numDisplayBins);
+        peakTracker.initDisplayPtr = true;
+    }
+    else if(peaksAndValleys.initDisplayPtr){
+        // Reset all values and compute peaks and valleys for the incoming signal
+        peaksAndValleys.resetValues(_numDisplayBins);
+        peaksAndValleys.computeParams(avgLpc);
+
+        // 1. Create LPF 'guide' signal here
+        peakTracker.lpfFilter(avgLpc, _numDisplayBins);
+
+        // 2. Find OnsetFrame (start tracking)
+        if (peakTracker.trackingOn == false){
+            //peakTracker.detectFormantOnset(avgLpc, _numDisplayBins);
+            peakTracker.trackingOnOff(avgLpc, _numDisplayBins);
+        }
+
+        if(peakTracker.trackingOn == true && peakTracker.firstFramePicked == false){
+            //run peaker peaker on both "full res" and low passed signal
+            peaksAndValleys.computeParams(avgLpc);
+            peaksAndValleysLPF.computeParams(avgLpcLpf);
+            peakTracker.pickFirstFormantFrame();
+        }
+
+        // 3 - Start Tracking
+        if(peakTracker.firstFramePicked == true){
+            peakTracker.track();
+        }
+
+        // Determine if tracking should be turned off
+        peakTracker.trackingOnOff(avgLpc, _numDisplayBins);
+    }
+
+    // Output New Peaks for DISP
+    for(int i=0; i<NUM_FORMANTS; i++){
+        peakIndices[i] = peakTracker.formantsNew->freq[i];
+    }
+    m_numPeaks = NUM_FORMANTS;
+    
+////    New (now old) peaks detector
+//    if (!peaksAndValleys.initDisplayPtr){
+//        // Initialize all values and compute peaks and valleys for the incoming signal
+//        peaksAndValleys.displayInit(avgLpc, _numDisplayBins);
+//        peaksAndValleys.initDisplayPtr = true;
+//        peaksAndValleys.computeParams(avgLpc);
+//
+//    } else if (peaksAndValleys.initDisplayPtr){
+//        // Reset all values and compute peaks and valleys for the incoming signal
+//        peaksAndValleys.resetValues(_numDisplayBins);
+//        peaksAndValleys.computeParams(avgLpc);
+//    }
+//
+////     Update peak indices
+//    for (int i = 0; i < peaksAndValleys.cntPeak; i++){
+//        peakIndices[i] += peaksAndValleys.peaks->freq[i];
+//    }
+//
+////     Update peak count
+//    m_numPeaks = peaksAndValleys.cntPeak;
     
     float mag;
     int pk_cnt = 0, curr_pk_idx;
@@ -87,6 +162,7 @@ void LPCDisplayManager::render(Float32 *lpc_mag_buffer, Vector3 *freqVertices, V
         x_pos = (2.0*(float)i / (float)(_numDisplayBins-1)) - 1.0;
         
         mag = (float)( 20.0 * log10(fabsf(avgLpc[i])+1e-20));
+        
         if (mag > MAX_DB_VAL) mag = MAX_DB_VAL;
         if (mag < MIN_DB_VAL) mag = MIN_DB_VAL;
         
@@ -102,7 +178,17 @@ void LPCDisplayManager::render(Float32 *lpc_mag_buffer, Vector3 *freqVertices, V
             peakVertices[2*pk_cnt].y = min_y_pos;
             peakVertices[2*pk_cnt].z = 0.0;
             peakVertices[2*pk_cnt + 1].x = x_pos;
-            peakVertices[2*pk_cnt + 1].y = y_pos;
+            
+            // new peak tracker. Use magnitude values of tracked formants
+            if(peakTracker.formantsNew->mag[pk_cnt] != -1){
+                peakVertices[2*pk_cnt + 1].y = y_pos;
+            }
+            
+            // Peak picking based on an adaptive threshold. Magnitudes below threshold are set to -1.
+//            if(peaksAndValleys.peaks->mag[pk_cnt] != -1){
+//                peakVertices[2*pk_cnt + 1].y = y_pos;
+//            }
+            
             peakVertices[2*pk_cnt + 1].z = 0.0;
             pk_cnt++;
         }
@@ -118,3 +204,4 @@ Float32 LPCDisplayManager::getNormalizedFreq(Float32 freq)
 {
     return 2.0*freq / m_sampleRate;
 }
+
